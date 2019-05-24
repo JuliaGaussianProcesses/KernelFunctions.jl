@@ -1,3 +1,7 @@
+name =  "KernelFunctions"
+uuid = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
+version = "0.1.0"
+
 [deps]
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
