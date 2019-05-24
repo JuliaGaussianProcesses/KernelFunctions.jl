@@ -1,4 +1,6 @@
 using Test
 using KernelFunctions
+using Distances
 
-@test 1+1 == 2
+include("kernelmatrix.jl")
+include("constructors.jl")
