@@ -37,8 +37,8 @@ function SquaredExponentialKernel(α::Union{T,AbstractVector{T}}=1.0) where {T<:
     SquaredExponentialKernel{promote_float(T)}(α)
 end
 
-@inline kappa(κ::SquaredExponentialKernel{T,<:Real}, d²::T) where {T} = exp(-κ.α*d²)
-@inline kappa(κ::SquaredExponentialKernel{T}, d²::T) where {T} = exp(-d²)
+@inline kappa(κ::SquaredExponentialKernel{T,<:Real}, d²::Real) where {T} = exp(-κ.α*d²)
+@inline kappa(κ::SquaredExponentialKernel{T}, d²::Real) where {T} = exp(-d²)
 
 function convert(
         ::Type{K},

@@ -1,5 +1,5 @@
 
-function _kappamatrix!(κ::Kernel{T}, P::AbstractMatrix{T}) where {T<:Real}
+function _kappamatrix!(κ::Kernel{T}, P::AbstractMatrix{T₁}) where {T<:Real,T₁<:Real}
     for i in eachindex(P)
         @inbounds P[i] = kappa(κ, P[i])
     end
@@ -8,9 +8,9 @@ end
 
 function _symmetric_kappamatrix!(
         κ::Kernel{T},
-        P::AbstractMatrix{T},
+        P::AbstractMatrix{T₁},
         symmetrize::Bool
-    ) where {T<:Real}
+    ) where {T<:Real,T₁<:Real}
     if !((n = size(P,1)) == size(P,2))
         throw(DimensionMismatch("Pairwise matrix must be square."))
     end
