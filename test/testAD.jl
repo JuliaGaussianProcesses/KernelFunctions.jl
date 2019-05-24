@@ -1,4 +1,4 @@
-using Zygote, ForwardDiff
+using Zygote, ForwardDiff, Tracker
 
 dims = [10,5]
 
@@ -13,11 +13,25 @@ testfunction(k,A) = sum(kernelmatrix(k,A))
 
 
 #For debugging
-Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),vl)
-Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),vl)
-Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),l)
-ForwardDiff.gradient(x->testfunction(SquaredExponentialKernel(x[1]),A),[l])
 
+## Zygote
+Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),vl)
+Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A),vl)
+Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),l)
+Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A),l)
+
+## Tracker
+Tracker.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),vl)
+Tracker.gradient(x->testfunction(SquaredExponentialKernel(x),A),vl)
+Tracker.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),l)
+Tracker.gradient(x->testfunction(SquaredExponentialKernel(x),A),l)
+
+
+## ForwardDiff
+ForwardDiff.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),vl) #✓
+ForwardDiff.gradient(x->testfunction(SquaredExponentialKernel(x),A),vl) #✓
+ForwardDiff.gradient(x->testfunction(SquaredExponentialKernel(x[1]),A,B),[l])
+ForwardDiff.gradient(x->testfunction(SquaredExponentialKernel(x[1]),A),[l])
 ##Eventually store real results in file
 
 @testset "Zygote Automatic Differentiation test" begin
@@ -39,6 +53,27 @@ ForwardDiff.gradient(x->testfunction(SquaredExponentialKernel(x[1]),A),[l])
         end
     end
 end
+
+@testset "Tracker AutomaticDifferentation test" begin
+    @testset "ARD" begin
+        for k in kernels
+            @test Tracker.gradient(x->testfunction(k(x),A,B),vl)
+            @test Tracker.gradient(x->testfunction(k(vl),x,B),A)
+            @test Tracker.gradient(x->testfunction(k(x),A),vl)
+            @test Tracker.gradient(x->testfunction(k(vl),x),A)
+        end
+    end
+    @testset "ISO" begin
+        for k in kernels
+            @test Tracker.gradient(x->testfunction(k(x[1]),A,B),[l])
+            @test Tracker.gradient(x->testfunction(k(l),x,B),A)
+            @test Tracker.gradient(x->testfunction(k(x),A),[l])
+            @test Tracker.gradient(x->testfunction(k(l[1]),x),A)
+
+        end
+    end
+end
+
 
 @testset "ForwardDiff AutomaticDifferentation test" begin
     @testset "ARD" begin
