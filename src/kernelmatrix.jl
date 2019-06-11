@@ -47,7 +47,7 @@ function kernelmatrix!(
         symmetrize::Bool = true
         ) where {T,T₁<:Real,T₂<:Real}
         #TODO Check dimension consistency
-        _symmetric_kappamatrix!(κ,pairwise!(metric(κ),X,dims=obsdim),symmetrize)
+        _symmetric_kappamatrix!(κ,pairwise!(K,metric(κ),X,dims=obsdim),symmetrize)
 end
 
 # Convenience Methods ======================================================================
