@@ -12,12 +12,15 @@ related form of the kernel or [`GammaExponentialKernel`](@ref) for a generalizat
 
 # Examples
 
-```jldoctest; setup = :(using MLKernels)
+```jldoctest; setup = :(using KernelFunctions)
 julia> SquaredExponentialKernel()
-SquaredExponentialKernel{Float64}(1.0)
+SquaredExponentialKernel{Float64,Float64}(1.0)
 
 julia> SquaredExponentialKernel(2.0f0)
-SquaredExponentialKernel{Float32}(2.0)
+SquaredExponentialKernel{Float32,Float32}(2.0)
+
+julia> SquaredExponentialKernel([2.0,3.0])
+SquaredExponentialKernel{Float64,Array{Float64}}(1.0)
 ```
 """
 struct SquaredExponentialKernel{T<:Real,A} <: Kernel{T}

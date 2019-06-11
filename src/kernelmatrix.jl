@@ -28,14 +28,14 @@ end
 In-place version of `kernelmatrix` where pre-allocated matrix `K` will be overwritten with the kernel matrix.
 """
 function kernelmatrix!(
-        K::Matrix{T₁},
+        K::AbstractMatrix{T₁},
         κ::Kernel{T},
         X::AbstractMatrix{T₂},
         Y::AbstractMatrix{T₃};
         obsdim::Int = defaultobs
         ) where {T,T₁,T₂,T₃}
         #TODO Check dimension consistency
-        _kappamatrix!(κ, pairwise!(K,metric(κ), X, Y, dims=obsdim))
+        _kappamatrix!(κ, pairwise!(K, metric(κ), X, Y, dims=obsdim))
 end
 
 
@@ -47,7 +47,7 @@ function kernelmatrix!(
         symmetrize::Bool = true
         ) where {T,T₁<:Real,T₂<:Real}
         #TODO Check dimension consistency
-        _symmetric_kappamatrix!(κ,pairwise!(metric(κ),X,dims=obsdim),symmetrize)
+        _symmetric_kappamatrix!(κ,pairwise!(K, metric(κ), X, dims=obsdim), symmetrize)
 end
 
 # Convenience Methods ======================================================================
@@ -85,7 +85,7 @@ function kernelmatrix(
         obsdim::Int = defaultobs,
         symmetrize::Bool = true
     ) where {T,T₁<:Real}
-    return _symmetric_kappamatrix!(κ,pairwise(metric(κ),X,dims=obsdim),symmetrize)
+    return kernelmatrix!(Matrix{promote_float(T,T₁)}(undef,size(X,obsdim),size(X,obsdim)),κ,X,obsdim=obsdim,symmetrize=symmetrize)
 end
 
 """
@@ -100,7 +100,7 @@ function kernelmatrix(
         Y::AbstractMatrix{T₂};
         obsdim=defaultobs
     ) where {T,T₁<:Real,T₂<:Real}
-    _kappamatrix!(κ, pairwise(metric(κ), X, Y, dims=obsdim))
+    kernelmatrix!(Matrix{promote_float(T,T₁,T₂)}(undef,size(X,obsdim),size(Y,obsdim)),κ,X,Y,obsdim=obsdim)
 end
 
 
