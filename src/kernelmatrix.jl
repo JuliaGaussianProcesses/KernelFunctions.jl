@@ -70,7 +70,7 @@ function kernel(
         obsdim::Int = defaultobs
     ) where {T,T₁<:Real,T₂<:Real}
     # TODO Verify dimensions
-    _kappamatrix!(κ, pairwise(metric(κ),X,Y,dims=obsdim))
+    kappa(κ, evaluate(metric(κ),x,y))
 end
 
 """
@@ -85,7 +85,9 @@ function kernelmatrix(
         obsdim::Int = defaultobs,
         symmetrize::Bool = true
     ) where {T,T₁<:Real}
-    return kernelmatrix!(Matrix{promote_float(T,T₁)}(undef,size(X,obsdim),size(X,obsdim)),κ,X,obsdim=obsdim,symmetrize=symmetrize)
+    Tₛ = typeof(zero(eltype(X))*zero(T))
+    m = size(X,obsdim)
+    return kernelmatrix!(Matrix{promote_float(T,T₁)}(undef,m,m),κ,X,obsdim=obsdim,symmetrize=symmetrize)
 end
 
 """
@@ -100,7 +102,10 @@ function kernelmatrix(
         Y::AbstractMatrix{T₂};
         obsdim=defaultobs
     ) where {T,T₁<:Real,T₂<:Real}
-    kernelmatrix!(Matrix{promote_float(T,T₁,T₂)}(undef,size(X,obsdim),size(Y,obsdim)),κ,X,Y,obsdim=obsdim)
+    Tₛ = typeof(zero(eltype(X))*zero(eltype(Y))*zero(T))
+    m = size(X,obsdim)
+    n = size(Y,obsdim)
+    kernelmatrix!(Matrix{Tₛ}(undef,m,n),κ,X,Y,obsdim=obsdim)
 end
 
 
