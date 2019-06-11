@@ -10,6 +10,8 @@ makedocs(
 # Documenter can also automatically deploy documentation to gh-pages.
 # See "Hosting Documentation" and deploydocs() in the Documenter manual
 # for more information.
-#=deploydocs(
-    repo = "<repository url>"
-)=#
+deploydocs(
+    deps = Deps.pip("mkdocs", "python-markdown-math"),
+    repo = "github.com/theogf/KernelFunctions.jl.git",
+    target = "build"
+)
