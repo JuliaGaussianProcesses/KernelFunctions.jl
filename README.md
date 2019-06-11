@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/theogf/KernelFunctions.jl.svg?branch=master)](https://travis-ci.org/theogf/AugmentedGaussianProcesses.jl)
 # KernelFunctions.jl (WIP)
 Julia Package for kernel functions for machine learning
 
@@ -9,4 +10,4 @@ Julia Package for kernel functions for machine learning
 - BLAS backend
 
 
-Directly inspired by the [MLKernels](https://github.com/trthatcher/MLKernels.jl)
+Directly inspired by the [MLKernels](https://github.com/trthatcher/MLKernels.jl) package
