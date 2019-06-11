@@ -16,12 +16,12 @@ end
 
 for k in kernelnames
     for kt in kerneltypes
-        SUITE["KernelFunctions"][k][kt]["k(X,Y)"] = @benchmarkable kernelmatrix($(kernels[k][kt]),$X,$Y,obsdim=1)
-        # SUITE["KernelFunctions"][k][kt]["k!(X,Y)"] = @benchmarkable kernelmatrix!(KXY,$(kernels[k][kt]),$X,$Y) setup=(KXY=copy($KXY))
-        SUITE["KernelFunctions"][k][kt]["k(X)"] = @benchmarkable kernelmatrix($(kernels[k][kt]),$X,obsdim=1)
-        # SUITE["KernelFunctions"][k][kt]["k!(X)"] = @benchmarkable kernelmatrix!(KX,$(kernels[k][kt]),$X) setup=(KX=copy($KX))
-        # SUITE["KernelFunctions"][k][kt]["kdiag(X)"] = @benchmarkable kerneldiagmatrix($(kernels[k][kt]),$X)
-        # SUITE["KernelFunctions"][k][kt]["kdiag!(X)"] = @benchmarkable kerneldiagmatrix!(kX,$(kernels[k][kt]),$X) setup=(kX=copy($kX))
+        SUITE["KernelFunctions"][k][kt]["k(X,Y)"] = @benchmarkable KernelFunctions.kernelmatrix($(kernels[k][kt]),$X,$Y,obsdim=1)
+        # SUITE["KernelFunctions"][k][kt]["k!(X,Y)"] = @benchmarkable KernelFunctions.kernelmatrix!(KXY,$(kernels[k][kt]),$X,$Y) setup=(KXY=copy($KXY))
+        SUITE["KernelFunctions"][k][kt]["k(X)"] = @benchmarkable KernelFunctions.kernelmatrix($(kernels[k][kt]),$X,obsdim=1)
+        # SUITE["KernelFunctions"][k][kt]["k!(X)"] = @benchmarkable KernelFunctions.kernelmatrix!(KX,$(kernels[k][kt]),$X) setup=(KX=copy($KX))
+        # SUITE["KernelFunctions"][k][kt]["kdiag(X)"] = @benchmarkable KernelFunctions.kerneldiagmatrix($(kernels[k][kt]),$X)
+        # SUITE["KernelFunctions"][k][kt]["kdiag!(X)"] = @benchmarkable KernelFunctions.kerneldiagmatrix!(kX,$(kernels[k][kt]),$X) setup=(kX=copy($kX))
     end
 end
 # results = run(SUITE)
