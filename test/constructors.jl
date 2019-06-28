@@ -7,7 +7,8 @@ vl = [l,l]
 ## SquaredExponentialKernel
 @testset "SquaredExponentialKernel" begin
     @test KernelFunctions.metric(SquaredExponentialKernel(l)) == SqEuclidean()
-    @test KernelFunctions.metric(SquaredExponentialKernel(vl)) == WeightedSqEuclidean(vl)
+    @test KernelFunctions.transform(SquaredExponentialKernel(l)) == ScaleTransform(l)
+    @test KernelFunctions.transform(SquaredExponentialKernel(vl)) == ScaleTransform(vl)
 end
 
 SquaredExponentialKernel(l)
