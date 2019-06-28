@@ -17,13 +17,14 @@ testfunction(k,A) = sum(kernelmatrix(k,A))
 #For debugging
 
 ## Zygote
-# Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),vl)
-# Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A),vl)
-# Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),l)
-# Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A),l)
-
+Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A),vl)
+Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),vl)
+Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),l)
+Zygote.gradient(x->testfunction(SquaredExponentialKernel(x),A),l)
 ## Tracker
-Tracker.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),vl)
+Tracker.gradient(x->testfunction(SquaredExponentialKernel(vl),x,B),A)
+Tracker.gradient(x->testfunction(SquaredExponentialKernel(l),x[:,:]),A)
+# Tracker.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),vl)
 Tracker.gradient(x->testfunction(SquaredExponentialKernel(x),A),vl)
 Tracker.gradient(x->testfunction(SquaredExponentialKernel(x),A,B),l)
 Tracker.gradient(x->testfunction(SquaredExponentialKernel(x),A),l)
@@ -56,27 +57,6 @@ ForwardDiff.gradient(x->testfunction(SquaredExponentialKernel(x[1]),A),[l])
     end
 end
 
-@testset "Tracker AutomaticDifferentation test" begin
-    @testset "ARD" begin
-        for k in kernels
-            @test_nowarn Tracker.gradient(x->testfunction(k(x),A,B),vl)
-            @test_broken Tracker.gradient(x->testfunction(k(vl),x,B),A)
-            @test_nowarn Tracker.gradient(x->testfunction(k(x),A),vl)
-            @test_broken Tracker.gradient(x->testfunction(k(vl),x),A)
-        end
-    end
-    @testset "ISO" begin
-        for k in kernels
-            @test_nowarn Tracker.gradient(x->testfunction(k(x[1]),A,B),[l])
-            @test_broken Tracker.gradient(x->testfunction(k(l),x,B),A)
-            @test_nowarn Tracker.gradient(x->testfunction(k(x[1]),A),[l])
-            @test_broken Tracker.gradient(x->testfunction(k(l),x),A)
-
-        end
-    end
-end
-
-
 @testset "ForwardDiff AutomaticDifferentation test" begin
     @testset "ARD" begin
         for k in kernels
@@ -92,6 +72,27 @@ end
             @test_nowarn ForwardDiff.gradient(x->testfunction(k(l),x,B),A)
             @test_nowarn ForwardDiff.gradient(x->testfunction(k(x[1]),A),[l])
             @test_nowarn ForwardDiff.gradient(x->testfunction(k(l[1]),x),A)
+        end
+    end
+end
+
+
+@testset "Tracker AutomaticDifferentation test" begin
+    @testset "ARD" begin
+        for k in kernels
+            @test all(Tracker.gradient(x->testfunction(k(x),A,B),vl)[1] .≈ ForwardDiff.gradient(x->testfunction(k(x),A,B),vl))
+            @test_broken all(Tracker.gradient(x->testfunction(k(vl),x,B),A)[1] .≈ ForwardDiff.gradient(x->testfunction(k(vl),x,B),A))
+            @test all(Tracker.gradient(x->testfunction(k(x),A),vl)[1] .≈  ForwardDiff.gradient(x->testfunction(k(x),A),vl))
+            @test_broken all.(Tracker.gradient(x->testfunction(k(vl),x),A) .≈ ForwardDiff.gradient(x->testfunction(k(vl),x),A))
+        end
+    end
+    @testset "ISO" begin
+        for k in kernels
+            @test_nowarn Tracker.gradient(x->testfunction(k(x[1]),A,B),[l])
+            @test_broken Tracker.gradient(x->testfunction(k(l),x,B),A)
+            @test_nowarn Tracker.gradient(x->testfunction(k(x[1]),A),[l])
+            @test_broken Tracker.gradient(x->testfunction(k(l),x),A)
+
         end
     end
 end
