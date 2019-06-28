@@ -116,10 +116,18 @@ function kernelmatrix(
         Y::AbstractMatrix{T₂};
         obsdim=defaultobs
     ) where {T,T₁<:Real,T₂<:Real}
-    Tₖ = typeof(zero(eltype(X))*zero(eltype(Y))*zero(T))
-    m = size(X,obsdim)
-    n = size(Y,obsdim)
-    kernelmatrix!(Matrix{Tₖ}(undef,m,n),κ,X,Y,obsdim=obsdim)
+    # Tₖ = typeof(zero(eltype(X))*zero(T))
+    # m = size(X,obsdim)
+    K = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
+    # K = Matrix{Tₖ}(undef,m,m)
+    # for i in 1:m
+    #     tx = transform(κ,@view X[i,:])
+    #     for j in 1:i
+    #         K[i,j] = kappa(κ,kernel(κ,tx,transform(@view X[j,:])))
+    #     end
+    # end
+    return K
+    # return kernelmatrix!(Matrix{Tₖ}(undef,m,m),κ,X,obsdim=obsdim,symmetrize=symmetrize)
 end
 
 

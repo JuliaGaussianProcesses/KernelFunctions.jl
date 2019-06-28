@@ -13,7 +13,7 @@ vl = l*ones(dims[1])
 testfunction(k,A,B) = sum(kernelmatrix(k,A,B))
 testfunction(k,A) = sum(kernelmatrix(k,A))
 
-
+testfunction(SquaredExponentialKernel(vl),A)
 #For debugging
 
 ## Zygote

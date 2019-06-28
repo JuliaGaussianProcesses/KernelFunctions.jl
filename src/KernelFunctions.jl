@@ -6,6 +6,7 @@ export Kernel, SquaredExponentialKernel
 export Transform, ScaleTransform
 
 using Distances, LinearAlgebra
+using Zygote: @adjoint
 
 const defaultobs = 2
 abstract type Kernel{T,Tr} end
