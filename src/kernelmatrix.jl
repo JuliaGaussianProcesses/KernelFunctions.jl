@@ -83,25 +83,21 @@ end
     kernelmatrix(κ::Kernel, X::Matrix ; obsdim::Int=2, symmetrize::Bool=true)
 ```
 Calculate the kernel matrix of `X` with respect to kernel `κ`.
+# USED
 """
 function kernelmatrix(
-        κ::Kernel{T,<:Transform{A}},
+        κ::Kernel{T,<:Transform},
         X::AbstractMatrix;
         obsdim::Int = defaultobs,
         symmetrize::Bool = true
     ) where {T,A}
     # Tₖ = typeof(zero(eltype(X))*zero(T))
     # m = size(X,obsdim)
-    K = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
-    # K = Matrix{Tₖ}(undef,m,m)
-    # for i in 1:m
-    #     tx = transform(κ,@view X[i,:])
-    #     for j in 1:i
-    #         K[i,j] = kappa(κ,kernel(κ,tx,transform(@view X[j,:])))
-    #     end
-    # end
+    #WARNING TEMP FIX
+    X̂ = transform(κ,X,obsdim)
+    K = map(x->kappa(κ,x),pairwise(metric(κ),X̂,X̂,dims=obsdim))
+    # K = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
     return K
-    # return kernelmatrix!(Matrix{Tₖ}(undef,m,m),κ,X,obsdim=obsdim,symmetrize=symmetrize)
 end
 
 """
@@ -109,6 +105,7 @@ end
     kernelmatrix(κ::Kernel, X::Matrix, Y::Matrix; obsdim::Int=2)
 ```
 Calculate the base matrix of `X` and `Y` with respect to kernel `κ`.
+# USED
 """
 function kernelmatrix(
         κ::Kernel{T},

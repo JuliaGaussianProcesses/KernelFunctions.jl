@@ -1,9 +1,12 @@
+using Distances
+
 dims = [10,5]
 
 A = rand(dims...)
 B = rand(dims...)
 K = [zeros(dims[1],dims[1]),zeros(dims[2],dims[2])]
 k = SquaredExponentialKernel()
+k = MaternKernel()
 
 @testset "Inplace Kernel Matrix" begin
     for obsdim in [1,2]
