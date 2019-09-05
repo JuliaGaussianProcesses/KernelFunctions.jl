@@ -1,4 +1,4 @@
-## Macro for checking
+# Macro for checking arguments
 macro check_args(K, param, cond, desc=string(cond))
     quote
         if !($(esc(cond)))
@@ -9,6 +9,8 @@ macro check_args(K, param, cond, desc=string(cond))
     end
 end
 
+
+# Take highest Float among possibilities
 function promote_float(Tₖ::DataType...)
     if length(Tₖ) == 0
         return Float64

@@ -10,5 +10,3 @@ vl = [l,l]
     @test KernelFunctions.transform(SquaredExponentialKernel(l)) == ScaleTransform(l)
     @test KernelFunctions.transform(SquaredExponentialKernel(vl)) == ScaleTransform(vl)
 end
-
-SquaredExponentialKernel(l)
