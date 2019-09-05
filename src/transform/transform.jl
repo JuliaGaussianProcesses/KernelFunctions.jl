@@ -1,14 +1,24 @@
-abstract type Transform{T} end
+abstract type Transform end
 
-struct TransformChain{T} <: Transform{T}
-
+struct TransformChain <: Transform
+    transforms::Vector{Transform}
 end
 
-struct InputTransform{T} <: Transform{T}
-
+function TransformChain(v::AbstractVector{<:Transform})
+    TransformChain(v)
 end
 
-struct ScaleTransform{T<:Union{Real,AbstractVector{<:Real}}} <: Transform{T}
+struct InputTransform{F} <: Transform
+    f::F
+end
+
+# function InputTransform(f::F) where {F}
+#     InputTransform{F}(f)
+# end
+
+transform(t::InputTransform,x::T,obsdim::Int=1) where {T} = t.f(X)
+
+struct ScaleTransform{T<:Union{Real,AbstractVector{<:Real}}} <: Transform
     s::T
 end
 
