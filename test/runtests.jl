@@ -11,5 +11,7 @@ include("test_util.jl")
 @testset "KernelFunctions" begin
     include("zygote_rules.jl")
     include("kernelmatrix.jl")
-    include("constructors.jl")    
+    include("constructors.jl")
+    include("testAD.jl")
+    #include("types.jl")
 end

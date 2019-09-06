@@ -12,7 +12,7 @@ function kernelmatrix!(
         symmetrize::Bool = true
         ) where {T,T₁<:Real,T₂<:Real}
         @assert check_dims(K,X,X,obsdim) "Dimensions of the target array are not consistent with X and Y"
-        map!(K,x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
+        map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
 end
 
 """
@@ -29,7 +29,7 @@ function kernelmatrix!(
         obsdim::Int = defaultobs
         ) where {T,T₁,T₂,T₃}
         @assert check_dims(K,X,Y,obsdim) "Dimensions of the target array are not consistent with X and Y"
-        map!(K,x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
+        map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
 end
 
 """
