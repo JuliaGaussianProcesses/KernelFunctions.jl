@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/theogf/KernelFunctions.jl.svg?branch=master)](https://travis-ci.org/theogf/AugmentedGaussianProcesses.jl)
+[![Documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://theogf.github.io/KernelFunctions.jl/dev/)
 # KernelFunctions.jl (WIP)
 Julia Package for kernel functions for machine learning
 
