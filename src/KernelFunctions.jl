@@ -8,6 +8,7 @@ using Distances, LinearAlgebra
 const defaultobs = 2
 abstract type Kernel{T<:Real} end
 
+include("zygote_rules.jl")
 include("utils.jl")
 include("common.jl")
 include("kernelmatrix.jl")
