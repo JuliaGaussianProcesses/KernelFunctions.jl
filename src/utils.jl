@@ -18,3 +18,14 @@ function promote_float(Tₖ::DataType...)
     T = promote_type(Tₖ...)
     return T <: Real ? T : Float64
 end
+
+function check_dims(K,X,Y,obsdim)
+    if size(X,obsdim) == size(Y,obsdim)
+        if obsdim == 1
+            return size(K) == (size(X,2),size(Y,2))
+        elseif obsdim == 2
+            return size(K) == (size(X,1),size(Y,1))
+        end
+    end
+    return false
+end
