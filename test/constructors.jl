@@ -3,23 +3,30 @@ using KernelFunctions, Test, Distances
 # test type conversion
 l = 2.0
 vl = [l,l]
+s = ScaleTransform(3.0)
 
-## SquaredExponentialKernel
-@testset "SquaredExponentialKernel" begin
-    @test KernelFunctions.metric(SquaredExponentialKernel(l)) == SqEuclidean()
-    @test KernelFunctions.transform(SquaredExponentialKernel(l)) == ScaleTransform(l)
-    @test KernelFunctions.transform(SquaredExponentialKernel(vl)) == ScaleTransform(vl)
+## SqExponentialKernel
+@testset "SqExponentialKernel" begin
+    @test KernelFunctions.metric(SqExponentialKernel(l)) == SqEuclidean()
+    @test KernelFunctions.transform(SqExponentialKernel(l)) == ScaleTransform(l)
+    @test KernelFunctions.transform(SqExponentialKernel(vl)) == ScaleTransform(vl)
+    @test KernelFunctions.transform(SqExponentialKernel(s)) == s
 end
+
+## MaternKernel
 
 @testset "MaternKernel" begin
     @test KernelFunctions.metric(MaternKernel(l)) == Euclidean()
-    @test KernelFunctions.metric(MaternKernel(l,1.5)) == Euclidean()
-    @test KernelFunctions.metric(MaternKernel(l,2.5)) == Euclidean()
+    @test KernelFunctions.metric(Matern32Kernel(l)) == Euclidean()
+    @test KernelFunctions.metric(Matern52Kernel(l)) == Euclidean()
     @test KernelFunctions.transform(MaternKernel(l)) == ScaleTransform(l)
+    @test KernelFunctions.transform(Matern32Kernel(l)) == ScaleTransform(l)
+    @test KernelFunctions.transform(Matern52Kernel(l)) == ScaleTransform(l)
     @test KernelFunctions.transform(MaternKernel(vl)) == ScaleTransform(vl)
-    @test isa(MaternKernel(),Matern32Kernel)
-    @test isa(MaternKernel(1.0,1.0),MaternKernel)
-    @test isa(MaternKernel(1.0,1.5),Matern32Kernel)
-    @test isa(MaternKernel(1.0,2.5),Matern52Kernel)
-    @test isa(MaternKernel(1.0,Inf),SquaredExponentialKernel)
+    @test KernelFunctions.transform(Matern32Kernel(vl)) == ScaleTransform(vl)
+    @test KernelFunctions.transform(Matern52Kernel(vl)) == ScaleTransform(vl)
+    @test KernelFunctions.transform(MaternKernel(s)) == s
+    @test KernelFunctions.transform(Matern32Kernel(s)) == s
+    @test KernelFunctions.transform(Matern52Kernel(s)) == s
+
 end

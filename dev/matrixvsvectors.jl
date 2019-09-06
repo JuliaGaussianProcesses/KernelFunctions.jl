@@ -14,7 +14,7 @@ timekf = similar(timestheno); memkf = similar(timestheno)
     B = randn(D,1001)
 
     # Standardised eq kernel with length-scale 0.1.
-    medkf = median(@benchmark KernelFunctions.kernelmatrix(SquaredExponentialKernel(0.01),$A,$B,obsdim=2))
+    medkf = median(@benchmark KernelFunctions.kernelmatrix(SqExponentialKernel(0.01),$A,$B,obsdim=2))
     timekf[i] = medkf.time/1e6; memkf[i] = medkf.memory/2^20
     medstheno = median(@benchmark pw(eq(; l=0.1), ColsAreObs($A), ColsAreObs($B)))
     timestheno[i] = medstheno.time/1e6; memstheno[i] = medstheno.memory/2^20
