@@ -2,7 +2,7 @@ using KernelFunctions
 
 SUITE["KernelFunctions"] = BenchmarkGroup()
 
-kernelnames = ["SquaredExponentialKernel"]
+kernelnames = ["SqExponentialKernel"]
 kerneltypes = ["ARD","ISO"]
 kernels=Dict{String,Dict{String,KernelFunctions.Kernel}}()
 for k in kernelnames

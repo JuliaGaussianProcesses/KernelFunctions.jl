@@ -7,7 +7,7 @@ A = rand(dims...)
 B = rand(dims...)
 K = [zeros(dims[1],dims[1]),zeros(dims[2],dims[2])]
 Kdiag = [zeros(dims[1]),zeros(dims[2])]
-kernels = [SquaredExponentialKernel(),MaternKernel(1.0,1.0),Matern32Kernel(),Matern52Kernel()]
+kernels = [SqExponentialKernel(),MaternKernel(),Matern32Kernel(),Matern52Kernel()]
 @testset "Inplace Kernel Matrix" begin
     for k in kernels
         @testset "$k" begin
