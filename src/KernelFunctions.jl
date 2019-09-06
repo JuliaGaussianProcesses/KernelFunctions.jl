@@ -8,6 +8,7 @@ export Transform, ScaleTransform
 using Distances, LinearAlgebra
 using Zygote: @adjoint
 using SpecialFunctions: lgamma, besselk
+using StatsFuns: logtwo
 
 const defaultobs = 2
 abstract type Kernel{T,Tr} end

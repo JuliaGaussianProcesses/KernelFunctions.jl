@@ -28,7 +28,7 @@ struct MaternKernel{T,Tr<:Transform} <: Kernel{T,Tr}
     metric::SemiMetric
     ν::Real
     function MaternKernel{T,Tr}(transform::Tr,ν::Real) where {T,Tr<:Transform}
-        return new{T,Tr}(transform,SqEuclidean(),ν)
+        return new{T,Tr}(transform,Euclidean(),ν)
     end
 end
 
@@ -71,25 +71,25 @@ function MaternKernel(t::T₁,ν::T₂=1.5) where {T₁<:Transform,T₂<:Real}
     end
 end
 
-@inline kappa(κ::MaternKernel, d::Real) where {T} = exp((1.0-κ.ν)*log2 - lgamma(κ.ν) - κ.ν*log(sqrt(2κ.ν*d²)))*besselk(κ.ν,sqrt(2κ.ν*d²))
+@inline kappa(κ::MaternKernel, d::Real) where {T} = exp((1.0-κ.ν)*logtwo - lgamma(κ.ν) - κ.ν*log(sqrt(2κ.ν)*d))*besselk(κ.ν,sqrt(2κ.ν)*d)
 
 
 struct Matern3_2Kernel{T,Tr<:Transform} <: Kernel{T,Tr}
     transform::Tr
     metric::SemiMetric
     function Matern3_2Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
-        return new{T,Tr}(transform,SqEuclidean())
+        return new{T,Tr}(transform,Euclidean())
     end
 end
 
-@inline kappa(κ::Matern3_2Kernel, d²::T) where {T<:Real} = (1+sqrt(3*d²))*exp(-sqrt(3*d²))
+@inline kappa(κ::Matern3_2Kernel, d::T) where {T<:Real} = (1+sqrt(3)*d)*exp(-sqrt(3)*d)
 
 struct Matern5_2Kernel{T,Tr<:Transform} <: Kernel{T,Tr}
     transform::Tr
     metric::SemiMetric
     function Matern5_2Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
-        return new{T,Tr}(transform,SqEuclidean())
+        return new{T,Tr}(transform,Euclidean())
     end
 end
 
-@inline kappa(κ::Matern5_2Kernel, d²::Real) where {T} = (1+sqrt(5*d²)+5*d²/3)*exp(-sqrt(5*d²))
+@inline kappa(κ::Matern5_2Kernel, d::Real) where {T} = (1+sqrt(5)*d+5*d^2/3)*exp(-sqrt(5)*d)

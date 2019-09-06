@@ -94,9 +94,9 @@ function kernelmatrix(
     # Tₖ = typeof(zero(eltype(X))*zero(T))
     # m = size(X,obsdim)
     #WARNING TEMP FIX
-    X̂ = transform(κ,X,obsdim)
-    K = map(x->kappa(κ,x),pairwise(metric(κ),X̂,X̂,dims=obsdim))
-    # K = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
+    # X̂ = transform(κ,X,obsdim)
+    # K = map(x->kappa(κ,x),pairwise(metric(κ),X̂,X̂,dims=obsdim))
+    K = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
     return K
 end
 

@@ -1,6 +1,6 @@
 using KernelFunctions
 using Zygote, ForwardDiff, Tracker
-using Test
+using Test, LinearAlgebra
 
 dims = [10,5]
 
@@ -10,8 +10,8 @@ K = [zeros(dims[1],dims[1]),zeros(dims[2],dims[2])]
 kernels = [SquaredExponentialKernel,MaternKernel]
 l = 2.0
 vl = l*ones(dims[1])
-testfunction(k,A,B) = sum(kernelmatrix(k,A,B))
-testfunction(k,A) = sum(kernelmatrix(k,A))
+testfunction(k,A,B) = det(kernelmatrix(k,A,B))
+testfunction(k,A) = det(kernelmatrix(k,A))
 
 ##Eventually store real results in file
 @testset "Zygote Automatic Differentiation test" begin
