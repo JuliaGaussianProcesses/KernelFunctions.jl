@@ -37,9 +37,11 @@ function MaternKernel(ρ::T₁=1.0,ν::T₂=1.5) where {T₁<:Real,T₂<:Real}
     if ν == 0.5
         ExponentialKernel{T₁,ScaleTransform{T₁}}(ScaleTransform(ρ))
     elseif ν == 1.5
-        Matern3_2Kernel{T₁,ScaleTransform{T₁}}(ScaleTransform(ρ))
+        Matern32Kernel{T₁,ScaleTransform{T₁}}(ScaleTransform(ρ))
     elseif ν == 2.5
-        Matern5_2Kernel{T₁,ScaleTransform{T₁}}(ScaleTransform(ρ))
+        Matern52Kernel{T₁,ScaleTransform{T₁}}(ScaleTransform(ρ))
+    elseif ν == Inf
+        SquaredExponentialKernel{T₁,ScaleTransform{T₁}}(ScaleTransform(ρ))
     else
         MaternKernel{T₁,ScaleTransform{T₁}}(ScaleTransform(ρ),ν)
     end
@@ -50,9 +52,11 @@ function MaternKernel(ρ::A,ν::T=1.5) where {A<:AbstractVector{<:Real},T<:Real}
     if ν == 0.5
         ExponentialKernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))
     elseif ν == 1.5
-        Matern3_2Kernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))
+        Matern32Kernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))
     elseif ν == 2.5
-        Matern5_2Kernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))
+        Matern52Kernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))
+    elseif ν == Inf
+        SquaredExponentialKernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))
     else
         MaternKernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ),ν)
     end
@@ -61,35 +65,61 @@ end
 function MaternKernel(t::T₁,ν::T₂=1.5) where {T₁<:Transform,T₂<:Real}
     @check_args(MaternKernel, ν, ν > zero(T₂), "ν > 0")
     if ν == 0.5
-        ExponentialKernel{eltype(t),T₁}(ScaleTransform(ρ))
+        ExponentialKernel{eltype(t),T₁}(t)
     elseif ν == 1.5
-        Matern3_2Kernel{eltype(t),T₁}(ScaleTransform(ρ))
+        Matern32Kernel{eltype(t),T₁}(t)
     elseif ν == 2.5
-        Matern5_2Kernel{eltype(t),T₁}(ScaleTransform(ρ))
+        Matern52Kernel{eltype(t),T₁}(t)
+    elseif ν == Inf
+        SquaredExponentialKernel{eltype(t),T₁}(t)
     else
-        MaternKernel{eltype(t),T₁}(ScaleTransform(ρ),ν)
+        MaternKernel{eltype(t),T₁}(t,ν)
     end
 end
 
 @inline kappa(κ::MaternKernel, d::Real) where {T} = exp((1.0-κ.ν)*logtwo - lgamma(κ.ν) - κ.ν*log(sqrt(2κ.ν)*d))*besselk(κ.ν,sqrt(2κ.ν)*d)
 
 
-struct Matern3_2Kernel{T,Tr<:Transform} <: Kernel{T,Tr}
+struct Matern32Kernel{T,Tr<:Transform} <: Kernel{T,Tr}
     transform::Tr
     metric::SemiMetric
-    function Matern3_2Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
+    function Matern32Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
         return new{T,Tr}(transform,Euclidean())
     end
 end
 
-@inline kappa(κ::Matern3_2Kernel, d::T) where {T<:Real} = (1+sqrt(3)*d)*exp(-sqrt(3)*d)
+function Matern32Kernel(ρ::T) where {T<:Real}
+    Matern32Kernel{T₁,ScaleTransform{T₁}}(ScaleTransform(ρ))
+end
 
-struct Matern5_2Kernel{T,Tr<:Transform} <: Kernel{T,Tr}
+function Matern32Kernel(ρ::A) where {A<:AbstractVector{<:Real}}
+    Matern32Kernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))
+end
+
+function Matern32Kernel(t::Transform)
+    Matern52Kernel{eltype(A),ScaleTransform{A}}(t)
+end
+
+@inline kappa(κ::Matern32Kernel, d::T) where {T<:Real} = (1+sqrt(3)*d)*exp(-sqrt(3)*d)
+
+struct Matern52Kernel{T,Tr<:Transform} <: Kernel{T,Tr}
     transform::Tr
     metric::SemiMetric
-    function Matern5_2Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
+    function Matern52Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
         return new{T,Tr}(transform,Euclidean())
     end
 end
 
-@inline kappa(κ::Matern5_2Kernel, d::Real) where {T} = (1+sqrt(5)*d+5*d^2/3)*exp(-sqrt(5)*d)
+function Matern52Kernel(ρ::T) where {T<:Real}
+    Matern52Kernel{T₁,ScaleTransform{T₁}}(ScaleTransform(ρ))
+end
+
+function Matern52Kernel(ρ::A) where {A<:AbstractVector{<:Real}}
+    Matern52Kernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))
+end
+
+function Matern52Kernel(t::Transform)
+    Matern52Kernel{eltype(A),ScaleTransform{A}}(t)
+end
+
+@inline kappa(κ::Matern52Kernel, d::Real) where {T} = (1+sqrt(5)*d+5*d^2/3)*exp(-sqrt(5)*d)

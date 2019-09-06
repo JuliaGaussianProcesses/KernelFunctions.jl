@@ -10,3 +10,15 @@ vl = [l,l]
     @test KernelFunctions.transform(SquaredExponentialKernel(l)) == ScaleTransform(l)
     @test KernelFunctions.transform(SquaredExponentialKernel(vl)) == ScaleTransform(vl)
 end
+
+@testset "MaternKernel" begin
+    @test KernelFunctions.metric(MaternKernel(l)) == Euclidean()
+    @test KernelFunctions.metric(MaternKernel(l,1.5)) == Euclidean()
+    @test KernelFunctions.metric(MaternKernel(l,2.5)) == Euclidean()
+    @test KernelFunctions.transform(MaternKernel(l)) == ScaleTransform(l)
+    @test KernelFunctions.transform(MaternKernel(vl)) == ScaleTransform(vl)
+    @test isa(MaternKernel(),Matern32Kernel)
+    @test isa(MaternKernel(1.0,1.0),MaternKernel)
+    @test isa(MaternKernel(1.0,1.5),Matern32Kernel)
+    @test isa(MaternKernel(1.0,2.5),Matern52Kernel)
+end
