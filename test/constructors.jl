@@ -1,4 +1,4 @@
-
+using KernelFunctions, Test, Distances
 #TODO Test metric weights for ARD, test equivalency for different constructors,
 # test type conversion
 l = 2.0
@@ -21,4 +21,5 @@ end
     @test isa(MaternKernel(1.0,1.0),MaternKernel)
     @test isa(MaternKernel(1.0,1.5),Matern32Kernel)
     @test isa(MaternKernel(1.0,2.5),Matern52Kernel)
+    @test isa(MaternKernel(1.0,Inf),SquaredExponentialKernel)
 end

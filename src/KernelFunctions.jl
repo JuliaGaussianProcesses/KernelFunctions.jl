@@ -1,6 +1,6 @@
 module KernelFunctions
 
-export kernelmatrix, kernelmatrix!, kappa
+export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
 export Kernel, SquaredExponentialKernel, MaternKernel, Matern32Kernel, Matern52Kernel
 
 export Transform, ScaleTransform

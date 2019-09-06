@@ -88,8 +88,8 @@ struct Matern32Kernel{T,Tr<:Transform} <: Kernel{T,Tr}
     end
 end
 
-function Matern32Kernel(ρ::T) where {T<:Real}
-    Matern32Kernel{T₁,ScaleTransform{T₁}}(ScaleTransform(ρ))
+function Matern32Kernel(ρ::T=1.0) where {T<:Real}
+    Matern32Kernel{T,ScaleTransform{T}}(ScaleTransform(ρ))
 end
 
 function Matern32Kernel(ρ::A) where {A<:AbstractVector{<:Real}}
@@ -110,8 +110,8 @@ struct Matern52Kernel{T,Tr<:Transform} <: Kernel{T,Tr}
     end
 end
 
-function Matern52Kernel(ρ::T) where {T<:Real}
-    Matern52Kernel{T₁,ScaleTransform{T₁}}(ScaleTransform(ρ))
+function Matern52Kernel(ρ::T=1.0) where {T<:Real}
+    Matern52Kernel{T,ScaleTransform{T}}(ScaleTransform(ρ))
 end
 
 function Matern52Kernel(ρ::A) where {A<:AbstractVector{<:Real}}
