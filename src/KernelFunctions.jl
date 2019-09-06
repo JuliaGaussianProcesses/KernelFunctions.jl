@@ -12,6 +12,7 @@ using SpecialFunctions: lgamma, besselk
 const defaultobs = 2
 abstract type Kernel{T,Tr} end
 
+include("zygote_rules.jl")
 include("utils.jl")
 include("common.jl")
 include("transform/transform.jl")
