@@ -1,25 +1,19 @@
-
-function _kappamatrix!(κ::Kernel{T}, P::AbstractMatrix{T₁}) where {T<:Real,T₁<:Real}
-    for i in eachindex(P)
-        @inbounds P[i] = kappa(κ, P[i])
-    end
-    P
-end
-
-function _symmetric_kappamatrix!(
+"""
+```
+    kernelmatrix!(K::Matrix, κ::Kernel, X::Matrix; obsdim::Integer=2, symmetrize::Bool=true)
+```
+In-place version of `kernelmatrix` where pre-allocated matrix `K` will be overwritten with the kernel matrix.
+"""
+function kernelmatrix!(
+        K::Matrix{T₁},
         κ::Kernel{T},
-        P::AbstractMatrix{T₁},
-        symmetrize::Bool
-    ) where {T<:Real,T₁<:Real}
-    if !((n = size(P,1)) == size(P,2))
-        throw(DimensionMismatch("Pairwise matrix must be square."))
-    end
-    for j = 1:n, i = (1:j)
-        @inbounds P[i,j] = kappa(κ, P[i,j])
-    end
-    symmetrize ? LinearAlgebra.copytri!(P, 'U') : P
+        X::AbstractMatrix{T₂};
+        obsdim::Int = defaultobs,
+        symmetrize::Bool = true
+        ) where {T,T₁<:Real,T₂<:Real}
+        @assert check_dims(K,X,X,obsdim) "Dimensions of the target array are not consistent with X and Y"
+        map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
 end
-
 
 """
 ```
@@ -34,23 +28,9 @@ function kernelmatrix!(
         Y::AbstractMatrix{T₃};
         obsdim::Int = defaultobs
         ) where {T,T₁,T₂,T₃}
-        #TODO Check dimension consistency
-        _kappamatrix!(κ, pairwise!(K, metric(κ), X, Y, dims=obsdim))
+        @assert check_dims(K,X,Y,obsdim) "Dimensions of the target array are not consistent with X and Y"
+        map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
 end
-
-
-function kernelmatrix!(
-        K::Matrix{T₁},
-        κ::Kernel{T},
-        X::AbstractMatrix{T₂};
-        obsdim::Int = defaultobs,
-        symmetrize::Bool = true
-        ) where {T,T₁<:Real,T₂<:Real}
-        #TODO Check dimension consistency
-        _symmetric_kappamatrix!(κ,pairwise!(K, metric(κ), X, dims=obsdim), symmetrize)
-end
-
-# Convenience Methods ======================================================================
 
 """
 ```
@@ -60,7 +40,7 @@ Apply the kernel `κ` to ``x`` and ``y`` where ``x`` and ``y`` are vectors or sc
 some subtype of ``Real``.
 """
 function kernel(κ::Kernel{T}, x::Real, y::Real) where {T}
-    kernel(κ, T(x), T(y))
+    kernel(κ, [T(x)], [T(y)])
 end
 
 function kernel(
@@ -69,25 +49,23 @@ function kernel(
         y::AbstractArray{T₂};
         obsdim::Int = defaultobs
     ) where {T,T₁<:Real,T₂<:Real}
-    # TODO Verify dimensions
-    kappa(κ, evaluate(metric(κ),x,y))
+    @assert length(x) == length(y) "x and y don't have the same dimension!"
+    kappa(κ, evaluate(metric(κ),transform(κ,x),transform(κ,y)))
 end
 
 """
 ```
-    kernelmatrix(κ::Kernel, X::Matrix ; obsdim::Int=2, symmetrize::Bool)
+    kernelmatrix(κ::Kernel, X::Matrix ; obsdim::Int=2, symmetrize::Bool=true)
 ```
 Calculate the kernel matrix of `X` with respect to kernel `κ`.
 """
 function kernelmatrix(
-        κ::Kernel{T},
-        X::AbstractMatrix{T₁};
+        κ::Kernel{T,<:Transform},
+        X::AbstractMatrix;
         obsdim::Int = defaultobs,
         symmetrize::Bool = true
-    ) where {T,T₁<:Real}
-    Tₛ = typeof(zero(eltype(X))*zero(T))
-    m = size(X,obsdim)
-    return kernelmatrix!(Matrix{promote_float(T,T₁)}(undef,m,m),κ,X,obsdim=obsdim,symmetrize=symmetrize)
+    ) where {T}
+    K = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
 end
 
 """
@@ -102,12 +80,9 @@ function kernelmatrix(
         Y::AbstractMatrix{T₂};
         obsdim=defaultobs
     ) where {T,T₁<:Real,T₂<:Real}
-    Tₛ = typeof(zero(eltype(X))*zero(eltype(Y))*zero(T))
-    m = size(X,obsdim)
-    n = size(Y,obsdim)
-    kernelmatrix!(Matrix{Tₛ}(undef,m,n),κ,X,Y,obsdim=obsdim)
+    K = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
+    return K
 end
-
 
 """
 ```
@@ -117,8 +92,30 @@ Calculate the diagonal matrix of `X` with respect to kernel `κ`
 """
 function kerneldiagmatrix(
         κ::Kernel{T},
-        X::AbstractMatrix{T₁}
+        X::AbstractMatrix{T₁};
+        obsdim::Int = defaultobs
+        ) where {T,T₁}
+        if obsdim == 1
+            [@views kernel(κ,X[i,:],X[i,:]) for i in 1:size(X,obsdim)]
+        elseif obsdim == 2
+            [@views kernel(κ,X[i,:],X[i,:]) for i in 1:size(X,obsdim)]
+        end
+end
+
+function kerneldiagmatrix!(
+        K::AbstractVector{T₁},
+        κ::Kernel{T},
+        X::AbstractMatrix{T₂};
+        obsdim::Int = defaultobs
         ) where {T,T₁,T₂}
-        @error "Not implemented yet"
-        #TODO
+        if obsdim == 1
+            for i in eachindex(K)
+                @inbounds @views K[i] = kernel(κ, X[i,:],X[i,:])
+            end
+        else
+            for i in eachindex(K)
+                @inbounds @views K[i] = kernel(κ,X[:,i],X[:,i])
+            end
+        end
+        return K
 end
