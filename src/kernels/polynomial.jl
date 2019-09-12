@@ -1,3 +1,12 @@
+"""
+    LinearKernel([ρ=1.0,[c=0.0]])
+
+    The linear kernel is a Mercer kernel given by
+```
+    κ(x,y) = xᵀy + c
+```
+    Where `c` is a real number
+"""
 struct LinearKernel{T,Tr,Tc<:Real} <: Kernel{T,Tr}
     transform::Tr
     metric::DotProduct
@@ -21,6 +30,15 @@ end
 
 @inline kappa(κ::LinearKernel, xᵀy::T) where {T<:Real} = xᵀy + κ.c
 
+"""
+    PolynomialKernel([ρ=1.0[,d=2.0[,c=0.0]]])
+
+    The polynomial kernel is a Mercer kernel given by
+```
+    κ(x,y) = (xᵀy + c)^d
+```
+    Where `c` is a real number, and `d` is a shape parameter bigger than 1
+"""
 struct PolynomialKernel{T,Tr,Tc<:Real,Td<:Real} <: Kernel{T,Tr}
     transform::Tr
     metric::DotProduct

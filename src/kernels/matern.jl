@@ -10,25 +10,13 @@ The matern kernel is an isotropic Mercer kernel given by the formula:
 For `ν=n+1/2, n=0,1,2,...` it can be simplified and you should instead use `ExponentialKernel` for `n=0`, `Matern32Kernel`, for `n=1`, Matern52Kernel for `n=2` and `SqExponentialKernel` for `n=∞`.
 `ρ` is the lengthscale parameter(s) or the transform object.
 
-# Examples
-
-```jldoctest; setup = :(using KernelFunctions)
-julia> MaternKernel()
-MaternKernel{Float64,Float64}(1.0,1.0)
-
-julia> MaternKernel(2.0f0,3.0)
-MaternKernel{Float32,Float32}(2.0,3.0)
-
-julia> MaternKernel([2.0,3.0],2.5)
-MaternKernel{Float64,Array{Float64}}([2.0,3.0],2.5)
-```
 """
 struct MaternKernel{T,Tr,Tν<:Real} <: Kernel{T,Tr}
     transform::Tr
     metric::Euclidean
-    ν::Real
-    function MaternKernel{T,Tr}(transform::Tr,ν::Real) where {T,Tr<:Transform}
-        return new{T,Tr}(transform,Euclidean(),ν)
+    ν::Tν
+    function MaternKernel{T,Tr,Tν}(transform::Tr,ν::Tν) where {T,Tr<:Transform,Tν<:Real}
+        return new{T,Tr,Tν}(transform,Euclidean(),ν)
     end
 end
 
@@ -59,19 +47,6 @@ The matern 3/2 kernel is an isotropic Mercer kernel given by the formula:
 ```
 
 `ρ` is the lengthscale parameter(s) or a transform object.
-
-# Examples
-
-```jldoctest; setup = :(using KernelFunctions)
-julia> Matern32Kernel()
-Matern32Kernel{Float64,Float64}(1.0)
-
-julia> Matern32Kernel(2.0f0)
-Matern32Kernel{Float32,Float32}(2.0)
-
-julia> Matern32Kernel([2.0,3.0],2.5)
-Matern32Kernel{Float64,Array{Float64}}([2.0,3.0])
-```
 """
 struct Matern32Kernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
@@ -94,18 +69,6 @@ The matern 5/2 kernel is an isotropic Mercer kernel given by the formula:
 
 `ρ` is the lengthscale parameter(s) or a transform object.
 
-# Examples
-
-```jldoctest; setup = :(using KernelFunctions)
-julia> Matern52Kernel()
-Matern52Kernel{Float64,Float64}(1.0)
-
-julia> Matern52Kernel(2.0f0)
-Matern52Kernel{Float32,Float32}(2.0)
-
-julia> Matern52Kernel([2.0,3.0],2.5)
-Matern52Kernel{Float64,Array{Float64}}([2.0,3.0])
-```
 """
 struct Matern52Kernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
