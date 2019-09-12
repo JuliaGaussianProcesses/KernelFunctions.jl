@@ -24,7 +24,7 @@ include("distances/delta.jl")
 include("transform/transform.jl")
 include("kernelmatrix.jl")
 
-kernels = ["exponential","matern","polynomial","constant"]
+kernels = ["exponential","matern","polynomial","constant","rationalquad"]
 for k in kernels
     include(joinpath("kernels",k*".jl"))
 end
