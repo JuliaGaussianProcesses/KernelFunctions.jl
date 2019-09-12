@@ -81,18 +81,6 @@ struct Matern32Kernel{T,Tr<:Transform} <: Kernel{T,Tr}
     end
 end
 
-function Matern32Kernel(ρ::T=1.0) where {T<:Real}
-    Matern32Kernel{T,ScaleTransform{T}}(ScaleTransform(ρ))
-end
-
-function Matern32Kernel(ρ::A) where {A<:AbstractVector{<:Real}}
-    Matern32Kernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))
-end
-
-function Matern32Kernel(t::Tr) where {Tr<:Transform}
-    Matern52Kernel{eltype(Tr),Tr}(t)
-end
-
 @inline kappa(κ::Matern32Kernel, d::T) where {T<:Real} = (1+sqrt(3)*d)*exp(-sqrt(3)*d)
 
 """
@@ -125,18 +113,6 @@ struct Matern52Kernel{T,Tr<:Transform} <: Kernel{T,Tr}
     function Matern52Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
         return new{T,Tr}(transform,Euclidean())
     end
-end
-
-function Matern52Kernel(ρ::T=1.0) where {T<:Real}
-    Matern52Kernel{T,ScaleTransform{T}}(ScaleTransform(ρ))
-end
-
-function Matern52Kernel(ρ::A) where {A<:AbstractVector{<:Real}}
-    Matern52Kernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))
-end
-
-function Matern52Kernel(t::Tr) where {Tr<:Transform}
-    Matern52Kernel{eltype(Tr),Tr}(t)
 end
 
 @inline kappa(κ::Matern52Kernel, d::Real) where {T} = (1+sqrt(5)*d+5*d^2/3)*exp(-sqrt(5)*d)
