@@ -14,3 +14,12 @@ end
 @inline transform(κ::Kernel) = κ.transform
 @inline transform(κ::Kernel,x::AbstractVecOrMat) = transform(κ.transform,x)
 @inline transform(κ::Kernel,x::AbstractVecOrMat,obsdim::Int) = transform(κ.transform,x,obsdim)
+
+## Constructors
+for kernel in [:SqExponentialKernel,:ExponentialKernel,:Matern32Kernel,:Matern52Kernel]
+    @eval(quote
+        $(kernel)(ρ::T=1.0) where {T<:Real} =   $(kernel){T,ScaleTransform{T}}(ScaleTransform(ρ))
+        $(kernel)(ρ::A) where {A<:AbstractVector{<:Real}} = $(kernel){eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))
+        $(kernel)(t::Tr) where {Tr<:Transform} = $(kernel){eltype(t),Tr}(t)
+    end)
+end
