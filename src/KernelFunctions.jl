@@ -1,7 +1,7 @@
 module KernelFunctions
 
 export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
-export Kernel, SqExponentialKernel, MaternKernel, Matern32Kernel, Matern52Kernel
+export Kernel, SqExponentialKernel, ExponentialKernel, MaternKernel, Matern32Kernel, Matern52Kernel
 
 export Transform, ScaleTransform
 
@@ -19,7 +19,7 @@ include("distances/dotproduct.jl")
 include("transform/transform.jl")
 include("kernelmatrix.jl")
 
-kernels = ["sqexponential","matern"]
+kernels = ["sqexponential","matern","polynomial","constant"]
 for k in kernels
     include(joinpath("kernels",k*".jl"))
 end
