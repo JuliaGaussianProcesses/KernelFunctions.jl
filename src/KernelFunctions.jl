@@ -5,6 +5,7 @@ export Kernel
 export SqExponentialKernel, ExponentialKernel, GammaExponentialKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
+export ConstantKernel, WhiteKernel, ZeroKernel
 
 export Transform, ScaleTransform
 

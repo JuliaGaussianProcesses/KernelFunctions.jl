@@ -87,7 +87,7 @@ julia> GammaExponentialKernel([2.0,3.0],2f0)
 GammaExponentialKernel{Float64,Array{Float64},Float32}([2.0,3.0],2.0)
 ```
 """
-struct GammaExponentialKernel{T,Tr<:Transform,Tᵧ<:Real} <: Kernel{T,Tr,Tᵧ}
+struct GammaExponentialKernel{T,Tr<:Transform,Tᵧ<:Real} <: Kernel{T,Tr}
     transform::Tr
     metric::SqEuclidean
     γ::Tᵧ
