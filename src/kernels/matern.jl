@@ -23,7 +23,7 @@ julia> MaternKernel([2.0,3.0],2.5)
 MaternKernel{Float64,Array{Float64}}([2.0,3.0],2.5)
 ```
 """
-struct MaternKernel{T,Tr<:Transform} <: Kernel{T,Tr}
+struct MaternKernel{T,Tr,Tν<:Real} <: Kernel{T,Tr}
     transform::Tr
     metric::Euclidean
     ν::Real
@@ -34,17 +34,17 @@ end
 
 function MaternKernel(ρ::T₁=1.0,ν::T₂=1.5) where {T₁<:Real,T₂<:Real}
     @check_args(MaternKernel, ν, ν > zero(T₂), "ν > 0")
-    MaternKernel{T₁,ScaleTransform{T₁}}(ScaleTransform(ρ),ν)
+    MaternKernel{T₁,ScaleTransform{T₁},T₂}(ScaleTransform(ρ),ν)
 end
 
 function MaternKernel(ρ::A,ν::T=1.5) where {A<:AbstractVector{<:Real},T<:Real}
     @check_args(MaternKernel, ν, ν > zero(T), "ν > 0")
-    MaternKernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ),ν)
+    MaternKernel{eltype(A),ScaleTransform{A},T}(ScaleTransform(ρ),ν)
 end
 
 function MaternKernel(t::Tr,ν::T=1.5) where {Tr<:Transform,T<:Real}
     @check_args(MaternKernel, ν, ν > zero(T), "ν > 0")
-    MaternKernel{eltype(t),Tr}(t,ν)
+    MaternKernel{eltype(t),Tr,T}(t,ν)
 end
 
 @inline kappa(κ::MaternKernel, d::Real) where {T} = exp((1.0-κ.ν)*logtwo - (logabsgamma(κ.ν))[1] - κ.ν*log(sqrt(2κ.ν)*d))*besselk(κ.ν,sqrt(2κ.ν)*d)
@@ -73,7 +73,7 @@ julia> Matern32Kernel([2.0,3.0],2.5)
 Matern32Kernel{Float64,Array{Float64}}([2.0,3.0])
 ```
 """
-struct Matern32Kernel{T,Tr<:Transform} <: Kernel{T,Tr}
+struct Matern32Kernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
     metric::Euclidean
     function Matern32Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
@@ -107,7 +107,7 @@ julia> Matern52Kernel([2.0,3.0],2.5)
 Matern52Kernel{Float64,Array{Float64}}([2.0,3.0])
 ```
 """
-struct Matern52Kernel{T,Tr<:Transform} <: Kernel{T,Tr}
+struct Matern52Kernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
     metric::Euclidean
     function Matern52Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}

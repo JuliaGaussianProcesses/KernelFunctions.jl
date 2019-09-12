@@ -9,21 +9,8 @@ The squared exponential kernel is an isotropic Mercer kernel given by the formul
 
 See also [`ExponentialKernel`](@ref) for a
 related form of the kernel or [`GammaExponentialKernel`](@ref) for a generalization.
-
-# Examples
-
-```jldoctest; setup = :(using KernelFunctions)
-julia> SqExponentialKernel()
-SqExponentialKernel{Float64,Float64}(1.0)
-
-julia> SqExponentialKernel(2.0f0)
-SqExponentialKernel{Float32,Float32}(2.0)
-
-julia> SqExponentialKernel([2.0,3.0])
-SqExponentialKernel{Float64,Array{Float64}}([2.0,3.0])
-```
 """
-struct SqExponentialKernel{T,Tr<:Transform} <: Kernel{T,Tr}
+struct SqExponentialKernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
     metric::SqEuclidean
     function SqExponentialKernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
@@ -42,20 +29,8 @@ The exponential kernel is an isotropic Mercer kernel given by the formula:
     κ(x,y) = exp(-‖x-y‖)
 ```
 
-# Examples
-
-```jldoctest; setup = :(using KernelFunctions)
-julia> ExponentialKernel()
-ExponentialKernel{Float64,Float64}(1.0)
-
-julia> ExponentialKernel(2.0f0)
-ExponentialKernel{Float32,Float32}(2.0)
-
-julia> ExponentialKernel([2.0,3.0])
-ExponentialKernel{Float64,Array{Float64}}([2.0,3.0])
-```
 """
-struct ExponentialKernel{T,Tr<:Transform} <: Kernel{T,Tr}
+struct ExponentialKernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
     metric::Euclidean
     function ExponentialKernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
@@ -87,7 +62,7 @@ julia> GammaExponentialKernel([2.0,3.0],2f0)
 GammaExponentialKernel{Float64,Array{Float64},Float32}([2.0,3.0],2.0)
 ```
 """
-struct GammaExponentialKernel{T,Tr<:Transform,Tᵧ<:Real} <: Kernel{T,Tr}
+struct GammaExponentialKernel{T,Tr,Tᵧ<:Real} <: Kernel{T,Tr}
     transform::Tr
     metric::SqEuclidean
     γ::Tᵧ

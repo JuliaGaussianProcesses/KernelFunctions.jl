@@ -15,7 +15,7 @@ using SpecialFunctions: lgamma, besselk
 using StatsFuns: logtwo
 
 const defaultobs = 2
-abstract type Kernel{T,Tr} end
+abstract type Kernel{T,Tr<:Transform} end
 
 include("zygote_rules.jl")
 include("utils.jl")
