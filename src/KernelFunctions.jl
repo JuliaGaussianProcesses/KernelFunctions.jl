@@ -15,6 +15,7 @@ abstract type Kernel{T,Tr} end
 
 include("zygote_rules.jl")
 include("utils.jl")
+include("distances/dotproduct.jl")
 include("transform/transform.jl")
 include("kernelmatrix.jl")
 
