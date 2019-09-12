@@ -45,6 +45,11 @@ transform(t::ScaleTransform{<:Real},x::AbstractVecOrMat,obsdim::Int) = transform
 transform(t::ScaleTransform{<:Real},x::AbstractVecOrMat) = t.s .* x
 
 
+struct IdentityTransform <: Transform end
+
+transform(t::IdentityTransform,x::AbstractArray,obsdim::Int) = transform(t,x)
+transform(t::IdentityTransform,x::AbstractArray) = return x
+
 ### TODO Maybe defining adjoints could help but so far it's not working
 
 
