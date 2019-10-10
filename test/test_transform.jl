@@ -23,6 +23,7 @@ tp = LowRankTransform(P)
 ##
 f(x) = sin.(x)
 tf = FunctionTransform(f)
+KernelFunctions.transform(tf,X,1)
 @test all(KernelFunctions.transform(tf,X,1).==f(X))
 ##
 tchain = TransformChain([t,tp,tf])
