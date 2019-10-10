@@ -1,4 +1,4 @@
-export Transform, ScaleTransform, LowRankTransform, FunctionTransform, TransformChain
+export Transform, IdentityTransform, ScaleTransform, LowRankTransform, FunctionTransform, ChainTransform
 
 
 abstract type Transform end
@@ -7,17 +7,17 @@ include("scaletransform.jl")
 include("lowranktransform.jl")
 include("functiontransform.jl")
 
-struct TransformChain <: Transform
+struct ChainTransform <: Transform
     transforms::Vector{Transform}
 end
 
-Base.length(t::TransformChain) = length(t.transforms)
+Base.length(t::ChainTransform) = length(t.transforms)
 
-function TransformChain(v::AbstractVector{<:Transform})
-    TransformChain(v)
+function ChainTransform(v::AbstractVector{<:Transform})
+    ChainTransform(v)
 end
 
-function transform(t::TransformChain,X::T,obsdim::Int=defaultobs) where {T}
+function transform(t::ChainTransform,X::T,obsdim::Int=defaultobs) where {T}
     Xtr = copy(X)
     for tr in t.transforms
         Xtr = transform(tr,Xtr,obsdim)
@@ -25,9 +25,9 @@ function transform(t::TransformChain,X::T,obsdim::Int=defaultobs) where {T}
     return Xtr
 end
 
-Base.:∘(t₁::Transform,t₂::Transform) = TransformChain([t₂,t₁])
-Base.:∘(t::Transform,tc::TransformChain) = TransformChain(vcat(tc.transforms,t))
-Base.:∘(tc::TransformChain,t::Transform) = TransformChain(vcat(t,tc.transforms))
+Base.:∘(t₁::Transform,t₂::Transform) = ChainTransform([t₂,t₁])
+Base.:∘(t::Transform,tc::ChainTransform) = ChainTransform(vcat(tc.transforms,t))
+Base.:∘(tc::ChainTransform,t::Transform) = ChainTransform(vcat(t,tc.transforms))
 
 struct IdentityTransform <: Transform end
 

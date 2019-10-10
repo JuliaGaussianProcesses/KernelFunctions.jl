@@ -4,9 +4,9 @@
 for k in [:ExponentialKernel,:SqExponentialKernel,:GammaExponentialKernel,:MaternKernel,:Matern32Kernel,:Matern52Kernel,:LinearKernel,:PolynomialKernel,:ExponentiatedKernel,:ZeroKernel,:WhiteKernel,:ConstantKernel,:RationalQuadraticKernel,:GammaRationalQuadraticKernel]
     @eval begin
         @inline (κ::$k)(d::Real) = kappa(κ,d)
-        @inline (κ::$k)(x::AbstractVector{T},y::AbstractVector{T}) where {T} = kernel(κ,evaluate(κ.(metric),x,y))
-        @inline (κ::$k)(x::AbstractMatrix{T},y::AbstractMatrix{T};obsdim::Integer=defaultobs) where {T} = kernelmatrix(κ,x,y,obsdim=obsdim)
-        @inline (κ::$k)(x::AbstractMatrix{T};obsdim::Integer=defaultobs) where {T} = kernelmatrix(κ,x,obsdim=obsdim)
+        @inline (κ::$k)(x::AbstractVector{<:Real},y::AbstractVector{<:Real}) = kappa(κ,evaluate(κ.metric,transform(κ,x),transform(κ,y)))
+        @inline (κ::$k)(X::AbstractMatrix{T},Y::AbstractMatrix{T};obsdim::Integer=defaultobs) where {T} = kernelmatrix(κ,X,Y,obsdim=obsdim)
+        @inline (κ::$k)(X::AbstractMatrix{T};obsdim::Integer=defaultobs) where {T} = kernelmatrix(κ,X,obsdim=obsdim)
     end
 end
 

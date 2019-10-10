@@ -2,10 +2,11 @@ module KernelFunctions
 
 export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
 export Kernel
+export ConstantKernel, WhiteKernel, ZeroKernel
 export SqExponentialKernel, ExponentialKernel, GammaExponentialKernel
+export ExponentiatedKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
-export ConstantKernel, WhiteKernel, ZeroKernel
 
 
 

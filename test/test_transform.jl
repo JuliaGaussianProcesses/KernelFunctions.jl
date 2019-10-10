@@ -29,4 +29,4 @@ KernelFunctions.transform(tf,X,1)
 tchain = TransformChain([t,tp,tf])
 t∘tp∘tf
 TransformChain([t,tp])
-@test all(KernelFunctions.transform(tchain,X).==f(P*(s*X)))
+@test all(KernelFunctions.transform(tchain,X,2).==f(P*(s*X)))

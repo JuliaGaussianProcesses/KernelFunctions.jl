@@ -1,3 +1,6 @@
+"""
+    Scale Transform
+"""
 struct ScaleTransform{T<:Union{Real,AbstractVector{<:Real}}} <: Transform
     s::T
 end
@@ -26,7 +29,7 @@ function transform(t::ScaleTransform{<:AbstractVector{<:Real}},X::AbstractMatrix
     end
     _transform(t,X,obsdim)
 end
-_transform(t::ScaleTransform{<:AbstractVector{<:Real}},x::AbstractVector{<:Real}) = t.s .* x
+transform(t::ScaleTransform{<:AbstractVector{<:Real}},x::AbstractVector{<:Real},obsdim::Int=defaultobs) = t.s .* x
 _transform(t::ScaleTransform{<:AbstractVector{<:Real}},X::AbstractMatrix{<:Real},obsdim::Int=defaultobs) = obsdim == 1 ? t.s'.*X : t.s .* X
 
 transform(t::ScaleTransform{<:Real},x::AbstractVecOrMat,obsdim::Int=defaultobs) = t.s .* x

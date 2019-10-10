@@ -8,8 +8,12 @@ struct ZeroKernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
     metric::Delta
     function ZeroKernel{T,Tr}(t::Tr) where {T,Tr<:Transform}
-        new{eltype{Tr},Tr}(t,Delta())
+        new{T,Tr}(t,Delta())
     end
+end
+
+function ZeroKernel(t::Tr=IdentityTransform()) where {Tr<:Transform}
+    ZeroKernel{eltype(Tr),Tr}(t)
 end
 
 @inline kappa(κ::ZeroKernel,d::T) where {T<:Real} = zero(T)
@@ -30,11 +34,7 @@ struct WhiteKernel{T,Tr} <: Kernel{T,Tr}
     end
 end
 
-function WhiteKernel()
-    WhiteKernel{Float64,IdentityTransform}(IdentityTransform())
-end
-
-function WhiteKernel(t::Tr) where {Tr<:Transform}
+function WhiteKernel(t::Tr=IdentityTransform()) where {Tr<:Transform}
     WhiteKernel{eltype(Tr),Tr}(t)
 end
 

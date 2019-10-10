@@ -10,7 +10,7 @@
 struct ExponentiatedKernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
     metric::DotProduct
-    function ExponentiatedKernel{T}(transform::Tr) where {T,Tr<:Transform}
+    function ExponentiatedKernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
         return new{T,Tr}(transform,DotProduct())
     end
 end

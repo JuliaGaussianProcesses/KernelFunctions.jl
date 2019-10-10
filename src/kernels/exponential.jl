@@ -80,7 +80,7 @@ end
 
 function GammaExponentialKernel(ρ::T₁=1.0,gamma::T₂=2.0) where {T₁<:Real,T₂<:Real}
     @check_args(GammaExponentialKernel, gamma, gamma >= zero(T₂), "gamma > 0")
-    Polynomial{T₁,ScaleTransform{T₁},T₂}(ScaleTransform(ρ),gamma)
+    GammaExponentialKernel{T₁,ScaleTransform{T₁},T₂}(ScaleTransform(ρ),gamma)
 end
 
 function GammaExponentialKernel(ρ::A,gamma::T₁=2.0) where {A<:AbstractVector{<:Real},T₁<:Real}
@@ -93,4 +93,4 @@ function GammaExponentialKernel(t::Tr,gamma::T₁=2.0) where {Tr<:Transform,T₁
     GammaExponentialKernel{eltype(Tr),Tr,T₁}(t,gamma)
 end
 
-@inline kappa(κ::GammaExponentialKernel, d²::Real) where {T} = exp(-d²^γ)
+@inline kappa(κ::GammaExponentialKernel, d²::Real) where {T} = exp(-d²^κ.γ)
