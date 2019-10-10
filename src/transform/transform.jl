@@ -1,22 +1,45 @@
+export Transform, ScaleTransform, LowRankTransform, FunctionTransform, TransformChain
+
+
 abstract type Transform end
+
+include("scaletransform.jl")
+include("lowranktransform.jl")
 
 struct TransformChain <: Transform
     transforms::Vector{Transform}
 end
 
+Base.length(t::TransformChain) = length(t.transforms)
+
 function TransformChain(v::AbstractVector{<:Transform})
     TransformChain(v)
 end
 
-struct InputTransform{F} <: Transform
+function transform(t::TransformChain,X::T,obsdim::Int=1) where {T}
+    Xtr = copy(X)
+    for tr in t.transforms
+        Xtr = transform(tr,Xtr,obsdim)
+    end
+    return Xtr
+end
+
+Base.:∘(t₁::Transform,t₂::Transform) = TransformChain([t₂,t₁])
+Base.:∘(t::Transform,tc::TransformChain) = TransformChain(vcat(tc.transforms,t))
+Base.:∘(tc::TransformChain,t::Transform) = TransformChain(vcat(t,tc.transforms))
+
+"""
+    FunctionTransform
+
+    Take a function `f` as an argument which is going to act on the matrix as a whole.
+    Make sure that `f` is supposed to act on a matrix by eventually using broadcasting
+    For example `f(x)=sin(x)` -> `f(x)=sin.(x)`
+"""
+struct FunctionTransform{F} <: Transform
     f::F
 end
 
-# function InputTransform(f::F) where {F}
-#     InputTransform{F}(f)
-# end
-
-transform(t::InputTransform,x::T,obsdim::Int=1) where {T} = t.f(X)
+transform(t::FunctionTransform,X::T,obsdim::Int=1) where {T} = t.f(X)
 
 
 struct IdentityTransform <: Transform end
