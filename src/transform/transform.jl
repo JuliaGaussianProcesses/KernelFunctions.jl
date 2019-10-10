@@ -31,15 +31,15 @@ Base.:∘(tc::TransformChain,t::Transform) = TransformChain(vcat(t,tc.transforms
 """
     FunctionTransform
 
-    Take a function `f` as an argument which is going to act on the matrix as a whole.
-    Make sure that `f` is supposed to act on a matrix by eventually using broadcasting
+    Take a function `f` as an argument which is going to act on each vector individually.
+    Make sure that `f` is supposed to act on a vector by eventually using broadcasting
     For example `f(x)=sin(x)` -> `f(x)=sin.(x)`
 """
 struct FunctionTransform{F} <: Transform
     f::F
 end
 
-transform(t::FunctionTransform,X::T,obsdim::Int=1) where {T} = t.f(X)
+transform(t::FunctionTransform,X::T,obsdim::Int=1) where {T} = mapslices(t.f,X,obsdim) 
 
 
 struct IdentityTransform <: Transform end
