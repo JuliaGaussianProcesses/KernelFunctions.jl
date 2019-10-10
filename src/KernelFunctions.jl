@@ -7,7 +7,7 @@ export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export ConstantKernel, WhiteKernel, ZeroKernel
 
-export Transform, ScaleTransform
+
 
 using Distances, LinearAlgebra
 using Zygote: @adjoint
@@ -16,7 +16,7 @@ using StatsFuns: logtwo
 
 const defaultobs = 2
 
-include("zygote_rules.jl")
+# include("zygote_rules.jl")
 include("utils.jl")
 include("distances/dotproduct.jl")
 include("distances/delta.jl")

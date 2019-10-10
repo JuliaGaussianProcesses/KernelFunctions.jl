@@ -1,4 +1,5 @@
 using Distances, LinearAlgebra
+using Test
 using KernelFunctions
 
 dims = [10,5]

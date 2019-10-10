@@ -8,10 +8,9 @@ function kernelmatrix!(
         K::Matrix{T₁},
         κ::Kernel{T},
         X::AbstractMatrix{T₂};
-        obsdim::Int = defaultobs,
-        symmetrize::Bool = true
+        obsdim::Int = defaultobs
         ) where {T,T₁<:Real,T₂<:Real}
-        @assert check_dims(K,X,X,obsdim) "Dimensions of the target array are not consistent with X and Y"
+        @assert check_dims(K,X,X,feature_dim(obsdim),obsdim) "Dimensions of the target array are not consistent with X and Y"
         map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
 end
 
@@ -28,7 +27,7 @@ function kernelmatrix!(
         Y::AbstractMatrix{T₃};
         obsdim::Int = defaultobs
         ) where {T,T₁,T₂,T₃}
-        @assert check_dims(K,X,Y,obsdim) "Dimensions of the target array are not consistent with X and Y"
+        @assert check_dims(K,X,Y,feature_dim(obsdim),obsdim) "Dimensions $(size(K)) of the target array K are not consistent with X ($(size(X))) and Y ($(size(Y)))"
         map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
 end
 
@@ -36,8 +35,7 @@ end
 ```
     kernel(κ::Kernel, x, y; obsdim=2)
 ```
-Apply the kernel `κ` to ``x`` and ``y`` where ``x`` and ``y`` are vectors or scalars of
-some subtype of ``Real``.
+Apply the kernel `κ` to `x` and `y`.
 """
 function kernel(κ::Kernel{T}, x::Real, y::Real) where {T}
     kernel(κ, [T(x)], [T(y)])
@@ -58,6 +56,8 @@ end
     kernelmatrix(κ::Kernel, X::Matrix ; obsdim::Int=2, symmetrize::Bool=true)
 ```
 Calculate the kernel matrix of `X` with respect to kernel `κ`.
+`obsdim=1` means the matrix `X` has size #samples x #dimension
+`obsdim=2` means the matrix `X` has size #dimension x #samples
 """
 function kernelmatrix(
         κ::Kernel{T,<:Transform},
@@ -73,6 +73,8 @@ end
     kernelmatrix(κ::Kernel, X::Matrix, Y::Matrix; obsdim::Int=2)
 ```
 Calculate the base matrix of `X` and `Y` with respect to kernel `κ`.
+`obsdim=1` means the matrices `X` and `Y` have sizes #samples x #dimension
+`obsdim=2` means the matrices `X` and `Y` have size #dimension x #samples
 """
 function kernelmatrix(
         κ::Kernel{T},
@@ -80,6 +82,7 @@ function kernelmatrix(
         Y::AbstractMatrix{T₂};
         obsdim=defaultobs
     ) where {T,T₁<:Real,T₂<:Real}
+    @assert check_dims(X,Y,feature_dim(obsdim),obsdim) "X ($(size(X))) and Y ($(size(Y))) do not have the same number of features on the dimension obsdim : $(feature_dim(obsdim))"
     K = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
     return K
 end
@@ -89,6 +92,8 @@ end
     kerneldiagmatrix(κ::Kernel, X::Matrix; obsdim::Int=2)
 ```
 Calculate the diagonal matrix of `X` with respect to kernel `κ`
+`obsdim=1` means the matrix `X` has size #samples x #dimension
+`obsdim=2` means the matrix `X` has size #dimension x #samples
 """
 function kerneldiagmatrix(
         κ::Kernel{T},
