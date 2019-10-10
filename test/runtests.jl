@@ -9,7 +9,6 @@ using Zygote
 include("test_util.jl")
 
 @testset "KernelFunctions" begin
-# include("zygote_rules.jl")
 include("test_kernelmatrix.jl")
 include("test_constructors.jl")
 # include("test_AD.jl")
