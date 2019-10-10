@@ -35,7 +35,7 @@ function MaternKernel(t::Tr,ν::T=1.5) where {Tr<:Transform,T<:Real}
     MaternKernel{eltype(t),Tr,T}(t,ν)
 end
 
-@inline kappa(κ::MaternKernel, d::Real) where {T} = exp((1.0-κ.ν)*logtwo - (logabsgamma(κ.ν))[1] - κ.ν*log(sqrt(2κ.ν)*d))*besselk(κ.ν,sqrt(2κ.ν)*d)
+@inline kappa(κ::MaternKernel, d::Real) = iszero(d) ? one(d) : exp((1.0-κ.ν)*logtwo-lgamma(κ.ν) + κ.ν*log(sqrt(2κ.ν)*d)+log(besselk(κ.ν,sqrt(2κ.ν)*d)))
 
 """
     Matern32Kernel(ρ=1.0)

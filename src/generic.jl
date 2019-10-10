@@ -16,7 +16,7 @@ end
 @inline transform(κ::Kernel,x::AbstractVecOrMat,obsdim::Int) = transform(κ.transform,x,obsdim)
 
 ## Constructors for kernels without parameters
-for kernel in [:ExponentialKernel,:SqExponentialKernel,:Matern32Kernel,:Matern52Kernel,:EExponentiatedKernel]
+for kernel in [:ExponentialKernel,:SqExponentialKernel,:Matern32Kernel,:Matern52Kernel,:ExponentiatedKernel]
     @eval begin
         $kernel(ρ::T=1.0) where {T<:Real} =   $kernel{T,ScaleTransform{T}}(ScaleTransform(ρ))
         $kernel(ρ::A) where {A<:AbstractVector{<:Real}} = $kernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))

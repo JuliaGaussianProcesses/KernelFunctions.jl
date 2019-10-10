@@ -53,19 +53,19 @@ struct GammaRationalQuadraticKernel{T,Tr,Tα<:Real,Tγ<:Real} <: Kernel{T,Tr}
     end
 end
 
-function GammaRationalQuadraticKernel(ρ::T₁=1.0,α::T₂=2.0,γ::T₃=2.0) where {T₁<:Real,T₂<:Real}
+function GammaRationalQuadraticKernel(ρ::T₁=1.0,α::T₂=2.0,γ::T₃=2.0) where {T₁<:Real,T₂<:Real,T₃<:Real}
     @check_args(GammaRationalQuadraticKernel, α, α > one(T₂), "α > 1")
     @check_args(GammaRationalQuadraticKernel, γ, γ > one(T₂), "γ > 1")
-    GammaRationalQuadraticKernel{T₁,ScaleTransform{T₁},T₂}(ScaleTransform(ρ),α,γ)
+    GammaRationalQuadraticKernel{T₁,ScaleTransform{T₁},T₂,T₃}(ScaleTransform(ρ),α,γ)
 end
 
-function GammaRationalQuadraticKernel(ρ::A,α::T₁=2.0,γ::T₂=2.0) where {A<:AbstractVector{<:Real},T<:Real}
+function GammaRationalQuadraticKernel(ρ::A,α::T₁=2.0,γ::T₂=2.0) where {A<:AbstractVector{<:Real},T₁<:Real,T₂<:Real}
     @check_args(GammaRationalQuadraticKernel, α, α > one(T₁), "α > 1")
     @check_args(GammaRationalQuadraticKernel, γ, γ > one(T₂), "γ > 1")
     GammaRationalQuadraticKernel{eltype(A),ScaleTransform{A},T₁,T₂}(ScaleTransform(ρ),α,γ)
 end
 
-function GammaRationalQuadraticKernel(t::Tr,α::T₁=2.0,γ::T₂=2.0) where {Tr<:Transform,T<:Real}
+function GammaRationalQuadraticKernel(t::Tr,α::T₁=2.0,γ::T₂=2.0) where {Tr<:Transform,T₁<:Real,T₂<:Real}
     @check_args(GammaRationalQuadraticKernel, α, α > one(T₁), "α > 1")
     @check_args(GammaRationalQuadraticKernel, γ, γ > one(T₂), "γ > 1")
     GammaRationalQuadraticKernel{eltype(t),Tr,T₁,T₂}(t,α,γ)

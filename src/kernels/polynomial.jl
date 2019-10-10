@@ -65,23 +65,3 @@ function PolynomialKernel(t::Tr,d::T₁=2.0,c::T₂=zero(eltype(t))) where {Tr<:
 end
 
 @inline kappa(κ::PolynomialKernel, xᵀy::T) where {T<:Real} = (xᵀy + κ.c)^(κ.d)
-
-
-"""
-    ExponentiatedKernel([ρ=1.0[,d=2.0[,c=0.0]]])
-
-    The polynomial kernel is a Mercer kernel given by
-```
-    κ(x,y) = (xᵀy + c)^d
-```
-    Where `c` is a real number, and `d` is a shape parameter bigger than 1
-"""
-struct ExponentiatedKernel{T,Tr} <: Kernel{T,Tr}
-    transform::Tr
-    metric::DotProduct
-    function ExponentiatedKernel{T,Tr,Tc,Td}(transform::Tr,c::Tc,d::Td) where {T,Tr<:Transform}
-        return new{T,Tr}(transform,DotProduct())
-    end
-end
-
-@inline kappa(κ::ExponentiatedKernel, xᵀy::T) where {T<:Real} = exp(xᵀy)

@@ -15,19 +15,21 @@ using SpecialFunctions: lgamma, besselk
 using StatsFuns: logtwo
 
 const defaultobs = 2
-abstract type Kernel{T,Tr<:Transform} end
 
 include("zygote_rules.jl")
 include("utils.jl")
 include("distances/dotproduct.jl")
 include("distances/delta.jl")
 include("transform/transform.jl")
-include("kernelmatrix.jl")
 
-kernels = ["exponential","matern","polynomial","constant","rationalquad"]
+
+abstract type Kernel{T,Tr<:Transform} end
+
+kernels = ["exponential","matern","polynomial","constant","rationalquad","exponentiated"]
 for k in kernels
     include(joinpath("kernels",k*".jl"))
 end
+include("kernelmatrix.jl")
 
 include("generic.jl")
 

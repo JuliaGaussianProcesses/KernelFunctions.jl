@@ -20,6 +20,10 @@ end
 
 @inline kappa(κ::SqExponentialKernel, d²::Real) where {T} = exp(-d²)
 
+### Aliases
+const RBFKernel = SqExponentialKernel
+const GaussianKernel = SqExponentialKernel
+
 """
     ExponentialKernel([ρ=1.0])
 
@@ -39,6 +43,9 @@ struct ExponentialKernel{T,Tr} <: Kernel{T,Tr}
 end
 
 @inline kappa(κ::ExponentialKernel, d::Real) where {T} = exp(-d)
+
+### Aliases
+const LaplacianKernel = ExponentialKernel
 
 """
     GammaExponentialKernel([ρ=1.0,[gamma=2.0]])
