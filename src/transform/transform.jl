@@ -5,6 +5,7 @@ abstract type Transform end
 
 include("scaletransform.jl")
 include("lowranktransform.jl")
+include("functiontransform.jl")
 
 struct TransformChain <: Transform
     transforms::Vector{Transform}
@@ -16,7 +17,7 @@ function TransformChain(v::AbstractVector{<:Transform})
     TransformChain(v)
 end
 
-function transform(t::TransformChain,X::T,obsdim::Int=1) where {T}
+function transform(t::TransformChain,X::T,obsdim::Int=defaultobs) where {T}
     Xtr = copy(X)
     for tr in t.transforms
         Xtr = transform(tr,Xtr,obsdim)
@@ -28,24 +29,9 @@ Base.:∘(t₁::Transform,t₂::Transform) = TransformChain([t₂,t₁])
 Base.:∘(t::Transform,tc::TransformChain) = TransformChain(vcat(tc.transforms,t))
 Base.:∘(tc::TransformChain,t::Transform) = TransformChain(vcat(t,tc.transforms))
 
-"""
-    FunctionTransform
-
-    Take a function `f` as an argument which is going to act on each vector individually.
-    Make sure that `f` is supposed to act on a vector by eventually using broadcasting
-    For example `f(x)=sin(x)` -> `f(x)=sin.(x)`
-"""
-struct FunctionTransform{F} <: Transform
-    f::F
-end
-
-transform(t::FunctionTransform,X::T,obsdim::Int=1) where {T} = mapslices(t.f,X,obsdim) 
-
-
 struct IdentityTransform <: Transform end
 
-transform(t::IdentityTransform,x::AbstractArray,obsdim::Int) = transform(t,x)
-transform(t::IdentityTransform,x::AbstractArray) = return x
+transform(t::IdentityTransform,x::AbstractArray,obsdim::Int=defaultobs) = x
 
 ### TODO Maybe defining adjoints could help but so far it's not working
 
