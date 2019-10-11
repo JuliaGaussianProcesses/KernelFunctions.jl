@@ -8,6 +8,7 @@ export ExponentiatedKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
+export KernelSum, KernelProduct
 
 
 
@@ -32,6 +33,8 @@ for k in kernels
     include(joinpath("kernels",k*".jl"))
 end
 include("kernelmatrix.jl")
+include("kernels/kernelsum.jl")
+include("kernels/kernelproduct.jl")
 
 include("generic.jl")
 

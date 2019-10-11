@@ -23,12 +23,34 @@ k = SqExponentialKernel()
     end
     @testset "Kernel matrix" begin
         for obsdim in [1,2]
-            @test kernelmatrix(k,A,B,obsdim=obsdim) == kappa.([k],pairwise(KernelFunctions.metric(k),A,B,dims=obsdim))
-            @test kernelmatrix(k,A,obsdim=obsdim) == kappa.([k],pairwise(KernelFunctions.metric(k),A,dims=obsdim))
+            @test kernelmatrix(k,A,B,obsdim=obsdim) == kappa.(k,pairwise(KernelFunctions.metric(k),A,B,dims=obsdim))
+            @test kernelmatrix(k,A,obsdim=obsdim) == kappa.(k,pairwise(KernelFunctions.metric(k),A,dims=obsdim))
+            @test kerneldiagmatrix(k,A,obsdim=obsdim) == diag(kernelmatrix(k,A,obsdim=obsdim))
             @test k(A,B,obsdim=obsdim) == kernelmatrix(k,A,B,obsdim=obsdim)
             @test k(A,obsdim=obsdim) == kernelmatrix(k,A,obsdim=obsdim)
             @test kernel(k,1.0,2.0) == kernel(k,[1.0],[2.0])
             @test_throws DimensionMismatch kernelmatrix(k,A,C,obsdim=obsdim)
         end
+    end
+    @testset "KernelSum" begin
+        k1 = SqExponentialKernel()
+        k2 = LinearKernel()
+        k3 =
+        ks = k1 + k2
+        w1 = 0.4; w2 = 1.2;
+        ks2 = KernelSum([k1,k2],weights=[w1,w2])
+        @test all(kernelmatrix(ks,A) .== kernelmatrix(k1,A) + kernelmatrix(k2,A))
+        @test all(kernelmatrix(ks,A,B) .== kernelmatrix(k1,A,B) + kernelmatrix(k2,A,B))
+        @test all(kerneldiagmatrix(ks,A) .== kerneldiagmatrix(k1,A) + kerneldiagmatrix(k2,A))
+        @test all(kernelmatrix(ks2,A) .== w1*kernelmatrix(k1,A) + w2*kernelmatrix(k2,A))
+    end
+    @testset "KernelProduct" begin
+        k1 = SqExponentialKernel()
+        k2 = LinearKernel()
+        kp = k1 * k2
+        @test all(kernelmatrix(kp,A) .== kernelmatrix(k1,A) .* kernelmatrix(k2,A))
+        @test all(kernelmatrix(kp,A,B) .== kernelmatrix(k1,A,B) .* kernelmatrix(k2,A,B))
+        @test all(kerneldiagmatrix(kp,A) .== kerneldiagmatrix(k1,A) .* kerneldiagmatrix(k2,A))
+        @test all(kernelmatrix(kp,A) .== kernelmatrix(k1,A) .* kernelmatrix(k2,A))
     end
 end
