@@ -10,7 +10,9 @@ function kernelmatrix!(
         X::AbstractMatrix{T₂};
         obsdim::Int = defaultobs
         ) where {T,T₁<:Real,T₂<:Real}
-        @assert check_dims(K,X,X,feature_dim(obsdim),obsdim) "Dimensions of the target array are not consistent with X and Y"
+        if !check_dims(K,X,X,feature_dim(obsdim),obsdim)
+            throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
+        end
         map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
 end
 
@@ -27,7 +29,9 @@ function kernelmatrix!(
         Y::AbstractMatrix{T₃};
         obsdim::Int = defaultobs
         ) where {T,T₁,T₂,T₃}
-        @assert check_dims(K,X,Y,feature_dim(obsdim),obsdim) "Dimensions $(size(K)) of the target array K are not consistent with X ($(size(X))) and Y ($(size(Y)))"
+        if !check_dims(K,X,Y,feature_dim(obsdim),obsdim)
+            throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not consistent with X ($(size(X))) and Y ($(size(Y)))"))
+        end
         map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
 end
 
@@ -82,7 +86,9 @@ function kernelmatrix(
         Y::AbstractMatrix{T₂};
         obsdim=defaultobs
     ) where {T,T₁<:Real,T₂<:Real}
-    @assert check_dims(X,Y,feature_dim(obsdim),obsdim) "X ($(size(X))) and Y ($(size(Y))) do not have the same number of features on the dimension obsdim : $(feature_dim(obsdim))"
+    if !check_dims(X,Y,feature_dim(obsdim),obsdim)
+        throw(DimensionMismatch("X ($(size(X))) and Y ($(size(Y))) do not have the same number of features on the dimension obsdim : $(feature_dim(obsdim))"))
+    end
     K = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
     return K
 end
@@ -113,6 +119,9 @@ function kerneldiagmatrix!(
         X::AbstractMatrix{T₂};
         obsdim::Int = defaultobs
         ) where {T,T₁,T₂}
+        if length(K) != size(X,obsdim)
+            throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
+        end
         if obsdim == 1
             for i in eachindex(K)
                 @inbounds @views K[i] = kernel(κ, X[i,:],X[i,:])
