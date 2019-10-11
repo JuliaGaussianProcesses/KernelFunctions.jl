@@ -26,7 +26,7 @@ tf = FunctionTransform(f)
 KernelFunctions.transform(tf,X,1)
 @test all(KernelFunctions.transform(tf,X,1).==f(X))
 ##
-tchain = TransformChain([t,tp,tf])
-t∘tp∘tf
-TransformChain([t,tp])
+tchain = ChainTransform([t,tp,tf])
 @test all(KernelFunctions.transform(tchain,X,2).==f(P*(s*X)))
+@test all(KernelFunctions.transform(tchain,X,2).==
+            KernelFunctions.transform(tf∘tp∘t,X,2))
