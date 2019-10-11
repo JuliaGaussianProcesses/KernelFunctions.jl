@@ -51,7 +51,7 @@ end
 
 function PolynomialKernel(ρ::T₁=1.0,d::T₂=2.0,c::T₃=zero(T₁)) where {T₁<:Real,T₂<:Real,T₃<:Real}
     @check_args(PolynomialKernel, d, d >= one(T₁), "d >= 1")
-    Polynomial{T₁,ScaleTransform{T₁},T₂,T₃}(ScaleTransform(ρ),c,d)
+    PolynomialKernel{T₁,ScaleTransform{T₁},T₂,T₃}(ScaleTransform(ρ),c,d)
 end
 
 function PolynomialKernel(ρ::A,d::T₁=2.0,c::T₂=zero(eltype(ρ))) where {A<:AbstractVector{<:Real},T₁<:Real,T₂<:Real}

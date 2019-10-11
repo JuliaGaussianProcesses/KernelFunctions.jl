@@ -7,6 +7,7 @@ export SqExponentialKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
+export RationalQuadraticKernel, GammaRationalQuadraticKernel
 
 
 
