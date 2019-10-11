@@ -12,6 +12,7 @@ k = SqExponentialKernel()
 @testset "Inplace Kernel Matrix" begin
     for obsdim in [1,2]
         @test kernelmatrix!(K[obsdim],k,A,B,obsdim=obsdim) == kernelmatrix(k,A,B,obsdim=obsdim)
+        @test kernelmatrix!(K[obsdim],k,A,obsdim=obsdim) == kernelmatrix(k,A,obsdim=obsdim)
         @test kerneldiagmatrix!(Kdiag[obsdim],k,A,obsdim=obsdim) == kerneldiagmatrix(k,A,obsdim=obsdim)
     end
 end
@@ -22,5 +23,6 @@ end
         @test kernelmatrix(k,A,obsdim=obsdim) == kappa.([k],pairwise(KernelFunctions.metric(k),A,dims=obsdim))
         @test k(A,B,obsdim=obsdim) == kernelmatrix(k,A,B,obsdim=obsdim)
         @test k(A,obsdim=obsdim) == kernelmatrix(k,A,obsdim=obsdim)
+        @test kernel(k,1.0,2.0) == kernel(k,[1.0],[2.0])
     end
 end

@@ -7,7 +7,7 @@ B = rand(20,5)
 @testset "Distance" begin
     @testset "Dot Product" begin
         d = KernelFunctions.DotProduct()
-        @test diag(pairwise(d,A,dims=2)) == dot.(eachcol(A),eachcol(A))
+        @test diag(pairwise(d,A,dims=2)) == [dot(A[:,i],A[:,i]) for i in 1:size(A,2)]
         @test_throws DimensionMismatch d(rand(3),rand(4))
         @test d(3.0,2.0) == 6.0
     end

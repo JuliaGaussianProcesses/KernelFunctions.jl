@@ -1,6 +1,6 @@
 module KernelFunctions
 
-export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
+export kernel, kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
 export Kernel
 export ConstantKernel, WhiteKernel, ZeroKernel
 export SqExponentialKernel, ExponentialKernel, GammaExponentialKernel

@@ -24,7 +24,7 @@ function LinearKernel(ρ::A,c::T=zero(eltype(ρ))) where {A<:AbstractVector{<:Re
     LinearKernel{eltype(A),ScaleTransform{A},T}(ScaleTransform(ρ),c)
 end
 
-function LinearKernel(t::Tr,c::T=zero(eltype(t))) where {Tr<:Transform,T<:Real}
+function LinearKernel(t::Tr,c::T=zero(Float64)) where {Tr<:Transform,T<:Real}
     LinearKernel{eltype(t),Tr,T}(t,c)
 end
 
@@ -59,7 +59,7 @@ function PolynomialKernel(ρ::A,d::T₁=2.0,c::T₂=zero(eltype(ρ))) where {A<:
     PolynomialKernel{eltype(A),ScaleTransform{A},T₁,T₂}(ScaleTransform(ρ),c,d)
 end
 
-function PolynomialKernel(t::Tr,d::T₁=2.0,c::T₂=zero(eltype(t))) where {Tr<:Transform,T₁<:Real,T₂<:Real}
+function PolynomialKernel(t::Tr,d::T₁=2.0,c::T₂=zero(eltype(T₁))) where {Tr<:Transform,T₁<:Real,T₂<:Real}
     @check_args(PolynomialKernel, d, d >= one(T₁), "d >= 1")
     PolynomialKernel{eltype(Tr),Tr,T₁,T₂}(t,c,d)
 end

@@ -1,12 +1,12 @@
 using Test
 using KernelFunctions
 using Distances
-using FiniteDifferences
+# using FiniteDifferences
 using Random
 using Zygote
 
 # Helpful functionality for writing tests.
-include("test_util.jl")
+# include("test_util.jl")
 
 @testset "KernelFunctions" begin
 include("test_kernelmatrix.jl")
