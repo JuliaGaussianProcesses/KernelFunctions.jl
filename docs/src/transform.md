@@ -4,6 +4,8 @@
 There is a more general `Transform`: `FunctionTransform` that uses a function and apply it on each vector via `mapslices`.
 You can also create a pipeline of `Transform` via `TransformChain`. For example `LowRankTransform(rand(10,5))∘ScaleTransform(2.0)`.
 
+One apply a transformation on a matrix or a vector via `transform(t::Transform,v::AbstractVecOrMat)`
+
 ## Transforms :
 
 ```@docs
@@ -11,5 +13,5 @@ You can also create a pipeline of `Transform` via `TransformChain`. For example 
   ScaleTransform
   LowRankTransform
   FunctionTransform
-  TransformChain
+  ChainTransform
 ```

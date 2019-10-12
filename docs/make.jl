@@ -9,6 +9,8 @@ makedocs(
             "User Guide" => "userguide.md",
              "Kernel Functions"=>"kernels.md",
              "Transform"=>"transform.md",
+             "Metrics"=>"metrics.md",
+             "Theory"=>"theory.md",
              "API"=>"api.md"]
 )
 

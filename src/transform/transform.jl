@@ -1,5 +1,5 @@
 export Transform, IdentityTransform, ScaleTransform, LowRankTransform, FunctionTransform, ChainTransform
-
+export transform
 
 abstract type Transform end
 

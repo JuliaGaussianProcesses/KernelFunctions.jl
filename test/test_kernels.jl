@@ -188,4 +188,20 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
             @test kappa(GammaRationalQuadraticKernel(1.0,a,1.0),x) ≈ kappa(RationalQuadraticKernel(1.0,a),x)
         end
     end
+    @testset "KernelCombinations" begin
+        k1 = LinearKernel()
+        k2 = SqExponentialKernel()
+        X = rand(2,2)
+        @testset "KernelSum" begin
+            k = k1 + k2
+            @test KernelFunctions.metric(k) == [KernelFunctions.DotProduct(),KernelFunctions.SqEuclidean()]
+            @test length(k) == 2
+            @test transform(k) == [transform(k1),transform(k2)]
+            @test transform(k,X) == [transform(k1,X),transform(k2,X)]
+            @test transform(k,X,1) == [transform(k1,X,1),transform(k2,X,1)]
+        end
+        @testset "KernelProduct" begin
+
+        end
+    end
 end
