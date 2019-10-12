@@ -114,12 +114,18 @@ function kerneldiagmatrix(
         end
 end
 
+"""
+```
+    kerneldiagmatrix!(K::AbstractVector,κ::Kernel, X::Matrix; obsdim::Int=2)
+```
+In place version of `kerneldiagmatrix`
+"""
 function kerneldiagmatrix!(
-        K::AbstractVector{T₁},
-        κ::Kernel{T},
-        X::AbstractMatrix{T₂};
+        K::AbstractVector,
+        κ::Kernel,
+        X::AbstractMatrix;
         obsdim::Int = defaultobs
-        ) where {T,T₁,T₂}
+        )
         if length(K) != size(X,obsdim)
             throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
         end

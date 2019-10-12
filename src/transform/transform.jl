@@ -7,6 +7,17 @@ include("scaletransform.jl")
 include("lowranktransform.jl")
 include("functiontransform.jl")
 
+
+"""
+    ChainTransform
+    ```
+        t1 = ScaleTransform()
+        t2 = LowRankTransform(rand(3,4))
+        ct = ChainTransform([t1,t2]) #t1 will be called first
+        ct == t2∘t1
+    ```
+    Chain a series of transform, here `t1` is called first
+"""
 struct ChainTransform <: Transform
     transforms::Vector{Transform}
 end
@@ -28,7 +39,11 @@ end
 Base.:∘(t₁::Transform,t₂::Transform) = ChainTransform([t₂,t₁])
 Base.:∘(t::Transform,tc::ChainTransform) = ChainTransform(vcat(tc.transforms,t))
 Base.:∘(tc::ChainTransform,t::Transform) = ChainTransform(vcat(t,tc.transforms))
+"""
+    IdentityTransform
 
+    Return exactly the input
+"""
 struct IdentityTransform <: Transform end
 
 transform(t::IdentityTransform,x::AbstractArray,obsdim::Int=defaultobs) = x

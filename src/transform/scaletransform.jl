@@ -1,5 +1,13 @@
 """
     Scale Transform
+```
+    l = 2.0
+    tr = ScaleTransform(l)
+    v = rand(3)
+    tr = ScaleTransform(v)
+```
+    Multiply every element of the matrix by `l` for a scalar
+    Multiply every vector of observation by `v` element-wise for a vector
 """
 struct ScaleTransform{T<:Union{Real,AbstractVector{<:Real}}} <: Transform
     s::T

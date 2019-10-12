@@ -1,3 +1,12 @@
+"""
+    LowRankTransform
+    ```
+        P = rand(10,5)
+        tr = LowRankTransform(P)
+    ```
+    Apply the low-rank projection realised by the matrix `P`
+    The second dimension of `P` must match the number of features of the target.
+"""
 struct LowRankTransform{T<:AbstractMatrix{<:Real}} <: Transform
     proj::T
 end
