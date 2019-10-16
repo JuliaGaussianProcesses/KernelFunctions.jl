@@ -22,7 +22,7 @@ struct ChainTransform <: Transform
     transforms::Vector{Transform}
 end
 
-Base.length(t::ChainTransform) = length(t.transforms)
+Base.length(t::ChainTransform) = length(t.transforms) #TODO Add test
 
 function ChainTransform(v::AbstractVector{<:Transform})
     ChainTransform(v)
@@ -37,7 +37,7 @@ function transform(t::ChainTransform,X::T,obsdim::Int=defaultobs) where {T}
 end
 
 Base.:∘(t₁::Transform,t₂::Transform) = ChainTransform([t₂,t₁])
-Base.:∘(t::Transform,tc::ChainTransform) = ChainTransform(vcat(tc.transforms,t))
+Base.:∘(t::Transform,tc::ChainTransform) = ChainTransform(vcat(tc.transforms,t)) #TODO add test
 Base.:∘(tc::ChainTransform,t::Transform) = ChainTransform(vcat(t,tc.transforms))
 """
     IdentityTransform
@@ -46,7 +46,7 @@ Base.:∘(tc::ChainTransform,t::Transform) = ChainTransform(vcat(t,tc.transforms
 """
 struct IdentityTransform <: Transform end
 
-transform(t::IdentityTransform,x::AbstractArray,obsdim::Int=defaultobs) = x
+transform(t::IdentityTransform,x::AbstractArray,obsdim::Int=defaultobs) = x #TODO add test
 
 ### TODO Maybe defining adjoints could help but so far it's not working
 

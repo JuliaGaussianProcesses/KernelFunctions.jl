@@ -1,5 +1,5 @@
 """
-    ExponentiatedKernel([α=1])
+    ExponentiatedKernel([ρ=1])
 
     The exponentiated kernel is a Mercer kernel given by:
 

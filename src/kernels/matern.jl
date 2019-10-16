@@ -38,7 +38,7 @@ end
 @inline kappa(κ::MaternKernel, d::Real) = iszero(d) ? one(d) : exp((1.0-κ.ν)*logtwo-lgamma(κ.ν) + κ.ν*log(sqrt(2κ.ν)*d)+log(besselk(κ.ν,sqrt(2κ.ν)*d)))
 
 """
-    Matern32Kernel(ρ=1.0)
+    Matern32Kernel([ρ=1.0])
 
 The matern 3/2 kernel is an isotropic Mercer kernel given by the formula:
 
@@ -59,7 +59,7 @@ end
 @inline kappa(κ::Matern32Kernel, d::T) where {T<:Real} = (1+sqrt(3)*d)*exp(-sqrt(3)*d)
 
 """
-    Matern52Kernel(ρ=1.0)
+    Matern52Kernel([ρ=1.0])
 
 The matern 5/2 kernel is an isotropic Mercer kernel given by the formula:
 

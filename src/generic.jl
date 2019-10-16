@@ -1,15 +1,15 @@
 @inline metric(κ::Kernel) = κ.metric
 
 ## Allows to iterate over kernels
-Base.length(::Kernel) = 1
+Base.length(::Kernel) = 1 #TODO Add test
 
-Base.iterate(k::Kernel) = (k,nothing)
-Base.iterate(k::Kernel, ::Any) = nothing
+Base.iterate(k::Kernel) = (k,nothing) #TODO Add test
+Base.iterate(k::Kernel, ::Any) = nothing #TODO Add test
 
 ### Syntactic sugar for creating matrices and using kernel functions
 for k in [:ExponentialKernel,:SqExponentialKernel,:GammaExponentialKernel,:MaternKernel,:Matern32Kernel,:Matern52Kernel,:LinearKernel,:PolynomialKernel,:ExponentiatedKernel,:ZeroKernel,:WhiteKernel,:ConstantKernel,:RationalQuadraticKernel,:GammaRationalQuadraticKernel]
     @eval begin
-        @inline (κ::$k)(d::Real) = kappa(κ,d)
+        @inline (κ::$k)(d::Real) = kappa(κ,d) #TODO Add test
         @inline (κ::$k)(x::AbstractVector{<:Real},y::AbstractVector{<:Real}) = kappa(κ,evaluate(κ.metric,transform(κ,x),transform(κ,y)))
         @inline (κ::$k)(X::AbstractMatrix{T},Y::AbstractMatrix{T};obsdim::Integer=defaultobs) where {T} = kernelmatrix(κ,X,Y,obsdim=obsdim)
         @inline (κ::$k)(X::AbstractMatrix{T};obsdim::Integer=defaultobs) where {T} = kernelmatrix(κ,X,obsdim=obsdim)
