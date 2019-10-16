@@ -16,6 +16,7 @@ using Distances, LinearAlgebra
 using Zygote: @adjoint
 using SpecialFunctions: lgamma, besselk
 using StatsFuns: logtwo
+using PDMats
 
 const defaultobs = 2
 
@@ -32,7 +33,7 @@ kernels = ["exponential","matern","polynomial","constant","rationalquad","expone
 for k in kernels
     include(joinpath("kernels",k*".jl"))
 end
-include("kernelmatrix.jl")
+include("matrix/kernelmatrix.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
 
