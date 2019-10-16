@@ -13,7 +13,7 @@ vl = l*ones(dims[1])
 testfunction(k,A,B) = det(kernelmatrix(k,A,B))
 testfunction(k,A) = det(kernelmatrix(k,A))
 
-##Eventually store real results in file
+##TODO Eventually store real results in file
 @testset "Zygote Automatic Differentiation test" begin
     @testset "ARD" begin
         for k in kernels

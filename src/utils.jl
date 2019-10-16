@@ -11,21 +11,17 @@ end
 
 
 # Take highest Float among possibilities
-function promote_float(Tₖ::DataType...)
-    if length(Tₖ) == 0
-        return Float64
-    end
-    T = promote_type(Tₖ...)
-    return T <: Real ? T : Float64
-end
+# function promote_float(Tₖ::DataType...)
+#     if length(Tₖ) == 0
+#         return Float64
+#     end
+#     T = promote_type(Tₖ...)
+#     return T <: Real ? T : Float64
+# end
 
-function check_dims(K,X,Y,obsdim)
-    if size(X,obsdim) == size(Y,obsdim)
-        if obsdim == 1
-            return size(K) == (size(X,1),size(Y,1))
-        elseif obsdim == 2
-            return size(K) == (size(X,2),size(Y,2))
-        end
-    end
-    return false
-end
+check_dims(K,X,Y,featdim,obsdim) = check_dims(X,Y,featdim,obsdim) && (size(K) == (size(X,obsdim),size(Y,obsdim)))
+
+check_dims(X,Y,featdim,obsdim) = size(X,featdim) == size(Y,featdim)
+
+
+feature_dim(obsdim::Int) = obsdim == 1 ? 2 : 1

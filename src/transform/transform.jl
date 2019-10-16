@@ -1,49 +1,37 @@
+export Transform, IdentityTransform, ScaleTransform, LowRankTransform, FunctionTransform, ChainTransform
+export transform
+
 abstract type Transform end
 
-struct TransformChain <: Transform
+include("scaletransform.jl")
+include("lowranktransform.jl")
+include("functiontransform.jl")
+
+struct ChainTransform <: Transform
     transforms::Vector{Transform}
 end
 
-function TransformChain(v::AbstractVector{<:Transform})
-    TransformChain(v)
+Base.length(t::ChainTransform) = length(t.transforms)
+
+function ChainTransform(v::AbstractVector{<:Transform})
+    ChainTransform(v)
 end
 
-struct InputTransform{F} <: Transform
-    f::F
+function transform(t::ChainTransform,X::T,obsdim::Int=defaultobs) where {T}
+    Xtr = copy(X)
+    for tr in t.transforms
+        Xtr = transform(tr,Xtr,obsdim)
+    end
+    return Xtr
 end
 
-# function InputTransform(f::F) where {F}
-#     InputTransform{F}(f)
-# end
+Base.:∘(t₁::Transform,t₂::Transform) = ChainTransform([t₂,t₁])
+Base.:∘(t::Transform,tc::ChainTransform) = ChainTransform(vcat(tc.transforms,t))
+Base.:∘(tc::ChainTransform,t::Transform) = ChainTransform(vcat(t,tc.transforms))
 
-transform(t::InputTransform,x::T,obsdim::Int=1) where {T} = t.f(X)
+struct IdentityTransform <: Transform end
 
-struct ScaleTransform{T<:Union{Real,AbstractVector{<:Real}}} <: Transform
-    s::T
-end
-
-function ScaleTransform(s::T=1.0) where {T<:Real}
-    @check_args(ScaleTransform, s, s > zero(T), "s > 0")
-    ScaleTransform{T}(s)
-end
-
-function ScaleTransform(s::T,dims::Integer) where {T<:Real}
-    @check_args(ScaleTransform, s, s > zero(T), "s > 0")
-    ScaleTransform{Vector{T}}(fill(s,dims))
-end
-
-function ScaleTransform(s::A) where {A<:AbstractVector{<:Real}}
-    @check_args(ScaleTransform, s, all(s.>zero(eltype(A))), "s > 0")
-    ScaleTransform{A}(s)
-end
-
-
-transform(t::ScaleTransform{<:AbstractVector{<:Real}},x::AbstractVector{<:Real}) = t.s .* x
-transform(t::ScaleTransform{<:AbstractVector{<:Real}},X::AbstractMatrix{<:Real},obsdim::Int) = obsdim == 1 ? t.s'.*X : t.s .* X
-
-transform(t::ScaleTransform{<:Real},x::AbstractVecOrMat,obsdim::Int) = transform(t,x)
-transform(t::ScaleTransform{<:Real},x::AbstractVecOrMat) = t.s .* x
-
+transform(t::IdentityTransform,x::AbstractArray,obsdim::Int=defaultobs) = x
 
 ### TODO Maybe defining adjoints could help but so far it's not working
 

@@ -4,7 +4,14 @@ using KernelFunctions
 makedocs(
     sitename = "KernelFunctions",
     format = Documenter.HTML(),
-    modules = [KernelFunctions]
+    modules = [KernelFunctions],
+    pages = ["Home"=>"index.md",
+            "User Guide" => "userguide.md",
+             "Kernel Functions"=>"kernels.md",
+             "Transform"=>"transform.md",
+             "Metrics"=>"metrics.md",
+             "Theory"=>"theory.md",
+             "API"=>"api.md"]
 )
 
 # Documenter can also automatically deploy documentation to gh-pages.
