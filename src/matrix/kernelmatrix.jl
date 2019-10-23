@@ -87,7 +87,7 @@ function kernelmatrix(
         obsdim=defaultobs
     )
     if !check_dims(X,Y,feature_dim(obsdim),obsdim)
-        throw(DimensionMismatch("X ($(size(X))) and Y ($(size(Y))) do not have the same number of features on the dimension obsdim : $(feature_dim(obsdim))"))
+        throw(DimensionMismatch("X $(size(X)) and Y $(size(Y)) do not have the same number of features on the dimension : $(feature_dim(obsdim))"))
     end
     _kernelmatrix(κ,X,Y,obsdim)
 end
