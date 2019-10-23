@@ -1,5 +1,5 @@
 """
-    ZeroKernel()
+    ZeroKernel([tr=IdentityTransform()])
 
     Create a kernel that always return a zero kernel matrix
 
@@ -19,7 +19,7 @@ end
 @inline kappa(κ::ZeroKernel,d::T) where {T<:Real} = zero(T)
 
 """
-    WhiteKernel()
+    WhiteKernel([tr=IdentityTransform()])
 
 ```
     κ(x,y) = δ(x,y)
@@ -41,7 +41,7 @@ end
 @inline kappa(κ::WhiteKernel,δₓₓ::Real) = δₓₓ
 
 """
-    ConstantKernel([c=1.0])
+    ConstantKernel([tr=IdentityTransform(),[c=1.0]])
 
 ```
     κ(x,y) = c

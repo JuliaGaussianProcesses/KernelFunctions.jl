@@ -8,12 +8,35 @@ KernelFunctions.jl provide a flexible and complete framework for kernel function
 
 The aim is to make the API as model-agnostic as possible while still being user-friendly.
 
+## Examples
+
+```julia
+  X = reshape(collect(range(-3.0,3.0,length=100)),:,1)
+  # Set simple scaling of the data
+  k₁ = SqExponentialKernel(1.0)
+  K₁ = kernelmatrix(k,X,obsdim=1)
+
+  # Set a function transformation on the data
+  k₂ = MaternKernel(FunctionTransform(x->sin.(x)))
+  K₂ = kernelmatrix(k,X,obsdim=1)
+
+  # Set a matrix premultiplication on the data
+  k₃ = PolynomialKernel(LowRankTransform(randn(4,1)),0.0,2.0)
+  K₃ = kernelmatrix(k,X,obsdim=1)
+
+  # Add and sum kernels
+  k₄ = 0.5*SqExponentialKernel()*LinearKernel(0.5) + 0.4*k₂
+  K₄ = kernelmatrix(k,X,obsdim=1)
+
+  heatmap([K₁,K₂,K₃,K₄],yflip=false,colorbar=false)
+```
+<p align=center>
+  <img src="docs/src/assets/heatmap_combination.png" width=400px>
+</p>
+
 ## Objectives (by priority)
-- ARD Kernels
-- AD Compatible (Zygote, ForwardDiff, ReverseDiff)
-- Kernel sum and product
+- AD Compatibility (Zygote, ForwardDiff)
 - Toeplitz Matrices
 - BLAS backend
 
-
-Directly inspired by the [MLKernels](https://github.com/trthatcher/MLKernels.jl) package
+Directly inspired by the [MLKernels](https://github.com/trthatcher/MLKernels.jl) package.

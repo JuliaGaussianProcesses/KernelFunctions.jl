@@ -55,19 +55,6 @@ The γ-exponential kernel is an isotropic Mercer kernel given by the formula:
 ```
     κ(x,y) = exp(-‖x-y‖^2γ)
 ```
-
-# Examples
-
-```jldoctest; setup = :(using KernelFunctions)
-julia> GammaExponentialKernel()
-GammaExponentialKernel{Float64,Float64,Float64}(1.0,2.0)
-
-julia> GammaExponentialKernel(2.0f0,3.0)
-GammaExponentialKernel{Float32,Float32,Float64}(2.0,3.0)
-
-julia> GammaExponentialKernel([2.0,3.0],2f0)
-GammaExponentialKernel{Float64,Array{Float64},Float32}([2.0,3.0],2.0)
-```
 """
 struct GammaExponentialKernel{T,Tr,Tᵧ<:Real} <: Kernel{T,Tr}
     transform::Tr

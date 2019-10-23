@@ -87,7 +87,7 @@ function kernelmatrix(
         obsdim=defaultobs
     )
     if !check_dims(X,Y,feature_dim(obsdim),obsdim)
-        throw(DimensionMismatch("X ($(size(X))) and Y ($(size(Y))) do not have the same number of features on the dimension obsdim : $(feature_dim(obsdim))"))
+        throw(DimensionMismatch("X $(size(X)) and Y $(size(Y)) do not have the same number of features on the dimension : $(feature_dim(obsdim))"))
     end
     _kernelmatrix(κ,X,Y,obsdim)
 end
@@ -114,12 +114,18 @@ function kerneldiagmatrix(
         end
 end
 
+"""
+```
+    kerneldiagmatrix!(K::AbstractVector,κ::Kernel, X::Matrix; obsdim::Int=2)
+```
+In place version of `kerneldiagmatrix`
+"""
 function kerneldiagmatrix!(
-        K::AbstractVector{T₁},
-        κ::Kernel{T},
-        X::AbstractMatrix{T₂};
+        K::AbstractVector,
+        κ::Kernel,
+        X::AbstractMatrix;
         obsdim::Int = defaultobs
-        ) where {T,T₁,T₂}
+        )
         if length(K) != size(X,obsdim)
             throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
         end
