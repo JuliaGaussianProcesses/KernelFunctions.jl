@@ -13,14 +13,12 @@ export KernelSum, KernelProduct
 
 
 using Distances, LinearAlgebra
-using Zygote: @adjoint
 using SpecialFunctions: lgamma, besselk
 using StatsFuns: logtwo
-using PDMats
+using PDMats: PDMat
 
 const defaultobs = 2
 
-# include("zygote_rules.jl")
 include("utils.jl")
 include("distances/dotproduct.jl")
 include("distances/delta.jl")

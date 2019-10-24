@@ -1,27 +1,20 @@
 name = "KernelFunctions"
 uuid = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
-version = "0.3.0"
+version = "0.1.0"
 
 [deps]
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
-IRTools = "7869d1d1-7146-5819-86e3-90919afe41df"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 StatsFuns = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
-Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
-ZygoteRules = "700de1a5-db45-46bc-99cf-38207098b444"
 
 [compat]
-FiniteDifferences = ">= 0.7.2"
+julia = "1.0"
 
 [extras]
-FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
-ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-Tracker = "9f7883ad-71c0-57eb-9f7f-b5c9e6d3789c"
-Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [targets]
-test = ["FiniteDifferences", "Tracker", "ForwardDiff", "Random", "Test"]
+test = ["Random", "Test"]
