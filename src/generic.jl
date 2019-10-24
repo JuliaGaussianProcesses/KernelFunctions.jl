@@ -29,3 +29,19 @@ for kernel in [:ExponentialKernel,:SqExponentialKernel,:Matern32Kernel,:Matern52
         $kernel(t::Tr) where {Tr<:Transform} = $kernel{eltype(t),Tr}(t)
     end
 end
+
+function set!()
+
+end
+
+function set!(k::Kernel{T,ScaleTransform{Base.RefValue{<:Tρ}}},ρ::Tρ) where {T,Tρ<:Real}
+    set!(k.transform,ρ)
+end
+
+function set!(k::Kernel{T,ScaleTransform{<:AbstractVector{<:Tρ}}},ρ::AbstractVector{<:Tρ}) where {T,Tρ<:Real}
+    set!(k.transform,ρ)
+end
+
+function set!(k::Kernel{T,LowRankTransform{<:AbstractMatrix{<:Tm}}},m::AbstractMatrix{<:Tm}) where {T,Tm<:Real}
+    set!(k.transform,m)
+end

@@ -11,6 +11,11 @@ struct LowRankTransform{T<:AbstractMatrix{<:Real}} <: Transform
     proj::T
 end
 
+function set!(t::LowRankTransform{<:AbstractMatrix{T}},M::AbstractMatrix{T}) where {T<:Real}
+    @assert size(t) == size(M) "Size of the given matrix $(size(M)) and the projection matrix $(size(t)) are not the same"
+    t.proj .= M
+end
+
 Base.size(tr::LowRankTransform,i::Int) = size(tr.proj,i)
 Base.size(tr::LowRankTransform) = size(tr.proj) #  TODO Add test
 
