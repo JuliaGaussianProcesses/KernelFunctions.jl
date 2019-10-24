@@ -28,7 +28,7 @@ The aim is to make the API as model-agnostic as possible while still being user-
   k₄ = 0.5*SqExponentialKernel()*LinearKernel(0.5) + 0.4*k₂
   K₄ = kernelmatrix(k,X,obsdim=1)
 
-  heatmap([K₁,K₂,K₃,K₄],yflip=false,colorbar=false)
+  plot(heatmap.([K₁,K₂,K₃,K₄],yflip=true,colorbar=false)...,layout=(2,2))
 ```
 <p align=center>
   <img src="docs/src/assets/heatmap_combination.png" width=400px>
