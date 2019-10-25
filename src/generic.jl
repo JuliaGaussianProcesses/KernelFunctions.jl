@@ -24,14 +24,14 @@ end
 ## Constructors for kernels without parameters
 for kernel in [:ExponentialKernel,:SqExponentialKernel,:Matern32Kernel,:Matern52Kernel,:ExponentiatedKernel]
     @eval begin
-        $kernel(ρ::T=1.0) where {T<:Real} =   $kernel{T,ScaleTransform{T}}(ScaleTransform(ρ))
+        $kernel(ρ::T=1.0) where {T<:Real} =   $kernel{T,ScaleTransform{Base.RefValue{T}}}(ScaleTransform(ρ))
         $kernel(ρ::A) where {A<:AbstractVector{<:Real}} = $kernel{eltype(A),ScaleTransform{A}}(ScaleTransform(ρ))
         $kernel(t::Tr) where {Tr<:Transform} = $kernel{eltype(t),Tr}(t)
     end
 end
 
-function set!()
-
+function set!(k::Kernel,x)
+    @error "Setting parameters to this kernel is either not possible or has not been implemented"
 end
 
 function set!(k::Kernel{T,ScaleTransform{Base.RefValue{<:Tρ}}},ρ::Tρ) where {T,Tρ<:Real}

@@ -15,7 +15,7 @@ end
 
 function ScaleTransform(s::T=1.0) where {T<:Real}
     @check_args(ScaleTransform, s, s > zero(T), "s > 0")
-    ScaleTransform{T}(Ref(s))
+    ScaleTransform{Base.RefValue{T}}(Ref(s))
 end
 
 function ScaleTransform(s::T,dims::Integer) where {T<:Real} # TODO Add test
@@ -49,4 +49,4 @@ end
 transform(t::ScaleTransform{<:AbstractVector{<:Real}},x::AbstractVector{<:Real},obsdim::Int=defaultobs) = t.s .* x
 _transform(t::ScaleTransform{<:AbstractVector{<:Real}},X::AbstractMatrix{<:Real},obsdim::Int=defaultobs) = obsdim == 1 ? t.s'.*X : t.s .* X
 
-transform(t::ScaleTransform{Base.RefValue{<:Real}},x::AbstractVecOrMat,obsdim::Int=defaultobs) = t.s[] .* x
+transform(t::ScaleTransform{<:Base.RefValue{<:Real}},x::AbstractVecOrMat,obsdim::Int=defaultobs) = t.s[] .* x
