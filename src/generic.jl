@@ -34,9 +34,9 @@ function set!(k::Kernel,x)
     @error "Setting parameters to this kernel is either not possible or has not been implemented"
 end
 
-set_params!(k::Kernel{T,ScaleTransform{<:Base.RefValue{<:Tρ}}},ρ::AbstractVector{Tρ}) where {T,Tρ<:Real} = set!(k.transform,ρ[1])
-set_params!(k::Kernel{T,ScaleTransform{<:AbstractVector{<:Tρ}}},ρ::AbstractVector{<:Tρ}) where {T,Tρ<:Real} = set!(k.transform,ρ)
-set_params!(k::Kernel{T,LowRankTransform{<:AbstractMatrix{<:Tm}}},m::AbstractMatrix{<:Tm}) where {T,Tm<:Real} = set!(k.transform,m)
+set_params!(k::Kernel{T,<:ScaleTransform{<:Base.RefValue{<:Tρ}}},ρ::AbstractVector{<:Tρ}) where {T,Tρ<:Real} = set!(k.transform,ρ[1])
+set_params!(k::Kernel{T,<:ScaleTransform{<:AbstractVector{<:Tρ}}},ρ::AbstractVector{<:Tρ}) where {T,Tρ<:Real} = set!(k.transform,ρ)
+set_params!(k::Kernel{T,<:LowRankTransform{<:AbstractMatrix{<:Tm}}},m::AbstractMatrix{<:Tm}) where {T,Tm<:Real} = set!(k.transform,m)
 
-get_params(k::Kernel{T,<:ScaleTransform{<:Base.RefValue{<:Tρ}}}) where {T,Tρ} = [t.transform.s[]]
-get_params(k::Kernel{T,<:ScaleTransform{<:AbstractVector{<:Tρ}}}) where {T,Tρ} = t.transform.s
+get_params(k::Kernel{T,<:ScaleTransform{<:Base.RefValue{<:Tρ}}}) where {T,Tρ} = [k.transform.s[]]
+get_params(k::Kernel{T,<:ScaleTransform{<:AbstractVector{<:Tρ}}}) where {T,Tρ} = k.transform.s
