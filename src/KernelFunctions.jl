@@ -1,6 +1,6 @@
 module KernelFunctions
 
-export kernel, kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
+export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa, kernelpdmat
 export get_params, set_params!
 
 

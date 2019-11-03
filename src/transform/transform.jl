@@ -1,7 +1,19 @@
 export Transform, IdentityTransform, ScaleTransform, LowRankTransform, FunctionTransform, ChainTransform
 export transform
 
+"""
+Abstract type defining a slice-wise transformation on an input matrix
+"""
 abstract type Transform end
+
+
+"""
+```julia
+    transform(t::Transform, X::AbstractMatrix)
+    transform(k::Kernel, X::AbstractMatrix)
+```
+Apply the transfomration `t` or `k.transform` on the input `X`
+"""
 
 include("scaletransform.jl")
 include("lowranktransform.jl")
@@ -9,14 +21,13 @@ include("functiontransform.jl")
 
 
 """
-    ChainTransform
+    Chain a series of transform, here `t1` will be called first
     ```
         t1 = ScaleTransform()
         t2 = LowRankTransform(rand(3,4))
         ct = ChainTransform([t1,t2]) #t1 will be called first
         ct == t2∘t1
     ```
-    Chain a series of transform, here `t1` is called first
 """
 struct ChainTransform <: Transform
     transforms::Vector{Transform}

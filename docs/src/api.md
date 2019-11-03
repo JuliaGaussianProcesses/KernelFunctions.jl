@@ -18,7 +18,7 @@ KernelFunctions
 
 ```@docs
 SqExponentialKernel
-Exponential
+ExponentialKernel
 GammaExponentialKernel
 ExponentiatedKernel
 MaternKernel
@@ -45,6 +45,7 @@ IdentityTransform
 ScaleTransform
 LowRankTransform
 FunctionTransform
+ChainTransform
 ```
 
 ## Functions
@@ -54,6 +55,7 @@ kernelmatrix
 kernelmatrix!
 kerneldiagmatrix
 kerneldiagmatrix!
+kernelpdmat
 transform
 ```
 

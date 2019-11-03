@@ -4,7 +4,7 @@
 The squared exponential kernel is an isotropic Mercer kernel given by the formula:
 
 ```
-    κ(x,y) = exp(-‖x-y‖²)
+    κ(x,y) = exp(-ρ²‖x-y‖²)
 ```
 
 See also [`ExponentialKernel`](@ref) for a
@@ -19,8 +19,9 @@ struct SqExponentialKernel{T,Tr} <: Kernel{T,Tr}
 end
 
 @inline kappa(κ::SqExponentialKernel, d²::Real) = exp(-d²)
+@inline iskroncompatible(::SqExponentialKernel) = true
 
-### Aliases
+## Aliases ##
 const RBFKernel = SqExponentialKernel
 const GaussianKernel = SqExponentialKernel
 
@@ -30,7 +31,7 @@ const GaussianKernel = SqExponentialKernel
 The exponential kernel is an isotropic Mercer kernel given by the formula:
 
 ```
-    κ(x,y) = exp(-‖x-y‖)
+    κ(x,y) = exp(-ρ‖x-y‖)
 ```
 
 """
@@ -43,8 +44,9 @@ struct ExponentialKernel{T,Tr} <: Kernel{T,Tr}
 end
 
 @inline kappa(κ::ExponentialKernel, d::Real) = exp(-d)
+@inline iskroncompatible(::ExponentialKernel) = true
 
-### Aliases
+## Alias ##
 const LaplacianKernel = ExponentialKernel
 
 """
@@ -53,7 +55,7 @@ const LaplacianKernel = ExponentialKernel
 The γ-exponential kernel is an isotropic Mercer kernel given by the formula:
 
 ```
-    κ(x,y) = exp(-‖x-y‖^2γ)
+    κ(x,y) = exp(-ρ^(2γ)‖x-y‖^(2γ))
 ```
 """
 struct GammaExponentialKernel{T,Tr,Tᵧ<:Real} <: Kernel{T,Tr}
@@ -81,3 +83,4 @@ function GammaExponentialKernel(t::Tr,gamma::T₁=2.0) where {Tr<:Transform,T₁
 end
 
 @inline kappa(κ::GammaExponentialKernel, d²::Real) = exp(-d²^κ.γ)
+@inline iskroncompatible(::GammaExponentialKernel) = true
