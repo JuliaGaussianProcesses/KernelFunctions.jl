@@ -1,11 +1,10 @@
 """
-    LinearKernel([ρ=1.0,[c=0.0]])
-
-    The linear kernel is a Mercer kernel given by
+`LinearKernel([ρ=1.0,[c=0.0]])`
+The linear kernel is a Mercer kernel given by
 ```
-    κ(x,y) = xᵀy + c
+    κ(x,y) = ρ²xᵀy + c
 ```
-    Where `c` is a real number
+Where `c` is a real number
 """
 struct LinearKernel{T,Tr,Tc<:Real} <: Kernel{T,Tr}
     transform::Tr
@@ -17,7 +16,7 @@ struct LinearKernel{T,Tr,Tc<:Real} <: Kernel{T,Tr}
 end
 
 function LinearKernel(ρ::T₁=1.0,c::T₂=zero(T₁)) where {T₁<:Real,T₂<:Real}
-    LinearKernel{T₁,ScaleTransform{T₁},T₂}(ScaleTransform(ρ),c)
+    LinearKernel{T₁,ScaleTransform{Base.RefValue{T₁}},T₂}(ScaleTransform(ρ),c)
 end
 
 function LinearKernel(ρ::A,c::T=zero(eltype(ρ))) where {A<:AbstractVector{<:Real},T<:Real}
@@ -31,13 +30,12 @@ end
 @inline kappa(κ::LinearKernel, xᵀy::T) where {T<:Real} = xᵀy + κ.c
 
 """
-    PolynomialKernel([ρ=1.0[,d=2.0[,c=0.0]]])
-
-    The polynomial kernel is a Mercer kernel given by
+`PolynomialKernel([ρ=1.0[,d=2.0[,c=0.0]]])`
+The polynomial kernel is a Mercer kernel given by
 ```
-    κ(x,y) = (xᵀy + c)^d
+    κ(x,y) = (ρ²xᵀy + c)^d
 ```
-    Where `c` is a real number, and `d` is a shape parameter bigger than 1
+Where `c` is a real number, and `d` is a shape parameter bigger than 1
 """
 struct PolynomialKernel{T,Tr,Tc<:Real,Td<:Real} <: Kernel{T,Tr}
     transform::Tr
@@ -51,7 +49,7 @@ end
 
 function PolynomialKernel(ρ::T₁=1.0,d::T₂=2.0,c::T₃=zero(T₁)) where {T₁<:Real,T₂<:Real,T₃<:Real}
     @check_args(PolynomialKernel, d, d >= one(T₁), "d >= 1")
-    PolynomialKernel{T₁,ScaleTransform{T₁},T₂,T₃}(ScaleTransform(ρ),c,d)
+    PolynomialKernel{T₁,ScaleTransform{Base.RefValue{T₁}},T₂,T₃}(ScaleTransform(ρ),c,d)
 end
 
 function PolynomialKernel(ρ::A,d::T₁=2.0,c::T₂=zero(eltype(ρ))) where {A<:AbstractVector{<:Real},T₁<:Real,T₂<:Real}

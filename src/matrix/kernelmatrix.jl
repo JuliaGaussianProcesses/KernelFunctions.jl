@@ -37,7 +37,7 @@ end
 
 ## Apply kernel on two reals ##
 function _kernel(κ::Kernel, x::Real, y::Real)
-    kernel(κ, [x], [y])
+    _kernel(κ, [x], [y])
 end
 
 ## Apply kernel on two vectors ##
@@ -101,9 +101,9 @@ function kerneldiagmatrix(
         )
         @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
         if obsdim == 1
-            [@views kernel(κ,X[i,:],X[i,:]) for i in 1:size(X,obsdim)]
+            [@views _kernel(κ,X[i,:],X[i,:]) for i in 1:size(X,obsdim)]
         elseif obsdim == 2
-            [@views kernel(κ,X[:,i],X[:,i]) for i in 1:size(X,obsdim)]
+            [@views _kernel(κ,X[:,i],X[:,i]) for i in 1:size(X,obsdim)]
         end
 end
 
@@ -125,11 +125,11 @@ function kerneldiagmatrix!(
         end
         if obsdim == 1
             for i in eachindex(K)
-                @inbounds @views K[i] = kernel(κ, X[i,:],X[i,:])
+                @inbounds @views K[i] = _kernel(κ, X[i,:],X[i,:])
             end
         else
             for i in eachindex(K)
-                @inbounds @views K[i] = kernel(κ,X[:,i],X[:,i])
+                @inbounds @views K[i] = _kernel(κ,X[:,i],X[:,i])
             end
         end
         return K

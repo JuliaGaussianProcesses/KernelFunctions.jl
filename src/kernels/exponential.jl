@@ -1,12 +1,10 @@
 """
-    SqExponentialKernel([ρ=1.0])
+`SqExponentialKernel([ρ=1.0])`
 
 The squared exponential kernel is an isotropic Mercer kernel given by the formula:
-
 ```
     κ(x,y) = exp(-ρ²‖x-y‖²)
 ```
-
 See also [`ExponentialKernel`](@ref) for a
 related form of the kernel or [`GammaExponentialKernel`](@ref) for a generalization.
 """
@@ -26,14 +24,11 @@ const RBFKernel = SqExponentialKernel
 const GaussianKernel = SqExponentialKernel
 
 """
-    ExponentialKernel([ρ=1.0])
-
+`ExponentialKernel([ρ=1.0])`
 The exponential kernel is an isotropic Mercer kernel given by the formula:
-
 ```
     κ(x,y) = exp(-ρ‖x-y‖)
 ```
-
 """
 struct ExponentialKernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
@@ -50,10 +45,8 @@ end
 const LaplacianKernel = ExponentialKernel
 
 """
-    GammaExponentialKernel([ρ=1.0,[gamma=2.0]])
-
+`GammaExponentialKernel([ρ=1.0,[gamma=2.0]])`
 The γ-exponential kernel is an isotropic Mercer kernel given by the formula:
-
 ```
     κ(x,y) = exp(-ρ^(2γ)‖x-y‖^(2γ))
 ```
@@ -69,7 +62,7 @@ end
 
 function GammaExponentialKernel(ρ::T₁=1.0,gamma::T₂=2.0) where {T₁<:Real,T₂<:Real}
     @check_args(GammaExponentialKernel, gamma, gamma >= zero(T₂), "gamma > 0")
-    GammaExponentialKernel{T₁,ScaleTransform{T₁},T₂}(ScaleTransform(ρ),gamma)
+    GammaExponentialKernel{T₁,ScaleTransform{Base.RefValue{T₁}},T₂}(ScaleTransform(ρ),gamma)
 end
 
 function GammaExponentialKernel(ρ::A,gamma::T₁=2.0) where {A<:AbstractVector{<:Real},T₁<:Real}

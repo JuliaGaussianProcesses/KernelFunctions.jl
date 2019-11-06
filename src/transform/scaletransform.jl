@@ -1,13 +1,13 @@
 """
-    Scale Transform
+Scale Transform
 ```
     l = 2.0
     tr = ScaleTransform(l)
     v = rand(3)
     tr = ScaleTransform(v)
 ```
-    Multiply every element of the matrix by `l` for a scalar
-    Multiply every vector of observation by `v` element-wise for a vector
+Multiply every element of the matrix by `l` for a scalar
+Multiply every vector of observation by `v` element-wise for a vector
 """
 struct ScaleTransform{T<:Union{Base.RefValue{<:Real},AbstractVector{<:Real}}} <: Transform
     s::T
@@ -50,3 +50,6 @@ transform(t::ScaleTransform{<:AbstractVector{<:Real}},x::AbstractVector{<:Real},
 _transform(t::ScaleTransform{<:AbstractVector{<:Real}},X::AbstractMatrix{<:Real},obsdim::Int=defaultobs) = obsdim == 1 ? t.s'.*X : t.s .* X
 
 transform(t::ScaleTransform{<:Base.RefValue{<:Real}},x::AbstractVecOrMat,obsdim::Int=defaultobs) = t.s[] .* x
+
+Base.isequal(t::ScaleTransform{T},t2::ScaleTransform{T}) where {T<:Base.RefValue{<:Real}} = isequal(t.s[],t2.s[])
+Base.:==(t::ScaleTransform{T},t2::ScaleTransform{T}) where {T<:AbstractVector{<:Real}} = isequal(t.s,t2.s)

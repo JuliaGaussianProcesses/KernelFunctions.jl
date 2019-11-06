@@ -64,8 +64,8 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
             k = GammaExponentialKernel(v,3.0)
             @test k(v1,v2) ≈ exp(-norm(v.*(v1-v2)).^6.0)
             #Coherence :
-            @test kernel(GammaExponentialKernel(1.0,1.0),v1,v2) ≈ kernel(SqExponentialKernel(),v1,v2)
-            @test kernel(GammaExponentialKernel(1.0,0.5),v1,v2) ≈ kernel(ExponentialKernel(),v1,v2)
+            @test KernelFunctions._kernel(GammaExponentialKernel(1.0,1.0),v1,v2) ≈ KernelFunctions._kernel(SqExponentialKernel(),v1,v2)
+            @test KernelFunctions._kernel(GammaExponentialKernel(1.0,0.5),v1,v2) ≈ KernelFunctions._kernel(ExponentialKernel(),v1,v2)
         end
     end
     @testset "Exponentiated" begin

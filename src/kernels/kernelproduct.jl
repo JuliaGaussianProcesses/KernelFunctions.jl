@@ -1,9 +1,13 @@
 """
-    KernelProduct(kernels::Array{Kernel})
+`KernelProduct(kernels::Array{Kernel})`
 Create a multiplication of kernels.
 One can also use the operator `*`
 ```
-    kernelmatrix(SqExponentialKernel()*LinearKernel(),X) == kernelmatrix(SqExponentialKernel(),X).*kernelmatrix(LinearKernel(),X)
+k1 = SqExponentialKernel()
+k2 = LinearKernel()
+k = KernelProduct([k1,k2])
+kernelmatrix(k,X) == kernelmatrix(k1,X).*kernelmatrix(k2,X)
+kernelmatrix(k,X) == kernelmatrix(k1*k2,X)
 ```
 """
 struct KernelProduct{T,Tr} <: Kernel{T,Tr}

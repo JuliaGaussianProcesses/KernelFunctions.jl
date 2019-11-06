@@ -28,6 +28,9 @@ LinearKernel
 PolynomialKernel
 RationalQuadraticKernel
 GammaRationalQuadraticKernel
+ZeroKernel
+ConstantKernel
+WhiteKernel
 ```
 
 ## Kernel Combinations
