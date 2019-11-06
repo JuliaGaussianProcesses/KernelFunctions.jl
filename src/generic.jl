@@ -1,10 +1,9 @@
 @inline metric(κ::Kernel) = κ.metric
 
 ## Allows to iterate over kernels
-Base.length(::Kernel) = 1 #TODO Add test
-
-Base.iterate(k::Kernel) = (k,nothing) #TODO Add test
-Base.iterate(k::Kernel, ::Any) = nothing #TODO Add test
+Base.length(::Kernel) = 1
+Base.iterate(k::Kernel) = (k,nothing)
+Base.iterate(k::Kernel, ::Any) = nothing
 
 ### Syntactic sugar for creating matrices and using kernel functions
 for k in [:ExponentialKernel,:SqExponentialKernel,:GammaExponentialKernel,:MaternKernel,:Matern32Kernel,:Matern52Kernel,:LinearKernel,:PolynomialKernel,:ExponentiatedKernel,:ZeroKernel,:WhiteKernel,:ConstantKernel,:RationalQuadraticKernel,:GammaRationalQuadraticKernel]

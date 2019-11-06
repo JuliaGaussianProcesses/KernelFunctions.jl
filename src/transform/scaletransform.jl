@@ -52,4 +52,4 @@ _transform(t::ScaleTransform{<:AbstractVector{<:Real}},X::AbstractMatrix{<:Real}
 transform(t::ScaleTransform{<:Base.RefValue{<:Real}},x::AbstractVecOrMat,obsdim::Int=defaultobs) = t.s[] .* x
 
 Base.isequal(t::ScaleTransform{T},t2::ScaleTransform{T}) where {T<:Base.RefValue{<:Real}} = isequal(t.s[],t2.s[])
-Base.:==(t::ScaleTransform{T},t2::ScaleTransform{T}) where {T<:AbstractVector{<:Real}} = isequal(t.s,t2.s)
+Base.isequal(t::ScaleTransform{T},t2::ScaleTransform{T}) where {T<:AbstractVector{<:Real}} = isequal(t.s,t2.s)
