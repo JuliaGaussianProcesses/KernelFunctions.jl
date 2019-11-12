@@ -19,7 +19,7 @@ transform
 include("scaletransform.jl")
 include("lowranktransform.jl")
 include("functiontransform.jl")
-
+include("selecttransform.jl")
 
 """
 Chain a series of transform, here `t1` will be called first
