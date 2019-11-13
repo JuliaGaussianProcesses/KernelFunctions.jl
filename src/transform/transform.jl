@@ -2,12 +2,6 @@ export Transform, IdentityTransform, ScaleTransform, LowRankTransform, FunctionT
 export transform
 
 """
-Abstract type defining a slice-wise transformation on an input matrix
-"""
-abstract type Transform end
-
-
-"""
 ```julia
     transform(t::Transform, X::AbstractMatrix)
     transform(k::Kernel, X::AbstractMatrix)

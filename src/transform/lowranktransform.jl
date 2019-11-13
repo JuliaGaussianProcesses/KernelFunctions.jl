@@ -15,6 +15,10 @@ function set!(t::LowRankTransform{<:AbstractMatrix{T}},M::AbstractMatrix{T}) whe
     @assert size(t) == size(M) "Size of the given matrix $(size(M)) and the projection matrix $(size(t)) are not the same"
     t.proj .= M
 end
+set_params!(k::Kernel{T,<:LowRankTransform{<:AbstractMatrix{<:Tm}}},m::AbstractMatrix{<:Tm}) where {T,Tm<:Real} = set!(k.transform,m)
+
+get_params(k::Kernel{T,<:LowRankTransform}) where {T} = get_params(k.transform)
+get_params(t::LowRankTransform) = t.proj
 
 Base.size(tr::LowRankTransform,i::Int) = size(tr.proj,i)
 Base.size(tr::LowRankTransform) = size(tr.proj) #  TODO Add test
@@ -27,7 +31,7 @@ end
 
 function transform(t::LowRankTransform,x::AbstractVector{<:Real},obsdim::Int=defaultobs) #TODO Add test
     @assert size(t,2) == length(x) "Vector has wrong dimensions $(length(x)) compared to projection matrix"
-    t.proj*X
+    t.proj*x
 end
 
 _transform(t::LowRankTransform,X::AbstractVecOrMat{<:Real},obsdim::Int=defaultobs) = obsdim == 2 ? t.proj * X : X * t.proj'

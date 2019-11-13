@@ -62,6 +62,13 @@ Calculate the kernel matrix of `X` (and `Y`) with respect to kernel `κ`.
 """
 kernelmatrix
 
+function kernelmatrix(
+        κ::Kernel,
+        X::AbstractVector{<:Real};
+        obsdim::Int=defaultobs
+        )
+        kernelmatrix(κ,reshape(X,1,:),obsdim=2)
+end
 
 function kernelmatrix(
         κ::Kernel,

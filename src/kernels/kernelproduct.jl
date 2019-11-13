@@ -24,7 +24,7 @@ Base.:*(k::Kernel,kp::KernelProduct) = KernelProduct(vcat(k,kp.kernels))
 Base.:*(kp::KernelProduct,k::Kernel) = KernelProduct(vcat(kp.kernels,k))
 
 Base.length(k::KernelProduct) = length(k.kernels)
-metric(k::KernelProduct) = getmetric.(k.kernels) #TODO Add test
+metric(k::KernelProduct) = metric.(k.kernels) #TODO Add test
 transform(k::KernelProduct) = transform.(k.kernels) #TODO Add test
 transform(k::KernelProduct,x::AbstractVecOrMat) = transform.(k.kernels,[x]) #TODO Add test
 transform(k::KernelProduct,x::AbstractVecOrMat,obsdim::Int) = transform.(k.kernels,[x],obsdim) #TODO Add test

@@ -31,17 +31,23 @@ end
 function set!(t::ScaleTransform{Base.RefValue{T}},ρ::T) where {T<:Real}
     t.s[] = ρ
 end
-
 function set!(t::ScaleTransform{AbstractVector{T}},ρ::AbstractVector{T}) where {T<:Real}
     @assert length(ρ) == dim(t) "Trying to set a vector of size $(length(ρ)) to ScaleTransform of dimension $(dim(t))"
     t.s .= ρ
 end
+set_params!(k::Kernel{T,<:ScaleTransform{<:Base.RefValue{<:Tρ}}},ρ::Tρ) where {T,Tρ<:Real} = set!(k.transform,ρ)
+set_params!(k::Kernel{T,<:ScaleTransform{<:Base.RefValue{<:Tρ}}},ρ::AbstractVector{<:Tρ}) where {T,Tρ<:Real} = set!(k.transform,ρ[1])
+set_params!(k::Kernel{T,<:ScaleTransform{<:AbstractVector{<:Tρ}}},ρ::AbstractVector{<:Tρ}) where {T,Tρ<:Real} = set!(k.transform,ρ)
+
+get_params(k::Kernel{T,<:ScaleTransform}) where {T} = get_params(k.transform)
+get_params(t::ScaleTransform{<:Base.RefValue}) = [t.s[]]
+get_params(t::ScaleTransform{<:AbstractVector}) = t.s
 
 dim(str::ScaleTransform{Base.RefValue{<:Real}}) = 1 #TODO Add test
 dim(str::ScaleTransform{<:AbstractVector{<:Real}}) = length(str.s)
 
 function transform(t::ScaleTransform{<:AbstractVector{<:Real}},X::AbstractMatrix{<:Real},obsdim::Int)
-    @boundscheck if dim(t) != size(X,!Bool(obsdim-1)+1)
+    @boundscheck if dim(t) != size(X,feature_dim(obsdim))
         throw(DimensionMismatch("Array has size $(size(X,!Bool(obsdim-1)+1)) on dimension $(!Bool(obsdim-1)+1)) which does not match the length of the scale transform length , $(dim(t)).")) #TODO Add test
     end
     _transform(t,X,obsdim)

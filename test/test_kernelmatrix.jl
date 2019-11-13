@@ -1,6 +1,7 @@
 using Distances, LinearAlgebra
 using Test
 using KernelFunctions
+using PDMats
 
 dims = [10,5]
 
@@ -35,7 +36,6 @@ k = SqExponentialKernel()
     @testset "KernelSum" begin
         k1 = SqExponentialKernel()
         k2 = LinearKernel()
-        k3 =
         ks = k1 + k2
         w1 = 0.4; w2 = 1.2;
         ks2 = KernelSum([k1,k2],weights=[w1,w2])
@@ -49,12 +49,22 @@ k = SqExponentialKernel()
     @testset "KernelProduct" begin
         k1 = SqExponentialKernel()
         k2 = LinearKernel()
+        k3 = RationalQuadraticKernel()
         kp = k1 * k2
+        kp2 = k1 * k3
+        @test all(KernelFunctions.metric(kp).==[KernelFunctions.metric(k1),KernelFunctions.metric(k2)])
         @test all(kernelmatrix(kp,A) .≈ kernelmatrix(k1,A) .* kernelmatrix(k2,A))
         @test all(kernelmatrix(kp*k1,A) .≈ kernelmatrix(k1,A).^2 .* kernelmatrix(k2,A))
         @test all(kernelmatrix(k1*kp,A) .≈ kernelmatrix(k1,A).^2 .* kernelmatrix(k2,A))
         @test all(kernelmatrix(kp,A) .≈ kernelmatrix(k1,A) .* kernelmatrix(k2,A))
         @test all(kernelmatrix(kp,A,B) .≈ kernelmatrix(k1,A,B) .* kernelmatrix(k2,A,B))
         @test all(kernelmatrix(kp,A) .≈ kernelmatrix(k1,A) .* kernelmatrix(k2,A))
+        @test all(kerneldiagmatrix(kp,A) .== kerneldiagmatrix(k1,A) .* kerneldiagmatrix(k2,A))
+    end
+    @testset "PDMat" begin
+        for obsdim in [1,2]
+            @test all(kernelpdmat(k,A,obsdim=obsdim) .≈ PDMat(kernelmatrix(k,A,obsdim=obsdim)))
+            # @test_throws ErrorException kernelpdmat(k,ones(100,100),obsdim=obsdim)
+        end
     end
 end
