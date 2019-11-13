@@ -63,7 +63,7 @@ k = SqExponentialKernel()
     end
     @testset "PDMat" begin
         for obsdim in [1,2]
-            @test all(kernelpdmat(k,A,obsdim=obsdim) .≈ PDMat(kernelmatrix(k,A,obsdim=obsdim)))
+            @test all(Matrix(kernelpdmat(k,A,obsdim=obsdim)) .≈ Matrix(PDMat(kernelmatrix(k,A,obsdim=obsdim))))
             # @test_throws ErrorException kernelpdmat(k,ones(100,100),obsdim=obsdim)
         end
     end
