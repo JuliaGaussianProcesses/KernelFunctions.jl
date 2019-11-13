@@ -1,10 +1,8 @@
 """
-    ExponentiatedKernel([ρ=1])
-
-    The exponentiated kernel is a Mercer kernel given by:
-
+`ExponentiatedKernel([ρ=1])`
+The exponentiated kernel is a Mercer kernel given by:
 ```
-        κ(x,y) = exp(xᵀy)
+    κ(x,y) = exp(ρ²xᵀy)
 ```
 """
 struct ExponentiatedKernel{T,Tr} <: Kernel{T,Tr}

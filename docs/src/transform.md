@@ -7,6 +7,9 @@ You can also create a pipeline of `Transform` via `TransformChain`. For example 
 One apply a transformation on a matrix or a vector via `transform(t::Transform,v::AbstractVecOrMat)`
 
 ## Transforms :
+```@meta
+CurrentModule = KernelFunctions
+```
 
 ```@docs
   IdentityTransform

@@ -1,9 +1,14 @@
 """
-    KernelSum(kernels::Array{Kernel};weights::Array{Real}=ones(length(kernels)))
+`KernelSum(kernels::Array{Kernel};weights::Array{Real}=ones(length(kernels)))`
 Create a positive weighted sum of kernels.
 One can also use the operator `+`
 ```
-    kernelmatrix(SqExponentialKernel()+LinearKernel(),X) == kernelmatrix(SqExponentialKernel(),X).+kernelmatrix(LinearKernel(),X)
+k1 = SqExponentialKernel()
+k2 = LinearKernel()
+k = KernelSum([k1,k2])
+kernelmatrix(k,X) == kernelmatrix(k1,X).+kernelmatrix(k2,X)
+kernelmatrix(k,X) == kernelmatrix(k1+k2,X)
+kweighted = 0.5*k1 + 2.0*k2
 ```
 """
 struct KernelSum{T,Tr} <: Kernel{T,Tr}

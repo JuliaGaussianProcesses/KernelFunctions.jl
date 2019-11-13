@@ -28,7 +28,7 @@ k = SqExponentialKernel()
             @test kerneldiagmatrix(k,A,obsdim=obsdim) == diag(kernelmatrix(k,A,obsdim=obsdim))
             @test k(A,B,obsdim=obsdim) == kernelmatrix(k,A,B,obsdim=obsdim)
             @test k(A,obsdim=obsdim) == kernelmatrix(k,A,obsdim=obsdim)
-            @test kernel(k,1.0,2.0) == kernel(k,[1.0],[2.0])
+            @test KernelFunctions._kernel(k,1.0,2.0) == KernelFunctions._kernel(k,[1.0],[2.0])
             @test_throws DimensionMismatch kernelmatrix(k,A,C,obsdim=obsdim)
         end
     end

@@ -34,9 +34,13 @@ The aim is to make the API as model-agnostic as possible while still being user-
   <img src="docs/src/assets/heatmap_combination.png" width=400px>
 </p>
 
-## Objectives (by priority)
-- AD Compatibility (Zygote, ForwardDiff)
-- Toeplitz Matrices
+## Packages goals (by priority)
+- Ensure AD Compatibility (Zygote, ForwardDiff)
+- Toeplitz Matrices compatibility
 - BLAS backend
 
 Directly inspired by the [MLKernels](https://github.com/trthatcher/MLKernels.jl) package.
+
+## Issues/Contributing
+
+If you notice a problem or would like to contribute by adding more kernel functions or features please [submit an issue](https://github.com/theogf/KernelFunctions.jl/issues).
