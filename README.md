@@ -35,7 +35,7 @@ The aim is to make the API as model-agnostic as possible while still being user-
 </p>
 
 ## Packages goals (by priority)
-- Ensure AD Compatibility (Zygote, ForwardDiff)
+- Ensure AD Compatibility (already the case for Zygote, ForwardDiff)
 - Toeplitz Matrices compatibility
 - BLAS backend
 
