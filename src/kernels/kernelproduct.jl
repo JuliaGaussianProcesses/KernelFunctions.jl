@@ -18,6 +18,8 @@ function KernelProduct(kernels::AbstractVector{<:Kernel})
     KernelProduct{eltype(kernels),Transform}(kernels)
 end
 
+params(k::KernelProduct) = params.(k.kernels)
+
 Base.:*(k1::Kernel,k2::Kernel) = KernelProduct([k1,k2])
 Base.:*(k1::KernelProduct,k2::KernelProduct) = KernelProduct(vcat(k1.kernels,k2.kernels)) #TODO Add test
 Base.:*(k::Kernel,kp::KernelProduct) = KernelProduct(vcat(k,kp.kernels))

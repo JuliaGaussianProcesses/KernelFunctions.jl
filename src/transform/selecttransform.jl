@@ -10,6 +10,9 @@ Select the dimensions `dims` that the kernel is applied to.
 """
 struct SelectTransform{T<:AbstractVector{<:Int}} <: Transform
     select::T
+    function SelectTransform{V}(dims::V) where {V}
+        new{V}(dims)
+    end
 end
 
 function SelectTransform(dims::V) where {V<:AbstractVector{T} where  {T<:Int}}
@@ -17,11 +20,10 @@ function SelectTransform(dims::V) where {V<:AbstractVector{T} where  {T<:Int}}
     SelectTransform{V}(dims)
 end
 
-get_params(t::SelectTransform) = t.select
-get_params(k::Kernel{T,<:SelectTransform}) where {T} = get_params(k.transform)
-
 set!(t::SelectTransform{<:AbstractVector{T}},dims::AbstractVector{T}) where {T<:Int} = t.select .= dims
 set_params!(k::Kernel{T,<:SelectTransform{Td}},dims::AbstractVector{Td}) where {T,Td<:Int} = set!(k.transform,dims)
+
+params(t::SelectTransform) = t.select
 
 Base.maximum(t::SelectTransform) = maximum(t.select)
 

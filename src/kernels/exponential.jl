@@ -60,6 +60,8 @@ struct GammaExponentialKernel{T,Tr,Tᵧ<:Real} <: Kernel{T,Tr}
     end
 end
 
+params(k::GammaExponentialKernel) = (params(transform),γ)
+
 function GammaExponentialKernel(ρ::T₁=1.0,gamma::T₂=2.0) where {T₁<:Real,T₂<:Real}
     @check_args(GammaExponentialKernel, gamma, gamma >= zero(T₂), "gamma > 0")
     GammaExponentialKernel{T₁,ScaleTransform{Base.RefValue{T₁}},T₂}(ScaleTransform(ρ),gamma)

@@ -13,3 +13,5 @@ struct FunctionTransform{F} <: Transform
 end
 
 transform(t::FunctionTransform,X::T,obsdim::Int=defaultobs) where {T} = mapslices(t.f,X,dims=obsdim)
+
+params(t::FunctionTransform) = t.f

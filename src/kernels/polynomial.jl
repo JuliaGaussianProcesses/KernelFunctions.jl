@@ -27,6 +27,8 @@ function LinearKernel(t::Tr,c::T=zero(Float64)) where {Tr<:Transform,T<:Real}
     LinearKernel{eltype(t),Tr,T}(t,c)
 end
 
+params(k::LinearKernel) = (params(transform(k)),k.c)
+
 @inline kappa(κ::LinearKernel, xᵀy::T) where {T<:Real} = xᵀy + κ.c
 
 """
@@ -61,5 +63,7 @@ function PolynomialKernel(t::Tr,d::T₁=2.0,c::T₂=zero(eltype(T₁))) where {T
     @check_args(PolynomialKernel, d, d >= one(T₁), "d >= 1")
     PolynomialKernel{eltype(Tr),Tr,T₁,T₂}(t,c,d)
 end
+
+params(k::PolynomialKernel) = (params(transform(k)),k.d,k.c)
 
 @inline kappa(κ::PolynomialKernel, xᵀy::T) where {T<:Real} = (xᵀy + κ.c)^(κ.d)

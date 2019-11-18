@@ -55,6 +55,8 @@ struct ConstantKernel{T,Tr,Tc<:Real} <: Kernel{T,Tr}
     end
 end
 
+params(k::ConstantKernel) = (params(k.transform),k.c)
+
 function ConstantKernel(c::Tc=1.0) where {Tc<:Real}
     ConstantKernel{Float64,IdentityTransform,Tc}(IdentityTransform(),c)
 end

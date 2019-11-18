@@ -34,6 +34,10 @@ function ChainTransform(v::AbstractVector{<:Transform})
     ChainTransform(v)
 end
 
+function ChainTransform(v::AbstractVector{<:Type{<:Transform}},θ::AbstractVector)
+    ChainTransform(v.(θ))
+end
+
 function transform(t::ChainTransform,X::T,obsdim::Int=defaultobs) where {T}
     Xtr = copy(X)
     for tr in t.transforms
@@ -41,6 +45,9 @@ function transform(t::ChainTransform,X::T,obsdim::Int=defaultobs) where {T}
     end
     return Xtr
 end
+
+set_params!(t::ChainTransform,θ) = set_params!(t.transforms,θ)
+params(t::ChainTransform) = (base_transform(t.transforms),params.(t.transforms))
 
 Base.:∘(t₁::Transform,t₂::Transform) = ChainTransform([t₂,t₁])
 Base.:∘(t::Transform,tc::ChainTransform) = ChainTransform(vcat(tc.transforms,t)) #TODO add test
@@ -51,6 +58,8 @@ IdentityTransform
 Return exactly the input
 """
 struct IdentityTransform <: Transform end
+
+params(t::IdentityTransform) = nothing
 
 transform(t::IdentityTransform,x::AbstractArray,obsdim::Int=defaultobs) = x #TODO add test
 

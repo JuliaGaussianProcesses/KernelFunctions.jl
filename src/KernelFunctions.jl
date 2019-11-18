@@ -22,17 +22,15 @@ using PDMats: PDMat
 
 const defaultobs = 2
 
-include("utils.jl")
-include("distances/dotproduct.jl")
-include("distances/delta.jl")
-
-
 """
 Abstract type defining a slice-wise transformation on an input matrix
 """
 abstract type Transform end
 abstract type Kernel{T,Tr<:Transform} end
 
+include("utils.jl")
+include("distances/dotproduct.jl")
+include("distances/delta.jl")
 include("transform/transform.jl")
 kernels = ["exponential","matern","polynomial","constant","rationalquad","exponentiated"]
 for k in kernels

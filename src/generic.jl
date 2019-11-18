@@ -32,3 +32,5 @@ end
 function set_params!(k::Kernel,x)
     @error "Setting parameters to this kernel is either not possible or has not been implemented"
 end
+
+params(k::Kernel) = (params(k.transform),)

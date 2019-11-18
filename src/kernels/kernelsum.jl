@@ -19,12 +19,13 @@ struct KernelSum{T,Tr} <: Kernel{T,Tr}
     end
 end
 
-
 function KernelSum(kernels::AbstractVector{<:Kernel}; weights::AbstractVector{<:Real}=ones(Float64,length(kernels)))
     @assert length(kernels)==length(weights) "Weights and kernel vector should be of the same length"
     @assert all(weights.>=0) "All weights should be positive"
     KernelSum{eltype(kernels),Transform}(kernels,weights)
 end
+
+params(k::KernelSum) = (k.weights,params.(k.kernels))
 
 Base.:+(k1::Kernel,k2::Kernel) = KernelSum([k1,k2],weights=[1.0,1.0])
 Base.:+(k1::KernelSum,k2::KernelSum) = KernelSum(vcat(k1.kernels,k2.kernels),weights=vcat(k1.weights,k2.weights))
