@@ -14,21 +14,21 @@ The aim is to make the API as model-agnostic as possible while still being user-
   X = reshape(collect(range(-3.0,3.0,length=100)),:,1)
   # Set simple scaling of the data
   k₁ = SqExponentialKernel(1.0)
-  K₁ = kernelmatrix(k,X,obsdim=1)
+  K₁ = kernelmatrix(k₁,X,obsdim=1)
 
   # Set a function transformation on the data
   k₂ = MaternKernel(FunctionTransform(x->sin.(x)))
-  K₂ = kernelmatrix(k,X,obsdim=1)
+  K₂ = kernelmatrix(k₂,X,obsdim=1)
 
   # Set a matrix premultiplication on the data
-  k₃ = PolynomialKernel(LowRankTransform(randn(4,1)),0.0,2.0)
-  K₃ = kernelmatrix(k,X,obsdim=1)
+  k₃ = PolynomialKernel(LowRankTransform(randn(4,1)),2.0,0.0)
+  K₃ = kernelmatrix(k₃,X,obsdim=1)
 
   # Add and sum kernels
   k₄ = 0.5*SqExponentialKernel()*LinearKernel(0.5) + 0.4*k₂
-  K₄ = kernelmatrix(k,X,obsdim=1)
+  K₄ = kernelmatrix(k₄,X,obsdim=1)
 
-  plot(heatmap.([K₁,K₂,K₃,K₄],yflip=true,colorbar=false)...,layout=(2,2))
+  plot(heatmap.([K₁,K₂,K₃,K₄],yflip=true,colorbar=false)...,layout=(2,2),title=["K₁" "K₂" "K₃" "K₄"])
 ```
 <p align=center>
   <img src="docs/src/assets/heatmap_combination.png" width=400px>
