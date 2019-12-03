@@ -15,7 +15,7 @@ export KernelSum, KernelProduct
 export SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
 
 
-using Distances, LinearAlgebra, StaticArrays
+using Distances, LinearAlgebra
 using SpecialFunctions: lgamma, besselk
 using StatsFuns: logtwo
 using PDMats: PDMat

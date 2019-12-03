@@ -18,9 +18,15 @@ f(x) = sin.(x)
     ## Test Scale Transform
     @testset "ScaleTransform" begin
         t = ScaleTransform(s)
-        vt1 = ScaleTransform(v1)
-        vt2 = ScaleTransform(v2)
         @test all(KernelFunctions.transform(t,X).==s*X)
+        s2 = 2.0
+        KernelFunctions.set!(t,s2)
+        @test all(t.s.==[s2])
+    end
+    ## Test ARD Transform
+    @testset "ARDTransform" begin
+        vt1 = ARDTransform(v1)
+        vt2 = ARDTransform(v2)
         @test all(KernelFunctions.transform(vt1,X,1).==v1'.*X)
         @test all(KernelFunctions.transform(vt2,X,2).==v2.*X)
     end

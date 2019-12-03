@@ -70,7 +70,7 @@ end
 
 function GammaExponentialKernel(ρ::AbstractVector{T₁},gamma::T₂=2.0) where {T₁<:Real,T₂<:Real}
     @check_args(GammaExponentialKernel, gamma, gamma >= zero(T₂), "gamma > 0")
-    GammaExponentialKernel{T₁,ARDTransform{T₁,length(ρ)},T₂}(ScaleTransform(ρ),gamma)
+    GammaExponentialKernel{T₁,ARDTransform{T₁,length(ρ)},T₂}(ARDTransform(ρ),gamma)
 end
 
 function GammaExponentialKernel(t::Tr,gamma::T₁=2.0) where {Tr<:Transform,T₁<:Real}
