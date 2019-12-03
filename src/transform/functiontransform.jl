@@ -15,3 +15,4 @@ end
 transform(t::FunctionTransform,X::T,obsdim::Int=defaultobs) where {T} = mapslices(t.f,X,dims=obsdim)
 
 params(t::FunctionTransform) = t.f
+opt_params(t::FunctionTransform) = nothing

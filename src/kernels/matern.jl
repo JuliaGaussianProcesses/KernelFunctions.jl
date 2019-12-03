@@ -17,12 +17,12 @@ end
 
 function MaternKernel(ρ::T₁=1.0,ν::T₂=1.5) where {T₁<:Real,T₂<:Real}
     @check_args(MaternKernel, ν, ν > zero(T₂), "ν > 0")
-    MaternKernel{T₁,ScaleTransform{Base.RefValue{T₁}},T₂}(ScaleTransform(ρ),ν)
+    MaternKernel{T₁,ScaleTransform{T₁},T₂}(ScaleTransform(ρ),ν)
 end
 
-function MaternKernel(ρ::A,ν::T=1.5) where {A<:AbstractVector{<:Real},T<:Real}
-    @check_args(MaternKernel, ν, ν > zero(T), "ν > 0")
-    MaternKernel{eltype(A),ScaleTransform{A},T}(ScaleTransform(ρ),ν)
+function MaternKernel(ρ::AbstractVector{T₁},ν::T₂=1.5) where {T₁<:Real,T₂<:Real}
+    @check_args(MaternKernel, ν, ν > zero(T₂), "ν > 0")
+    MaternKernel{T₁,ARDTransform{T₁,length(ρ)},T₂}(ARDTransform(ρ),ν)
 end
 
 function MaternKernel(t::Tr,ν::T=1.5) where {Tr<:Transform,T<:Real}
@@ -31,6 +31,7 @@ function MaternKernel(t::Tr,ν::T=1.5) where {Tr<:Transform,T<:Real}
 end
 
 params(k::MaternKernel) = (params(transform(k)),k.ν)
+opt_params(k::MaternKernel) = (opt_params(transform(k)),k.ν)
 
 @inline kappa(κ::MaternKernel, d::Real) = iszero(d) ? one(d) : exp((1.0-κ.ν)*logtwo-lgamma(κ.ν) + κ.ν*log(sqrt(2κ.ν)*d)+log(besselk(κ.ν,sqrt(2κ.ν)*d)))
 

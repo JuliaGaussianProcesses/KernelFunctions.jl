@@ -16,9 +16,8 @@ function set!(t::LowRankTransform{<:AbstractMatrix{T}},M::AbstractMatrix{T}) whe
     t.proj .= M
 end
 
-set_params!(k::Kernel{T,<:LowRankTransform{<:AbstractMatrix{<:Tm}}},m::AbstractMatrix{<:Tm}) where {T,Tm<:Real} = set!(k.transform,m)
-
 params(t::LowRankTransform) = t.proj
+opt_params(t::LowRankTransform) = params(t)
 
 Base.size(tr::LowRankTransform,i::Int) = size(tr.proj,i)
 Base.size(tr::LowRankTransform) = size(tr.proj) #  TODO Add test

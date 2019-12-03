@@ -15,7 +15,7 @@ export KernelSum, KernelProduct
 export SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
 
 
-using Distances, LinearAlgebra
+using Distances, LinearAlgebra, StaticArrays
 using SpecialFunctions: lgamma, besselk
 using StatsFuns: logtwo
 using PDMats: PDMat
@@ -42,6 +42,6 @@ include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
 
 include("generic.jl")
-
+include("squeeze.jl")
 
 end

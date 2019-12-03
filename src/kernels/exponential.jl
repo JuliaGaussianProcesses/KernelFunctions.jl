@@ -61,15 +61,16 @@ struct GammaExponentialKernel{T,Tr,Tᵧ<:Real} <: Kernel{T,Tr}
 end
 
 params(k::GammaExponentialKernel) = (params(transform),γ)
+opt_params(k::GammaExponentialKernel) = (opt_params(transform),γ)
 
 function GammaExponentialKernel(ρ::T₁=1.0,gamma::T₂=2.0) where {T₁<:Real,T₂<:Real}
     @check_args(GammaExponentialKernel, gamma, gamma >= zero(T₂), "gamma > 0")
-    GammaExponentialKernel{T₁,ScaleTransform{Base.RefValue{T₁}},T₂}(ScaleTransform(ρ),gamma)
+    GammaExponentialKernel{T₁,ScaleTransform{T₁},T₂}(ScaleTransform(ρ),gamma)
 end
 
-function GammaExponentialKernel(ρ::A,gamma::T₁=2.0) where {A<:AbstractVector{<:Real},T₁<:Real}
-    @check_args(GammaExponentialKernel, gamma, gamma >= zero(T₁), "gamma > 0")
-    GammaExponentialKernel{eltype(A),ScaleTransform{A},T₁}(ScaleTransform(ρ),gamma)
+function GammaExponentialKernel(ρ::AbstractVector{T₁},gamma::T₂=2.0) where {T₁<:Real,T₂<:Real}
+    @check_args(GammaExponentialKernel, gamma, gamma >= zero(T₂), "gamma > 0")
+    GammaExponentialKernel{T₁,ARDTransform{T₁,length(ρ)},T₂}(ScaleTransform(ρ),gamma)
 end
 
 function GammaExponentialKernel(t::Tr,gamma::T₁=2.0) where {Tr<:Transform,T₁<:Real}
