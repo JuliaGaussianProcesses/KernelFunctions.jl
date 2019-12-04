@@ -61,5 +61,5 @@ function kerneldiagmatrix(
     κ::KernelSum,
     X::AbstractMatrix;
     obsdim::Int=defaultobs)
-    sum(kerneldiagmatrix(κ.kernels[i],X,obsdim=obsdim) for i in 1:length(κ))
+    sum(κ.weights[i]*kerneldiagmatrix(κ.kernels[i],X,obsdim=obsdim) for i in 1:length(κ))
 end
