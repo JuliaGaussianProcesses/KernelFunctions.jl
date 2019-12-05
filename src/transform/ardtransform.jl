@@ -26,7 +26,6 @@ function set!(t::ARDTransform{T},ρ::AbstractVector{T}) where {T<:Real}
 end
 
 params(t::ARDTransform) = t.v
-opt_params(t::ARDTransform) = t.v
 dim(t::ARDTransform) = length(t.v)
 
 function transform(t::ARDTransform,X::AbstractMatrix{<:Real},obsdim::Int)

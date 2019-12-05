@@ -32,7 +32,8 @@ end
 
 set!(t::ChainTransform,θ) = set!.(t.transforms,θ)
 params(t::ChainTransform) = (params.(t.transforms))
-opt_params(t::ChainTransform) = (opt_params.(t.transforms))
+duplicate(t::ChainTransform,θ) = ChainTransform(duplicate.(t.transforms,θ))
+
 
 Base.:∘(t₁::Transform,t₂::Transform) = ChainTransform([t₂,t₁])
 Base.:∘(t::Transform,tc::ChainTransform) = ChainTransform(vcat(tc.transforms,t)) #TODO add test

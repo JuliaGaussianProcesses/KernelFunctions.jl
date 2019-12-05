@@ -17,7 +17,6 @@ function set!(t::LowRankTransform{<:AbstractMatrix{T}},M::AbstractMatrix{T}) whe
 end
 
 params(t::LowRankTransform) = t.proj
-opt_params(t::LowRankTransform) = params(t)
 
 Base.size(tr::LowRankTransform,i::Int) = size(tr.proj,i)
 Base.size(tr::LowRankTransform) = size(tr.proj) #  TODO Add test

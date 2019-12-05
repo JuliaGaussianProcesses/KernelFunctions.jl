@@ -24,6 +24,7 @@ Return exactly the input
 struct IdentityTransform <: Transform end
 
 params(t::IdentityTransform) = nothing
+duplicate(t::IdentityTransform,θ) = t
 
 transform(t::IdentityTransform,x::AbstractArray,obsdim::Int=defaultobs) = x #TODO add test
 

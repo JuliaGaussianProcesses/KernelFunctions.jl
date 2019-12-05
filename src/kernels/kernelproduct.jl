@@ -20,6 +20,7 @@ end
 
 params(k::KernelProduct) = params.(k.kernels)
 opt_params(k::KernelProduct) = opt_params.(k.kernels)
+duplicate(k::KernelProduct,θ) = KernelProduct(duplicate.(k.kernels,θ))
 
 Base.:*(k1::Kernel,k2::Kernel) = KernelProduct([k1,k2])
 Base.:*(k1::KernelProduct,k2::KernelProduct) = KernelProduct(vcat(k1.kernels,k2.kernels)) #TODO Add test

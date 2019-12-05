@@ -16,3 +16,4 @@ transform(t::FunctionTransform,X::T,obsdim::Int=defaultobs) where {T} = mapslice
 
 params(t::FunctionTransform) = t.f
 opt_params(t::FunctionTransform) = nothing
+duplicate(t::FunctionTransform,θ) = t
