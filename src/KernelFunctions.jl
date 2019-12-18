@@ -1,7 +1,7 @@
 module KernelFunctions
 
-export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa, kernelpdmat
-export get_params, set_params!
+export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa, kernelpdmat # Main matrix functions
+export params, duplicate, set! # Helpers
 
 export Kernel
 export ConstantKernel, WhiteKernel, ZeroKernel
@@ -12,8 +12,7 @@ export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
 export KernelSum, KernelProduct
 
-export SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
-
+export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
 
 using Distances, LinearAlgebra
 using SpecialFunctions: lgamma, besselk
@@ -42,6 +41,5 @@ include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
 
 include("generic.jl")
-include("squeeze.jl")
 
 end

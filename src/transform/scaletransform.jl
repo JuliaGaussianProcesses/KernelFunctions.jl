@@ -16,9 +16,7 @@ function ScaleTransform(s::T=1.0) where {T<:Real}
 end
 
 set!(t::ScaleTransform,ρ::Real) = t.s .= [ρ]
-
 params(t::ScaleTransform) = first(t.s)
-opt_params(t::ScaleTransform) = first(t.s)
 dim(str::ScaleTransform) = 1
 
 transform(t::ScaleTransform,x::AbstractVecOrMat,obsdim::Int=defaultobs) = first(t.s) * x

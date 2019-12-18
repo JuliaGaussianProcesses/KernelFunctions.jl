@@ -28,11 +28,3 @@ for kernel in [:ExponentialKernel,:SqExponentialKernel,:Matern32Kernel,:Matern52
         $kernel(t::Tr) where {Tr<:Transform} = $kernel{eltype(t),Tr}(t)
     end
 end
-
-function set_params!(k::Kernel,x)
-    set!(k.transform,first(x))
-end
-
-
-params(k::Kernel) = (params(k.transform),)
-opt_params(k::Kernel) = (opt_params(k.transform),)

@@ -12,7 +12,7 @@ struct FunctionTransform{F} <: Transform
     f::F
 end
 
-transform(t::FunctionTransform,X::T,obsdim::Int=defaultobs) where {T} = mapslices(t.f,X,dims=obsdim)
+transform(t::FunctionTransform,X::T,obsdim::Int=defaultobs) where {T} = mapslices(t.f,X,dims=feature_dim(obsdim))
 
+duplicate(t::FunctionTransform,f) = FunctionTransform(f)
 params(t::FunctionTransform) = t.f
-opt_params(t::FunctionTransform) = nothing
