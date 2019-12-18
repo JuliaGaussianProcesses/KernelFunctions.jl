@@ -11,5 +11,6 @@ include("test_transform.jl")
 include("test_distances.jl")
 include("test_kernels.jl")
 include("test_generic.jl")
+include("test_adjoints.jl")
     #include("types.jl")
 end
