@@ -14,6 +14,7 @@ export KernelSum, KernelProduct
 
 export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
 
+using Compat
 using Distances, LinearAlgebra
 using SpecialFunctions: lgamma, besselk
 using Zygote: @adjoint

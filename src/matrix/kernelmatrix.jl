@@ -108,9 +108,9 @@ function kerneldiagmatrix(
         )
         @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
         if obsdim == 1
-            [@views _kernel(κ,X[i,:],X[i,:]) for i in 1:size(X,obsdim)]
+            @compat eachrow(X) .|> x->_kernel(κ,x,x) #[@views _kernel(κ,X[i,:],X[i,:]) for i in 1:size(X,obsdim)]
         elseif obsdim == 2
-            [@views _kernel(κ,X[:,i],X[:,i]) for i in 1:size(X,obsdim)]
+            @compat eachcol(X) .|> x->_kernel(κ,x,x) #[@views _kernel(κ,X[:,i],X[:,i]) for i in 1:size(X,obsdim)]
         end
 end
 
