@@ -14,8 +14,10 @@ export KernelSum, KernelProduct
 
 export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
 
+using Compat
 using Distances, LinearAlgebra
 using SpecialFunctions: lgamma, besselk
+using Zygote: @adjoint
 using StatsFuns: logtwo
 using PDMats: PDMat
 
@@ -41,5 +43,7 @@ include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
 
 include("generic.jl")
+
+include("zygote_adjoints.jl")
 
 end
