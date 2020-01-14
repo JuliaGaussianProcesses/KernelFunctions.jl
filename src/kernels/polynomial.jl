@@ -8,10 +8,10 @@ Where `c` is a real number
 """
 struct LinearKernel{T,Tr,Tc<:Real} <: Kernel{T,Tr}
     transform::Tr
-    metric::DotProduct
     c::Tc
+
     function LinearKernel{T,Tr,Tc}(transform::Tr,c::Tc) where {T,Tr<:Transform,Tc<:Real}
-        return new{T,Tr,Tc}(transform,DotProduct(),c)
+        return new{T,Tr,Tc}(transform,c)
     end
 end
 
@@ -32,6 +32,8 @@ opt_params(k::LinearKernel) = (opt_params(transform(k)),k.c)
 
 @inline kappa(κ::LinearKernel, xᵀy::T) where {T<:Real} = xᵀy + κ.c
 
+metric(::LinearKernel) = DotProduct()
+
 """
 `PolynomialKernel([ρ=1.0[,d=2.0[,c=0.0]]])`
 The polynomial kernel is a Mercer kernel given by
@@ -42,11 +44,11 @@ Where `c` is a real number, and `d` is a shape parameter bigger than 1
 """
 struct PolynomialKernel{T,Tr,Tc<:Real,Td<:Real} <: Kernel{T,Tr}
     transform::Tr
-    metric::DotProduct
     c::Tc
     d::Td
+
     function PolynomialKernel{T,Tr,Tc,Td}(transform::Tr,c::Tc,d::Td) where {T,Tr<:Transform,Tc<:Real,Td<:Real}
-        return new{T,Tr,Tc,Td}(transform,DotProduct(),c,d)
+        return new{T,Tr,Tc,Td}(transform,c,d)
     end
 end
 
@@ -69,3 +71,5 @@ params(k::PolynomialKernel) = (params(transform(k)),k.d,k.c)
 opt_params(k::PolynomialKernel) = (opt_params(transform(k)),k.d,k.c)
 
 @inline kappa(κ::PolynomialKernel, xᵀy::T) where {T<:Real} = (xᵀy + κ.c)^(κ.d)
+
+metric(::PolynomialKernel) = DotProduct()
