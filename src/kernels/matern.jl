@@ -8,10 +8,10 @@ For `ν=n+1/2, n=0,1,2,...` it can be simplified and you should instead use [`Ex
 """
 struct MaternKernel{T,Tr,Tν<:Real} <: Kernel{T,Tr}
     transform::Tr
-    metric::Euclidean
     ν::Tν
+
     function MaternKernel{T,Tr,Tν}(transform::Tr,ν::Tν) where {T,Tr<:Transform,Tν<:Real}
-        return new{T,Tr,Tν}(transform,Euclidean(),ν)
+        return new{T,Tr,Tν}(transform,ν)
     end
 end
 
@@ -35,6 +35,8 @@ opt_params(k::MaternKernel) = (opt_params(transform(k)),k.ν)
 
 @inline kappa(κ::MaternKernel, d::Real) = iszero(d) ? one(d) : exp((1.0-κ.ν)*logtwo-logabsgamma(κ.ν)[1] + κ.ν*log(sqrt(2κ.ν)*d)+log(besselk(κ.ν,sqrt(2κ.ν)*d)))
 
+metric(::MaternKernel) = Euclidean()
+
 """
 `Matern32Kernel([ρ=1.0])`
 The matern 3/2 kernel is an isotropic Mercer kernel given by the formula:
@@ -44,13 +46,15 @@ The matern 3/2 kernel is an isotropic Mercer kernel given by the formula:
 """
 struct Matern32Kernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
-    metric::Euclidean
+
     function Matern32Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
-        return new{T,Tr}(transform,Euclidean())
+        return new{T,Tr}(transform)
     end
 end
 
 @inline kappa(κ::Matern32Kernel, d::T) where {T<:Real} = (1+sqrt(3)*d)*exp(-sqrt(3)*d)
+
+metric(::Matern32Kernel) = Euclidean()
 
 """
 `Matern52Kernel([ρ=1.0])`
@@ -61,10 +65,12 @@ The matern 5/2 kernel is an isotropic Mercer kernel given by the formula:
 """
 struct Matern52Kernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
-    metric::Euclidean
+
     function Matern52Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
-        return new{T,Tr}(transform,Euclidean())
+        return new{T,Tr}(transform)
     end
 end
 
 @inline kappa(κ::Matern52Kernel, d::Real) where {T} = (1+sqrt(5)*d+5*d^2/3)*exp(-sqrt(5)*d)
+
+metric(::Matern52Kernel) = Euclidean()

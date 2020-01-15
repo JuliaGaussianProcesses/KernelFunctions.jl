@@ -5,9 +5,9 @@ Create a kernel always returning zero
 """
 struct ZeroKernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
-    metric::Delta
+
     function ZeroKernel{T,Tr}(t::Tr) where {T,Tr<:Transform}
-        new{T,Tr}(t,Delta())
+        new{T,Tr}(t)
     end
 end
 
@@ -16,6 +16,8 @@ function ZeroKernel(t::Tr=IdentityTransform()) where {Tr<:Transform}
 end
 
 @inline kappa(κ::ZeroKernel,d::T) where {T<:Real} = zero(T)
+
+metric(::ZeroKernel) = Delta()
 
 """
 `WhiteKernel([tr=IdentityTransform()])`
@@ -27,9 +29,9 @@ Kernel function working as an equivalent to add white noise.
 """
 struct WhiteKernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
-    metric::Delta
+
     function WhiteKernel{T,Tr}(t::Tr) where {T,Tr<:Transform}
-        new{T,Tr}(t,Delta())
+        new{T,Tr}(t)
     end
 end
 
@@ -38,6 +40,8 @@ function WhiteKernel(t::Tr=IdentityTransform()) where {Tr<:Transform}
 end
 
 @inline kappa(κ::WhiteKernel,δₓₓ::Real) = δₓₓ
+
+metric(::WhiteKernel) = Delta()
 
 """
 `ConstantKernel([tr=IdentityTransform(),[c=1.0]])`
@@ -48,10 +52,10 @@ Kernel function always returning a constant value `c`
 """
 struct ConstantKernel{T,Tr,Tc<:Real} <: Kernel{T,Tr}
     transform::Tr
-    metric::Delta
     c::Tc
+
     function ConstantKernel{T,Tr,Tc}(t::Tr,c::Tc) where {T,Tr<:Transform,Tc<:Real}
-        new{T,Tr,Tc}(t,Delta(),c)
+        new{T,Tr,Tc}(t,c)
     end
 end
 
@@ -67,3 +71,5 @@ function ConstantKernel(t::Tr,c::Tc=1.0) where {Tr<:Transform,Tc<:Real}
 end
 
 @inline kappa(κ::ConstantKernel,x::Real) = κ.c
+
+metric(::ConstantKernel) = Delta()

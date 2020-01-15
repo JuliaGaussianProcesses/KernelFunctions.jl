@@ -10,14 +10,16 @@ related form of the kernel or [`GammaExponentialKernel`](@ref) for a generalizat
 """
 struct SqExponentialKernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
-    metric::SqEuclidean
+
     function SqExponentialKernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
-        return new{T,Tr}(transform,SqEuclidean())
+        return new{T,Tr}(transform)
     end
 end
 
 @inline kappa(κ::SqExponentialKernel, d²::Real) = exp(-d²)
 @inline iskroncompatible(::SqExponentialKernel) = true
+
+metric(::SqExponentialKernel) = SqEuclidean()
 
 ## Aliases ##
 const RBFKernel = SqExponentialKernel
@@ -32,14 +34,15 @@ The exponential kernel is an isotropic Mercer kernel given by the formula:
 """
 struct ExponentialKernel{T,Tr} <: Kernel{T,Tr}
     transform::Tr
-    metric::Euclidean
+
     function ExponentialKernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
-        return new{T,Tr}(transform,Euclidean())
+        return new{T,Tr}(transform)
     end
 end
 
 @inline kappa(κ::ExponentialKernel, d::Real) = exp(-d)
 @inline iskroncompatible(::ExponentialKernel) = true
+metric(::ExponentialKernel) = Euclidean()
 
 ## Alias ##
 const LaplacianKernel = ExponentialKernel
@@ -53,10 +56,10 @@ The γ-exponential kernel is an isotropic Mercer kernel given by the formula:
 """
 struct GammaExponentialKernel{T,Tr,Tᵧ<:Real} <: Kernel{T,Tr}
     transform::Tr
-    metric::SqEuclidean
     γ::Tᵧ
+
     function GammaExponentialKernel{T,Tr,Tᵧ}(transform::Tr,γ::Tᵧ) where {T,Tr<:Transform,Tᵧ<:Real}
-        return new{T,Tr,Tᵧ}(transform,SqEuclidean(),γ)
+        return new{T,Tr,Tᵧ}(transform,γ)
     end
 end
 
@@ -80,3 +83,4 @@ end
 
 @inline kappa(κ::GammaExponentialKernel, d²::Real) = exp(-d²^κ.γ)
 @inline iskroncompatible(::GammaExponentialKernel) = true
+metric(::GammaExponentialKernel) = SqEuclidean()
