@@ -33,7 +33,7 @@ end
 params(k::MaternKernel) = (params(transform(k)),k.ν)
 opt_params(k::MaternKernel) = (opt_params(transform(k)),k.ν)
 
-@inline kappa(κ::MaternKernel, d::Real) = iszero(d) ? one(d) : exp((1.0-κ.ν)*logtwo-lgamma(κ.ν) + κ.ν*log(sqrt(2κ.ν)*d)+log(besselk(κ.ν,sqrt(2κ.ν)*d)))
+@inline kappa(κ::MaternKernel, d::Real) = iszero(d) ? one(d) : exp((1.0-κ.ν)*logtwo-logabsgamma(κ.ν)[1] + κ.ν*log(sqrt(2κ.ν)*d)+log(besselk(κ.ν,sqrt(2κ.ν)*d)))
 
 """
 `Matern32Kernel([ρ=1.0])`

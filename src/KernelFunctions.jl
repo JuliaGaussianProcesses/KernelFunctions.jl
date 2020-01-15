@@ -16,8 +16,8 @@ export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransf
 
 using Compat
 using Distances, LinearAlgebra
-using SpecialFunctions: lgamma, besselk
-using Zygote: @adjoint
+using SpecialFunctions: logabsgamma, besselk
+using ZygoteRules: @adjoint
 using StatsFuns: logtwo
 using PDMats: PDMat
 
