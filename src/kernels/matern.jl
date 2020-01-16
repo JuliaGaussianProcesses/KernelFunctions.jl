@@ -6,29 +6,20 @@ The matern kernel is an isotropic Mercer kernel given by the formula:
 ```
 For `ν=n+1/2, n=0,1,2,...` it can be simplified and you should instead use [`ExponentialKernel`](@ref) for `n=0`, [`Matern32Kernel`](@ref), for `n=1`, [`Matern52Kernel`](@ref) for `n=2` and [`SqExponentialKernel`](@ref) for `n=∞`.
 """
-struct MaternKernel{T,Tr,Tν<:Real} <: Kernel{T,Tr}
+struct MaternKernel{Tr<:Transform, Tν<:Real} <: Kernel{Tr}
     transform::Tr
     ν::Tν
-
-    function MaternKernel{T,Tr,Tν}(transform::Tr,ν::Tν) where {T,Tr<:Transform,Tν<:Real}
-        return new{T,Tr,Tν}(transform,ν)
+    function MaternKernel{Tr, Tν}(t::Tr, ν::Tν) where {Tr, Tν}
+        @check_args(MaternKernel, ν, ν > zero(Tν), "ν > 0")
+        return new{Tr, Tν}(t, ν)
     end
 end
 
-function MaternKernel(ρ::T₁=1.0,ν::T₂=1.5) where {T₁<:Real,T₂<:Real}
-    @check_args(MaternKernel, ν, ν > zero(T₂), "ν > 0")
-    MaternKernel{T₁,ScaleTransform{T₁},T₂}(ScaleTransform(ρ),ν)
-end
+MaternKernel(ρ::Real=1.0, ν::Real=1.5) = MaternKernel(ScaleTransform(ρ), ν)
 
-function MaternKernel(ρ::AbstractVector{T₁},ν::T₂=1.5) where {T₁<:Real,T₂<:Real}
-    @check_args(MaternKernel, ν, ν > zero(T₂), "ν > 0")
-    MaternKernel{T₁,ARDTransform{T₁,length(ρ)},T₂}(ARDTransform(ρ),ν)
-end
+MaternKernel(ρ::AbstractVector{<:Real},ν::Real=1.5) = MaternKernel(ARDTransform(ρ), ν)
 
-function MaternKernel(t::Tr,ν::T=1.5) where {Tr<:Transform,T<:Real}
-    @check_args(MaternKernel, ν, ν > zero(T), "ν > 0")
-    MaternKernel{eltype(t),Tr,T}(t,ν)
-end
+MaternKernel(t::Tr, ν::T=1.5) where {Tr<:Transform, T<:Real} = MaternKernel{Tr, T}(t, ν)
 
 params(k::MaternKernel) = (params(transform(k)),k.ν)
 opt_params(k::MaternKernel) = (opt_params(transform(k)),k.ν)
@@ -44,15 +35,11 @@ The matern 3/2 kernel is an isotropic Mercer kernel given by the formula:
     κ(x,y) = (1+√(3)ρ‖x-y‖)exp(-√(3)ρ‖x-y‖)
 ```
 """
-struct Matern32Kernel{T,Tr} <: Kernel{T,Tr}
+struct Matern32Kernel{Tr} <: Kernel{Tr}
     transform::Tr
-
-    function Matern32Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
-        return new{T,Tr}(transform)
-    end
 end
 
-@inline kappa(κ::Matern32Kernel, d::T) where {T<:Real} = (1+sqrt(3)*d)*exp(-sqrt(3)*d)
+@inline kappa(κ::Matern32Kernel, d::Real) = (1+sqrt(3)*d)*exp(-sqrt(3)*d)
 
 metric(::Matern32Kernel) = Euclidean()
 
@@ -63,14 +50,10 @@ The matern 5/2 kernel is an isotropic Mercer kernel given by the formula:
     κ(x,y) = (1+√(5)ρ‖x-y‖ + 5ρ²‖x-y‖^2/3)exp(-√(5)ρ‖x-y‖)
 ```
 """
-struct Matern52Kernel{T,Tr} <: Kernel{T,Tr}
+struct Matern52Kernel{Tr} <: Kernel{Tr}
     transform::Tr
-
-    function Matern52Kernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
-        return new{T,Tr}(transform)
-    end
 end
 
-@inline kappa(κ::Matern52Kernel, d::Real) where {T} = (1+sqrt(5)*d+5*d^2/3)*exp(-sqrt(5)*d)
+@inline kappa(κ::Matern52Kernel, d::Real) = (1+sqrt(5)*d+5*d^2/3)*exp(-sqrt(5)*d)
 
 metric(::Matern52Kernel) = Euclidean()

@@ -11,18 +11,18 @@ kernelmatrix(k,X) == kernelmatrix(k1+k2,X)
 kweighted = 0.5*k1 + 2.0*k2
 ```
 """
-struct KernelSum{T,Tr} <: Kernel{T,Tr}
+struct KernelSum{Tr} <: Kernel{Tr}
     kernels::Vector{Kernel}
     weights::Vector{Real}
-    function KernelSum{T,Tr}(kernels::AbstractVector{<:Kernel},weights::AbstractVector{<:Real}) where {T,Tr}
-        new{T,Tr}(kernels,weights)
+    function KernelSum{Tr}(kernels::AbstractVector{<:Kernel},weights::AbstractVector{<:Real}) where {Tr}
+        new{Tr}(kernels,weights)
     end
 end
 
 function KernelSum(kernels::AbstractVector{<:Kernel}; weights::AbstractVector{<:Real}=ones(Float64,length(kernels)))
     @assert length(kernels)==length(weights) "Weights and kernel vector should be of the same length"
     @assert all(weights.>=0) "All weights should be positive"
-    KernelSum{eltype(kernels),Transform}(kernels,weights)
+    KernelSum{Transform}(kernels,weights)
 end
 
 params(k::KernelSum) = (k.weights,params.(k.kernels))

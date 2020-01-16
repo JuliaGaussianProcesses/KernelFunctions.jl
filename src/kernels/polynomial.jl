@@ -6,26 +6,20 @@ The linear kernel is a Mercer kernel given by
 ```
 Where `c` is a real number
 """
-struct LinearKernel{T,Tr,Tc<:Real} <: Kernel{T,Tr}
+struct LinearKernel{Tr, Tc<:Real} <: Kernel{Tr}
     transform::Tr
     c::Tc
-
-    function LinearKernel{T,Tr,Tc}(transform::Tr,c::Tc) where {T,Tr<:Transform,Tc<:Real}
-        return new{T,Tr,Tc}(transform,c)
-    end
 end
 
-function LinearKernel(ρ::T₁=1.0,c::T₂=zero(T₁)) where {T₁<:Real,T₂<:Real}
-    LinearKernel{T₁,ScaleTransform{T₁},T₂}(ScaleTransform(ρ),c)
+function LinearKernel(ρ::T=1.0, c::Real=zero(T)) where {T<:Real}
+    LinearKernel(ScaleTransform(ρ), c)
 end
 
-function LinearKernel(ρ::AbstractVector{T₁},c::T₂=zero(T₁)) where {T₁<:Real,T₂<:Real}
-    LinearKernel{T₁,ARDTransform{T₁,length(ρ)},T₂}(ARDTransform(ρ),c)
+function LinearKernel(ρ::AbstractVector{T}, c::Real=zero(T)) where {T<:Real}
+    LinearKernel(ARDTransform(ρ), c)
 end
 
-function LinearKernel(t::Tr,c::T=zero(Float64)) where {Tr<:Transform,T<:Real}
-    LinearKernel{eltype(t),Tr,T}(t,c)
-end
+LinearKernel(t::Transform) = LinearKernel(t, 0.0)
 
 params(k::LinearKernel) = (params(transform(k)),k.c)
 opt_params(k::LinearKernel) = (opt_params(transform(k)),k.c)
@@ -42,29 +36,26 @@ The polynomial kernel is a Mercer kernel given by
 ```
 Where `c` is a real number, and `d` is a shape parameter bigger than 1
 """
-struct PolynomialKernel{T,Tr,Tc<:Real,Td<:Real} <: Kernel{T,Tr}
+struct PolynomialKernel{Tr,Tc<:Real,Td<:Real} <: Kernel{Tr}
     transform::Tr
-    c::Tc
     d::Td
-
-    function PolynomialKernel{T,Tr,Tc,Td}(transform::Tr,c::Tc,d::Td) where {T,Tr<:Transform,Tc<:Real,Td<:Real}
-        return new{T,Tr,Tc,Td}(transform,c,d)
+    c::Tc
+    function PolynomialKernel{Tr, Tc, Td}(transform::Tr, d::Td, c::Tc) where {Tr<:Transform, Td<:Real, Tc<:Real}
+        @check_args(PolynomialKernel, d, d >= one(Td), "d >= 1")
+        return new{Tr, Td, Tc}(transform,d, c)
     end
 end
 
-function PolynomialKernel(ρ::T₁=1.0,d::T₂=2.0,c::T₃=zero(T₁)) where {T₁<:Real,T₂<:Real,T₃<:Real}
-    @check_args(PolynomialKernel, d, d >= one(T₁), "d >= 1")
-    PolynomialKernel{T₁,ScaleTransform{T₁},T₂,T₃}(ScaleTransform(ρ),c,d)
+function PolynomialKernel(ρ::Real=1.0, d::Td=2.0, c::Real=zero(Td)) where {Td<:Real}
+    PolynomialKernel(ScaleTransform(ρ), d, c)
 end
 
-function PolynomialKernel(ρ::AbstractVector{T₁},d::T₂=2.0,c::T₃=zero(T₁)) where {T₁<:Real,T₂<:Real,T₃<:Real}
-    @check_args(PolynomialKernel, d, d >= one(T₂), "d >= 1")
-    PolynomialKernel{T₁,ARDTransform{T₁,length(ρ)},T₂,T₃}(ARDTransform(ρ),c,d)
+function PolynomialKernel(ρ::AbstractVector{T}, d::Real=2.0, c::Real=zero(T₁)) where {T<:Real}
+    PolynomialKernel(ARDTransform(ρ), d, c)
 end
 
-function PolynomialKernel(t::Tr,d::T₁=2.0,c::T₂=zero(eltype(T₁))) where {Tr<:Transform,T₁<:Real,T₂<:Real}
-    @check_args(PolynomialKernel, d, d >= one(T₁), "d >= 1")
-    PolynomialKernel{eltype(Tr),Tr,T₁,T₂}(t,c,d)
+function PolynomialKernel(t::Tr, d::Td=2.0, c::Tc=zero(eltype(Td))) where {Tr<:Transform, Td<:Real, Tc<:Real}
+    PolynomialKernel{Tr, Tc, Td}(t, d, c)
 end
 
 params(k::PolynomialKernel) = (params(transform(k)),k.d,k.c)

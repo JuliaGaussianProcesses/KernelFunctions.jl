@@ -8,12 +8,8 @@ The squared exponential kernel is an isotropic Mercer kernel given by the formul
 See also [`ExponentialKernel`](@ref) for a
 related form of the kernel or [`GammaExponentialKernel`](@ref) for a generalization.
 """
-struct SqExponentialKernel{T,Tr} <: Kernel{T,Tr}
+struct SqExponentialKernel{Tr} <: Kernel{Tr}
     transform::Tr
-
-    function SqExponentialKernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
-        return new{T,Tr}(transform)
-    end
 end
 
 @inline kappa(κ::SqExponentialKernel, d²::Real) = exp(-d²)
@@ -32,12 +28,8 @@ The exponential kernel is an isotropic Mercer kernel given by the formula:
     κ(x,y) = exp(-ρ‖x-y‖)
 ```
 """
-struct ExponentialKernel{T,Tr} <: Kernel{T,Tr}
+struct ExponentialKernel{Tr} <: Kernel{Tr}
     transform::Tr
-
-    function ExponentialKernel{T,Tr}(transform::Tr) where {T,Tr<:Transform}
-        return new{T,Tr}(transform)
-    end
 end
 
 @inline kappa(κ::ExponentialKernel, d::Real) = exp(-d)
@@ -48,37 +40,34 @@ metric(::ExponentialKernel) = Euclidean()
 const LaplacianKernel = ExponentialKernel
 
 """
-`GammaExponentialKernel([ρ=1.0,[gamma=2.0]])`
+`GammaExponentialKernel([ρ=1.0, [γ=2.0]])`
 The γ-exponential kernel is an isotropic Mercer kernel given by the formula:
 ```
     κ(x,y) = exp(-ρ^(2γ)‖x-y‖^(2γ))
 ```
 """
-struct GammaExponentialKernel{T,Tr,Tᵧ<:Real} <: Kernel{T,Tr}
+struct GammaExponentialKernel{Tr, Tγ<:Real} <: Kernel{Tr}
     transform::Tr
-    γ::Tᵧ
-
-    function GammaExponentialKernel{T,Tr,Tᵧ}(transform::Tr,γ::Tᵧ) where {T,Tr<:Transform,Tᵧ<:Real}
-        return new{T,Tr,Tᵧ}(transform,γ)
+    γ::Tγ
+    function GammaExponentialKernel{Tr,Tγ}(t::Tr, γ::Tγ) where {Tr<:Transform,Tγ<:Real}
+        @check_args(GammaExponentialKernel, γ, γ >= zero(Tγ), "γ > 0")
+        return new{Tr, Tγ}(t, γ)
     end
 end
 
 params(k::GammaExponentialKernel) = (params(transform),γ)
 opt_params(k::GammaExponentialKernel) = (opt_params(transform),γ)
 
-function GammaExponentialKernel(ρ::T₁=1.0,gamma::T₂=2.0) where {T₁<:Real,T₂<:Real}
-    @check_args(GammaExponentialKernel, gamma, gamma >= zero(T₂), "gamma > 0")
-    GammaExponentialKernel{T₁,ScaleTransform{T₁},T₂}(ScaleTransform(ρ),gamma)
+function GammaExponentialKernel(ρ::Real=1.0, γ::Real=2.0)
+    GammaExponentialKernel(ScaleTransform(ρ), γ)
 end
 
-function GammaExponentialKernel(ρ::AbstractVector{T₁},gamma::T₂=2.0) where {T₁<:Real,T₂<:Real}
-    @check_args(GammaExponentialKernel, gamma, gamma >= zero(T₂), "gamma > 0")
-    GammaExponentialKernel{T₁,ARDTransform{T₁,length(ρ)},T₂}(ARDTransform(ρ),gamma)
+function GammaExponentialKernel(ρ::AbstractVector{<:Real}, γ::Real=2.0)
+    GammaExponentialKernel(ARDTransform(ρ), γ)
 end
 
-function GammaExponentialKernel(t::Tr,gamma::T₁=2.0) where {Tr<:Transform,T₁<:Real}
-    @check_args(GammaExponentialKernel, gamma, gamma >= zero(T₁), "gamma > 0")
-    GammaExponentialKernel{eltype(Tr),Tr,T₁}(t,gamma)
+function GammaExponentialKernel(t::Tr, γ::Tγ=2.0) where {Tr<:Transform, Tγ<:Real}
+    GammaExponentialKernel{Tr, Tγ}(t, γ)
 end
 
 @inline kappa(κ::GammaExponentialKernel, d²::Real) = exp(-d²^κ.γ)
