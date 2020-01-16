@@ -10,7 +10,7 @@ kernelmatrix(k,X) == kernelmatrix(k1,X).*kernelmatrix(k2,X)
 kernelmatrix(k,X) == kernelmatrix(k1*k2,X)
 ```
 """
-struct KernelProduct{T,Tr} <: Kernel{T,Tr}
+struct KernelProduct{Tr} <: Kernel{Tr}
     kernels::Vector{Kernel}
 end
 

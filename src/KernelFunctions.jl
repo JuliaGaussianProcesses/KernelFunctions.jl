@@ -27,14 +27,14 @@ const defaultobs = 2
 Abstract type defining a slice-wise transformation on an input matrix
 """
 abstract type Transform end
-abstract type Kernel{T,Tr<:Transform} end
+abstract type Kernel{Tr<:Transform} end
 
 include("utils.jl")
 include("distances/dotproduct.jl")
 include("distances/delta.jl")
 include("transform/transform.jl")
-kernels = ["exponential","matern","polynomial","constant","rationalquad","exponentiated"]
-for k in kernels
+
+for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated"]
     include(joinpath("kernels",k*".jl"))
 end
 include("matrix/kernelmatrix.jl")
