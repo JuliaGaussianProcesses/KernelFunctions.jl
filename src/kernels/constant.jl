@@ -3,17 +3,11 @@ ZeroKernel([tr=IdentityTransform()])
 
 Create a kernel always returning zero
 """
-struct ZeroKernel{T,Tr} <: Kernel{Tr}
+struct ZeroKernel{Tr} <: Kernel{Tr}
     transform::Tr
-
-    function ZeroKernel{T,Tr}(t::Tr) where {T,Tr<:Transform}
-        new{T,Tr}(t)
-    end
 end
 
-function ZeroKernel(t::Tr=IdentityTransform()) where {Tr<:Transform}
-    ZeroKernel{eltype(Tr),Tr}(t)
-end
+ZeroKernel(t::Transform=IdentityTransform()) = ZeroKernel(t)
 
 @inline kappa(κ::ZeroKernel, d::T) where {T<:Real} = zero(T)
 
@@ -27,17 +21,11 @@ metric(::ZeroKernel) = Delta()
 ```
 Kernel function working as an equivalent to add white noise.
 """
-struct WhiteKernel{T,Tr} <: Kernel{Tr}
+struct WhiteKernel{Tr} <: Kernel{Tr}
     transform::Tr
-
-    function WhiteKernel{T,Tr}(t::Tr) where {T,Tr<:Transform}
-        new{T,Tr}(t)
-    end
 end
 
-function WhiteKernel(t::Tr=IdentityTransform()) where {Tr<:Transform}
-    WhiteKernel{eltype(Tr),Tr}(t)
-end
+WhiteKernel(t::Transform=IdentityTransform()) = WhiteKernel(t)
 
 @inline kappa(κ::WhiteKernel,δₓₓ::Real) = δₓₓ
 

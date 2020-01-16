@@ -41,6 +41,9 @@ end
 
 @inline kappa(κ::Matern32Kernel, d::Real) = (1+sqrt(3)*d)*exp(-sqrt(3)*d)
 
+kappa(d::Real) = (1+sqrt(3)*d)*exp(-sqrt(3)*d)
+kappa_new(d::Real) = (one(d)+sqrt(3)*d)*exp(-sqrt(3)*d)
+
 metric(::Matern32Kernel) = Euclidean()
 
 """
