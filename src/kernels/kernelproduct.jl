@@ -14,9 +14,7 @@ struct KernelProduct{Tr} <: Kernel{Tr}
     kernels::Vector{Kernel}
 end
 
-function KernelProduct(kernels::AbstractVector{<:Kernel})
-    KernelProduct{eltype(kernels),Transform}(kernels)
-end
+KernelProduct(kernels::AbstractVector{<:Kernel}) = KernelProduct{Transform}(kernels)
 
 params(k::KernelProduct) = params.(k.kernels)
 opt_params(k::KernelProduct) = opt_params.(k.kernels)
