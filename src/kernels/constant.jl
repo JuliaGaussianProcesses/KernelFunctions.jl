@@ -7,7 +7,7 @@ struct ZeroKernel{Tr} <: Kernel{Tr}
     transform::Tr
 end
 
-ZeroKernel(t::Transform=IdentityTransform()) = ZeroKernel(t)
+ZeroKernel() = ZeroKernel(IdentityTransform())
 
 @inline kappa(κ::ZeroKernel, d::T) where {T<:Real} = zero(T)
 
@@ -25,7 +25,7 @@ struct WhiteKernel{Tr} <: Kernel{Tr}
     transform::Tr
 end
 
-WhiteKernel(t::Transform=IdentityTransform()) = WhiteKernel(t)
+WhiteKernel() = WhiteKernel(IdentityTransform())
 
 @inline kappa(κ::WhiteKernel,δₓₓ::Real) = δₓₓ
 
