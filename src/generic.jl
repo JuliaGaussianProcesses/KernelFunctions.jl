@@ -17,8 +17,8 @@ end
 
 ### Transform generics
 @inline transform(κ::Kernel) = κ.transform
-@inline transform(κ::Kernel,x::AbstractVecOrMat) = transform(κ.transform,x)
-@inline transform(κ::Kernel,x::AbstractVecOrMat,obsdim::Int) = transform(κ.transform,x,obsdim)
+@inline transform(κ::Kernel, x) = transform(transform(κ), x)
+@inline transform(κ::Kernel, x, obsdim::Int) = transform(transform(κ), x, obsdim)
 
 ## Constructors for kernels without parameters
 for kernel in [:ExponentialKernel,:SqExponentialKernel,:Matern32Kernel,:Matern52Kernel,:ExponentiatedKernel]
