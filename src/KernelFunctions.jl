@@ -14,6 +14,8 @@ export KernelSum, KernelProduct
 
 export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
 
+export NystromFact, nystrom
+
 using Compat
 using Distances, LinearAlgebra
 using SpecialFunctions: logabsgamma, besselk
@@ -41,6 +43,7 @@ include("matrix/kernelmatrix.jl")
 include("matrix/kernelpdmat.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
+include("approximations/nystrom.jl")
 
 include("generic.jl")
 
