@@ -42,7 +42,7 @@ function nystrom_pinv!(Cs::Matrix{T}, tol::T=eps(T)*size(Cs,1)) where {T<:Abstra
     return LinearAlgebra.copytri!(W, 'U')
 end
 
-"""
+@doc raw"""
     NystromFact
 
 Type for storing a Nystrom factorization. The factorization contains two fields: `W` and
