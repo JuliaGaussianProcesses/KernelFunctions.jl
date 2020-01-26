@@ -17,7 +17,6 @@ export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransf
 export NystromFact, nystrom
 
 using Compat
-using LinearAlgebra
 using Distances, LinearAlgebra
 using SpecialFunctions: logabsgamma, besselk
 using ZygoteRules: @adjoint
