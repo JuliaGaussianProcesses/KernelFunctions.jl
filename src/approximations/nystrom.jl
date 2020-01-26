@@ -13,7 +13,7 @@ function nystrom_sample(k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsd
     obsdim ∈ [1, 2] || throw(ArgumentError("`obsdim` should be 1 or 2 (see docs of kernelmatrix))"))
     Xₘ = obsdim == 1 ? X[S, :] : X[:, S]
     C = k(Xₘ, X; obsdim=obsdim)
-    Cs = getindex(C, :, S)
+    Cs = C[:, S]
     return (C, Cs)
 end
 
