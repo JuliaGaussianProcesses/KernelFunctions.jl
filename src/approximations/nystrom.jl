@@ -1,9 +1,7 @@
-using StatsBase
-using LinearAlgebra
 # Following the algorithm by William and Seeger, 2001
 # Cs is equivalent to X_mm and C to X_mn
 
-function sampleindex(X::AbstractMatrix, r::AbstractFloat; obsdim::Integer=defaultobs)
+function sampleindex(X::AbstractMatrix, r::Real; obsdim::Integer=defaultobs)
     0 < r <= 1 || throw(ArgumentError("Sample rate `r` must be in range (0,1]"))
     n = size(X, obsdim)
     m = ceil(Int, n*r)
@@ -51,9 +49,14 @@ Type for storing a Nystrom factorization. The factorization contains two fields:
 \mathbf{K} \approx \mathbf{C}^{\intercal}\mathbf{W}\mathbf{C}
 ```
 """
-struct NystromFact{T<:AbstractFloat}
+struct NystromFact{T<:Real}
     W::Matrix{T}
     C::Matrix{T}
+end
+
+function NystromFact(W::Matrix{<:Real}, C::Matrix{<:Real})
+    T = Base.promote_eltypeof(W, C)
+    return NystromFact(convert(Matrix{T}, W), convert(Matrix{T}, C))
 end
 
 @doc raw"""
@@ -69,8 +72,7 @@ Nystrom factorization satisfying:
 function nystrom(k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsdim::Int=defaultobs)
     C, Cs = nystrom_sample(k, X, S; obsdim=obsdim)
     W = nystrom_pinv!(Cs)
-    T = typeof(first(W))
-    return NystromFact{T}(W, C)
+    return NystromFact(W, C)
 end
 
 @doc raw"""
@@ -87,8 +89,7 @@ function nystrom(k::Kernel, X::AbstractMatrix, r::AbstractFloat; obsdim::Int=def
     S = sampleindex(X, r; obsdim=obsdim)
     C, Cs = nystrom_sample(k, X, S; obsdim=obsdim)
     W = nystrom_pinv!(Cs)
-    T = typeof(first(W))
-    return NystromFact{T}(W, C)
+    return NystromFact(W, C)
 end
 
 """
