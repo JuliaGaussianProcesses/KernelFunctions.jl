@@ -5,7 +5,7 @@ function sampleindex(X::AbstractMatrix, r::Real; obsdim::Integer=defaultobs)
     0 < r <= 1 || throw(ArgumentError("Sample rate `r` must be in range (0,1]"))
     n = size(X, obsdim)
     m = ceil(Int, n*r)
-    S = StatsBase.sample(collect(1:n), m; replace=false, ordered=true)
+    S = StatsBase.sample(1:n, m; replace=false, ordered=true)
     return S
 end
 
@@ -87,9 +87,7 @@ Returns a `NystromFact` struct which stores a Nystrom factorization satisfying:
 """
 function nystrom(k::Kernel, X::AbstractMatrix, r::AbstractFloat; obsdim::Int=defaultobs)
     S = sampleindex(X, r; obsdim=obsdim)
-    C, Cs = nystrom_sample(k, X, S; obsdim=obsdim)
-    W = nystrom_pinv!(Cs)
-    return NystromFact(W, C)
+    return nystrom(k, X, S; obsdim=obsdim)
 end
 
 """
