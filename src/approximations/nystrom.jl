@@ -17,7 +17,7 @@ function nystrom_sample(k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsd
     return (C, Cs)
 end
 
-function nystrom_pinv!(Cs::Matrix{T}, tol::T=eps(T)*size(Cs,1)) where {T<:AbstractFloat}
+function nystrom_pinv!(Cs::Matrix{T}, tol::T=eps(T)*size(Cs,1)) where {T<:Real}
     # Compute eigendecomposition of sampled component of K
     QΛQᵀ = LinearAlgebra.eigen!(LinearAlgebra.Symmetric(Cs))
 
@@ -76,7 +76,7 @@ function nystrom(k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsdim::Int
 end
 
 @doc raw"""
-    nystrom(k::Kernel, X::Matrix, r::AbstractFloat; obsdim::Int=defaultobs)
+    nystrom(k::Kernel, X::Matrix, r::Real; obsdim::Int=defaultobs)
 
 Computes a factorization of Nystrom approximation of the square kernel matrix of data
 matrix `X` with respect to kernel `k` using a sample ratio of `r`.
@@ -85,7 +85,7 @@ Returns a `NystromFact` struct which stores a Nystrom factorization satisfying:
 \mathbf{K} \approx \mathbf{C}^{\intercal}\mathbf{W}\mathbf{C}
 ```
 """
-function nystrom(k::Kernel, X::AbstractMatrix, r::AbstractFloat; obsdim::Int=defaultobs)
+function nystrom(k::Kernel, X::AbstractMatrix, r::Real; obsdim::Int=defaultobs)
     S = sampleindex(X, r; obsdim=obsdim)
     return nystrom(k, X, S; obsdim=obsdim)
 end
@@ -95,7 +95,7 @@ end
 
 Compute the approximate kernel matrix based on the Nystrom factorization.
 """
-function kernelmatrix(CᵀWC::NystromFact{<:AbstractFloat})
+function kernelmatrix(CᵀWC::NystromFact{<:Real})
     W = CᵀWC.W
     C = CᵀWC.C
     return C'*W*C
