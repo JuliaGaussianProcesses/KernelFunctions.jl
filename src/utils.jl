@@ -28,7 +28,7 @@ feature_dim(obsdim::Int) = obsdim == 1 ? 2 : 1
 
 base_kernel(k::Kernel) = eval(nameof(typeof(k)))
 
-base_transform(k::Kernel) = base_transform(k.transform)
+base_transform(k::Kernel) = base_transform(transform(k))
 base_transform(t::Transform) = eval(nameof(typeof(t)))
 _tail(v::AbstractVector) = view(v,2:length(v))
 
@@ -56,4 +56,4 @@ dim(k::Kernel) = length(params(k))
 For a kernel return a tuple with parameters of the transform followed by the specific parameters of the kernel
 For a transform return its parameters, for a `ChainTransform` return a vector of `params(t)`.
 """
-params(k::Kernel) = (params(k.transform),)
+params(k::Kernel) = (params(transform(k)),)
