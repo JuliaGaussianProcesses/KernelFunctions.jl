@@ -36,10 +36,9 @@ Kernel function always returning a constant value `c`
 """
 struct ConstantKernel{Tc<:Real} <: Kernel
     c::Tc
-end
-
-function ConstantKernel(c::Tc=1.0) where {Tc<:Real}
-    ConstantKernel{Tc}(c)
+    function ConstantKernel(c::T=1.0) where {T<:Real}
+        new{T}(c)
+    end
 end
 
 params(k::ConstantKernel) = (k.c)

@@ -8,11 +8,12 @@ Where `c` is a real number
 """
 struct LinearKernel{Tc<:Real} <: Kernel
     c::Tc
+    function LinearKernel(c::T=0.0) where {T}
+        new{T}(c)
+    end
 end
 
-function LinearKernel(c::Tc=0.0) where {Tc}
-    LinearKernel{Tc}(c)
-end
+
 
 params(k::LinearKernel) = (k.c)
 opt_params(k::LinearKernel) = (k.c)
@@ -29,14 +30,13 @@ The polynomial kernel is a Mercer kernel given by
 ```
 Where `c` is a real number, and `d` is a shape parameter bigger than 1
 """
-struct PolynomialKernel{Tc<:Real,Td<:Real} <: Kernel
+struct PolynomialKernel{Td<:Real,Tc<:Real} <: Kernel
     d::Td
     c::Tc
-end
-
-function PolynomialKernel(d::Td=2.0, c::Tc=zero(Td)) where {Td<:Real, Tc<:Real}
-    @check_args(PolynomialKernel, d, d >= one(Td), "d >= 1")
-    return PolynomialKernel{Td, Tc}(d, c)
+    function PolynomialKernel(d::Td=2.0, c::Tc=zero(Td)) where {Td<:Real, Tc<:Real}
+        @check_args(PolynomialKernel, d, d >= one(Td), "d >= 1")
+        return new{Td, Tc}(d, c)
+    end
 end
 
 params(k::PolynomialKernel) = (k.d,k.c)

@@ -8,11 +8,10 @@ where `α` is a shape parameter of the Euclidean distance. Check [`GammaRational
 """
 struct RationalQuadraticKernel{Tα<:Real} <: Kernel
     α::Tα
-end
-
-function RationalQuadraticKernel(α::Tα=2.0) where {Tα}
-    @check_args(RationalQuadraticKernel, α, α > zero(Tα), "α > 1")
-    return RationalQuadraticKernel{Tα}(α)
+    function RationalQuadraticKernel(α::T=2.0) where {T}
+        @check_args(RationalQuadraticKernel, α, α > zero(T), "α > 1")
+        return new{T}(α)
+    end
 end
 
 params(k::RationalQuadraticKernel) = (k.α)
@@ -33,12 +32,11 @@ where `α` is a shape parameter of the Euclidean distance and `γ` is another sh
 struct GammaRationalQuadraticKernel{Tα<:Real, Tγ<:Real} <: Kernel
     α::Tα
     γ::Tγ
-end
-
-function GammaRationalQuadraticKernel(α::Tα=2.0, γ::Tγ=2*one(Tα)) where {Tα<:Real, Tγ<:Real}
-    @check_args(GammaRationalQuadraticKernel, α, α > one(Tα), "α > 1")
-    @check_args(GammaRationalQuadraticKernel, γ, γ >= one(Tγ), "γ >= 1")
-    return GammaRationalQuadraticKernel{Tα, Tγ}(α, γ)
+    function GammaRationalQuadraticKernel(α::Tα=2.0, γ::Tγ=2*one(Tα)) where {Tα<:Real, Tγ<:Real}
+        @check_args(GammaRationalQuadraticKernel, α, α > one(Tα), "α > 1")
+        @check_args(GammaRationalQuadraticKernel, γ, γ >= one(Tγ), "γ >= 1")
+        return new{Tα, Tγ}(α, γ)
+    end
 end
 
 params(k::GammaRationalQuadraticKernel) = (k.α,k.γ)

@@ -8,11 +8,10 @@ For `ν=n+1/2, n=0,1,2,...` it can be simplified and you should instead use [`Ex
 """
 struct MaternKernel{Tν<:Real} <: Kernel
     ν::Tν
-end
-
-function MaternKernel(ν::Tν=1.5) where {Tν<:Real}
-    @check_args(MaternKernel, ν, ν > zero(Tν), "ν > 0")
-    return MaternKernel{Tν}(ν)
+    function MaternKernel(ν::T=1.5) where {T<:Real}
+        @check_args(MaternKernel, ν, ν > zero(T), "ν > 0")
+        return new{T}(ν)
+    end
 end
 
 params(k::MaternKernel) = (k.ν)
