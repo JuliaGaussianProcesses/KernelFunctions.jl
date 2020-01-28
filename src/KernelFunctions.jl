@@ -39,6 +39,8 @@ for k in ["exponential","matern","polynomial","constant","rationalquad","exponen
 end
 include("matrix/kernelmatrix.jl")
 include("matrix/kernelpdmat.jl")
+include("kernels/scaledkernel.jl")
+include("kernels/transformedkernel.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
 
