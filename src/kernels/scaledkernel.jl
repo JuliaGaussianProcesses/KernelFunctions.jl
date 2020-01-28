@@ -5,7 +5,7 @@ end
 
 function ScaledKernel(kernel::Tk,σ::Tσ=1.0) where {Tk<:Kernel,Tσ<:Real}
     @check_args(ScaledKernel, σ, σ > zero(Tσ), "σ > 0")
-    ScaledKernel{Tk,Tσ)}(kernel,[σ])
+    ScaledKernel{Tk,Tσ}(kernel,[σ])
 end
 
 @inline transform(k::ScaledKernel) = transform(k.kernel)
