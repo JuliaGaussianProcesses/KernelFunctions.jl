@@ -1,5 +1,4 @@
-@inline metric(κ::Kernel) = κ.metric
-
+@inline transform(::Kernel) = IdentityTransform()
 ## Allows to iterate over kernels
 Base.length(::Kernel) = 1
 Base.iterate(k::Kernel) = (k,nothing)
@@ -19,15 +18,24 @@ for k in [:ExponentialKernel,:SqExponentialKernel,:GammaExponentialKernel,:Mater
 end
 
 ### Transform generics
-@inline transform(κ::Kernel) = κ.transform
 @inline transform(κ::Kernel, x) = transform(transform(κ), x)
 @inline transform(κ::Kernel, x, obsdim::Int) = transform(transform(κ), x, obsdim)
 
 ## Constructors for kernels without parameters
-for kernel in [:ExponentialKernel,:SqExponentialKernel,:Matern32Kernel,:Matern52Kernel,:ExponentiatedKernel]
+# for kernel in [:ExponentialKernel,:SqExponentialKernel,:Matern32Kernel,:Matern52Kernel,:ExponentiatedKernel]
+#     @eval begin
+#         $kernel() = $kernel(IdentityTransform())
+#         $kernel(ρ::Real) = $kernel(ScaleTransform(ρ))
+#         $kernel(ρ::AbstractVector{<:Real}) = $kernel(ARDTransform(ρ))
+#     end
+# end
+
+for k in [:SqExponentialKernel,:ExponentialKernel,:GammaExponentialKernel]
+    new_k = Symbol(lowercase(string(k)))
     @eval begin
-        $kernel() = $kernel(IdentityTransform())
-        $kernel(ρ::Real) = $kernel(ScaleTransform(ρ))
-        $kernel(ρ::AbstractVector{<:Real}) = $kernel(ARDTransform(ρ))
+        $new_k(args...) = $k(args...)
+        $new_k(ρ::Real,args...) = TransformedKernel($k(args...),ScaleTransform(ρ))
+        $new_k(ρ::AbstractVector{<:Real},args...) = TransformedKernel($k(args...),ARDTransform(ρ))
+        $new_k(t::Transform,args...) = TransformedKernel($k(args...),t)
     end
 end

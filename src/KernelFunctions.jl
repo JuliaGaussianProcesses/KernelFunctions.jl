@@ -27,7 +27,7 @@ const defaultobs = 2
 Abstract type defining a slice-wise transformation on an input matrix
 """
 abstract type Transform end
-abstract type Kernel{Tr<:Transform} end
+abstract type Kernel end
 
 include("utils.jl")
 include("distances/dotproduct.jl")

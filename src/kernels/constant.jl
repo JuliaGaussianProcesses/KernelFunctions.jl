@@ -1,55 +1,50 @@
 """
-ZeroKernel([tr=IdentityTransform()])
+ZeroKernel()
 
-Create a kernel always returning zero
+Create a kernel that always returning zero
+```
+    κ(x,y) = 0.0
+```
+The output type depends of `x` and `y`
 """
-struct ZeroKernel{Tr} <: Kernel{Tr}
-    transform::Tr
-end
-
-ZeroKernel() = ZeroKernel(IdentityTransform())
+struct ZeroKernel <: Kernel end
 
 @inline kappa(κ::ZeroKernel, d::T) where {T<:Real} = zero(T)
 
 metric(::ZeroKernel) = Delta()
 
 """
-`WhiteKernel([tr=IdentityTransform()])`
+`WhiteKernel()`
 
 ```
     κ(x,y) = δ(x,y)
 ```
 Kernel function working as an equivalent to add white noise.
 """
-struct WhiteKernel{Tr} <: Kernel{Tr}
-    transform::Tr
-end
-
-WhiteKernel() = WhiteKernel(IdentityTransform())
+struct WhiteKernel <: Kernel end
 
 @inline kappa(κ::WhiteKernel,δₓₓ::Real) = δₓₓ
 
 metric(::WhiteKernel) = Delta()
 
 """
-`ConstantKernel([tr=IdentityTransform(),[c=1.0]])`
+`ConstantKernel(c=1.0)`
 ```
     κ(x,y) = c
 ```
 Kernel function always returning a constant value `c`
 """
-struct ConstantKernel{Tr, Tc<:Real} <: Kernel{Tr}
-    transform::Tr
+struct ConstantKernel{Tc<:Real} <: Kernel
     c::Tc
 end
 
-params(k::ConstantKernel) = (params(k.transform),k.c)
-opt_params(k::ConstantKernel) = (opt_params(k.transform),k.c)
+function ConstantKernel(c::Tc=1.0) where {Tc<:Real}
+    ConstantKernel{Tc}(c)
+end
 
-ConstantKernel(c::Real=1.0) = ConstantKernel(IdentityTransform(),c)
+params(k::ConstantKernel) = (k.c)
+opt_params(k::ConstantKernel) = (k.c)
 
-ConstantKernel(t::Tr,c::Tc=1.0) where {Tr<:Transform,Tc<:Real} = ConstantKernel{Tr,Tc}(t,c)
+@inline kappa(κ::ConstantKernel,x::Real) = κ.c*one(x)
 
-@inline kappa(κ::ConstantKernel,x::Real) = κ.c
-
-metric(::ConstantKernel) = Delta()
+@inline metric(::ConstantKernel) = Delta()

@@ -5,6 +5,8 @@ l = 2.0
 vl = [l,l]
 s = ScaleTransform(l)
 
+## Add tests for Transformed Kernel and Scaled Kernel
+
 ## SqExponentialKernel
 @testset "SqExponentialKernel" begin
     @test KernelFunctions.metric(SqExponentialKernel(l)) == SqEuclidean()

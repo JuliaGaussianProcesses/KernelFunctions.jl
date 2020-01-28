@@ -10,11 +10,11 @@ kernelmatrix(k,X) == kernelmatrix(k1,X).*kernelmatrix(k2,X)
 kernelmatrix(k,X) == kernelmatrix(k1*k2,X)
 ```
 """
-struct KernelProduct{Tr} <: Kernel{Tr}
+struct KernelProduct <: Kernel
     kernels::Vector{Kernel}
 end
 
-KernelProduct(kernels::AbstractVector{<:Kernel}) = KernelProduct{Transform}(kernels)
+KernelProduct(kernels::AbstractVector{<:Kernel}) = KernelProduct(kernels)
 
 params(k::KernelProduct) = params.(k.kernels)
 opt_params(k::KernelProduct) = opt_params.(k.kernels)
