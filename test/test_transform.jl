@@ -27,13 +27,13 @@ f(x) = sin.(x)
     @testset "ARDTransform" begin
         vt1 = ARDTransform(v1)
         vt2 = ARDTransform(v2)
-        @test all(KernelFunctions.transform(vt1,X,1).==v1'.*X)
-        @test all(KernelFunctions.transform(vt2,X,2).==v2.*X)
+        @test all(KernelFunctions.transform(vt1,X,obsdim=1).==v1'.*X)
+        @test all(KernelFunctions.transform(vt2,X,obsdim=2).==v2.*X)
     end
     ## Test LowRankTransform
     @testset "LowRankTransform" begin
         tp = LowRankTransform(P)
-        @test all(KernelFunctions.transform(tp,X,2).==P*X)
+        @test all(KernelFunctions.transform(tp,X,obsdim=2).==P*X)
         @test all(KernelFunctions.transform(tp,x).==P*x)
         @test all(KernelFunctions.params(tp).==P)
         P2 = rand(5,10)
@@ -43,13 +43,13 @@ f(x) = sin.(x)
     ## Test FunctionTransform
     @testset "FunctionTransform" begin
         tf = FunctionTransform(f)
-        KernelFunctions.transform(tf,X,1)
-        @test all(KernelFunctions.transform(tf,X,1).==f(X))
+        KernelFunctions.transform(tf,X,obsdim=1)
+        @test all(KernelFunctions.transform(tf,X,obsdim=1).==f(X))
     end
     ## Test SelectTransform
     @testset "SelectTransform" begin
         ts = SelectTransform(sdims)
-        @test all(KernelFunctions.transform(ts,X,2).==X[sdims,:])
+        @test all(KernelFunctions.transform(ts,X,obsdim=2).==X[sdims,:])
         @test all(KernelFunctions.transform(ts,x).==x[sdims])
         @test all(KernelFunctions.params(ts).==sdims)
         sdims2 = [2,3,5]
@@ -62,8 +62,8 @@ f(x) = sin.(x)
         tp = LowRankTransform(P)
         tf = FunctionTransform(f)
         tchain = ChainTransform([t,tp,tf])
-        @test all(KernelFunctions.transform(tchain,X,2).==f(P*(s*X)))
-        @test all(KernelFunctions.transform(tchain,X,2).==
-                    KernelFunctions.transform(tf∘tp∘t,X,2))
+        @test all(KernelFunctions.transform(tchain,X,obsdim=2).==f(P*(s*X)))
+        @test all(KernelFunctions.transform(tchain,X,obsdim=2).==
+                    KernelFunctions.transform(tf∘tp∘t,X,obsdim=2))
     end
 end

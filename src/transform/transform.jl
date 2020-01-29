@@ -26,7 +26,7 @@ struct IdentityTransform <: Transform end
 params(t::IdentityTransform) = nothing
 duplicate(t::IdentityTransform,θ) = t
 
-transform(t::IdentityTransform, x, obsdim::Int=defaultobs) = x #TODO add test
+transform(t::IdentityTransform, x; obsdim::Int=defaultobs) = x #TODO add test
 
 ### TODO Maybe defining adjoints could help but so far it's not working
 

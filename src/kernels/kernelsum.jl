@@ -37,7 +37,7 @@ Base.length(k::KernelSum) = length(k.kernels)
 metric(k::KernelSum) = metric.(k.kernels)
 transform(k::KernelSum) = transform.(k.kernels)
 transform(k::KernelSum,x::AbstractVecOrMat) = transform.(k.kernels,[x])
-transform(k::KernelSum,x::AbstractVecOrMat,obsdim::Int) = transform.(k.kernels,[x],obsdim)
+transform(k::KernelSum,x::AbstractVecOrMat,obsdim::Int) = transform.(k.kernels,[x],obsdim=obsdim)
 
 function kernelmatrix(
     κ::KernelSum,

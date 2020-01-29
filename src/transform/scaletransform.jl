@@ -19,6 +19,6 @@ set!(t::ScaleTransform,ρ::Real) = t.s .= [ρ]
 params(t::ScaleTransform) = first(t.s)
 dim(str::ScaleTransform) = 1
 
-transform(t::ScaleTransform,x::AbstractVecOrMat,obsdim::Int=defaultobs) = first(t.s) * x
+transform(t::ScaleTransform,x::AbstractVecOrMat;obsdim::Int=defaultobs) = first(t.s) * x
 
 Base.isequal(t::ScaleTransform,t2::ScaleTransform) = isequal(first(t.s),first(t2.s))

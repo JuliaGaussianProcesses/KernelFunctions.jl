@@ -18,7 +18,7 @@ function kernelmatrix!(
         if !check_dims(K,X,X,feature_dim(obsdim),obsdim)
             throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
         end
-        map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
+        map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim=obsdim),dims=obsdim))
 end
 
 function kernelmatrix!(
@@ -32,7 +32,7 @@ function kernelmatrix!(
         if !check_dims(K,X,Y,feature_dim(obsdim),obsdim)
             throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not consistent with X ($(size(X))) and Y ($(size(Y)))"))
         end
-        map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
+        map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim=obsdim),transform(κ,Y,obsdim=obsdim),dims=obsdim))
 end
 
 ## Apply kernel on two reals ##
@@ -75,7 +75,7 @@ function kernelmatrix(
         X::AbstractMatrix;
         obsdim::Int = defaultobs
     )
-    K = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
+    K = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim=obsdim),dims=obsdim))
 end
 
 function kernelmatrix(
@@ -91,7 +91,7 @@ function kernelmatrix(
     _kernelmatrix(κ,X,Y,obsdim)
 end
 
-@inline _kernelmatrix(κ,X,Y,obsdim) = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
+@inline _kernelmatrix(κ,X,Y,obsdim) = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim=obsdim),transform(κ,Y,obsdim=obsdim),dims=obsdim))
 
 """
 ```

@@ -22,10 +22,10 @@ function ChainTransform(v::AbstractVector{<:Type{<:Transform}},θ::AbstractVecto
     ChainTransform(v.(θ))
 end
 
-function transform(t::ChainTransform,X::T,obsdim::Int=defaultobs) where {T}
+function transform(t::ChainTransform,X::T;obsdim::Int=defaultobs) where {T}
     Xtr = copy(X)
     for tr in t.transforms
-        Xtr = transform(tr,Xtr,obsdim)
+        Xtr = transform(tr,Xtr,obsdim=obsdim)
     end
     return Xtr
 end
