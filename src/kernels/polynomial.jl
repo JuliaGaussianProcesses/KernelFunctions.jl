@@ -15,8 +15,8 @@ end
 
 
 
-params(k::LinearKernel) = (k.c)
-opt_params(k::LinearKernel) = (k.c)
+params(k::LinearKernel) = (k.c,)
+opt_params(k::LinearKernel) = (k.c,)
 
 @inline kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + κ.c
 

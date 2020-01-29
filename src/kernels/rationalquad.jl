@@ -14,8 +14,8 @@ struct RationalQuadraticKernel{Tα<:Real} <: Kernel
     end
 end
 
-params(k::RationalQuadraticKernel) = (k.α)
-opt_params(k::RationalQuadraticKernel) = (k.α)
+params(k::RationalQuadraticKernel) = (k.α,)
+opt_params(k::RationalQuadraticKernel) = (k.α,)
 
 @inline kappa(κ::RationalQuadraticKernel, d²::T) where {T<:Real} = (one(T)+d²/κ.α)^(-κ.α)
 

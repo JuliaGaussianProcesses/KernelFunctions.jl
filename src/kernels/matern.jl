@@ -14,8 +14,8 @@ struct MaternKernel{Tν<:Real} <: Kernel
     end
 end
 
-params(k::MaternKernel) = (k.ν)
-opt_params(k::MaternKernel) = (k.ν)
+params(k::MaternKernel) = (k.ν,)
+opt_params(k::MaternKernel) = (k.ν,)
 
 @inline kappa(κ::MaternKernel, d::Real) = iszero(d) ? one(d) : exp((one(d)-κ.ν)*logtwo-logabsgamma(κ.ν)[1] + κ.ν*log(sqrt(2κ.ν)*d)+log(besselk(κ.ν,sqrt(2κ.ν)*d)))
 

@@ -41,8 +41,8 @@ struct ConstantKernel{Tc<:Real} <: Kernel
     end
 end
 
-params(k::ConstantKernel) = (k.c)
-opt_params(k::ConstantKernel) = (k.c)
+params(k::ConstantKernel) = (k.c,)
+opt_params(k::ConstantKernel) = (k.c,)
 
 @inline kappa(κ::ConstantKernel,x::Real) = κ.c*one(x)
 

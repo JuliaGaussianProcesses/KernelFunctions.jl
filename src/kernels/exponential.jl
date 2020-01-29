@@ -50,8 +50,8 @@ struct GammaExponentialKernel{Tγ<:Real} <: Kernel
     end
 end
 
-params(k::GammaExponentialKernel) = (γ)
-opt_params(k::GammaExponentialKernel) = (γ)
+params(k::GammaExponentialKernel) = (γ,)
+opt_params(k::GammaExponentialKernel) = (γ,)
 
 @inline kappa(κ::GammaExponentialKernel, d²::Real) = exp(-d²^κ.γ)
 @inline iskroncompatible(::GammaExponentialKernel) = true
