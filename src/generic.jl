@@ -5,7 +5,11 @@ Base.iterate(k::Kernel, ::Any) = nothing
 
 # default fallback for evaluating a kernel with two arguments (such as vectors etc)
 kappa(κ::Kernel, x, y) = kappa(κ, evaluate(metric(κ), x, y))
-kappa(κ::TransformedKernel, x, x) = kappa(κ.kernel, κ.transform(x), κ.transform(y))
+kappa(κ::TransformedKernel, x, y) = kappa(κ.kernel, κ.transform(x), κ.transform(y))
+transform(κ::Kernel,x;obsdim=defaultobs) = x
+transform(κ::TransformedKernel,x;obsdim=defaultobs) = transform(κ.transform,x,obsdim=obsdim)
+
+
 
 ### Syntactic sugar for creating matrices and using kernel functions
 for k in [:ExponentialKernel,:SqExponentialKernel,:GammaExponentialKernel,:MaternKernel,:Matern32Kernel,:Matern52Kernel,:LinearKernel,:PolynomialKernel,:ExponentiatedKernel,:ZeroKernel,:WhiteKernel,:ConstantKernel,:RationalQuadraticKernel,:GammaRationalQuadraticKernel]
