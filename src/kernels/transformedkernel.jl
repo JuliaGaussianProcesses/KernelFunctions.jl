@@ -3,7 +3,7 @@ struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
     transform::Tr
 end
 
-@inline transform(k::TransformedKernel) = k.transform
+@inline transform(κ::Kernel,t::Transform) = TransformedKernel(κ,t)
 
 @inline kappa(k::TransformedKernel, x) = kappa(k.kernel, x)
 

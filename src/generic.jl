@@ -1,11 +1,11 @@
-@inline transform(::Kernel) = IdentityTransform()
 ## Allows to iterate over kernels
 Base.length(::Kernel) = 1
 Base.iterate(k::Kernel) = (k,nothing)
 Base.iterate(k::Kernel, ::Any) = nothing
 
 # default fallback for evaluating a kernel with two arguments (such as vectors etc)
-kappa(κ::Kernel, x, y) = kappa(κ, evaluate(metric(κ), transform(κ, x), transform(κ, y)))
+kappa(κ::Kernel, x, y) = kappa(κ, evaluate(metric(κ), x, y))
+kappa(κ::TransformedKernel, x, x) = kappa(κ.kernel, κ.transform(x), κ.transform(y))
 
 ### Syntactic sugar for creating matrices and using kernel functions
 for k in [:ExponentialKernel,:SqExponentialKernel,:GammaExponentialKernel,:MaternKernel,:Matern32Kernel,:Matern52Kernel,:LinearKernel,:PolynomialKernel,:ExponentiatedKernel,:ZeroKernel,:WhiteKernel,:ConstantKernel,:RationalQuadraticKernel,:GammaRationalQuadraticKernel]
@@ -16,10 +16,6 @@ for k in [:ExponentialKernel,:SqExponentialKernel,:GammaExponentialKernel,:Mater
         @inline (κ::$k)(X::AbstractMatrix{T};obsdim::Integer=defaultobs) where {T} = kernelmatrix(κ,X,obsdim=obsdim)
     end
 end
-
-### Transform generics
-@inline transform(κ::Kernel, x) = transform(transform(κ), x)
-@inline transform(κ::Kernel, x, obsdim::Int) = transform(transform(κ), x, obsdim)
 
 ## Constructors for kernels without parameters
 # for kernel in [:ExponentialKernel,:SqExponentialKernel,:Matern32Kernel,:Matern52Kernel,:ExponentiatedKernel]
