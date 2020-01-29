@@ -14,9 +14,6 @@ kweighted = 0.5*k1 + 2.0*k2
 struct KernelSum <: Kernel
     kernels::Vector{Kernel}
     weights::Vector{Real}
-    function KernelSum(kernels::AbstractVector{<:Kernel},weights::AbstractVector{<:Real})
-        new(kernels,weights)
-    end
 end
 
 function KernelSum(kernels::AbstractVector{<:Kernel}; weights::AbstractVector{<:Real}=ones(Float64,length(kernels)))
