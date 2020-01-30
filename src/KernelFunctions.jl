@@ -14,11 +14,14 @@ export KernelSum, KernelProduct
 
 export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
 
+export NystromFact, nystrom
+
 using Compat
 using Distances, LinearAlgebra
 using SpecialFunctions: logabsgamma, besselk
 using ZygoteRules: @adjoint
 using StatsFuns: logtwo
+using StatsBase
 using PDMats: PDMat
 
 const defaultobs = 2
@@ -41,6 +44,7 @@ include("matrix/kernelmatrix.jl")
 include("matrix/kernelpdmat.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
+include("approximations/nystrom.jl")
 
 include("generic.jl")
 
