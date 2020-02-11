@@ -14,11 +14,8 @@ struct KernelProduct <: Kernel
     kernels::Vector{Kernel}
 end
 
-KernelProduct(kernels::AbstractVector{<:Kernel}) = KernelProduct(kernels)
-
 params(k::KernelProduct) = params.(k.kernels)
 opt_params(k::KernelProduct) = opt_params.(k.kernels)
-duplicate(k::KernelProduct,θ) = KernelProduct(duplicate.(k.kernels,θ))
 
 Base.:*(k1::Kernel,k2::Kernel) = KernelProduct([k1,k2])
 Base.:*(k1::KernelProduct,k2::KernelProduct) = KernelProduct(vcat(k1.kernels,k2.kernels)) #TODO Add test
@@ -26,10 +23,8 @@ Base.:*(k::Kernel,kp::KernelProduct) = KernelProduct(vcat(k,kp.kernels))
 Base.:*(kp::KernelProduct,k::Kernel) = KernelProduct(vcat(kp.kernels,k))
 
 Base.length(k::KernelProduct) = length(k.kernels)
-metric(k::KernelProduct) = metric.(k.kernels) #TODO Add test
-transform(k::KernelProduct) = transform.(k.kernels) #TODO Add test
-transform(k::KernelProduct,x::AbstractVecOrMat) = transform.(k.kernels,[x]) #TODO Add test
-transform(k::KernelProduct,x::AbstractVecOrMat,obsdim::Int) = transform.(k.kernels,[x],obsdim) #TODO Add test
+
+kappa(κ::KernelProduct, x ,y) = prod(kappa(k, x, y) for k in κ.kernels)
 
 hadamard(x,y) = x.*y
 

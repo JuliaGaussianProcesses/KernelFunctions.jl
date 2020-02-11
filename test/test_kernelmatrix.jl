@@ -70,7 +70,6 @@ kt = sqexponentialkernel(s)
         k3 = RationalQuadraticKernel()
         kp = k1 * k2
         kp2 = k1 * k3
-        @test all(KernelFunctions.metric(kp).==[KernelFunctions.metric(k1),KernelFunctions.metric(k2)])
         @test all(kernelmatrix(kp,A) .≈ kernelmatrix(k1,A) .* kernelmatrix(k2,A))
         @test all(kernelmatrix(kp*k1,A) .≈ kernelmatrix(k1,A).^2 .* kernelmatrix(k2,A))
         @test all(kernelmatrix(k1*kp,A) .≈ kernelmatrix(k1,A).^2 .* kernelmatrix(k2,A))
