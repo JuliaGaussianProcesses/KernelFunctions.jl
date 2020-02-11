@@ -37,10 +37,10 @@ include("transform/transform.jl")
 for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated"]
     include(joinpath("kernels",k*".jl"))
 end
+include("kernels/transformedkernel.jl")
+include("kernels/scaledkernel.jl")
 include("matrix/kernelmatrix.jl")
 include("matrix/kernelpdmat.jl")
-include("kernels/scaledkernel.jl")
-include("kernels/transformedkernel.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
 
