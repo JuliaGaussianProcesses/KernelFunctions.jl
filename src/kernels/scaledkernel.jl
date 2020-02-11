@@ -8,8 +8,6 @@ function ScaledKernel(kernel::Tk,σ::Tσ=1.0) where {Tk<:Kernel,Tσ<:Real}
     ScaledKernel{Tk,Tσ}(kernel,[σ])
 end
 
-@inline transform(k::ScaledKernel) = transform(k.kernel)
-
 @inline kappa(k::ScaledKernel, x) = first(k.σ)*kappa(k.kernel, x)
 
 @inline metric(k::ScaledKernel) = metric(k.kernel)

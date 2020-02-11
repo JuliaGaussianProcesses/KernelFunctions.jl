@@ -16,6 +16,9 @@ f(x) = sin.(x)
 
 @testset "Transform Test" begin
     ## Test Scale Transform
+    @testset "IdentityTransform" begin
+        @test KernelFunctions.apply(IdentityTransform(),X)==X
+    end
     @testset "ScaleTransform" begin
         t = ScaleTransform(s)
         @test all(KernelFunctions.apply(t,X).==s*X)
@@ -29,6 +32,10 @@ f(x) = sin.(x)
         vt2 = ARDTransform(v2)
         @test all(KernelFunctions.apply(vt1,X,obsdim=1).==v1'.*X)
         @test all(KernelFunctions.apply(vt2,X,obsdim=2).==v2.*X)
+        newv1 = rand(5)
+        KernelFunctions.set!(vt1,newv1)
+        @test all(vt1.v .== newv1)
+        @test_throws DimensionMismatch KernelFunctions.apply(vt1,rand(3,4))
     end
     ## Test LowRankTransform
     @testset "LowRankTransform" begin

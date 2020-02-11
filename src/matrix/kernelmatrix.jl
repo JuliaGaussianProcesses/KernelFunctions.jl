@@ -21,7 +21,7 @@ function kernelmatrix!(
         map!(x->kappa(κ,x),K,pairwise(metric(κ),X,dims=obsdim))
 end
 
-kernelmatrix!(K::Matrix, κ::TransformedKernel, X; obsdim::Int = defaultobs) =
+kernelmatrix!(K::Matrix, κ::TransformedKernel, X::AbstractMatrix; obsdim::Int = defaultobs) =
         kernelmatrix!(K, kernel(κ), apply(κ.transform, X, obsdim = obsdim), obsdim = obsdim)
 
 function kernelmatrix!(
@@ -38,7 +38,7 @@ function kernelmatrix!(
         map!(x->kappa(κ,x),K,pairwise(metric(κ),X,Y,dims=obsdim))
 end
 
-kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, X, Y; obsdim::Int = defaultobs) =
+kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int = defaultobs) =
         kernelmatrix!(K, kernel(κ), apply(κ.transform, X, obsdim = obsdim), apply(κ.transform, Y, obsdim = obsdim), obsdim = obsdim)
 
 ## Apply kernel on two reals ##
@@ -87,7 +87,7 @@ function kernelmatrix(
         K = map(x->kappa(κ,x),pairwise(metric(κ),X,dims=obsdim))
 end
 
-kernelmatrix(κ::TransformedKernel, X; obsdim::Int = defaultobs) =
+kernelmatrix(κ::TransformedKernel, X::AbstractMatrix; obsdim::Int = defaultobs) =
         kernelmatrix(kernel(κ), apply(κ.transform, X, obsdim = obsdim), obsdim = obsdim)
 
 function kernelmatrix(
@@ -105,7 +105,7 @@ end
 
 @inline _kernelmatrix(κ::Kernel,X,Y,obsdim) = map(x->kappa(κ,x),pairwise(metric(κ),X,Y,dims=obsdim))
 
-kernelmatrix(κ::TransformedKernel, X, Y; obsdim::Int = defaultobs) =
+kernelmatrix(κ::TransformedKernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int = defaultobs) =
         kernelmatrix(kernel(κ), apply(κ.transform, X, obsdim = obsdim), apply(κ.transform, Y, obsdim = obsdim), obsdim = obsdim)
 
 """

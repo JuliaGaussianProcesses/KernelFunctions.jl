@@ -28,7 +28,7 @@ end
 params(t::ARDTransform) = t.v
 dim(t::ARDTransform) = length(t.v)
 
-function apply(t::ARDTransform,X::AbstractMatrix{<:Real};obsdim::Int)
+function apply(t::ARDTransform,X::AbstractMatrix{<:Real};obsdim::Int = defaultobs)
     @boundscheck if dim(t) != size(X,feature_dim(obsdim))
         throw(DimensionMismatch("Array has size $(size(X,!Bool(obsdim-1)+1)) on dimension $(!Bool(obsdim-1)+1)) which does not match the length of the scale transform length , $(dim(t)).")) #TODO Add test
     end

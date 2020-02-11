@@ -10,7 +10,9 @@ B = rand(dims...)
 C = rand(8,9)
 K = [zeros(dims[1],dims[1]),zeros(dims[2],dims[2])]
 Kdiag = [zeros(dims[1]),zeros(dims[2])]
+s = rand()
 k = SqExponentialKernel()
+kt = sqexponentialkernel(s)
 @testset "Kernel Matrix Operations" begin
     @testset "Inplace Kernel Matrix" begin
         for obsdim in [1,2]
@@ -31,6 +33,22 @@ k = SqExponentialKernel()
             @test k(A,obsdim=obsdim) == kernelmatrix(k,A,obsdim=obsdim)
             @test KernelFunctions._kernel(k,1.0,2.0) == KernelFunctions._kernel(k,[1.0],[2.0])
             @test_throws DimensionMismatch kernelmatrix(k,A,C,obsdim=obsdim)
+        end
+    end
+    @testset "Transformed Kernel Matrix Operations" begin
+        @testset "Inplace Kernel Matrix" begin
+            for obsdim in [1,2]
+                @test kernelmatrix!(K[obsdim],kt,A,B,obsdim=obsdim) == kernelmatrix(k,s*A,s*B,obsdim=obsdim)
+                @test kernelmatrix!(K[obsdim],kt,A,obsdim=obsdim) == kernelmatrix(k,s*A,obsdim=obsdim)
+                @test kerneldiagmatrix!(Kdiag[obsdim],kt,A,obsdim=obsdim) == kerneldiagmatrix(k,s*A,obsdim=obsdim)
+            end
+        end
+        @testset "Kernel matrix" begin
+            for obsdim in [1,2]
+                @test kernelmatrix(kt,A,B,obsdim=obsdim) == kernelmatrix(k,s*A,s*B,obsdim=obsdim)
+                @test kernelmatrix(kt,A,obsdim=obsdim) == kernelmatrix(k,s*A,obsdim=obsdim)
+                @test kerneldiagmatrix(kt,A,obsdim=obsdim) == kerneldiagmatrix(k,s*A,obsdim=obsdim)
+            end
         end
     end
     @testset "KernelSum" begin
