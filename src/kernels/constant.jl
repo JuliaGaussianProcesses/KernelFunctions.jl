@@ -7,9 +7,9 @@ Create a kernel that always returning zero
 ```
 The output type depends of `x` and `y`
 """
-struct ZeroKernel <: Kernel end
+struct ZeroKernel <: BaseKernel end
 
-@inline kappa(κ::ZeroKernel, d::T) where {T<:Real} = zero(T)
+kappa(κ::ZeroKernel, d::T) where {T<:Real} = zero(T)
 
 metric(::ZeroKernel) = Delta()
 
@@ -21,9 +21,9 @@ metric(::ZeroKernel) = Delta()
 ```
 Kernel function working as an equivalent to add white noise.
 """
-struct WhiteKernel <: Kernel end
+struct WhiteKernel <: BaseKernel end
 
-@inline kappa(κ::WhiteKernel,δₓₓ::Real) = δₓₓ
+kappa(κ::WhiteKernel,δₓₓ::Real) = δₓₓ
 
 metric(::WhiteKernel) = Delta()
 
@@ -34,7 +34,7 @@ metric(::WhiteKernel) = Delta()
 ```
 Kernel function always returning a constant value `c`
 """
-struct ConstantKernel{Tc<:Real} <: Kernel
+struct ConstantKernel{Tc<:Real} <: BaseKernel
     c::Tc
     function ConstantKernel(c::T=1.0) where {T<:Real}
         new{T}(c)
@@ -44,6 +44,6 @@ end
 params(k::ConstantKernel) = (k.c,)
 opt_params(k::ConstantKernel) = (k.c,)
 
-@inline kappa(κ::ConstantKernel,x::Real) = κ.c*one(x)
+kappa(κ::ConstantKernel,x::Real) = κ.c*one(x)
 
-@inline metric(::ConstantKernel) = Delta()
+metric(::ConstantKernel) = Delta()

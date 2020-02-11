@@ -6,7 +6,7 @@ The rational-quadratic kernel is an isotropic Mercer kernel given by the formula
 ```
 where `α` is a shape parameter of the Euclidean distance. Check [`GammaRationalQuadraticKernel`](@ref) for a generalization.
 """
-struct RationalQuadraticKernel{Tα<:Real} <: Kernel
+struct RationalQuadraticKernel{Tα<:Real} <: BaseKernel
     α::Tα
     function RationalQuadraticKernel(α::T=2.0) where {T}
         @check_args(RationalQuadraticKernel, α, α > zero(T), "α > 1")
@@ -29,7 +29,7 @@ The Gamma-rational-quadratic kernel is an isotropic Mercer kernel given by the f
 ```
 where `α` is a shape parameter of the Euclidean distance and `γ` is another shape parameter.
 """
-struct GammaRationalQuadraticKernel{Tα<:Real, Tγ<:Real} <: Kernel
+struct GammaRationalQuadraticKernel{Tα<:Real, Tγ<:Real} <: BaseKernel
     α::Tα
     γ::Tγ
     function GammaRationalQuadraticKernel(α::Tα=2.0, γ::Tγ=2*one(Tα)) where {Tα<:Real, Tγ<:Real}

@@ -5,10 +5,10 @@ The exponentiated kernel is a Mercer kernel given by:
     κ(x,y) = exp(ρ²xᵀy)
 ```
 """
-struct ExponentiatedKernel <: Kernel end
+struct ExponentiatedKernel <: BaseKernel end
 
-@inline kappa(κ::ExponentiatedKernel, xᵀy::Real) = exp(xᵀy)
+kappa(κ::ExponentiatedKernel, xᵀy::Real) = exp(xᵀy)
 
 metric(::ExponentiatedKernel) = DotProduct()
 
-@inline iskroncompatible(::ExponentiatedKernel) = true
+iskroncompatible(::ExponentiatedKernel) = true

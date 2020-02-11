@@ -8,12 +8,14 @@ The squared exponential kernel is an isotropic Mercer kernel given by the formul
 See also [`ExponentialKernel`](@ref) for a
 related form of the kernel or [`GammaExponentialKernel`](@ref) for a generalization.
 """
-struct SqExponentialKernel <: Kernel end
+struct SqExponentialKernel <: BaseKernel end
 
-@inline kappa(κ::SqExponentialKernel, d²::Real) = exp(-d²)
-@inline iskroncompatible(::SqExponentialKernel) = true
+kappa(κ::SqExponentialKernel, d²::Real) = exp(-d²)
+iskroncompatible(::SqExponentialKernel) = true
 
 metric(::SqExponentialKernel) = SqEuclidean()
+
+Base.show(io::IO,::SqExponentialKernel) = print(io,"Squared Exponential Kernel")
 
 ## Aliases ##
 const RBFKernel = SqExponentialKernel
@@ -26,11 +28,13 @@ The exponential kernel is an isotropic Mercer kernel given by the formula:
     κ(x,y) = exp(-ρ‖x-y‖)
 ```
 """
-struct ExponentialKernel <: Kernel end
+struct ExponentialKernel <: BaseKernel end
 
-@inline kappa(κ::ExponentialKernel, d::Real) = exp(-d)
-@inline iskroncompatible(::ExponentialKernel) = true
+kappa(κ::ExponentialKernel, d::Real) = exp(-d)
+iskroncompatible(::ExponentialKernel) = true
 metric(::ExponentialKernel) = Euclidean()
+
+Base.show(io::IO,::ExponentialKernel) = print(io,"Exponential Kernel")
 
 ## Alias ##
 const LaplacianKernel = ExponentialKernel
@@ -42,7 +46,7 @@ The γ-exponential kernel is an isotropic Mercer kernel given by the formula:
     κ(x,y) = exp(-ρ^(2γ)‖x-y‖^(2γ))
 ```
 """
-struct GammaExponentialKernel{Tγ<:Real} <: Kernel
+struct GammaExponentialKernel{Tγ<:Real} <: BaseKernel
     γ::Tγ
     function GammaExponentialKernel(γ::T=2.0) where {T<:Real}
         @check_args(GammaExponentialKernel, γ, γ >= zero(T), "γ > 0")
@@ -53,6 +57,6 @@ end
 params(k::GammaExponentialKernel) = (γ,)
 opt_params(k::GammaExponentialKernel) = (γ,)
 
-@inline kappa(κ::GammaExponentialKernel, d²::Real) = exp(-d²^κ.γ)
-@inline iskroncompatible(::GammaExponentialKernel) = true
+kappa(κ::GammaExponentialKernel, d²::Real) = exp(-d²^κ.γ)
+iskroncompatible(::GammaExponentialKernel) = true
 metric(::GammaExponentialKernel) = SqEuclidean()

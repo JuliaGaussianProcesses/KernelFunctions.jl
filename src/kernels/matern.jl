@@ -6,7 +6,7 @@ The matern kernel is an isotropic Mercer kernel given by the formula:
 ```
 For `ν=n+1/2, n=0,1,2,...` it can be simplified and you should instead use [`ExponentialKernel`](@ref) for `n=0`, [`Matern32Kernel`](@ref), for `n=1`, [`Matern52Kernel`](@ref) for `n=2` and [`SqExponentialKernel`](@ref) for `n=∞`.
 """
-struct MaternKernel{Tν<:Real} <: Kernel
+struct MaternKernel{Tν<:Real} <: BaseKernel
     ν::Tν
     function MaternKernel(ν::T=1.5) where {T<:Real}
         @check_args(MaternKernel, ν, ν > zero(T), "ν > 0")
@@ -28,9 +28,9 @@ The matern 3/2 kernel is an isotropic Mercer kernel given by the formula:
     κ(x,y) = (1+√(3)ρ‖x-y‖)exp(-√(3)ρ‖x-y‖)
 ```
 """
-struct Matern32Kernel <: Kernel end
+struct Matern32Kernel <: BaseKernel end
 
-@inline kappa(κ::Matern32Kernel, d::Real) = (1+sqrt(3)*d)*exp(-sqrt(3)*d)
+kappa(κ::Matern32Kernel, d::Real) = (1+sqrt(3)*d)*exp(-sqrt(3)*d)
 
 metric(::Matern32Kernel) = Euclidean()
 
@@ -41,8 +41,8 @@ The matern 5/2 kernel is an isotropic Mercer kernel given by the formula:
     κ(x,y) = (1+√(5)ρ‖x-y‖ + 5ρ²‖x-y‖^2/3)exp(-√(5)ρ‖x-y‖)
 ```
 """
-struct Matern52Kernel <: Kernel end
+struct Matern52Kernel <: BaseKernel end
 
-@inline kappa(κ::Matern52Kernel, d::Real) = (1+sqrt(5)*d+5*d^2/3)*exp(-sqrt(5)*d)
+kappa(κ::Matern52Kernel, d::Real) = (1+sqrt(5)*d+5*d^2/3)*exp(-sqrt(5)*d)
 
 metric(::Matern52Kernel) = Euclidean()

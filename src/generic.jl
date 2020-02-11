@@ -6,7 +6,7 @@ Base.iterate(k::Kernel, ::Any) = nothing
 # default fallback for evaluating a kernel with two arguments (such as vectors etc)
 kappa(κ::Kernel, x, y) = kappa(κ, evaluate(metric(κ), x, y))
 kappa(κ::TransformedKernel, x, y) = kappa(kernel(κ), apply(κ.transform,x), apply(κ.transform,y))
-kappa(κ::TransformedKernel{<:Kernel,<:ScaleTransform}, x, y) = kappa(κ.kernel, _scale(κ.transform, metric(κ.kernel), x, y))
+kappa(κ::TransformedKernel{<:BaseKernel,<:ScaleTransform}, x, y) = kappa(κ, _scale(κ.transform, metric(κ), x, y))
 _scale(t::ScaleTransform, metric::Euclidean, x, y) =  first(t.s) * evaluate(metric, x, y)
 _scale(t::ScaleTransform, metric::Union{SqEuclidean,DotProduct}, x, y) =  first(t.s)^2 * evaluate(metric, x, y)
 _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, apply(t, x), apply(t, y))

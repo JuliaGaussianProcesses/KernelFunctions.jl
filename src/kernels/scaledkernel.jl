@@ -8,9 +8,9 @@ function ScaledKernel(kernel::Tk,σ::Tσ=1.0) where {Tk<:Kernel,Tσ<:Real}
     ScaledKernel{Tk,Tσ}(kernel,[σ])
 end
 
-@inline kappa(k::ScaledKernel, x) = first(k.σ)*kappa(k.kernel, x)
+kappa(k::ScaledKernel, x) = first(k.σ)*kappa(k.kernel, x)
 
-@inline metric(k::ScaledKernel) = metric(k.kernel)
+metric(k::ScaledKernel) = metric(k.kernel)
 
 params(k::ScaledKernel) = (k.σ,params(k.kernel))
 opt_params(k::ScaledKernel) = (k.σ,opt_params(k.kernel))

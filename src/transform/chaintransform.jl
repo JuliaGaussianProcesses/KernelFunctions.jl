@@ -17,6 +17,7 @@ function ChainTransform(v::AbstractVector{<:Transform})
     ChainTransform(v)
 end
 
+## Constructor to create a chain transform with an array of parameters
 function ChainTransform(v::AbstractVector{<:Type{<:Transform}},θ::AbstractVector)
     @assert length(v) == length(θ)
     ChainTransform(v.(θ))
