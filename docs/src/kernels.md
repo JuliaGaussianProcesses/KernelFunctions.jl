@@ -2,6 +2,10 @@
   CurrentModule = KernelFunctions
 ```
 
+# Base Kernels
+
+These are the basic kernels without any transformation of the data. They are the building blocks of KernelFunctions
+
 ## Exponential Kernels
 
 ### Exponential Kernel
@@ -13,7 +17,7 @@ The [Exponential Kernel](@ref ExponentialKernel) is defined as
 
 ### Square Exponential Kernel
 
-The [Square Exponential Kernel](@ref KernelFunctions.SqExponentialKernel) is defined as 
+The [Square Exponential Kernel](@ref KernelFunctions.SqExponentialKernel) is defined as
 ```math
   k(x,x') = \exp\left(-\|x-x'\|^2\right)
 ```
@@ -91,3 +95,13 @@ The [Square Exponential Kernel](@ref KernelFunctions.SqExponentialKernel) is def
 ```math
   k(x,x') = 0
 ```
+
+# Composite Kernels
+
+## TransformedKernel
+
+## ScaledKernel
+
+## KernelSum
+
+## KernelProduct

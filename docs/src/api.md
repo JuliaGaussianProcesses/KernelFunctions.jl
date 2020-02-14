@@ -14,7 +14,7 @@ CurrentModule = KernelFunctions
 KernelFunctions
 ```
 
-## Kernel Functions
+## Base Kernels
 
 ```@docs
 SqExponentialKernel
@@ -33,9 +33,11 @@ ConstantKernel
 WhiteKernel
 ```
 
-## Kernel Combinations
+## Composite Kernels
 
 ```@docs
+TransformedKernel
+ScaledKernel
 KernelSum
 KernelProduct
 ```
