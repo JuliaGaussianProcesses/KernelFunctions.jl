@@ -31,7 +31,7 @@ Where `c` is a real number, and `d` is a shape parameter bigger than 1
 struct PolynomialKernel{Td<:Real,Tc<:Real} <: BaseKernel
     d::Td
     c::Tc
-    function PolynomialKernel(;d::Td=2.0, c::Tc=zero(Td)) where {Td<:Real, Tc<:Real}
+    function PolynomialKernel(; d::Td=2.0, c::Tc=0.0) where {Td<:Real, Tc<:Real}
         @check_args(PolynomialKernel, d, d >= one(Td), "d >= 1")
         return new{Td, Tc}(d, c)
     end

@@ -32,7 +32,7 @@ where `α` is a shape parameter of the Euclidean distance and `γ` is another sh
 struct GammaRationalQuadraticKernel{Tα<:Real, Tγ<:Real} <: BaseKernel
     α::Tα
     γ::Tγ
-    function GammaRationalQuadraticKernel(;α::Tα=2.0, γ::Tγ=2*one(Tα)) where {Tα<:Real, Tγ<:Real}
+    function GammaRationalQuadraticKernel(;α::Tα=2.0, γ::Tγ=2.0) where {Tα<:Real, Tγ<:Real}
         @check_args(GammaRationalQuadraticKernel, α, α > one(Tα), "α > 1")
         @check_args(GammaRationalQuadraticKernel, γ, γ >= one(Tγ), "γ >= 1")
         return new{Tα, Tγ}(α, γ)
