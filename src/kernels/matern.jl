@@ -8,7 +8,7 @@ For `ν=n+1/2, n=0,1,2,...` it can be simplified and you should instead use [`Ex
 """
 struct MaternKernel{Tν<:Real} <: BaseKernel
     ν::Tν
-    function MaternKernel(ν::T=1.5) where {T<:Real}
+    function MaternKernel(;ν::T=1.5) where {T<:Real}
         @check_args(MaternKernel, ν, ν > zero(T), "ν > 0")
         return new{T}(ν)
     end
