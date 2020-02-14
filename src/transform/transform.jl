@@ -23,7 +23,6 @@ Return exactly the input
 struct IdentityTransform <: Transform end
 
 params(t::IdentityTransform) = nothing
-duplicate(t::IdentityTransform,θ) = t
 
 apply(t::IdentityTransform, x; obsdim::Int=defaultobs) = x #TODO add test
 
