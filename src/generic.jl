@@ -12,7 +12,7 @@ _scale(t::ScaleTransform, metric::Union{SqEuclidean,DotProduct}, x, y) =  first(
 _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, apply(t, x), apply(t, y))
 
 ### Syntactic sugar for creating matrices and using kernel functions
-for k in [:ExponentialKernel,:SqExponentialKernel,:GammaExponentialKernel,:MaternKernel,:Matern32Kernel,:Matern52Kernel,:LinearKernel,:PolynomialKernel,:ExponentiatedKernel,:ZeroKernel,:WhiteKernel,:ConstantKernel,:RationalQuadraticKernel,:GammaRationalQuadraticKernel]
+for k in subtypes(BaseKernel)
     @eval begin
         @inline (κ::$k)(d::Real) = kappa(κ,d) #TODO Add test
         @inline (κ::$k)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real}) = kappa(κ, x, y)
@@ -21,22 +21,16 @@ for k in [:ExponentialKernel,:SqExponentialKernel,:GammaExponentialKernel,:Mater
     end
 end
 
-## Constructors for kernels without parameters
-# for kernel in [:ExponentialKernel,:SqExponentialKernel,:Matern32Kernel,:Matern52Kernel,:ExponentiatedKernel]
-#     @eval begin
-#         $kernel() = $kernel(IdentityTransform())
-#         $kernel(ρ::Real) = $kernel(ScaleTransform(ρ))
-#         $kernel(ρ::AbstractVector{<:Real}) = $kernel(ARDTransform(ρ))
-#     end
-# end
-
-for k in [:SqExponentialKernel,:ExponentialKernel,:GammaExponentialKernel]
+for k in Symbol.(subtypes(BaseKernel))
+    k = Symbol(string(k)[17:end])
     new_k = Symbol(lowercase(string(k)))
     @eval begin
         $new_k(args...) = $k(args...)
         $new_k(ρ::Real,args...) = TransformedKernel($k(args...),ScaleTransform(ρ))
         $new_k(ρ::AbstractVector{<:Real},args...) = TransformedKernel($k(args...),ARDTransform(ρ))
         $new_k(t::Transform,args...) = TransformedKernel($k(args...),t)
+        @deprecate($k(ρ::Real,args...),$new_k(ρ,args...))
+        @deprecate($k(ρ::AbstractVector{<:Real},args...),$new_k(ρ,args...))
         export $new_k
     end
 end

@@ -20,6 +20,7 @@ using SpecialFunctions: logabsgamma, besselk
 using ZygoteRules: @adjoint
 using StatsFuns: logtwo
 using PDMats: PDMat
+using InteractiveUtils: subtypes
 
 const defaultobs = 2
 
