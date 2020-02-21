@@ -2,7 +2,7 @@ using Distances, LinearAlgebra
 using Test
 using KernelFunctions
 using PDMats
-
+using Kronecker
 dims = [10,5]
 
 A = rand(dims...)
@@ -66,5 +66,12 @@ k = SqExponentialKernel()
             @test all(Matrix(kernelpdmat(k,A,obsdim=obsdim)) .≈ Matrix(PDMat(kernelmatrix(k,A,obsdim=obsdim))))
             # @test_throws ErrorException kernelpdmat(k,ones(100,100),obsdim=obsdim)
         end
+    end
+    @testset "Kronecker" begin
+        x = range(0,1,length=10)
+        X = vcat(collect.(Iterators.product(x,x))'...)
+        @test all(collect(kernelkronmat(k,collect(x),2)).≈kernelmatrix(k,X,obsdim=1))
+        @test all(collect(kernelkronmat(k,[x,x])).≈kernelmatrix(k,X,obsdim=1))
+        @test_throws AssertionError kernelkronmat(LinearKernel(),collect(x),2)
     end
 end
