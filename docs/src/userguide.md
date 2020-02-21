@@ -22,6 +22,10 @@ For example:
   kernelmatrix(k,A,obsdim=2) # Return a 5x5 matrix
 ```
 
+We also support specific kernel matrices outputs:
+- For a positive-definite matrix object`PDMat` from [`PDMats.jl`](https://github.com/JuliaStats/PDMats.jl). Call `kernelpdmat(k,A,obsdim=1)`, it will create a matrix and in case of bad conditionning will add some diagonal noise until the matrix is considered PSD, it will then return a `PDMat` object. For this method to work in your code you need to include `using PDMats` first
+- For a Kronecker matrix, we rely on [`Kronecker.jl`](https://github.com/MichielStock/Kronecker.jl). We give two methods : `kernelkronmat(k,[x,y,z])` where `x` `y` and `z` are vectors, and `kernelkronmat(k,x,dims)` where `x` is a vector and dims and the number of features. Make sure that `k` is a vector compatible with such constructions (with `iskroncompatible`).For this method to work in your code you need to include `using Kronecker` first
+
 ## Kernel manipulation
 
 One can create combinations of kernels via `KernelSum` and `KernelProduct` or using simple operators `+` and `*`.
