@@ -1,3 +1,5 @@
+using PDMats: PDMat
+
 export kernelpdmat
 
 """
