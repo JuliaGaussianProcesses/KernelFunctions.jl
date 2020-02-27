@@ -72,8 +72,13 @@ function kerneldiagmatrix(
 end
 
 function Base.show(io::IO,κ::KernelSum)
+    printshifted(io,κ,0)
+end
+
+function printshifted(io::IO,κ::KernelSum, shift::Int)
     print(io,"Sum of $(length(κ)) kernels:")
     for i in 1:length(κ)
-        print(io,"\n\t- (w=$(κ.weights[i])) $(κ.kernels[i])")
+        print(io,"\n"*("\t"^(shift+1))*"- (w=$(κ.weights[i])) ")
+        printshifted(io,κ.kernels[i],shift+2)
     end
 end

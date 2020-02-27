@@ -49,3 +49,15 @@ function kerneldiagmatrix(
     obsdim::Int=defaultobs) #TODO Add test
     reduce(hadamard,kerneldiagmatrix(κ.kernels[i],X,obsdim=obsdim) for i in 1:length(κ))
 end
+
+function Base.show(io::IO,κ::KernelProduct)
+    printshifted(io,κ,0)
+end
+
+function printshifted(io::IO,κ::KernelProduct, shift::Int)
+    print(io,"Product of $(length(κ)) kernels:")
+    for i in 1:length(κ)
+        print(io,"\n"*("\t"^(shift+1))*"- ")
+        printshifted(io,κ.kernels[i],shift+2)
+    end
+end

@@ -17,4 +17,9 @@ opt_params(k::ScaledKernel) = (k.σ,opt_params(k.kernel))
 
 Base.:*(w::Real,k::Kernel) = ScaledKernel(k,w)
 
-Base.show(io::IO,κ::ScaledKernel) = print(io,"$(κ.kernel)\n\t- σ = $(first(κ.σ))")
+Base.show(io::IO,κ::ScaledKernel) = printshifted(io,κ,0)
+
+function printshifted(io::IO,κ::ScaledKernel,shift::Int)
+    printshifted(io,κ.kernel,shift)
+    print(io,"\n"*("\t"^(shift+1))*"- σ = $(first(κ.σ))")
+end
