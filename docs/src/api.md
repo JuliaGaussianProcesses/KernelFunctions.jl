@@ -59,6 +59,7 @@ kernelmatrix!
 kerneldiagmatrix
 kerneldiagmatrix!
 kernelpdmat
+kernelkronmat
 transform
 ```
 
