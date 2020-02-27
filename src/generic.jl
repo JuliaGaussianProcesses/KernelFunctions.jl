@@ -21,16 +21,9 @@ for k in subtypes(BaseKernel)
     end
 end
 
-for k in Symbol.(subtypes(BaseKernel))
-    k = Symbol(string(k)[17:end])
-    new_k = Symbol(lowercase(string(k)))
+for k in nameof.(subtypes(BaseKernel))
     @eval begin
-        $new_k(;args...) = $k(;args...)
-        $new_k(ρ::Real;args...) = TransformedKernel($k(;args...),ScaleTransform(ρ))
-        $new_k(ρ::AbstractVector{<:Real};args...) = TransformedKernel($k(;args...),ARDTransform(ρ))
-        $new_k(t::Transform;args...) = TransformedKernel($k(;args...),t)
-        @deprecate($k(ρ::Real;args...),$new_k(ρ;args...))
-        @deprecate($k(ρ::AbstractVector{<:Real};args...),$new_k(ρ;args...))
-        export $new_k
+        @deprecate($k(ρ::Real;args...),TransformedKernel($k(args...),ScaleTransform(ρ)))
+        @deprecate($k(ρ::AbstractVector{<:Real};args...),TransformedKernel($k(args...),ARDTransform(ρ)))
     end
 end

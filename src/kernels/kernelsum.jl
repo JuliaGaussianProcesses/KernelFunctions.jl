@@ -36,10 +36,14 @@ Base.:+(k::Kernel, ks::KernelSum) =
     KernelSum(vcat(k, ks.kernels), weights = vcat(1.0, ks.weights))
 Base.:+(k::ScaledKernel, ks::KernelSum) =
         KernelSum(vcat(kernel(k), ks.kernels), weights = vcat(first(k.σ), ks.weights))
+Base.:+(k::ScaledKernel, ks::Kernel) =
+        KernelSum(vcat(kernel(k), ks), weights = vcat(first(k.σ), 1.0))
 Base.:+(ks::KernelSum, k::Kernel) =
     KernelSum(vcat(ks.kernels, k), weights = vcat(ks.weights, 1.0))
 Base.:+(ks::KernelSum, k::ScaledKernel) =
         KernelSum(vcat(ks.kernels, kernel(k)), weights = vcat(ks.weights, first(k.σ)))
+Base.:+(ks::Kernel, k::ScaledKernel) =
+        KernelSum(vcat(ks, kernel(k)), weights = vcat(1.0, first(k.σ)))
 Base.:*(w::Real, k::KernelSum) = KernelSum(k.kernels, weights = w * k.weights) #TODO add tests
 
 Base.length(k::KernelSum) = length(k.kernels)
@@ -65,4 +69,11 @@ function kerneldiagmatrix(
     obsdim::Int = defaultobs,
 )
     sum(κ.weights[i] * kerneldiagmatrix(κ.kernels[i], X, obsdim = obsdim) for i in 1:length(κ))
+end
+
+function Base.show(io::IO,κ::KernelSum)
+    print(io,"Sum of $(length(κ)) kernels:")
+    for i in 1:length(κ)
+        print(io,"\n\t- (w=$(κ.weights[i])) $(κ.kernels[i])")
+    end
 end

@@ -3,7 +3,6 @@ export Transform, IdentityTransform, ScaleTransform, ARDTransform, LowRankTransf
 """
 ```julia
     transform(t::Transform, X::AbstractMatrix)
-    transform(k::Kernel, X::AbstractMatrix)
 ```
 Apply the transfomration `t` or `k.transform` on the input `X`
 """
