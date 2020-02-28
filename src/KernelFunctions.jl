@@ -1,6 +1,6 @@
 module KernelFunctions
 
-export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa, kernelpdmat # Main matrix functions
+export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
 export transform
 export params, duplicate, set! # Helpers
 
@@ -16,12 +16,14 @@ export TransformedKernel, ScaledKernel
 
 export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
 
+export NystromFact, nystrom
+
 using Compat
+using Requires
 using Distances, LinearAlgebra
 using SpecialFunctions: logabsgamma, besselk
 using ZygoteRules: @adjoint
 using StatsFuns: logtwo
-using PDMats: PDMat
 using InteractiveUtils: subtypes
 
 const defaultobs = 2
@@ -44,12 +46,17 @@ end
 include("kernels/transformedkernel.jl")
 include("kernels/scaledkernel.jl")
 include("matrix/kernelmatrix.jl")
-include("matrix/kernelpdmat.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
+include("approximations/nystrom.jl")
 
 include("generic.jl")
 
 include("zygote_adjoints.jl")
+
+function __init__()
+    @require Kronecker="2c470bb0-bcc8-11e8-3dad-c9649493f05e" include("matrix/kernelkroneckermat.jl")
+    @require PDMats="90014a1f-27ba-587c-ab20-58faa44d9150" include("matrix/kernelpdmat.jl")
+end
 
 end

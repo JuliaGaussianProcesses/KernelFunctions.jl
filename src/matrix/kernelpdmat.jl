@@ -1,3 +1,7 @@
+using PDMats: PDMat
+
+export kernelpdmat
+
 """
     Compute a positive-definite matrix in the form of a `PDMat` matrix see [PDMats.jl]() with the cholesky decomposition precomputed
     The algorithm recursively tries to add recursively a diagonal nugget until positive definiteness is achieved or that the noise is too big
