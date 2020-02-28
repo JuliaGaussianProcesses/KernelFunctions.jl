@@ -4,7 +4,7 @@ export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
 export transform
 export params, duplicate, set! # Helpers
 
-export Kernel
+export Kernel, BaseKernel, @kernel
 export ConstantKernel, WhiteKernel, ZeroKernel
 export SqExponentialKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
@@ -46,6 +46,7 @@ for k in ["exponential","matern","polynomial","constant","rationalquad","exponen
 end
 include("kernels/transformedkernel.jl")
 include("kernels/scaledkernel.jl")
+include("kernels/kernel_macro.jl")
 include("matrix/kernelmatrix.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
