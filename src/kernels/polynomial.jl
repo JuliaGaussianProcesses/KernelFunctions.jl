@@ -6,25 +6,17 @@ The linear kernel is a Mercer kernel given by
 ```
 Where `c` is a real number
 """
-struct LinearKernel{Tr, Tc<:Real} <: Kernel{Tr}
-    transform::Tr
+struct LinearKernel{Tc<:Real} <: BaseKernel
     c::Tc
+    function LinearKernel(;c::T=0.0) where {T}
+        new{T}(c)
+    end
 end
 
-function LinearKernel(ρ::T=1.0, c::Real=zero(T)) where {T<:Real}
-    LinearKernel(ScaleTransform(ρ), c)
-end
+params(k::LinearKernel) = (k.c,)
+opt_params(k::LinearKernel) = (k.c,)
 
-function LinearKernel(ρ::AbstractVector{T}, c::Real=zero(T)) where {T<:Real}
-    LinearKernel(ARDTransform(ρ), c)
-end
-
-LinearKernel(t::Transform) = LinearKernel(t, 0.0)
-
-params(k::LinearKernel) = (params(transform(k)),k.c)
-opt_params(k::LinearKernel) = (opt_params(transform(k)),k.c)
-
-@inline kappa(κ::LinearKernel, xᵀy::T) where {T<:Real} = xᵀy + κ.c
+kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + κ.c
 
 metric(::LinearKernel) = DotProduct()
 
@@ -36,31 +28,18 @@ The polynomial kernel is a Mercer kernel given by
 ```
 Where `c` is a real number, and `d` is a shape parameter bigger than 1
 """
-struct PolynomialKernel{Tr,Tc<:Real,Td<:Real} <: Kernel{Tr}
-    transform::Tr
+struct PolynomialKernel{Td<:Real,Tc<:Real} <: BaseKernel
     d::Td
     c::Tc
-    function PolynomialKernel{Tr, Tc, Td}(transform::Tr, d::Td, c::Tc) where {Tr<:Transform, Td<:Real, Tc<:Real}
+    function PolynomialKernel(; d::Td=2.0, c::Tc=0.0) where {Td<:Real, Tc<:Real}
         @check_args(PolynomialKernel, d, d >= one(Td), "d >= 1")
-        return new{Tr, Td, Tc}(transform,d, c)
+        return new{Td, Tc}(d, c)
     end
 end
 
-function PolynomialKernel(ρ::Real=1.0, d::Td=2.0, c::Real=zero(Td)) where {Td<:Real}
-    PolynomialKernel(ScaleTransform(ρ), d, c)
-end
+params(k::PolynomialKernel) = (k.d,k.c)
+opt_params(k::PolynomialKernel) = (k.d,k.c)
 
-function PolynomialKernel(ρ::AbstractVector{T}, d::Real=2.0, c::Real=zero(T₁)) where {T<:Real}
-    PolynomialKernel(ARDTransform(ρ), d, c)
-end
-
-function PolynomialKernel(t::Tr, d::Td=2.0, c::Tc=zero(eltype(Td))) where {Tr<:Transform, Td<:Real, Tc<:Real}
-    PolynomialKernel{Tr, Tc, Td}(t, d, c)
-end
-
-params(k::PolynomialKernel) = (params(transform(k)),k.d,k.c)
-opt_params(k::PolynomialKernel) = (opt_params(transform(k)),k.d,k.c)
-
-@inline kappa(κ::PolynomialKernel, xᵀy::T) where {T<:Real} = (xᵀy + κ.c)^(κ.d)
+kappa(κ::PolynomialKernel, xᵀy::T) where {T<:Real} = (xᵀy + κ.c)^(κ.d)
 
 metric(::PolynomialKernel) = DotProduct()

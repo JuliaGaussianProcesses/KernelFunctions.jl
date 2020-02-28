@@ -1,14 +1,4 @@
 export Transform, IdentityTransform, ScaleTransform, ARDTransform, LowRankTransform, FunctionTransform, ChainTransform
-export transform
-
-"""
-```julia
-    transform(t::Transform, X::AbstractMatrix)
-    transform(k::Kernel, X::AbstractMatrix)
-```
-Apply the transfomration `t` or `k.transform` on the input `X`
-"""
-transform
 
 include("scaletransform.jl")
 include("ardtransform.jl")
@@ -24,9 +14,8 @@ Return exactly the input
 struct IdentityTransform <: Transform end
 
 params(t::IdentityTransform) = nothing
-duplicate(t::IdentityTransform,θ) = t
 
-transform(t::IdentityTransform, x, obsdim::Int=defaultobs) = x #TODO add test
+apply(t::IdentityTransform, x; obsdim::Int=defaultobs) = x #TODO add test
 
 ### TODO Maybe defining adjoints could help but so far it's not working
 

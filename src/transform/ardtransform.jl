@@ -28,13 +28,13 @@ end
 params(t::ARDTransform) = t.v
 dim(t::ARDTransform) = length(t.v)
 
-function transform(t::ARDTransform,X::AbstractMatrix{<:Real},obsdim::Int)
+function apply(t::ARDTransform,X::AbstractMatrix{<:Real};obsdim::Int = defaultobs)
     @boundscheck if dim(t) != size(X,feature_dim(obsdim))
         throw(DimensionMismatch("Array has size $(size(X,!Bool(obsdim-1)+1)) on dimension $(!Bool(obsdim-1)+1)) which does not match the length of the scale transform length , $(dim(t)).")) #TODO Add test
     end
     _transform(t,X,obsdim)
 end
-transform(t::ARDTransform,x::AbstractVector{<:Real},obsdim::Int=defaultobs) = t.v .* x
+apply(t::ARDTransform,x::AbstractVector{<:Real};obsdim::Int=defaultobs) = t.v .* x
 _transform(t::ARDTransform,X::AbstractMatrix{<:Real},obsdim::Int=defaultobs) = obsdim == 1 ? t.v'.*X : t.v .* X
 
 Base.isequal(t::ARDTransform,t2::ARDTransform) = isequal(t.v,t2.v)

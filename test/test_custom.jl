@@ -2,11 +2,10 @@ using KernelFunctions
 using Test
 
 # minimal definition of a custom kernel
-struct MyKernel <: Kernel{IdentityTransform} end
+struct MyKernel <: Kernel end
 
 KernelFunctions.kappa(::MyKernel, d2::Real) = exp(-d2)
 KernelFunctions.metric(::MyKernel) = SqEuclidean()
-KernelFunctions.transform(::MyKernel) = IdentityTransform()
 
 @test kappa(MyKernel(), 3) == kappa(SqExponentialKernel(), 3)
 @test kappa(MyKernel(), 1, 3) == kappa(SqExponentialKernel(), 1, 3)

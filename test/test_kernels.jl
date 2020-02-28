@@ -19,10 +19,8 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
         end
         @testset "ConstantKernel" begin
             c = 2.0
-            k = ConstantKernel(c)
-            k₂ = ConstantKernel(IdentityTransform(),c)
+            k = ConstantKernel(c=c)
             @test eltype(k) == Any
-            @test kappa(k,1.5)== kappa(k₂,1.5)
             @test kappa(k,1.0) == c
             @test kappa(k,0.5) == c
         end
@@ -32,40 +30,23 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
             k = SqExponentialKernel()
             @test kappa(k,x) ≈ exp(-x)
             @test k(v1,v2) ≈ exp(-norm(v1-v2)^2)
-            @test kappa(SqExponentialKernel(id),x) == kappa(k,x)
-            l = 0.5
-            k = SqExponentialKernel(l)
-            @test k(v1,v2) ≈ exp(-l^2*norm(v1-v2)^2)
-            v = rand(3)
-            k = SqExponentialKernel(v)
-            @test k(v1,v2) ≈ exp(-norm(v.*(v1-v2))^2)
+            @test kappa(SqExponentialKernel(),x) == kappa(k,x)
         end
         @testset "ExponentialKernel" begin
             k = ExponentialKernel()
             @test kappa(k,x) ≈ exp(-x)
             @test k(v1,v2) ≈ exp(-norm(v1-v2))
-            @test kappa(ExponentialKernel(id),x) == kappa(k,x)
-            l = 0.5
-            k = ExponentialKernel(l)
-            @test k(v1,v2) ≈ exp(-l*norm(v1-v2))
-            v = rand(3)
-            k = ExponentialKernel(v)
-            @test k(v1,v2) ≈ exp(-norm(v.*(v1-v2)))
+            @test kappa(ExponentialKernel(),x) == kappa(k,x)
         end
         @testset "GammaExponentialKernel" begin
-            k = GammaExponentialKernel(1.0,2.0)
-            @test kappa(k,x) ≈ exp(-(x)^(k.γ))
-            @test k(v1,v2) ≈ exp(-norm(v1-v2)^(2k.γ))
-            @test kappa(GammaExponentialKernel(id),x) == kappa(k,x)
-            l = 0.5
-            k = GammaExponentialKernel(l,1.5)
-            @test k(v1,v2) ≈ exp(-l^(3.0)*norm(v1-v2)^(3.0))
-            v = rand(3)
-            k = GammaExponentialKernel(v,3.0)
-            @test k(v1,v2) ≈ exp(-norm(v.*(v1-v2)).^6.0)
+            γ = 2.0
+            k = GammaExponentialKernel(γ=γ)
+            @test kappa(k,x) ≈ exp(-(x)^(γ))
+            @test k(v1,v2) ≈ exp(-norm(v1-v2)^(2γ))
+            @test kappa(GammaExponentialKernel(),x) == kappa(k,x)
             #Coherence :
-            @test KernelFunctions._kernel(GammaExponentialKernel(1.0,1.0),v1,v2) ≈ KernelFunctions._kernel(SqExponentialKernel(),v1,v2)
-            @test KernelFunctions._kernel(GammaExponentialKernel(1.0,0.5),v1,v2) ≈ KernelFunctions._kernel(ExponentialKernel(),v1,v2)
+            @test KernelFunctions._kernel(GammaExponentialKernel(γ=1.0),v1,v2) ≈ KernelFunctions._kernel(SqExponentialKernel(),v1,v2)
+            @test KernelFunctions._kernel(GammaExponentialKernel(γ=0.5),v1,v2) ≈ KernelFunctions._kernel(ExponentialKernel(),v1,v2)
         end
     end
     @testset "Exponentiated" begin
@@ -74,57 +55,33 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
             @test kappa(k,x) ≈ exp(x)
             @test kappa(k,-x) ≈ exp(-x)
             @test k(v1,v2) ≈ exp(dot(v1,v2))
-            l = 0.5
-            k = ExponentiatedKernel(l)
-            @test k(v1,v2) ≈ exp(l^2*dot(v1,v2))
-            v = rand(3)
-            k = ExponentiatedKernel(v)
-            @test k(v1,v2) ≈ exp(dot(v.*v1,v.*v2))
         end
     end
     @testset "Matern" begin
         @testset "MaternKernel" begin
             ν = 2.0
-            k = MaternKernel(1.0,ν)
+            k = MaternKernel(ν=ν)
             matern(x,ν) = 2^(1-ν)/gamma(ν)*(sqrt(2ν)*x)^ν*besselk(ν,sqrt(2ν)*x)
             @test kappa(k,x) ≈ matern(x,ν)
             @test kappa(k,0.0) == 1.0
-            @test kappa(MaternKernel(id,ν),x) == kappa(k,x)
-            l = 0.5; ν = 3.0
-            k = MaternKernel(l,ν)
-            @test k(v1,v2) ≈ matern(l*norm(v1-v2),ν)
-            v = rand(3); ν = 2.1
-            k = MaternKernel(v,ν)
-            @test k(v1,v2) ≈ matern(norm(v.*(v1-v2)),ν)
+            @test kappa(MaternKernel(ν=ν),x) == kappa(k,x)
         end
         @testset "Matern32Kernel" begin
             k = Matern32Kernel()
             @test kappa(k,x) ≈ (1+sqrt(3)*x)exp(-sqrt(3)*x)
             @test k(v1,v2) ≈ (1+sqrt(3)*norm(v1-v2))exp(-sqrt(3)*norm(v1-v2))
-            @test kappa(Matern32Kernel(id),x) == kappa(k,x)
-            l = 0.5
-            k = Matern32Kernel(l)
-            @test k(v1,v2) ≈ (1+l*sqrt(3)*norm(v1-v2))exp(-l*sqrt(3)*norm(v1-v2))
-            v = rand(3)
-            k = Matern32Kernel(v)
-            @test k(v1,v2) ≈ (1+sqrt(3)*norm(v.*(v1-v2)))exp(-sqrt(3)*norm(v.*(v1-v2)))
+            @test kappa(Matern32Kernel(),x) == kappa(k,x)
         end
         @testset "Matern52Kernel" begin
             k = Matern52Kernel()
             @test kappa(k,x) ≈ (1+sqrt(5)*x+5/3*x^2)exp(-sqrt(5)*x)
             @test k(v1,v2) ≈ (1+sqrt(5)*norm(v1-v2)+5/3*norm(v1-v2)^2)exp(-sqrt(5)*norm(v1-v2))
-            @test kappa(Matern52Kernel(id),x) == kappa(k,x)
-            l = 0.5
-            k = Matern52Kernel(l)
-            @test k(v1,v2) ≈ (1+l*sqrt(5)*norm(v1-v2)+l^2*5/3*norm(v1-v2)^2)exp(-l*sqrt(5)*norm(v1-v2))
-            v = rand(3)
-            k = Matern52Kernel(v)
-            @test k(v1,v2) ≈ (1+sqrt(5)*norm(v.*(v1-v2))+5/3*norm(v.*(v1-v2))^2)exp(-sqrt(5)*norm(v.*(v1-v2)))
+            @test kappa(Matern52Kernel(),x) == kappa(k,x)
         end
         @testset "Coherence Materns" begin
-            @test kappa(MaternKernel(1.0,0.5),x) ≈ kappa(ExponentialKernel(),x)
-            @test kappa(MaternKernel(1.0,1.5),x) ≈ kappa(Matern32Kernel(),x)
-            @test kappa(MaternKernel(1.0,2.5),x) ≈ kappa(Matern52Kernel(),x)
+            @test kappa(MaternKernel(ν=0.5),x) ≈ kappa(ExponentialKernel(),x)
+            @test kappa(MaternKernel(ν=1.5),x) ≈ kappa(Matern32Kernel(),x)
+            @test kappa(MaternKernel(ν=2.5),x) ≈ kappa(Matern52Kernel(),x)
         end
     end
     @testset "Polynomial" begin
@@ -133,28 +90,15 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
             k = LinearKernel()
             @test kappa(k,x) ≈ x
             @test k(v1,v2) ≈ dot(v1,v2)
-            @test kappa(LinearKernel(id),x) == kappa(k,x)
-            l = 0.5
-            k = LinearKernel(l,c)
-            @test k(v1,v2) ≈ l^2*dot(v1,v2) + c
-            v = rand(3)
-            k = LinearKernel(v,c)
-            @test k(v1,v2) ≈ dot(v.*v1,v.*v2) + c
+            @test kappa(LinearKernel(),x) == kappa(k,x)
         end
         @testset "PolynomialKernel" begin
             k = PolynomialKernel()
             @test kappa(k,x) ≈ x^2
             @test k(v1,v2) ≈ dot(v1,v2)^2
-            @test kappa(PolynomialKernel(id),x) == kappa(k,x)
-            d = 3.0
-            l = 0.5
-            k = PolynomialKernel(l,d,c)
-            @test k(v1,v2) ≈ (l^2*dot(v1,v2) + c)^d
-            v = rand(3)
-            k = PolynomialKernel(v,d,c)
-            @test k(v1,v2) ≈ (dot(v.*v1,v.*v2) + c)^d
+            @test kappa(PolynomialKernel(),x) == kappa(k,x)
             #Coherence test
-            @test kappa(PolynomialKernel(1.0,1.0,c),x) ≈ kappa(LinearKernel(1.0,c),x)
+            @test kappa(PolynomialKernel(d=1.0,c=c),x) ≈ kappa(LinearKernel(c=c),x)
         end
     end
     @testset "RationalQuadratic" begin
@@ -162,46 +106,58 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
             k = RationalQuadraticKernel()
             @test kappa(k,x) ≈ (1.0+x/2.0)^-2
             @test k(v1,v2) ≈ (1.0+norm(v1-v2)^2/2.0)^-2
-            @test kappa(RationalQuadraticKernel(id),x) == kappa(k,x)
-            l = 0.5
-            a = 1.0 + rand()
-            k = RationalQuadraticKernel(l,a)
-            @test k(v1,v2) ≈ (1.0+l^2*norm(v1-v2)^2/a)^-a
-            v = rand(3)
-            k = RationalQuadraticKernel(v,a)
-            @test k(v1,v2) ≈ (1.0+norm(v.*(v1-v2))^2/a)^-a
+            @test kappa(RationalQuadraticKernel(),x) == kappa(k,x)
         end
         @testset "GammaRationalQuadraticKernel" begin
             k = GammaRationalQuadraticKernel()
             @test kappa(k,x) ≈ (1.0+x^2.0/2.0)^-2
             @test k(v1,v2) ≈ (1.0+norm(v1-v2)^4.0/2.0)^-2
-            @test kappa(GammaRationalQuadraticKernel(id),x) == kappa(k,x)
-            l = 0.5
+            @test kappa(GammaRationalQuadraticKernel(),x) == kappa(k,x)
             a = 1.0 + rand()
-            g = 4.0
-            k = GammaRationalQuadraticKernel(l,a,g)
-            @test k(v1,v2) ≈ (1.0+(l^2g)*norm(v1-v2)^(2g)/a)^-a
-            v = rand(3)
-            k = GammaRationalQuadraticKernel(v,a,g)
-            @test k(v1,v2) ≈ (1.0+(norm(v.*(v1-v2))^(2g))/a)^-a
             #Coherence test
-            @test kappa(GammaRationalQuadraticKernel(1.0,a,1.0),x) ≈ kappa(RationalQuadraticKernel(1.0,a),x)
+            @test kappa(GammaRationalQuadraticKernel(α=a,γ=1.0),x) ≈ kappa(RationalQuadraticKernel(α=a),x)
         end
+    end
+    @testset "Transformed/Scaled Kernel" begin
+        s = rand()
+        v = rand(3)
+        k = SqExponentialKernel()
+        kt = TransformedKernel(k,ScaleTransform(s))
+        ktard = TransformedKernel(k,ARDTransform(v))
+        ks = ScaledKernel(k,s)
+        @test kappa(kt,v1,v2) == kappa(transform(k,ScaleTransform(s)),v1,v2)
+        @test kappa(kt,v1,v2) == kappa(transform(k,s),v1,v2)
+        @test kappa(kt,v1,v2) == kappa(k,s*v1,s*v2)
+        @test kappa(ktard,v1,v2) == kappa(transform(k,ARDTransform(v)),v1,v2)
+        @test kappa(ktard,v1,v2) == kappa(transform(k,v),v1,v2)
+        @test kappa(ktard,v1,v2) == kappa(k,v.*v1,v.*v2)
+        @test KernelFunctions.metric(kt) == KernelFunctions.metric(k)
+        @test kappa(ks,x) == s*kappa(k,x)
+        @test kappa(ks,x) == kappa(s*k,x)
     end
     @testset "KernelCombinations" begin
         k1 = LinearKernel()
         k2 = SqExponentialKernel()
+        k3 = RationalQuadraticKernel()
         X = rand(2,2)
         @testset "KernelSum" begin
-            k = k1 + k2
-            @test KernelFunctions.metric(k) == [KernelFunctions.DotProduct(),KernelFunctions.SqEuclidean()]
+            w = [2.0,0.5]
+            k = KernelSum([k1,k2],w)
+            ks1 = 2.0*k1
+            ks2 = 0.5*k2
             @test length(k) == 2
-            @test transform(k) == [transform(k1),transform(k2)]
-            @test transform(k,X) == [transform(k1,X),transform(k2,X)]
-            @test transform(k,X,1) == [transform(k1,X,1),transform(k2,X,1)]
+            @test kappa(k,v1,v2) == kappa(2.0*k1+0.5*k2,v1,v2)
+            @test kappa(k+k3,v1,v2) ≈ kappa(k3+k,v1,v2)
+            @test kappa(k1+k2,v1,v2) == kappa(KernelSum([k1,k2]),v1,v2)
+            @test kappa(k+ks1,v1,v2) ≈ kappa(ks1+k,v1,v2)
+            @test kappa(k+k,v1,v2) == kappa(KernelSum([k1,k2,k1,k2],vcat(w,w)),v1,v2)
         end
         @testset "KernelProduct" begin
-
+            k = KernelProduct([k1,k2])
+            @test length(k) == 2
+            @test kappa(k,v1,v2) == kappa(k1*k2,v1,v2)
+            @test kappa(k*k,v1,v2) ≈ kappa(k,v1,v2)^2
+            @test kappa(k*k3,v1,v2) ≈ kappa(k3*k,v1,v2)
         end
     end
 end

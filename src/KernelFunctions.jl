@@ -1,6 +1,7 @@
 module KernelFunctions
 
-export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa # Main matrix functions
+export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
+export transform
 export params, duplicate, set! # Helpers
 
 export Kernel
@@ -11,6 +12,7 @@ export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
 export KernelSum, KernelProduct
+export TransformedKernel, ScaledKernel
 
 export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
 
@@ -22,6 +24,7 @@ using Distances, LinearAlgebra
 using SpecialFunctions: logabsgamma, besselk
 using ZygoteRules: @adjoint
 using StatsFuns: logtwo
+using InteractiveUtils: subtypes
 using StatsBase
 
 const defaultobs = 2
@@ -30,7 +33,8 @@ const defaultobs = 2
 Abstract type defining a slice-wise transformation on an input matrix
 """
 abstract type Transform end
-abstract type Kernel{Tr<:Transform} end
+abstract type Kernel end
+abstract type BaseKernel <: Kernel end
 
 include("utils.jl")
 include("distances/dotproduct.jl")
@@ -40,6 +44,8 @@ include("transform/transform.jl")
 for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated"]
     include(joinpath("kernels",k*".jl"))
 end
+include("kernels/transformedkernel.jl")
+include("kernels/scaledkernel.jl")
 include("matrix/kernelmatrix.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")

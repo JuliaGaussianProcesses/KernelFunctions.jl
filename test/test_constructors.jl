@@ -5,26 +5,47 @@ l = 2.0
 vl = [l,l]
 s = ScaleTransform(l)
 
+## Add tests for Transformed Kernel and Scaled Kernel
+
 ## SqExponentialKernel
-@testset "SqExponentialKernel" begin
-    @test KernelFunctions.metric(SqExponentialKernel(l)) == SqEuclidean()
-    @test isequal(transform(SqExponentialKernel(l)),s)
-    @test KernelFunctions.transform(SqExponentialKernel(vl)) == ARDTransform(vl)
-    @test isequal(KernelFunctions.transform(SqExponentialKernel(s)),s)
+@testset "Exponential" begin
+    @test KernelFunctions.metric(ExponentialKernel()) == Euclidean()
+    @test KernelFunctions.metric(SqExponentialKernel()) == SqEuclidean()
+    @test KernelFunctions.metric(GammaExponentialKernel()) == SqEuclidean()
+    @test KernelFunctions.metric(GammaExponentialKernel(γ=2.0)) == SqEuclidean()
 end
 
 ## MaternKernel
 @testset "MaternKernel" begin
-    @test KernelFunctions.metric(MaternKernel(l)) == Euclidean()
-    @test KernelFunctions.metric(Matern32Kernel(l)) == Euclidean()
-    @test KernelFunctions.metric(Matern52Kernel(l)) == Euclidean()
-    @test isequal(KernelFunctions.transform(MaternKernel(l)),s)
-    @test isequal(KernelFunctions.transform(Matern32Kernel(l)),s)
-    @test isequal(KernelFunctions.transform(Matern52Kernel(l)),s)
-    @test KernelFunctions.transform(MaternKernel(vl)) == ARDTransform(vl)
-    @test KernelFunctions.transform(Matern32Kernel(vl)) == ARDTransform(vl)
-    @test KernelFunctions.transform(Matern52Kernel(vl)) == ARDTransform(vl)
-    @test KernelFunctions.transform(MaternKernel(s)) == s
-    @test KernelFunctions.transform(Matern32Kernel(s)) == s
-    @test KernelFunctions.transform(Matern52Kernel(s)) == s
+    @test KernelFunctions.metric(MaternKernel()) == Euclidean()
+    @test KernelFunctions.metric(MaternKernel(ν=2.0)) == Euclidean()
+    @test KernelFunctions.metric(Matern32Kernel()) == Euclidean()
+    @test KernelFunctions.metric(Matern52Kernel()) == Euclidean()
+end
+
+@testset "Exponentiated" begin
+    @test KernelFunctions.metric(ExponentiatedKernel()) == KernelFunctions.DotProduct()
+end
+
+@testset "Constant" begin
+    @test KernelFunctions.metric(ConstantKernel()) == KernelFunctions.Delta()
+    @test KernelFunctions.metric(ConstantKernel(c=2.0)) == KernelFunctions.Delta()
+    @test KernelFunctions.metric(WhiteKernel()) == KernelFunctions.Delta()
+    @test KernelFunctions.metric(ZeroKernel()) == KernelFunctions.Delta()
+end
+
+@testset "Polynomial" begin
+    @test KernelFunctions.metric(LinearKernel()) == KernelFunctions.DotProduct()
+    @test KernelFunctions.metric(LinearKernel(c=2.0)) == KernelFunctions.DotProduct()
+    @test KernelFunctions.metric(PolynomialKernel()) == KernelFunctions.DotProduct()
+    @test KernelFunctions.metric(PolynomialKernel(d=3.0)) == KernelFunctions.DotProduct()
+    @test KernelFunctions.metric(PolynomialKernel(d=3.0,c=2.0)) == KernelFunctions.DotProduct()
+end
+
+@testset "RationalQuadratic" begin
+    @test KernelFunctions.metric(RationalQuadraticKernel()) == SqEuclidean()
+    @test KernelFunctions.metric(RationalQuadraticKernel(α=2.0)) == SqEuclidean()
+    @test KernelFunctions.metric(GammaRationalQuadraticKernel()) == SqEuclidean()
+    @test KernelFunctions.metric(GammaRationalQuadraticKernel(γ=2.0)) == SqEuclidean()
+    @test KernelFunctions.metric(GammaRationalQuadraticKernel(γ=2.0,α=3.0)) == SqEuclidean()
 end

@@ -18,8 +18,11 @@ function kernelmatrix!(
         if !check_dims(K,X,X,feature_dim(obsdim),obsdim)
             throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
         end
-        map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
+        map!(x->kappa(κ,x),K,pairwise(metric(κ),X,dims=obsdim))
 end
+
+kernelmatrix!(K::Matrix, κ::TransformedKernel, X::AbstractMatrix; obsdim::Int = defaultobs) =
+        kernelmatrix!(K, kernel(κ), apply(κ.transform, X, obsdim = obsdim), obsdim = obsdim)
 
 function kernelmatrix!(
         K::AbstractMatrix,
@@ -32,8 +35,11 @@ function kernelmatrix!(
         if !check_dims(K,X,Y,feature_dim(obsdim),obsdim)
             throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not consistent with X ($(size(X))) and Y ($(size(Y)))"))
         end
-        map!(x->kappa(κ,x),K,pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
+        map!(x->kappa(κ,x),K,pairwise(metric(κ),X,Y,dims=obsdim))
 end
+
+kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int = defaultobs) =
+        kernelmatrix!(K, kernel(κ), apply(κ.transform, X, obsdim = obsdim), apply(κ.transform, Y, obsdim = obsdim), obsdim = obsdim)
 
 ## Apply kernel on two reals ##
 function _kernel(κ::Kernel, x::Real, y::Real)
@@ -48,8 +54,11 @@ function _kernel(
         obsdim::Int = defaultobs
     )
     @assert length(x) == length(y) "x and y don't have the same dimension!"
-    kappa(κ, evaluate(metric(κ),transform(κ,x),transform(κ,y)))
+    kappa(κ, evaluate(metric(κ),x,y))
 end
+
+_kernel(κ::TransformedKernel, x::AbstractVector, y::AbstractVector; obsdim::Int = defaultobs) =
+        _kernel(kernel(κ), apply(κ.transform, x), apply(κ.transform, y), obsdim = obsdim)
 
 """
 ```
@@ -74,9 +83,12 @@ function kernelmatrix(
         κ::Kernel,
         X::AbstractMatrix;
         obsdim::Int = defaultobs
-    )
-    K = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),dims=obsdim))
+        )
+        K = map(x->kappa(κ,x),pairwise(metric(κ),X,dims=obsdim))
 end
+
+kernelmatrix(κ::TransformedKernel, X::AbstractMatrix; obsdim::Int = defaultobs) =
+        kernelmatrix(kernel(κ), apply(κ.transform, X, obsdim = obsdim), obsdim = obsdim)
 
 function kernelmatrix(
         κ::Kernel,
@@ -91,7 +103,10 @@ function kernelmatrix(
     _kernelmatrix(κ,X,Y,obsdim)
 end
 
-@inline _kernelmatrix(κ,X,Y,obsdim) = map(x->kappa(κ,x),pairwise(metric(κ),transform(κ,X,obsdim),transform(κ,Y,obsdim),dims=obsdim))
+@inline _kernelmatrix(κ::Kernel,X,Y,obsdim) = map(x->kappa(κ,x),pairwise(metric(κ),X,Y,dims=obsdim))
+
+kernelmatrix(κ::TransformedKernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int = defaultobs) =
+        kernelmatrix(kernel(κ), apply(κ.transform, X, obsdim = obsdim), apply(κ.transform, Y, obsdim = obsdim), obsdim = obsdim)
 
 """
 ```

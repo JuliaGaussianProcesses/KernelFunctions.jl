@@ -29,13 +29,13 @@ duplicate(t::SelectTransform,θ) = t
 
 Base.maximum(t::SelectTransform) = maximum(t.select)
 
-function transform(t::SelectTransform,X::AbstractMatrix{<:Real},obsdim::Int=defaultobs)
+function apply(t::SelectTransform, X::AbstractMatrix{<:Real}; obsdim::Int = defaultobs)
     @boundscheck maximum(t) >= size(X,feature_dim(obsdim)) ?
         throw(DimensionMismatch("The highest index $(maximum(t)) is higher then the feature dimension of X : $(size(X,feature_dim(obsdim)))")) : nothing
     @inbounds _transform(t,X,obsdim)
 end
 
-function transform(t::SelectTransform,x::AbstractVector{<:Real},obsdim::Int=defaultobs) #TODO Add test
+function apply(t::SelectTransform, x::AbstractVector{<:Real}; obsdim::Int = defaultobs) #TODO Add test
     @assert maximum(t) <= length(x) "The highest index $(maximum(t)) is higher then the vector length : $(length(x))"
     return @inbounds view(x,t.select)
 end

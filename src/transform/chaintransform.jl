@@ -17,15 +17,16 @@ function ChainTransform(v::AbstractVector{<:Transform})
     ChainTransform(v)
 end
 
+## Constructor to create a chain transform with an array of parameters
 function ChainTransform(v::AbstractVector{<:Type{<:Transform}},θ::AbstractVector)
     @assert length(v) == length(θ)
     ChainTransform(v.(θ))
 end
 
-function transform(t::ChainTransform,X::T,obsdim::Int=defaultobs) where {T}
+function apply(t::ChainTransform,X::T;obsdim::Int=defaultobs) where {T}
     Xtr = copy(X)
     for tr in t.transforms
-        Xtr = transform(tr,Xtr,obsdim)
+        Xtr = apply(tr, Xtr, obsdim = obsdim)
     end
     return Xtr
 end
