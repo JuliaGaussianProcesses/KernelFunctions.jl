@@ -21,6 +21,8 @@ transform(k::BaseKernel, ρ::Real) = TransformedKernel(k, ScaleTransform(ρ))
 
 transform(k::BaseKernel,ρ::AbstractVector) = TransformedKernel(k, ARDTransform(ρ))
 
+transform(k::BaseKernel,::Nothing) = k
+
 kernel(κ) = κ.kernel
 
 kappa(κ::TransformedKernel, x) = kappa(κ.kernel, x)
