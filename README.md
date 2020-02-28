@@ -13,7 +13,7 @@ The aim is to make the API as model-agnostic as possible while still being user-
 ```julia
   X = reshape(collect(range(-3.0,3.0,length=100)),:,1)
   # Set simple scaling of the data
-  k₁ = sqexponentialkernel(1.0)
+  k₁ = SqExponentialKernel()
   K₁ = kernelmatrix(k₁,X,obsdim=1)
 
   # Set a function transformation on the data
@@ -21,11 +21,11 @@ The aim is to make the API as model-agnostic as possible while still being user-
   K₂ = kernelmatrix(k₂,X,obsdim=1)
 
   # Set a matrix premultiplication on the data
-  k₃ = polynomialkernel(LowRankTransform(randn(4,1)),2.0,0.0)
+  k₃ = transform(PolynomialKernel(c=2.0,d=2.0),LowRankTransform(randn(4,1)))
   K₃ = kernelmatrix(k₃,X,obsdim=1)
 
   # Add and sum kernels
-  k₄ = 0.5*SqExponentialKernel()*linearkernel(0.5) + 0.4*k₂
+  k₄ = 0.5*SqExponentialKernel()*LinearKernel(c=0.5) + 0.4*k₂
   K₄ = kernelmatrix(k₄,X,obsdim=1)
 
   plot(heatmap.([K₁,K₂,K₃,K₄],yflip=true,colorbar=false)...,layout=(2,2),title=["K₁" "K₂" "K₃" "K₄"])

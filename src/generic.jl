@@ -26,7 +26,7 @@ end
 
 for k in nameof.(subtypes(BaseKernel))
     @eval begin
-        @deprecate($k(ρ::Real;args...),TransformedKernel($k(args...),ScaleTransform(ρ)))
-        @deprecate($k(ρ::AbstractVector{<:Real};args...),TransformedKernel($k(args...),ARDTransform(ρ)))
+        @deprecate($k(ρ::Real;args...),transform($k(args...),ρ))
+        @deprecate($k(ρ::AbstractVector{<:Real};args...),transform($k(args...),ρ))
     end
 end

@@ -12,7 +12,7 @@ K = [zeros(dims[1],dims[1]),zeros(dims[2],dims[2])]
 Kdiag = [zeros(dims[1]),zeros(dims[2])]
 s = rand()
 k = SqExponentialKernel()
-kt = sqexponentialkernel(s)
+kt = transform(SqExponentialKernel(),s)
 @testset "Kernel Matrix Operations" begin
     @testset "Inplace Kernel Matrix" begin
         for obsdim in [1,2]

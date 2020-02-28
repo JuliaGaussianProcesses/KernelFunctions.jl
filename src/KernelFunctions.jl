@@ -1,6 +1,7 @@
 module KernelFunctions
 
 export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa, kernelpdmat # Main matrix functions
+export transform
 export params, duplicate, set! # Helpers
 
 export Kernel

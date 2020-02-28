@@ -1,13 +1,5 @@
 export Transform, IdentityTransform, ScaleTransform, ARDTransform, LowRankTransform, FunctionTransform, ChainTransform
 
-"""
-```julia
-    transform(t::Transform, X::AbstractMatrix)
-```
-Apply the transfomration `t` or `k.transform` on the input `X`
-"""
-transform
-
 include("scaletransform.jl")
 include("ardtransform.jl")
 include("lowranktransform.jl")

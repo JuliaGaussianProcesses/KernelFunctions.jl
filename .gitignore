@@ -1,3 +1,4 @@
 *.json
+*.cov
 Manifest.toml
 coverage/
