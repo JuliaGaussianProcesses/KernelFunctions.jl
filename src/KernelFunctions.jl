@@ -25,6 +25,7 @@ using SpecialFunctions: logabsgamma, besselk
 using ZygoteRules: @adjoint
 using StatsFuns: logtwo
 using InteractiveUtils: subtypes
+using StatsBase
 
 const defaultobs = 2
 
