@@ -1,4 +1,4 @@
-using PDMats: PDMat
+using .PDMats: PDMat
 
 export kernelpdmat
 
