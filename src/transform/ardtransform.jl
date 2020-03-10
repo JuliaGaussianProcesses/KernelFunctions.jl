@@ -25,7 +25,7 @@ function set!(t::ARDTransform{T},ρ::AbstractVector{T}) where {T<:Real}
     t.v .= ρ
 end
 
-params(t::ARDTransform) = t.v
+trainable(t::ARDTransform) = (t.v,)
 dim(t::ARDTransform) = length(t.v)
 
 function apply(t::ARDTransform,X::AbstractMatrix{<:Real};obsdim::Int = defaultobs)

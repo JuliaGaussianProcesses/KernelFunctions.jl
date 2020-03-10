@@ -32,7 +32,7 @@ function apply(t::ChainTransform,X::T;obsdim::Int=defaultobs) where {T}
 end
 
 set!(t::ChainTransform,θ) = set!.(t.transforms,θ)
-params(t::ChainTransform) = (params.(t.transforms))
+trainable(t::ChainTransform) = t.transforms
 duplicate(t::ChainTransform,θ) = ChainTransform(duplicate.(t.transforms,θ))
 
 
