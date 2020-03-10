@@ -12,8 +12,7 @@ kappa(k::ScaledKernel, x) = first(k.σ)*kappa(k.kernel, x)
 
 metric(k::ScaledKernel) = metric(k.kernel)
 
-params(k::ScaledKernel) = (k.σ,params(k.kernel))
-opt_params(k::ScaledKernel) = (k.σ,opt_params(k.kernel))
+trainable(k::ScaledKernel) = (k.σ,k.kernel)
 
 Base.:*(w::Real,k::Kernel) = ScaledKernel(k,w)
 
