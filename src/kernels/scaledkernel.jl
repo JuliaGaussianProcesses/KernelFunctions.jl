@@ -21,5 +21,5 @@ Base.show(io::IO,κ::ScaledKernel) = printshifted(io,κ,0)
 
 function printshifted(io::IO,κ::ScaledKernel,shift::Int)
     printshifted(io,κ.kernel,shift)
-    print(io,"\n"*("\t"^(shift+1))*"- σ = $(first(κ.σ))")
+    print(io,"\n"*("\t"^(shift+1))*"- σ² = $(first(κ.σ))")
 end
