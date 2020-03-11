@@ -36,6 +36,13 @@ params(t::ChainTransform) = (params.(t.transforms))
 duplicate(t::ChainTransform,θ) = ChainTransform(duplicate.(t.transforms,θ))
 
 
-Base.:∘(t₁::Transform,t₂::Transform) = ChainTransform([t₂,t₁])
-Base.:∘(t::Transform,tc::ChainTransform) = ChainTransform(vcat(tc.transforms,t)) #TODO add test
-Base.:∘(tc::ChainTransform,t::Transform) = ChainTransform(vcat(t,tc.transforms))
+Base.:∘(t₁::Transform, t₂::Transform) = ChainTransform([t₂, t₁])
+Base.:∘(t::Transform, tc::ChainTransform) = ChainTransform(vcat(tc.transforms, t)) #TODO add test
+Base.:∘(tc::ChainTransform, t::Transform) = ChainTransform(vcat(t, tc.transforms))
+
+function Base.show(io::IO, tc::ChainTransform)
+    print(io,"Chain Transform : $(first(tc.transforms))")
+    for t in tc.transforms[2:end]
+        print(io, " |> $t")
+    end
+end

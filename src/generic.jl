@@ -11,8 +11,8 @@ _scale(t::ScaleTransform, metric::Euclidean, x, y) =  first(t.s) * evaluate(metr
 _scale(t::ScaleTransform, metric::Union{SqEuclidean,DotProduct}, x, y) =  first(t.s)^2 * evaluate(metric, x, y)
 _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, apply(t, x), apply(t, y))
 
-printshifted(io::IO,κ::Kernel,shift::Int) = print(io,"$κ")
-Base.show(io::IO,κ::Kernel) = print(io,nameof(typeof(κ)))
+printshifted(io::IO, κ::Kernel, shift::Int) = print(io, "$κ")
+Base.show(io::IO, κ::Kernel) = print(io, nameof(typeof(κ)))
 
 ### Syntactic sugar for creating matrices and using kernel functions
 for k in subtypes(BaseKernel)

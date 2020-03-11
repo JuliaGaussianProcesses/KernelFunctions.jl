@@ -41,3 +41,5 @@ function apply(t::SelectTransform, x::AbstractVector{<:Real}; obsdim::Int = defa
 end
 
 _transform(t::SelectTransform,X::AbstractMatrix{<:Real},obsdim::Int=defaultobs) = obsdim == 2 ? view(X,t.select,:) : view(X,:,t.select)
+
+Base.show(io::IO, t::SelectTransform) = print(io, "Selected Dimensions : $(t.select)")

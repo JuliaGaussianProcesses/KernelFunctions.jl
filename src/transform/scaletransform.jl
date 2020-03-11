@@ -23,4 +23,4 @@ apply(t::ScaleTransform,x::AbstractVecOrMat;obsdim::Int=defaultobs) = first(t.s)
 
 Base.isequal(t::ScaleTransform,t2::ScaleTransform) = isequal(first(t.s),first(t2.s))
 
-Base.show(io::IO,t::ScaleTransform) = print(io,"Scale Transform s=$(first(t.s))")
+Base.show(io::IO,t::ScaleTransform) = print(io,"Scale Transform, s = $(first(t.s))")

@@ -38,3 +38,5 @@ apply(t::ARDTransform,x::AbstractVector{<:Real};obsdim::Int=defaultobs) = t.v .*
 _transform(t::ARDTransform,X::AbstractMatrix{<:Real},obsdim::Int=defaultobs) = obsdim == 1 ? t.v'.*X : t.v .* X
 
 Base.isequal(t::ARDTransform,t2::ARDTransform) = isequal(t.v,t2.v)
+
+Base.show(io::IO, t::ARDTransform) = print(io,"ARD Transform, ρ = $(t.v)")
