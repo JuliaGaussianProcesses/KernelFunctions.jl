@@ -5,7 +5,6 @@ using MacroTools: @capture
 """
 macro kernel(expr::Expr,arg=nothing)
     @capture(expr,(scale_*k_ | k_)) || throw(error("@kernel first arguments should be of the form `σ*Kernel()` or `Kernel()`"))
-    @show kw
     t = if @capture(arg,kw_=val_)
         if kw == :l
             val
