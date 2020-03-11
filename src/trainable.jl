@@ -23,9 +23,9 @@ Flux.trainable(k::RationalQuadraticKernel) = (k.α,)
 
 Flux.trainable(κ::KernelProduct) = k.kernels
 
-Flux.trainable(κ::KernelSum) = (k.weights, k.kernels) #To check
+Flux.trainable(κ::KernelSum) = (κ.weights, κ.kernels) #To check
 
-Flux.trainable(k::ScaledKernel) = (k.σ, k.kernel)
+Flux.trainable(κ::ScaledKernel) = (κ.σ, κ.kernel)
 
 Flux.trainable(κ::TransformedKernel) = (κ.transform, κ.kernel)
 
