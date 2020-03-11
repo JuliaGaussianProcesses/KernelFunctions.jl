@@ -17,6 +17,10 @@ params(t::IdentityTransform) = nothing
 
 apply(t::IdentityTransform, x; obsdim::Int=defaultobs) = x #TODO add test
 
+Transform(ρ::Real) = ScaleTransform(ρ)
+Transform(ρ::AbstractVector) = ARDTransform(ρ)
+Transform(t::Transform) = t
+
 ### TODO Maybe defining adjoints could help but so far it's not working
 
 
