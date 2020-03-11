@@ -14,8 +14,6 @@ struct RationalQuadraticKernel{Tα<:Real} <: BaseKernel
     end
 end
 
-trainable(k::RationalQuadraticKernel) = (k.α,)
-
 kappa(κ::RationalQuadraticKernel, d²::T) where {T<:Real} = (one(T)+d²/first(κ.α))^(-first(κ.α))
 
 metric(::RationalQuadraticKernel) = SqEuclidean()
@@ -37,8 +35,6 @@ struct GammaRationalQuadraticKernel{Tα<:Real, Tγ<:Real} <: BaseKernel
         return new{Tα, Tγ}([α], [γ])
     end
 end
-
-trainable(k::GammaRationalQuadraticKernel) = (k.α,k.γ)
 
 kappa(κ::GammaRationalQuadraticKernel, d²::T) where {T<:Real} = (one(T)+d²^first(κ.γ)/first(κ.α))^(-first(κ.α))
 

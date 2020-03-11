@@ -12,8 +12,6 @@ kappa(k::ScaledKernel, x) = first(k.σ)*kappa(k.kernel, x)
 
 metric(k::ScaledKernel) = metric(k.kernel)
 
-trainable(k::ScaledKernel) = (k.σ,k.kernel)
-
 Base.:*(w::Real,k::Kernel) = ScaledKernel(k,w)
 
 Base.show(io::IO,κ::ScaledKernel) = printshifted(io,κ,0)

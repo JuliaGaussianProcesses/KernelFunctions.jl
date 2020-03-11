@@ -13,8 +13,6 @@ struct LinearKernel{Tc<:Real} <: BaseKernel
     end
 end
 
-trainable(k::LinearKernel) = (k.c,)
-
 kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + first(κ.c)
 
 metric(::LinearKernel) = DotProduct()
@@ -35,8 +33,6 @@ struct PolynomialKernel{Td<:Real, Tc<:Real} <: BaseKernel
         return new{Td, Tc}([d], [c])
     end
 end
-
-trainable(k::PolynomialKernel) = (k.d,k.c)
 
 kappa(κ::PolynomialKernel, xᵀy::T) where {T<:Real} = (xᵀy + first(κ.c))^(first(κ.d))
 

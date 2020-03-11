@@ -15,4 +15,3 @@ end
 apply(t::FunctionTransform, X::T; obsdim::Int = defaultobs) where {T} = mapslices(t.f, X, dims = feature_dim(obsdim))
 
 duplicate(t::FunctionTransform,f) = FunctionTransform(f)
-trainable(t::FunctionTransform) = (t.f,)

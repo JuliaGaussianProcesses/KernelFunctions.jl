@@ -25,9 +25,6 @@ function KernelSum(
     KernelSum(kernels, weights)
 end
 
-params(k::KernelSum) = (k.weights, params.(k.kernels))
-opt_params(k::KernelSum) = (k.weights, opt_params.(k.kernels))
-
 Base.:+(k1::Kernel, k2::Kernel) = KernelSum([k1, k2], weights = [1.0, 1.0])
 Base.:+(k1::ScaledKernel, k2::ScaledKernel) = KernelSum([kernel(k1), kernel(k2)], weights = [first(k1.σ), first(k2.σ)])
 Base.:+(k1::KernelSum, k2::KernelSum) =

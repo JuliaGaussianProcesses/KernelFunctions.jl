@@ -54,8 +54,6 @@ struct GammaExponentialKernel{Tγ<:Real} <: BaseKernel
     end
 end
 
-trainable(k::GammaExponentialKernel) = (γ,)
-
 kappa(κ::GammaExponentialKernel, d²::Real) = exp(-d²^first(κ.γ))
 iskroncompatible(::GammaExponentialKernel) = true
 metric(::GammaExponentialKernel) = SqEuclidean()

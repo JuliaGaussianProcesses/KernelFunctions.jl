@@ -14,8 +14,6 @@ struct MaternKernel{Tν<:Real} <: BaseKernel
     end
 end
 
-trainable(k::MaternKernel) = (k.ν,)
-
 @inline function kappa(κ::MaternKernel, d::Real)
     ν = first(κ.ν)
     iszero(d) ? one(d) : exp((one(d)-ν)*logtwo-logabsgamma(ν)[1] + ν*log(sqrt(2ν)*d)+log(besselk(ν,sqrt(2ν)*d)))

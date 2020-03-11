@@ -14,21 +14,7 @@ _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, apply(t, x), apply(t,
 printshifted(io::IO,κ::Kernel,shift::Int) = print(io,"$κ")
 Base.show(io::IO,κ::Kernel) = print(io,nameof(typeof(κ)))
 
-function params(k::Kernel)
-    ps = []
-    params!(ps,k)
-    return ps
-end
-
-function params!(ps,k::Kernel)
-    for child in trainable(k)
-        params!(ps,k)
-    end
-end
-
-params!(ps,x::AbstractArray) = push!(ps,x)
-
-trainable(x) = ()
+_trainable(x) = ()
 
 ### Syntactic sugar for creating matrices and using kernel functions
 for k in subtypes(BaseKernel)

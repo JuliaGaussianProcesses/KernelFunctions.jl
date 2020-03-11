@@ -41,8 +41,6 @@ struct ConstantKernel{Tc<:Real} <: BaseKernel
     end
 end
 
-trainable(k::ConstantKernel) = (k.c,)
-
 kappa(κ::ConstantKernel,x::Real) = first(κ.c)*one(x)
 
 metric(::ConstantKernel) = Delta()

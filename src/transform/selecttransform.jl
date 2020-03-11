@@ -24,7 +24,6 @@ set!(t::SelectTransform{<:AbstractVector{T}},dims::AbstractVector{T}) where {T<:
 
 duplicate(t::SelectTransform,θ) = t
 
-
 Base.maximum(t::SelectTransform) = maximum(t.select)
 
 function apply(t::SelectTransform, X::AbstractMatrix{<:Real}; obsdim::Int = defaultobs)

@@ -27,8 +27,6 @@ kappa(κ::TransformedKernel, x) = kappa(κ.kernel, x)
 
 metric(κ::TransformedKernel) = metric(κ.kernel)
 
-trainable(κ::TransformedKernel) = (κ.transform,κ.kernel)
-
 Base.show(io::IO,κ::TransformedKernel) = printshifted(io,κ,0)
 
 function printshifted(io::IO,κ::TransformedKernel,shift::Int)
