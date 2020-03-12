@@ -22,7 +22,7 @@ trainable(κ::KernelProduct) = κ.kernels
 
 trainable(κ::KernelSum) = (κ.weights, κ.kernels) #To check
 
-trainable(κ::ScaledKernel) = (κ.σ, κ.kernel)
+trainable(κ::ScaledKernel) = (κ.σ², κ.kernel)
 
 trainable(κ::TransformedKernel) = (κ.transform, κ.kernel)
 
