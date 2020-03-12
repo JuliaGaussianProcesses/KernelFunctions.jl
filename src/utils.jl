@@ -31,6 +31,7 @@ base_kernel(k::Kernel) = eval(nameof(typeof(k)))
 base_transform(t::Transform) = eval(nameof(typeof(t)))
 
 """
+Will be implemented at some point
 ```julia
     params(k::Kernel)
     params(t::Transform)
@@ -38,4 +39,4 @@ base_transform(t::Transform) = eval(nameof(typeof(t)))
 For a kernel return a tuple with parameters of the transform followed by the specific parameters of the kernel
 For a transform return its parameters, for a `ChainTransform` return a vector of `params(t)`.
 """
-params
+#params
