@@ -7,12 +7,33 @@ For example to create a square exponential kernel
 ```julia
   k = SqExponentialKernel()
 ```
-All kernels can take as argument a `Transform` object (see [Transform](@ref)) which is directly going to act on the inputs before it's processes.
-But it's also possible to simply give a scalar or a vector if all you are interested in is to modify the lengthscale, respectively for all dimensions or independently for each dimension.
+Instead of having lengthscale(s) for each kernel we use `Transform` objects (see [Transform](@ref)) which are directly going to act on the inputs before passing them to the kernel.
+For example to premultiply the input by 2.0 we create the kernel the following options are possible
+```julia
+  k = transform(SqExponentialKernel(),ScaleTransform(2.0)) # returns a TransformedKernel
+  k = @kernel SqExponentialKernel() l=2.0 # Will be available soon
+  k = TransformedKernel(SqExponentialKernel(),ScaleTransform(2.0))
+```
+Check the [`Transform`](@ref) page to see the other options.
+To premultiply the kernel by a variance, you can use `*` or create a `ScaledKernel`
+```julia
+  k = 3.0*SqExponentialKernel()
+  k = ScaledKernel(SqExponentialKernel(),3.0)
+  @kernel 3.0*SqExponentialKernel()
+```
 
-## Kernel matrix creation
+## Using a kernel function
 
-Matrix are created via the `kernelmatrix` function or `kerneldiagmatrix`.
+To compute the kernel function on two vectors you can call
+```julia
+  k = SqExponentialKernel()
+  x1 = rand(3); x2 = rand(3)
+  kappa(k,x1,x2) == k(x1,x2) # Syntactic sugar
+```
+
+## Creating a kernel matrix
+
+Kernel matrices can be created via the `kernelmatrix` function or `kerneldiagmatrix` for only the diagonal.
 An important argument to give is the dimensionality of the input `obsdim`. It tells if the matrix is of the type `# samples X # features` (`obsdim`=1) or `# features X # samples`(`obsdim`=2) (similarly to [Distances.jl](https://github.com/JuliaStats/Distances.jl))
 For example:
 ```julia
@@ -20,13 +41,48 @@ For example:
   A = rand(10,5)
   kernelmatrix(k,A,obsdim=1) # Return a 10x10 matrix
   kernelmatrix(k,A,obsdim=2) # Return a 5x5 matrix
+  k(A,obsdim=1) # Syntactic sugar
 ```
 
 We also support specific kernel matrices outputs:
-- For a positive-definite matrix object`PDMat` from [`PDMats.jl`](https://github.com/JuliaStats/PDMats.jl). Call `kernelpdmat(k,A,obsdim=1)`, it will create a matrix and in case of bad conditionning will add some diagonal noise until the matrix is considered PSD, it will then return a `PDMat` object. For this method to work in your code you need to include `using PDMats` first
-- For a Kronecker matrix, we rely on [`Kronecker.jl`](https://github.com/MichielStock/Kronecker.jl). We give two methods : `kernelkronmat(k,[x,y,z])` where `x` `y` and `z` are vectors which will return a `KroneckerProduct`, and `kernelkronmat(k,x,dims)` where `x` is a vector and dims and the number of features. Make sure that `k` is a vector compatible with such constructions (with `iskroncompatible`). Both method will return a . For those methods to work in your code you need to include `using Kronecker` first
+- For a positive-definite matrix object`PDMat` from [`PDMats.jl`](https://github.com/JuliaStats/PDMats.jl), you can call the following:
+```julia
+  using PDMats
+  k = SqExponentialKernel()
+  K = kernelpdmat(k,A,obsdim=1) # PDMat
+```
+It will create a matrix and in case of bad conditionning will add some diagonal noise until the matrix is considered PSD, it will then return a `PDMat` object. For this method to work in your code you need to include `using PDMats` first
+- For a Kronecker matrix, we rely on [`Kronecker.jl`](https://github.com/MichielStock/Kronecker.jl). Here are two examples:
+```julia
+using Kronecker
+x = range(0,1,length=10)
+y = range(0,1,length=50)
+K = kernelkronmat(k,[x,y]) # Kronecker matrix
+K = kernelkronmat(k,x,5) # Kronecker matrix
+```
+Make sure that `k` is a vector compatible with such constructions (with `iskroncompatible`). Both method will return a . For those methods to work in your code you need to include `using Kronecker` first
+- For a Nystrom approximation : `kernelmatrix(nystrom(k, X, ρ, obsdim = 1))` where `ρ` is the proportion of sampled used.
 
-## Kernel manipulation
+## Composite kernels
 
 One can create combinations of kernels via `KernelSum` and `KernelProduct` or using simple operators `+` and `*`.
-For
+For example :
+```julia
+  k1 = SqExponentialKernel()
+  k2 = Matern32Kernel()
+  k = 0.5*k1 + 0.2*k2 # KernelSum
+  k = k1*k2 # KernelProduct
+```
+
+## Kernel Parameters
+
+What if you want to differentiate through the kernel parameters? Even in a highly nested structure such as :
+```julia
+  k = transform(0.5*SqExponentialKernel()*MaternKernel()+0.2*(transform(LinearKernel(),2.0)+PolynomialKernel()),[0.1,0.5])
+```
+One can get the array of parameters to optimize via `params` from `Flux.jl`
+
+```julia
+  using Flux
+  params(k)
+```
