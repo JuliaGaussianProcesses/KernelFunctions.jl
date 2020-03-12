@@ -1,42 +1,39 @@
-using .Flux: trainable
-
-Flux.trainable(::Kernel) = () # By default no parameters are returned
-Flux.trainable(::Transform) = ()
+import .Flux.trainable
 
 ### Base Kernels
 
-Flux.trainable(k::ConstantKernel) = (k.c,)
+trainable(k::ConstantKernel) = (k.c,)
 
-Flux.trainable(k::GammaExponentialKernel) = (γ,)
+trainable(k::GammaExponentialKernel) = (k.γ,)
 
-Flux.trainable(k::GammaRationalQuadraticKernel) = (k.α, k.γ)
+trainable(k::GammaRationalQuadraticKernel) = (k.α, k.γ)
 
-Flux.trainable(k::MaternKernel) = (k.ν,)
+trainable(k::MaternKernel) = (k.ν,)
 
-Flux.trainable(k::LinearKernel) = (k.c,)
+trainable(k::LinearKernel) = (k.c,)
 
-Flux.trainable(k::PolynomialKernel) = (k.d, k.c)
+trainable(k::PolynomialKernel) = (k.d, k.c)
 
-Flux.trainable(k::RationalQuadraticKernel) = (k.α,)
+trainable(k::RationalQuadraticKernel) = (k.α,)
 
 #### Composite kernels
 
-Flux.trainable(κ::KernelProduct) = k.kernels
+trainable(κ::KernelProduct) = κ.kernels
 
-Flux.trainable(κ::KernelSum) = (κ.weights, κ.kernels) #To check
+trainable(κ::KernelSum) = (κ.weights, κ.kernels) #To check
 
-Flux.trainable(κ::ScaledKernel) = (κ.σ, κ.kernel)
+trainable(κ::ScaledKernel) = (κ.σ, κ.kernel)
 
-Flux.trainable(κ::TransformedKernel) = (κ.transform, κ.kernel)
+trainable(κ::TransformedKernel) = (κ.transform, κ.kernel)
 
 ### Transforms
 
-Flux.trainable(t::ARDTransform) = (t.v,)
+trainable(t::ARDTransform) = (t.v,)
 
-Flux.trainable(t::ChainTransform) = t.transforms
+trainable(t::ChainTransform) = t.transforms
 
-Flux.trainable(t::FunctionTransform) = (t.f,)
+trainable(t::FunctionTransform) = (t.f,)
 
-Flux.trainable(t::LowRankTransform) = (t.proj,)
+trainable(t::LowRankTransform) = (t.proj,)
 
-Flux.trainable(t::ScaleTransform) = (t.s,)
+trainable(t::ScaleTransform) = (t.s,)
