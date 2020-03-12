@@ -20,6 +20,7 @@ Base.show(io::IO,::SqExponentialKernel) = print(io,"Squared Exponential Kernel")
 ## Aliases ##
 const RBFKernel = SqExponentialKernel
 const GaussianKernel = SqExponentialKernel
+const SEKernel = SqExponentialKernel
 
 """
 `ExponentialKernel([ρ=1.0])`
@@ -48,7 +49,7 @@ The γ-exponential kernel is an isotropic Mercer kernel given by the formula:
 """
 struct GammaExponentialKernel{Tγ<:Real} <: BaseKernel
     γ::Vector{Tγ}
-    function GammaExponentialKernel(;γ::T=2.0) where {T<:Real}
+    function GammaExponentialKernel(;gamma::T=2.0,γ::T=gamma) where {T<:Real}
         @check_args(GammaExponentialKernel, γ, γ >= zero(T), "γ > 0")
         return new{T}([γ])
     end
