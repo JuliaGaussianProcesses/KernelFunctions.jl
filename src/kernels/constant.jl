@@ -35,15 +35,12 @@ metric(::WhiteKernel) = Delta()
 Kernel function always returning a constant value `c`
 """
 struct ConstantKernel{Tc<:Real} <: BaseKernel
-    c::Tc
+    c::Vector{Tc}
     function ConstantKernel(;c::T=1.0) where {T<:Real}
-        new{T}(c)
+        new{T}([c])
     end
 end
 
-params(k::ConstantKernel) = (k.c,)
-opt_params(k::ConstantKernel) = (k.c,)
-
-kappa(κ::ConstantKernel,x::Real) = κ.c*one(x)
+kappa(κ::ConstantKernel,x::Real) = first(κ.c)*one(x)
 
 metric(::ConstantKernel) = Delta()

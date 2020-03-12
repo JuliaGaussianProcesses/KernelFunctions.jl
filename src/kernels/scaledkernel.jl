@@ -12,9 +12,6 @@ kappa(k::ScaledKernel, x) = first(k.σ²) * kappa(k.kernel, x)
 
 metric(k::ScaledKernel) = metric(k.kernel)
 
-params(k::ScaledKernel) = (k.σ², params(k.kernel))
-opt_params(k::ScaledKernel) = (k.σ², opt_params(k.kernel))
-
 Base.:*(w::Real, k::Kernel) = ScaledKernel(k, w)
 
 Base.show(io::IO, κ::ScaledKernel) = printshifted(io, κ, 0)

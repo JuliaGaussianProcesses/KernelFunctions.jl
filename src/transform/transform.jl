@@ -8,14 +8,18 @@ include("selecttransform.jl")
 include("chaintransform.jl")
 
 """
+`apply(t::Transform, x; obsdim::Int=defaultobs)`
+Apply the transform `t` per slice on the array `x`
+"""
+apply
+
+"""
 IdentityTransform
 Return exactly the input
 """
 struct IdentityTransform <: Transform end
 
-params(t::IdentityTransform) = nothing
-
-apply(t::IdentityTransform, x; obsdim::Int=defaultobs) = x #TODO add test
+apply(t::IdentityTransform, x; obsdim::Int=defaultobs) = x
 
 ### TODO Maybe defining adjoints could help but so far it's not working
 
@@ -32,9 +36,9 @@ apply(t::IdentityTransform, x; obsdim::Int=defaultobs) = x #TODO add test
 
 # @adjoint transform(t::ScaleTransform{<:AbstractVector{<:Real}},x::AbstractVector{<:Real}) = transform(t,x),Δ->(ScaleTransform(nothing),t.s.*Δ)
 #
-#     @adjoint transform(t::ScaleTransform{<:AbstractVector{<:Real}},X::AbstractMatrix{<:Real},obsdim::Int) = transform(t,X,obsdim),Δ->begin
+#     @adjoint transform(t::ARDTransform{<:Real},X::AbstractMatrix{<:Real},obsdim::Int) = transform(t,X,obsdim),Δ->begin
 #     @show Δ,size(Δ);
-#     return (obsdim == 1 ? ScaleTransform()Δ'.*X : ScaleTransform()Δ.*X,transform(t,Δ,obsdim),nothing)
+#     return (obsdim == 1 ? ARD()Δ'.*X : ScaleTransform()Δ.*X,transform(t,Δ,obsdim),nothing)
 #     end
 #
 # @adjoint transform(t::ScaleTransform{T},x::AbstractVecOrMat,obsdim::Int) where {T<:Real} = transform(t,x), Δ->(ScaleTransform(one(T)),t.s.*Δ,nothing)
