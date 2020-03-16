@@ -25,6 +25,16 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
             @test kappa(k,0.5) == c
         end
     end
+    @testset "Cosine" begin
+        k = CosineKernel()
+        @test eltype(k) == Any
+        @test kappa(k, 1.0) == 1.0
+        @test kappa(k, 2.0) == 1.0
+        @test kappa(k, 1.5) == -1.0
+        @test kappa(k, 1.25) ≈ 0.0 atol=1e-5
+        @test kappa(k,x) == cos(2*pi*x)
+        @test k(v1, v2) == cos(2*pi*sum(abs.(v1-v2)))
+    end
     @testset "Exponential" begin
         @testset "SqExponentialKernel" begin
             k = SqExponentialKernel()
