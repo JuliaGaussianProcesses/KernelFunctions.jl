@@ -1,5 +1,6 @@
 """
-`CosineKernel()`
+    CosineKernel
+
 The cosine kernel is a stationary kernel for a sinusoidal with period p in 1d given by
 ```
     κ(x,y) = sf² * cos( 2π * (x-y) / p )
