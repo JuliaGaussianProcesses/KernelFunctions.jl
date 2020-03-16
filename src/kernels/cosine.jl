@@ -8,11 +8,8 @@ The cosine kernel is a stationary kernel for a sinusoidal with period p in 1d gi
 
 Where `p` is the period and `sf` is the scaling factor.
 """
-struct CosineKernel <: BaseKernel
-    p::Real
-    sf::Real
-end
+struct CosineKernel <: BaseKernel end
 
-kappa(κ::CosineKernel, d::Real) = κ.sf*κ.sf*cos(2*pi*d/κ.p)
+kappa(κ::CosineKernel, d::Real) = cos(2*pi*d)
 
 metric(::CosineKernel) = Cityblock()
