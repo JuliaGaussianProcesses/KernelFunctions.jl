@@ -118,6 +118,14 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
             @test kappa(GammaRationalQuadraticKernel(α=a,γ=1.0),x) ≈ kappa(RationalQuadraticKernel(α=a),x)
         end
     end
+    @testset "Periodic Kernel" begin
+        r = rand(3)
+        k = PeriodicKernel(r)
+        @test kappa(k, x) ≈ exp(-0.5x)
+        @test k(v1, v2) ≈ exp(-0.5 * sum(abs2,sin.(π*(v1-v2))./r))
+        @test k(v1, v2) == k(v2, v1)
+        
+    end
     @testset "Transformed/Scaled Kernel" begin
         s = rand()
         v = rand(3)
