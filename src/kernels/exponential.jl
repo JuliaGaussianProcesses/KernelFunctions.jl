@@ -49,7 +49,7 @@ The γ-exponential kernel is an isotropic Mercer kernel given by the formula:
 """
 struct GammaExponentialKernel{Tγ<:Real} <: BaseKernel
     γ::Vector{Tγ}
-    function GammaExponentialKernel(;gamma::T=2.0,γ::T=gamma) where {T<:Real}
+    function GammaExponentialKernel(;gamma::T=2.0, γ::T=gamma) where {T<:Real}
         @check_args(GammaExponentialKernel, γ, γ >= zero(T), "γ > 0")
         return new{T}([γ])
     end
