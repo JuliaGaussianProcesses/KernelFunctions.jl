@@ -1,5 +1,6 @@
 """
-PeriodicKernel()
+    PeriodicKernel(r::AbstractVector)
+    PeriodicKernel(dims::Int)
 ```
     κ(x,y) = exp(-2 * sum_i(sin (π(x_i - y_i))/r_i))
 ```
