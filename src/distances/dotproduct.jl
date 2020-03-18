@@ -1,4 +1,4 @@
-struct DotProduct <: Distances.SemiMetric end
+struct DotProduct <: Distances.PreMetric end
 
 @inline function Distances._evaluate(::DotProduct, a::AbstractVector{T}, b::AbstractVector{T}) where {T}
     @boundscheck if length(a) != length(b)
