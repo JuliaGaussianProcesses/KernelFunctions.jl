@@ -25,6 +25,6 @@ B = rand(20,5)
         @test d(0,1) ≈ 0 atol=1e-16
         @test d(0,0.5) ≈ 1
         @test_throws DimensionMismatch d(rand(5),rand(4))
-        @test_throw DimensionMismatch d(rand(3),rand(3))
+        @test_throws DimensionMismatch d(rand(3),rand(3))
     end
 end
