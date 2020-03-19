@@ -42,9 +42,9 @@ end
 
 #Syntactic Sugar
 function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
-    modX = evaluate(SqEuclidean(), x, zero(x))
-    modY = evaluate(SqEuclidean(), y, zero(y))
-    modXY = evaluate(SqEuclidean(), x-y, zero(x-y))
+    modX = sum(abs2, x)
+    modY = sum(abs2, y)
+    modXY = sqeuclidean(x, y)
     (modX^κ.h + modY^κ.h - modXY^κ.h)/2
 end
 
