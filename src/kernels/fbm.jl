@@ -21,7 +21,9 @@ _fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h)/2
 
 function kernelmatrix(κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
     @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    K = map(modX->_fbm(modX, modX, 0, κ.h), pairwise(SqEuclidean(),X,dims=obsdim))
+    modX = sum(abs2, X; dims = 3 - obsdim)
+    modXX = pairwise(SqEuclidean(), X, dims = obsdim)
+    return _fbm.(vec(modX), reshape(modX, 1, :), modXX, κ.h)
 end
 
 function kernelmatrix(
