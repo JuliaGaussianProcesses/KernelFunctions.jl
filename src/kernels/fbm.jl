@@ -17,8 +17,6 @@ struct FBMKernel{T<:Real} <: BaseKernel
     end
 end
 
-kappa(κ::FBMKernel, d::Real) = error("Not Implemented: Please use `kernelmatrix` or `kerneldiagmatrix` instead.")
-
 _fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h)/2
 
 function kernelmatrix(κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
@@ -48,5 +46,6 @@ function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     (modX^κ.h + modY^κ.h - modXY^κ.h)/2
 end
 
+(κ::FBMKernel)(x::Real, y::Real) = (abs2(x)^κ.h + abs2(y)^κ.h - abs2(x-y)^κ.h)/2
 (κ::FBMKernel)(X::AbstractMatrix{T}, Y::AbstractMatrix{T}; obsdim::Integer=defaultobs) where {T} = kernelmatrix(κ, X, Y, obsdim=obsdim)
 (κ::FBMKernel)(X::AbstractMatrix{T}; obsdim::Integer=defaultobs) where {T} = kernelmatrix(κ, X, obsdim=obsdim)
