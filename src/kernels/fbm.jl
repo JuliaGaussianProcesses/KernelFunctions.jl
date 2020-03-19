@@ -32,10 +32,10 @@ function kernelmatrix(
 )
     @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
     
-    modX = pairwise(SqEuclidean(),X,dims=obsdim)
-    modY = pairwise(SqEuclidean(),Y,dims=obsdim)
-    modXY = pairwise(SqEuclidean(),X-Y,dims=obsdim)
-    K = map((x)->_fbm(x[1], x[2], x[3], κ.h), zip(modX, modY, modXY))
+    modX = sum(abs2, X, dims=3-obsdim)
+    modY = sum(abs2, Y, dims=3-obsdim)
+    modXY = pairwise(SqEuclidean(), X, Y,dims=obsdim)
+    return _fbm.(vec(modX), reshape(modY, 1, :), modXY, κ.h)
 end
 
 #Syntactic Sugar
