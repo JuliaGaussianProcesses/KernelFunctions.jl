@@ -25,6 +25,10 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
             @test kappa(k,0.5) == c
         end
     end
+    @testset "FBM" begin
+        k = FBMKernel(h=0.3)
+        @test k(v1,v2) ≈ (sqeuclidean(v1, zero(v1))^0.3 + sqeuclidean(v2, zero(v2))^0.3 - sqeuclidean(v1-v2, zero(v1-v2))^0.3)/2 atol=1e-5
+    end
     @testset "Exponential" begin
         @testset "SqExponentialKernel" begin
             k = SqExponentialKernel()
@@ -127,7 +131,7 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
         ks = ScaledKernel(k,s)
         @test kappa(kt,v1,v2) == kappa(transform(k,ScaleTransform(s)),v1,v2)
         @test kappa(kt,v1,v2) == kappa(transform(k,s),v1,v2)
-        @test kappa(kt,v1,v2) == kappa(k,s*v1,s*v2)
+        @test kappa(kt,v1,v2) ≈ kappa(k,s*v1,s*v2) atol=1e-5
         @test kappa(ktard,v1,v2) == kappa(transform(k,ARDTransform(v)),v1,v2)
         @test kappa(ktard,v1,v2) == kappa(transform(k,v),v1,v2)
         @test kappa(ktard,v1,v2) == kappa(k,v.*v1,v.*v2)
