@@ -11,4 +11,4 @@ struct CosineKernel <: BaseKernel end
 
 kappa(κ::CosineKernel, d::Real) = cos(2*pi*d)
 
-metric(::CosineKernel) = Cityblock()
+metric(::CosineKernel) = Euclidean()
