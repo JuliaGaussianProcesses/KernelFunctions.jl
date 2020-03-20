@@ -45,7 +45,7 @@ function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modX = sum(abs2, x)
     modY = sum(abs2, y)
     modXY = sqeuclidean(x, y)
-    (modX^κ.h + modY^κ.h - modXY^κ.h)/2
+    return (modX^κ.h + modY^κ.h - modXY^κ.h)/2
 end
 
 (κ::FBMKernel)(x::Real, y::Real) = (abs2(x)^κ.h + abs2(y)^κ.h - abs2(x-y)^κ.h)/2
