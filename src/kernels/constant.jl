@@ -24,7 +24,6 @@ Kernel function working as an equivalent to add white noise.
 struct WhiteKernel <: BaseKernel end
 
 const EyeKernel = WhiteKernel
-export EyeKernel
 
 kappa(κ::WhiteKernel,δₓₓ::Real) = δₓₓ
 
