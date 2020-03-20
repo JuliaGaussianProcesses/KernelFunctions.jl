@@ -53,4 +53,7 @@ end
 function (κ::FBMKernel)(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}; obsdim::Integer=defaultobs)
     return kernelmatrix(κ, X, Y, obsdim=obsdim)
 end
-(κ::FBMKernel)(X::AbstractMatrix{T}; obsdim::Integer=defaultobs) where {T} = kernelmatrix(κ, X, obsdim=obsdim)
+
+function (κ::FBMKernel)(X::AbstractMatrix{<:Real}; obsdim::Integer=defaultobs)
+    return kernelmatrix(κ, X, obsdim=obsdim)
+end
