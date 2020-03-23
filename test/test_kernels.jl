@@ -28,12 +28,11 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
     @testset "Cosine" begin
         k = CosineKernel()
         @test eltype(k) == Any
-        @test kappa(k, 1.0) == 1.0
-        @test kappa(k, 2.0) == 1.0
-        @test kappa(k, 1.5) == -1.0
-        @test kappa(k, 1.25) ≈ 0.0 atol=1e-5
-        @test kappa(k,x) == cos(2*pi*x)
-        @test k(v1, v2) == cos(2*pi*sqrt(sum(abs2.(v1-v2))))
+        @test kappa(k, 1.0) ≈ -1.0 atol=1e-5
+        @test kappa(k, 2.0) ≈ 1.0 atol=1e-5
+        @test kappa(k, 1.5) ≈ 0.0 atol=1e-5
+        @test kappa(k,x) ≈ cospi(x) atol=1e-5
+        @test k(v1, v2) ≈ cospi(sqrt(sum(abs2.(v1-v2)))) atol=1e-5
     end
     @testset "Exponential" begin
         @testset "SqExponentialKernel" begin
@@ -137,7 +136,7 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
         ks = ScaledKernel(k,s)
         @test kappa(kt,v1,v2) == kappa(transform(k,ScaleTransform(s)),v1,v2)
         @test kappa(kt,v1,v2) == kappa(transform(k,s),v1,v2)
-        @test kappa(kt,v1,v2) == kappa(k,s*v1,s*v2)
+        @test kappa(kt,v1,v2) ≈ kappa(k,s*v1,s*v2) atol=1e-5
         @test kappa(ktard,v1,v2) == kappa(transform(k,ARDTransform(v)),v1,v2)
         @test kappa(ktard,v1,v2) == kappa(transform(k,v),v1,v2)
         @test kappa(ktard,v1,v2) == kappa(k,v.*v1,v.*v2)
