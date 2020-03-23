@@ -8,7 +8,7 @@ export transform
 export params, duplicate, set! # Helpers
 
 export Kernel
-export ConstantKernel, WhiteKernel, ZeroKernel
+export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel
 export SqExponentialKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
