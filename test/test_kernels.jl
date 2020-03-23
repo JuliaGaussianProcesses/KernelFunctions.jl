@@ -16,6 +16,7 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
             @test eltype(k) == Any
             @test kappa(k,1.0) == 1.0
             @test kappa(k,0.0) == 0.0
+            @test EyeKernel == WhiteKernel
         end
         @testset "ConstantKernel" begin
             c = 2.0
