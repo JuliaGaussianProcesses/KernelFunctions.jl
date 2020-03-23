@@ -2,7 +2,7 @@
     GaborKernel(; ell::Real=1.0, p::Real=1.0)
 
 Gabor kernel with length scale ell and period p. Given by
-```
+```math
     κ(x,y) =  h(x-z), h(t) = exp(-sum(t.^2./(2*ell.^2)))*cos(2*pi*sum(t./p))
 ```
 
