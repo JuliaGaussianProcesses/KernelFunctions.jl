@@ -1,5 +1,5 @@
 """
-    MahalanobisKernel(P::AbstractMatrix, kappa::Function)
+    MahalanobisKernel(P::AbstractMatrix)
 
     Mahalanobis distance-based kernel given by
 ```math
@@ -8,11 +8,11 @@
 where the matrix P is the metric.
 
 """
-struct MahalanobisKernel{T<:Real,A<:AbstractMatrix{T}} <: BaseKernel
+struct MahalanobisKernel{T<:Real, A<:AbstractMatrix{T}} <: BaseKernel
     P::A
     function MahalanobisKernel(P::AbstractMatrix{T}) where {T<:Real}
         LinearAlgebra.checksquare(P)
-        new{T}(P)
+        new{T,AbstractMatrix{T}}(P)
     end
 end
 
