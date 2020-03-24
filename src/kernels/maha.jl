@@ -19,4 +19,4 @@ end
 
 kappa(κ::MahaKernel, d::T) where {T<:Real} = κ.kappa(d) 
 
-metric(κ::MahaKernel) = Mahalanobis(κ.P)
+metric(κ::MahaKernel) = SqMahalanobis(κ.P)
