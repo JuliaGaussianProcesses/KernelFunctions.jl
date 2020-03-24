@@ -12,7 +12,7 @@ struct MahaKernel{T<:Real} <: BaseKernel
     P::AbstractMatrix{T}
     kappa::Function
     function MahaKernel(P::AbstractMatrix{T}, kappa::Function) where {T<:Real}
-        @assert size(P)[1] == size(P)[2] "P should be a square matrix"
+        LinearAlgebra.checksquare(P)
         new{T}(P, kappa)
     end
 end
