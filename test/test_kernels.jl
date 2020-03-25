@@ -175,4 +175,14 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
             @test kappa(k*k3,v1,v2) ≈ kappa(k3*k,v1,v2)
         end
     end
+    @testset "Tensor product" begin
+        k1 = SqExponentialKernel()
+        k2 = ExponentialKernel()
+        kernel = TensorProductKernel(k1, k2)
+
+        u1, u2 = rand(10), rand(10)
+ 
+        @test kernel((v1, u1), (v2, u2)) == kappa(kernel, (v1, u1), (v2, u2))
+        @test kernel((v1, u1), (v2, u2)) == kappa(kernel.kernel1, v1, v2) * kappa(kernel.kernel2, u1, u2)
+    end
 end
