@@ -12,7 +12,7 @@ struct MahalanobisKernel{T<:Real, A<:AbstractMatrix{T}} <: BaseKernel
     P::A
     function MahalanobisKernel(P::AbstractMatrix{T}) where {T<:Real}
         LinearAlgebra.checksquare(P)
-        new{T,AbstractMatrix{T}}(P)
+        new{T,typeof(P)}(P)
     end
 end
 
