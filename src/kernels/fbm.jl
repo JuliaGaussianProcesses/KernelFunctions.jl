@@ -62,6 +62,21 @@ function kernelmatrix!(
     return K
 end
 
+function _kernel(κ::FBMKernel, x::Real, y::Real)
+    _kernel(κ, [x], [y])
+end
+
+## Apply kernel on two vectors ##
+function _kernel(
+        κ::FBMKernel,
+        x::AbstractVector,
+        y::AbstractVector;
+        obsdim::Int = defaultobs
+    )
+    @assert length(x) == length(y) "x and y don't have the same dimension!"
+    return κ(x,y)
+end
+
 #Syntactic Sugar
 function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modX = sum(abs2, x)

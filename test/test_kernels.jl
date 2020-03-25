@@ -33,8 +33,8 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
         # kernelmatrix tests
         m1 = rand(3,3)
         m2 = rand(3,3)
-        @test kernelmatrix(k, m1, m1) ≈ kernelmatrix(k, m1)
-        @test kernelmatrix(k, m1, m2) ≈ k(m1, m2)
+        @test kernelmatrix(k, m1, m1) ≈ kernelmatrix(k, m1) atol=1e-5
+        @test kernelmatrix(k, m1, m2) ≈ k(m1, m2) atol=1e-5
 
         
         x1 = rand()
