@@ -26,8 +26,12 @@ function kernelmatrix(κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs
     return _fbm.(vec(modX), reshape(modX, 1, :), modXX, κ.h)
 end
 
-function kernelmatrix!(K::Matrix, κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
-    K[:,:] = kernelmatrix(κ, X; obsdim = obsdim)
+function kernelmatrix!(K::AbstractMatrix, κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
+    @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
+    modX = sum(abs2, X; dims = 3 - obsdim)
+    modXX = pairwise(SqEuclidean(), X, dims = obsdim)
+    K .= _fbm.(vec(modX), reshape(modX, 1, :), modXX, κ.h)
+    return K
 end
 
 function kernelmatrix(
@@ -36,8 +40,7 @@ function kernelmatrix(
     Y::AbstractMatrix;
     obsdim::Int = defaultobs,
 )
-    @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    
+    @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"   
     modX = sum(abs2, X, dims=3-obsdim)
     modY = sum(abs2, Y, dims=3-obsdim)
     modXY = pairwise(SqEuclidean(), X, Y,dims=obsdim)
@@ -51,7 +54,12 @@ function kernelmatrix!(
     Y::AbstractMatrix;
     obsdim::Int = defaultobs,
 )
-    K[:,:] = kernelmatrix(κ, X, Y; obsdim = obsdim)
+    @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"   
+    modX = sum(abs2, X, dims=3-obsdim)
+    modY = sum(abs2, Y, dims=3-obsdim)
+    modXY = pairwise(SqEuclidean(), X, Y,dims=obsdim)
+    K .= _fbm.(vec(modX), reshape(modY, 1, :), modXY, κ.h)
+    return K
 end
 
 #Syntactic Sugar
