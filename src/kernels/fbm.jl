@@ -26,8 +26,8 @@ function kernelmatrix(κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs
     return _fbm.(vec(modX), reshape(modX, 1, :), modXX, κ.h)
 end
 
-function kernelmatrix!(K::AbstractMatrix, κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
-    K = kernelmatrix(κ, X; obsdim = obsdim)
+function kernelmatrix!(K::Matrix, κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
+    K[:,:] = kernelmatrix(κ, X; obsdim = obsdim)
 end
 
 function kernelmatrix(
@@ -51,7 +51,7 @@ function kernelmatrix!(
     Y::AbstractMatrix;
     obsdim::Int = defaultobs,
 )
-    K = kernelmatrix(κ, X, Y; obsdim = obsdim)
+    K[:,:] = kernelmatrix(κ, X, Y; obsdim = obsdim)
 end
 
 #Syntactic Sugar
