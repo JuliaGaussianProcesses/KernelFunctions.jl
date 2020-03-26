@@ -68,6 +68,11 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
             @test k(v1,v2) ≈ exp(dot(v1,v2))
         end
     end
+    @testset "Gabor" begin
+        k = GaborKernel(ell=2.0, p=2.0)
+        # @info kappa(k,v1,v2)
+        # @info k(v1,v2)
+    end
     @testset "Matern" begin
         @testset "MaternKernel" begin
             ν = 2.0
