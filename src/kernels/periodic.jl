@@ -7,9 +7,15 @@
 """
 struct PeriodicKernel{T} <: BaseKernel
     r::Vector{T}
+    function PeriodicKernel(; r::AbstractVector{T} = ones(Float64, 1)) where {T<:Real}
+        @assert all(r .> 0)
+        new{T}(r)
+    end
 end
 
-PeriodicKernel(dims::Int) = PeriodicKernel{Float64}(ones(Float64,dims))
+PeriodicKernel(dims::Int = 1) = PeriodicKernel(Float64, dims)
+
+PeriodicKernel(T::DataType, dims::Int = 1) = PeriodicKernel(r = ones(T, dims))
 
 metric(κ::PeriodicKernel) = Sinus(κ.r)
 

@@ -8,11 +8,11 @@ Distances.parameters(d::Sinus) = d.r
     @boundscheck if (length(a) != length(b)) || length(a) != length(d.r)
         throw(DimensionMismatch("Dimensions of the inputs are not matching : a = $(length(a)), b = $(length(b)), r = $(length(d.r))"))
     end
-    return sum(abs2,sin.(π.*(a-b))./d.r)
+    return sum(abs2, sinpi.(a - b) ./ d.r)
 end
 
 # For later convenience once Distances.jl open their API
-@inline Distances.eval_op(::Sinus, a::Real, b::Real, p::Real) = abs2(sin(π * (a - b)) / p)
+@inline Distances.eval_op(::Sinus, a::Real, b::Real, p::Real) = abs2(sinpi(a - b) / p)
 
 @inline (dist::Sinus)(a::AbstractArray,b::AbstractArray) = Distances._evaluate(dist, a, b)
-@inline (dist::Sinus)(a::Number,b::Number) = abs2(sin(π * (a - b)) / first(dist.r))
+@inline (dist::Sinus)(a::Number,b::Number) = abs2(sinpi(a - b) / first(dist.r))
