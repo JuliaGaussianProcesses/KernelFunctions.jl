@@ -8,12 +8,13 @@ export transform
 export params, duplicate, set! # Helpers
 
 export Kernel
-export ConstantKernel, WhiteKernel, ZeroKernel
+export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel
 export SqExponentialKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
+export MahalanobisKernel
 export KernelSum, KernelProduct
 export TransformedKernel, ScaledKernel
 
@@ -44,7 +45,7 @@ include("distances/dotproduct.jl")
 include("distances/delta.jl")
 include("transform/transform.jl")
 
-for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated","gabor"]
+for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated","cosine","maha","gabor"]
     include(joinpath("kernels",k*".jl"))
 end
 include("kernels/transformedkernel.jl")
@@ -53,7 +54,6 @@ include("matrix/kernelmatrix.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
 include("approximations/nystrom.jl")
-
 include("generic.jl")
 
 include("zygote_adjoints.jl")
