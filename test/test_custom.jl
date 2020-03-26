@@ -14,12 +14,10 @@ KernelFunctions.metric(::MyKernel) = SqEuclidean()
 @test kernelmatrix(MyKernel(), [1 2; 3 4]) == kernelmatrix(SqExponentialKernel(), [1 2; 3 4])
 
 # some syntactic sugar
-(κ::MyKernel)(d::Real) = kappa(κ, d)
 (κ::MyKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real}) = kappa(κ, x, y)
 (κ::MyKernel)(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}; obsdim = 2) = kernelmatrix(κ, X, Y; obsdim = obsdim)
 (κ::MyKernel)(X::AbstractMatrix{<:Real}; obsdim = 2) = kernelmatrix(κ, X; obsdim = obsdim)
 
-@test MyKernel()(3) == SqExponentialKernel()(3)
 @test MyKernel()([1, 2], [3, 4]) == SqExponentialKernel()([1, 2], [3, 4])
 @test MyKernel()([1 2; 3 4], [5 6; 7 8]) == SqExponentialKernel()([1 2; 3 4], [5 6; 7 8])
 @test MyKernel()([1 2; 3 4]) == SqExponentialKernel()([1 2; 3 4])
