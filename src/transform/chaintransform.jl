@@ -32,9 +32,7 @@ function apply(t::ChainTransform,X::T;obsdim::Int=defaultobs) where {T}
 end
 
 set!(t::ChainTransform,θ) = set!.(t.transforms,θ)
-params(t::ChainTransform) = (params.(t.transforms))
 duplicate(t::ChainTransform,θ) = ChainTransform(duplicate.(t.transforms,θ))
-
 
 Base.:∘(t₁::Transform, t₂::Transform) = ChainTransform([t₂, t₁])
 Base.:∘(t::Transform, tc::ChainTransform) = ChainTransform(vcat(tc.transforms, t)) #TODO add test

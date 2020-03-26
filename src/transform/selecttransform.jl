@@ -22,10 +22,7 @@ end
 
 set!(t::SelectTransform{<:AbstractVector{T}},dims::AbstractVector{T}) where {T<:Int} = t.select .= dims
 
-params(t::SelectTransform) = t.select
-
 duplicate(t::SelectTransform,θ) = t
-
 
 Base.maximum(t::SelectTransform) = maximum(t.select)
 

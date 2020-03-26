@@ -22,28 +22,25 @@ function KernelSum(
 )
     @assert length(kernels) == length(weights) "Weights and kernel vector should be of the same length"
     @assert all(weights .>= 0) "All weights should be positive"
-    KernelSum(kernels, weights)
+    return KernelSum(kernels, weights)
 end
 
-params(k::KernelSum) = (k.weights, params.(k.kernels))
-opt_params(k::KernelSum) = (k.weights, opt_params.(k.kernels))
-
 Base.:+(k1::Kernel, k2::Kernel) = KernelSum([k1, k2], weights = [1.0, 1.0])
-Base.:+(k1::ScaledKernel, k2::ScaledKernel) = KernelSum([kernel(k1), kernel(k2)], weights = [first(k1.σ), first(k2.σ)])
+Base.:+(k1::ScaledKernel, k2::ScaledKernel) = KernelSum([kernel(k1), kernel(k2)], weights = [first(k1.σ²), first(k2.σ²)])
 Base.:+(k1::KernelSum, k2::KernelSum) =
     KernelSum(vcat(k1.kernels, k2.kernels), weights = vcat(k1.weights, k2.weights))
 Base.:+(k::Kernel, ks::KernelSum) =
     KernelSum(vcat(k, ks.kernels), weights = vcat(1.0, ks.weights))
 Base.:+(k::ScaledKernel, ks::KernelSum) =
-        KernelSum(vcat(kernel(k), ks.kernels), weights = vcat(first(k.σ), ks.weights))
+        KernelSum(vcat(kernel(k), ks.kernels), weights = vcat(first(k.σ²), ks.weights))
 Base.:+(k::ScaledKernel, ks::Kernel) =
-        KernelSum(vcat(kernel(k), ks), weights = vcat(first(k.σ), 1.0))
+        KernelSum(vcat(kernel(k), ks), weights = vcat(first(k.σ²), 1.0))
 Base.:+(ks::KernelSum, k::Kernel) =
     KernelSum(vcat(ks.kernels, k), weights = vcat(ks.weights, 1.0))
 Base.:+(ks::KernelSum, k::ScaledKernel) =
-        KernelSum(vcat(ks.kernels, kernel(k)), weights = vcat(ks.weights, first(k.σ)))
+        KernelSum(vcat(ks.kernels, kernel(k)), weights = vcat(ks.weights, first(k.σ²)))
 Base.:+(ks::Kernel, k::ScaledKernel) =
-        KernelSum(vcat(ks, kernel(k)), weights = vcat(1.0, first(k.σ)))
+        KernelSum(vcat(ks, kernel(k)), weights = vcat(1.0, first(k.σ²)))
 Base.:*(w::Real, k::KernelSum) = KernelSum(k.kernels, weights = w * k.weights) #TODO add tests
 
 Base.length(k::KernelSum) = length(k.kernels)

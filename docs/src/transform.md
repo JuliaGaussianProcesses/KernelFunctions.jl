@@ -6,16 +6,4 @@ You can also create a pipeline of `Transform` via `TransformChain`. For example 
 
 One apply a transformation on a matrix or a vector via `KernelFunctions.apply(t::Transform,v::AbstractVecOrMat)`
 
-## Transforms :
-```@meta
-CurrentModule = KernelFunctions
-```
-
-```@docs
-  IdentityTransform
-  ScaleTransform
-  ARDTransform
-  LowRankTransform
-  FunctionTransform
-  ChainTransform
-```
+Check the list on the [API page](@ref Transforms)
