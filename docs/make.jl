@@ -12,7 +12,7 @@ makedocs(
              "Transform"=>"transform.md",
              "Metrics"=>"metrics.md",
              "Theory"=>"theory.md",
-             "Custom Kernels"=>"create_kernel.md"
+             "Custom Kernels"=>"create_kernel.md",
              "API"=>"api.md"]
 )
 
