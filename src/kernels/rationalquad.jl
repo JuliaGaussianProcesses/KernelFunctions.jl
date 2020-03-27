@@ -41,4 +41,4 @@ end
 kappa(κ::GammaRationalQuadraticKernel, d²::T) where {T<:Real} = (one(T)+d²^first(κ.γ)/first(κ.α))^(-first(κ.α))
 metric(::GammaRationalQuadraticKernel) = SqEuclidean()
 
-Base.show(io::IO, κ::RationalQuadraticKernel) = print(io, "Gamma Rational Quadratic Kernel (α = $(first(κ.α)), γ = $(first(κ.γ)))")
+Base.show(io::IO, κ::GammaRationalQuadraticKernel) = print(io, "Gamma Rational Quadratic Kernel (α = $(first(κ.α)), γ = $(first(κ.γ)))")
