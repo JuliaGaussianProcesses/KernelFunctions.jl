@@ -3,7 +3,10 @@ using LinearAlgebra
 using KernelFunctions
 using SpecialFunctions
 
-x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
+x = rand()*2
+v1 = rand(3)
+v2 = rand(3)
+id = IdentityTransform()
 @testset "Kappa functions of kernels" begin
     @testset "Constant" begin
         @testset "ZeroKernel" begin
