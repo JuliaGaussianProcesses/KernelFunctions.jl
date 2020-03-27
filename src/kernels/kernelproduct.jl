@@ -1,13 +1,13 @@
 """
-`KernelProduct(kernels::Array{Kernel})`
-Create a multiplication of kernels.
-One can also use the operator `*`
+    KernelProduct(kernels::Array{Kernel})
+Create a product of kernels.
+One can also use the operator `*` :
 ```
-k1 = SqExponentialKernel()
-k2 = LinearKernel()
-k = KernelProduct([k1,k2])
-kernelmatrix(k,X) == kernelmatrix(k1,X).*kernelmatrix(k2,X)
-kernelmatrix(k,X) == kernelmatrix(k1*k2,X)
+    k1 = SqExponentialKernel()
+    k2 = LinearKernel()
+    k = KernelProduct([k1, k2]) == k1 * k2
+    kernelmatrix(k, X) == kernelmatrix(k1, X) .* kernelmatrix(k2, X)
+    kernelmatrix(k, X) == kernelmatrix(k1 * k2, X)
 ```
 """
 struct KernelProduct <: Kernel
@@ -47,14 +47,14 @@ function kerneldiagmatrix(
     reduce(hadamard,kerneldiagmatrix(κ.kernels[i],X,obsdim=obsdim) for i in 1:length(κ))
 end
 
-function Base.show(io::IO,κ::KernelProduct)
-    printshifted(io,κ,0)
+function Base.show(io::IO, κ::KernelProduct)
+    printshifted(io, κ, 0)
 end
 
-function printshifted(io::IO,κ::KernelProduct, shift::Int)
-    print(io,"Product of $(length(κ)) kernels:")
+function printshifted(io::IO, κ::KernelProduct, shift::Int)
+    print(io, "Product of $(length(κ)) kernels:")
     for i in 1:length(κ)
-        print(io,"\n"*("\t"^(shift+1))*"- ")
-        printshifted(io,κ.kernels[i],shift+2)
+        print(io, "\n" * ("\t" ^ (shift + 1))* "- ")
+        printshifted(io, κ.kernels[i], shift + 2)
     end
 end

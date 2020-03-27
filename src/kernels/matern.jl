@@ -1,6 +1,6 @@
 """
-`MaternKernel([ρ=1.0,[ν=1.0]])`
-The matern kernel is an isotropic Mercer kernel given by the formula:
+    MaternKernel(; ν=1.0)
+The matern kernel is a Mercer kernel given by the formula:
 ```
     κ(x,y) = 2^{1-ν}/Γ(ν)*(√(2ν)‖x-y‖)^ν K_ν(√(2ν)‖x-y‖)
 ```
@@ -26,28 +26,32 @@ end
 
 metric(::MaternKernel) = Euclidean()
 
+Base.show(io::IO, κ::MaternKernel) = print(io, "Matern Kernel (ν = $(first(κ.ν)))")
+
 """
-`Matern32Kernel([ρ=1.0])`
-The matern 3/2 kernel is an isotropic Mercer kernel given by the formula:
+    Matern32Kernel()
+The matern 3/2 kernel is a Mercer kernel given by the formula:
 ```
-    κ(x,y) = (1+√(3)ρ‖x-y‖)exp(-√(3)ρ‖x-y‖)
+    κ(x,y) = (1+√(3)‖x-y‖)exp(-√(3)‖x-y‖)
 ```
 """
 struct Matern32Kernel <: BaseKernel end
 
 kappa(κ::Matern32Kernel, d::Real) = (1 + sqrt(3) * d) * exp(-sqrt(3) * d)
-
 metric(::Matern32Kernel) = Euclidean()
 
+Base.show(io::IO, ::Matern32Kernel) = print(io, "Matern 3/2 Kernel")
+
 """
-`Matern52Kernel([ρ=1.0])`
-The matern 5/2 kernel is an isotropic Mercer kernel given by the formula:
+    Matern52Kernel()
+The matern 5/2 kernel is a Mercer kernel given by the formula:
 ```
-    κ(x,y) = (1+√(5)ρ‖x-y‖ + 5ρ²‖x-y‖^2/3)exp(-√(5)ρ‖x-y‖)
+    κ(x,y) = (1+√(5)‖x-y‖ + 5/3‖x-y‖^2)exp(-√(5)‖x-y‖)
 ```
 """
 struct Matern52Kernel <: BaseKernel end
 
 kappa(κ::Matern52Kernel, d::Real) = (1 + sqrt(5) * d + 5 * d^2 / 3) * exp(-sqrt(5) * d)
-
 metric(::Matern52Kernel) = Euclidean()
+
+Base.show(io::IO, ::Matern52Kernel) = print(io, "Matern 5/2 Kernel")

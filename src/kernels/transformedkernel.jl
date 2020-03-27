@@ -1,6 +1,7 @@
 """
-`TransformedKernel(k::Kernel,t::Transform)`
+    TransformedKernel(k::Kernel,t::Transform)
 Return a kernel where inputs are pretransformed by `t` : `k(t(x),t(x'))`
+Can also be called via [transform](@ref) : `transform(k, t)`
 """
 struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
     kernel::Tk
@@ -31,9 +32,9 @@ kappa(κ::TransformedKernel, x) = kappa(κ.kernel, x)
 
 metric(κ::TransformedKernel) = metric(κ.kernel)
 
-Base.show(io::IO,κ::TransformedKernel) = printshifted(io,κ,0)
+Base.show(io::IO, κ::TransformedKernel) = printshifted(io, κ, 0)
 
-function printshifted(io::IO,κ::TransformedKernel,shift::Int)
-    printshifted(io,κ.kernel,shift)
-    print(io,"\n"*("\t"^(shift+1))*"- $(κ.transform)")
+function printshifted(io::IO, κ::TransformedKernel, shift::Int)
+    printshifted(io, κ.kernel, shift)
+    print(io,"\n" * ("\t" ^ (shift + 1)) * "- $(κ.transform)")
 end

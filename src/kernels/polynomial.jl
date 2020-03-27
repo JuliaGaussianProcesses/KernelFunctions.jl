@@ -1,8 +1,8 @@
 """
-`LinearKernel([ρ=1.0,[c=0.0]])`
+    LinearKernel(; c=0.0)
 The linear kernel is a Mercer kernel given by
 ```
-    κ(x,y) = ρ²xᵀy + c
+    κ(x,y) = xᵀy + c
 ```
 Where `c` is a real number
 """
@@ -14,16 +14,17 @@ struct LinearKernel{Tc<:Real} <: BaseKernel
 end
 
 kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + first(κ.c)
-
 metric(::LinearKernel) = DotProduct()
 
+Base.show(io::IO, κ::LinearKernel) = print(io, "Linear Kernel (c = $(first(κ.c)))")
+
 """
-`PolynomialKernel([ρ=1.0[,d=2.0[,c=0.0]]])`
+    PolynomialKernel(; d = 2.0, c = 0.0)
 The polynomial kernel is a Mercer kernel given by
 ```
-    κ(x,y) = (ρ²xᵀy + c)^d
+    κ(x,y) = (xᵀy + c)^d
 ```
-Where `c` is a real number, and `d` is a shape parameter bigger than 1
+Where `c` is a real number, and `d` is a shape parameter bigger than 1. For `d = 1` see [`LinearKernel`](@ref)
 """
 struct PolynomialKernel{Td<:Real, Tc<:Real} <: BaseKernel
     d::Vector{Td}
@@ -35,5 +36,6 @@ struct PolynomialKernel{Td<:Real, Tc<:Real} <: BaseKernel
 end
 
 kappa(κ::PolynomialKernel, xᵀy::T) where {T<:Real} = (xᵀy + first(κ.c))^(first(κ.d))
-
 metric(::PolynomialKernel) = DotProduct()
+
+Base.show(io::IO, κ::PolynomialKernel) = print(io, "Polynomial Kernel (c = $(first(κ.c)), d = $(first(κ.d)))")
