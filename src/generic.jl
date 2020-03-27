@@ -15,12 +15,10 @@ printshifted(io::IO,κ::Kernel,shift::Int) = print(io,"$κ")
 Base.show(io::IO,κ::Kernel) = print(io,nameof(typeof(κ)))
 
 ### Syntactic sugar for creating matrices and using kernel functions
-
 function concretetypes(k, ktypes::Vector)
     isempty(subtypes(k)) ? push!(ktypes, k) : concretetypes.(subtypes(k), Ref(ktypes))
     return ktypes
 end
-
 
 for k in concretetypes(Kernel, [])
     @eval begin

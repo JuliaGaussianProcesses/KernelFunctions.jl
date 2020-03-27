@@ -9,7 +9,7 @@ kernelmatrix!
 
 
 function kernelmatrix!(
-        K::Matrix,
+        K::AbstractMatrix,
         κ::Kernel,
         X::AbstractMatrix;
         obsdim::Int = defaultobs
