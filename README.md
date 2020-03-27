@@ -1,7 +1,10 @@
-[![Build Status](https://travis-ci.org/theogf/KernelFunctions.jl.svg?branch=master)](https://travis-ci.org/theogf/KernelFunctions.jl)
-[![Coverage Status](https://coveralls.io/repos/github/theogf/KernelFunctions.jl/badge.svg?branch=master)](https://coveralls.io/github/theogf/KernelFunctions.jl?branch=master)
-[![Documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://theogf.github.io/KernelFunctions.jl/dev/)
 # KernelFunctions.jl
+
+[![Build Status](https://travis-ci.com/JuliaGaussianProcesses/KernelFunctions.jl.svg?branch=master)](https://travis-ci.com/JuliaGaussianProcesses/KernelFunctions.jl)
+[![Coverage Status](https://coveralls.io/repos/github/JuliaGaussianProcesses/KernelFunctions.jl/badge.svg?branch=master)](https://coveralls.io/github/JuliaGaussianProcesses/KernelFunctions.jl?branch=master)
+[![Documentation (stable)](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliagaussianprocesses.github.io/KernelFunctions.jl/stable)
+[![Documentation (latest)](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliagaussianprocesses.github.io/KernelFunctions.jl/dev)
+
 ## Kernel functions for machine learning
 
 KernelFunctions.jl provide a flexible and complete framework for kernel functions, pretransforming the input data.
@@ -43,4 +46,4 @@ Directly inspired by the [MLKernels](https://github.com/trthatcher/MLKernels.jl)
 
 ## Issues/Contributing
 
-If you notice a problem or would like to contribute by adding more kernel functions or features please [submit an issue](https://github.com/theogf/KernelFunctions.jl/issues).
+If you notice a problem or would like to contribute by adding more kernel functions or features please [submit an issue](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl/issues).

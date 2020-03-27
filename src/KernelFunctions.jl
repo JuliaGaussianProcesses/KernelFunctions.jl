@@ -1,5 +1,6 @@
 """
-KernelFunctions. [Github](https://github.com/theogf/KernelFunctions.jl) [Documentation](https://theogf.github.io/KernelFunctions.jl/dev/)
+KernelFunctions. [Github](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl)
+[Documentation](https://juliagaussianprocesses.github.io/KernelFunctions.jl/stable/)
 """
 module KernelFunctions
 
