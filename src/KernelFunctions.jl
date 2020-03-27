@@ -14,6 +14,7 @@ export ExponentiatedKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
+export MahalanobisKernel
 export KernelSum, KernelProduct
 export TransformedKernel, ScaledKernel
 export TensorProductKernel
