@@ -45,7 +45,7 @@ include("distances/dotproduct.jl")
 include("distances/delta.jl")
 include("transform/transform.jl")
 
-for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated","cosine","maha"]
+for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated","cosine","maha","fbm"]
     include(joinpath("kernels",k*".jl"))
 end
 include("kernels/transformedkernel.jl")

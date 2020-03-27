@@ -16,6 +16,7 @@ Base.show(io::IO,κ::Kernel) = print(io,nameof(typeof(κ)))
 
 ### Syntactic sugar for creating matrices and using kernel functions
 for k in subtypes(BaseKernel)
+    if  k ∈ [FBMKernel] continue end #for kernels without `metric` or `kappa`
     @eval begin
         @inline (κ::$k)(d::Real) = kappa(κ,d) #TODO Add test
         @inline (κ::$k)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real}) = kappa(κ, x, y)
