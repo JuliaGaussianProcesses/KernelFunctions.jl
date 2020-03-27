@@ -1,5 +1,6 @@
 using Distances
 using FiniteDifferences
+using Flux
 using KernelFunctions
 using Kronecker
 using LinearAlgebra
@@ -39,6 +40,7 @@ using KernelFunctions: metric
 # 9. List out all test files explicitly (eg. don't loop over them). This makes it easy to
 #   disable tests by simply commenting them out, and makes it very clear which tests are not
 #   currently being run.
+# 10. If utility files are required.
 
 @testset "KernelFunctions" begin
 
@@ -85,6 +87,7 @@ using KernelFunctions: metric
 
     include("generic.jl")
     include("zygote_adjoints.jl")
+    include("trainable.jl")
 end
 
 # These are legacy tests that I'm not getting rid of, as they appear to be useful, but
