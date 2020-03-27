@@ -62,10 +62,6 @@ function kernelmatrix!(
     return K
 end
 
-function _kernel(κ::FBMKernel, x::Real, y::Real)
-    _kernel(κ, [x], [y])
-end
-
 ## Apply kernel on two vectors ##
 function _kernel(
         κ::FBMKernel,
