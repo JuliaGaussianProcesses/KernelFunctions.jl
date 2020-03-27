@@ -1,4 +1,4 @@
-@testset "ARDTransform" begin
+@testset "ardtransform" begin
     dims = (10,5)
     X = rand(MersenneTwister(123456), dims...)
     s = 3.0

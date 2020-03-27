@@ -1,4 +1,4 @@
-@testset "Delta" begin
+@testset "delta" begin
     A = rand(10,5)
     B = rand(20,5)
     d = KernelFunctions.Delta()

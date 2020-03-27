@@ -1,4 +1,4 @@
-@testset "SelectTransform" begin
+@testset "selecttransform" begin
     dims = (10,5)
     rng = MersenneTwister(123546)
     X = rand(rng, dims...)

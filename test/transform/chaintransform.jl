@@ -1,4 +1,4 @@
-@testset "ChainTransform" begin
+@testset "chaintransform" begin
     rng = MersenneTwister(123546)
     X = rand(rng, 10, 5)
     s = 3.0

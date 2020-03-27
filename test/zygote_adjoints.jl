@@ -1,4 +1,4 @@
-@testset "Testing Zygote adjoints" begin
+@testset "zygote_adjoints" begin
 
     rng = MersenneTwister(123456)
     x = rand(rng, 5)

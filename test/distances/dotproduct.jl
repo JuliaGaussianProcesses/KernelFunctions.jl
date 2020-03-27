@@ -1,4 +1,4 @@
-@testset "Dot Product" begin
+@testset "dotproduct" begin
     A = rand(10,5)
     B = rand(20,5)
     d = KernelFunctions.DotProduct()

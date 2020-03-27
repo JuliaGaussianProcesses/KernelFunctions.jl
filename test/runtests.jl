@@ -73,6 +73,10 @@ using KernelFunctions: metric
         include(joinpath("kernels", "scaledkernel.jl"))
         include(joinpath("kernels", "kernelsum.jl"))
         include(joinpath("kernels", "kernelproduct.jl"))
+
+        # Legacy tests that don't correspond to anything meaningful in src. Unclear how
+        # helpful these are.
+        include(joinpath("kernels", "custom.jl"))
     end
 
     @testset "matrix" begin
@@ -93,4 +97,5 @@ end
 # These are legacy tests that I'm not getting rid of, as they appear to be useful, but
 # weren't enabled on master at the time of refactoring the tests. They will need to be
 # restored at some point.
+# include("utils_AD.jl")
 # include("test_AD.jl")

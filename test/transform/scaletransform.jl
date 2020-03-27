@@ -1,4 +1,4 @@
-@testset "ScaleTransform" begin
+@testset "scaletransform" begin
     X = rand(MersenneTwister(123456), 10, 5)
     s = 3.0
 

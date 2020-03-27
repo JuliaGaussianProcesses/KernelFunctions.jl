@@ -1,4 +1,4 @@
-@testset "LowRankTransform" begin
+@testset "lowranktransform" begin
     dims = (10,5)
     rng = MersenneTwister(123546)
     X = rand(rng, dims...)

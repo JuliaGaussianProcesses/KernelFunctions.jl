@@ -1,4 +1,4 @@
-@testset "FunctionTransform" begin
+@testset "functiontransform" begin
     rng = MersenneTwister(123546)
     X = rand(rng, 10, 5)
     f(x) = sin.(x)
