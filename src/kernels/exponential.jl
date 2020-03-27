@@ -43,6 +43,7 @@ const LaplacianKernel = ExponentialKernel
 
 """
     GammaExponentialKernel(; γ = 2.0)
+
 The γ-exponential kernel is an isotropic Mercer kernel given by the formula:
 ```
     κ(x,y) = exp(-ρ^(2γ)‖x-y‖^(2γ))
