@@ -1,5 +1,5 @@
 """
-    CosineKernel
+    CosineKernel()
 
 The cosine kernel is a stationary kernel for a sinusoidal given by
 ```

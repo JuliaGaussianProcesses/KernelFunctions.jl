@@ -1,5 +1,6 @@
 """
     RationalQuadraticKernel(; α = 2.0)
+
 The rational-quadratic kernel is a Mercer kernel given by the formula:
 ```
     κ(x,y)=(1+||x−y||²/α)^(-α)

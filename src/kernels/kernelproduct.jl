@@ -1,5 +1,6 @@
 """
     KernelProduct(kernels::Array{Kernel})
+
 Create a product of kernels.
 One can also use the operator `*` :
 ```

@@ -1,5 +1,6 @@
 """
     ScaledKernel(k::Kernel, σ²::Real)
+
 Return a kernel premultiplied by the variance `σ²` : `σ² k(x,x')`
 """
 struct ScaledKernel{Tk<:Kernel, Tσ²<:Real} <: Kernel

@@ -1,5 +1,6 @@
 """
-    MaternKernel(; ν=1.0)
+    MaternKernel(; ν = 1.0)
+
 The matern kernel is a Mercer kernel given by the formula:
 ```
     κ(x,y) = 2^{1-ν}/Γ(ν)*(√(2ν)‖x-y‖)^ν K_ν(√(2ν)‖x-y‖)
@@ -30,6 +31,7 @@ Base.show(io::IO, κ::MaternKernel) = print(io, "Matern Kernel (ν = $(first(κ.
 
 """
     Matern32Kernel()
+
 The matern 3/2 kernel is a Mercer kernel given by the formula:
 ```
     κ(x,y) = (1+√(3)‖x-y‖)exp(-√(3)‖x-y‖)
@@ -44,6 +46,7 @@ Base.show(io::IO, ::Matern32Kernel) = print(io, "Matern 3/2 Kernel")
 
 """
     Matern52Kernel()
+
 The matern 5/2 kernel is a Mercer kernel given by the formula:
 ```
     κ(x,y) = (1+√(5)‖x-y‖ + 5/3‖x-y‖^2)exp(-√(5)‖x-y‖)

@@ -1,5 +1,6 @@
 """
-    LinearKernel(; c=0.0)
+    LinearKernel(; c = 0.0)
+
 The linear kernel is a Mercer kernel given by
 ```
     κ(x,y) = xᵀy + c
@@ -20,6 +21,7 @@ Base.show(io::IO, κ::LinearKernel) = print(io, "Linear Kernel (c = $(first(κ.c
 
 """
     PolynomialKernel(; d = 2.0, c = 0.0)
+
 The polynomial kernel is a Mercer kernel given by
 ```
     κ(x,y) = (xᵀy + c)^d
