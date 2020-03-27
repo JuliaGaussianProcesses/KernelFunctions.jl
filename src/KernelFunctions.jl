@@ -6,7 +6,7 @@ module KernelFunctions
 
 export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
 export transform
-export params, duplicate, set! # Helpers
+export duplicate, set! # Helpers
 
 export Kernel
 export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel
