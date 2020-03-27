@@ -1,5 +1,5 @@
 """
-    ExponentiatedKernel()`
+    ExponentiatedKernel()
 
 The exponentiated kernel is a Mercer kernel given by:
 ```
