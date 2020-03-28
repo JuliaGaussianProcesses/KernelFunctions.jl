@@ -1,5 +1,5 @@
 """
-ZeroKernel()
+    ZeroKernel()
 
 Create a kernel that always returning zero
 ```
@@ -13,28 +13,40 @@ kappa(κ::ZeroKernel, d::T) where {T<:Real} = zero(T)
 
 metric(::ZeroKernel) = Delta()
 
+Base.show(io::IO, ::ZeroKernel) = print(io, "Zero Kernel")
+
+
 """
-`WhiteKernel()`
+    WhiteKernel()
 
 ```
     κ(x,y) = δ(x,y)
 ```
-Kernel function working as an equivalent to add white noise.
+Kernel function working as an equivalent to add white noise. Can also be called via `EyeKernel()`
 """
 struct WhiteKernel <: BaseKernel end
 
+"""
+    EyeKernel()
+
+See [WhiteKernel](@ref)
+"""
 const EyeKernel = WhiteKernel
 
-kappa(κ::WhiteKernel,δₓₓ::Real) = δₓₓ
+kappa(κ::WhiteKernel, δₓₓ::Real) = δₓₓ
 
 metric(::WhiteKernel) = Delta()
 
+Base.show(io::IO, ::WhiteKernel) = print(io, "White Kernel")
+
+
 """
-`ConstantKernel(c=1.0)`
+    ConstantKernel(; c=1.0)
+
+Kernel function always returning a constant value `c`
 ```
     κ(x,y) = c
 ```
-Kernel function always returning a constant value `c`
 """
 struct ConstantKernel{Tc<:Real} <: BaseKernel
     c::Vector{Tc}
@@ -46,3 +58,5 @@ end
 kappa(κ::ConstantKernel,x::Real) = first(κ.c)*one(x)
 
 metric(::ConstantKernel) = Delta()
+
+Base.show(io::IO, κ::ConstantKernel) = print(io, "Constant Kernel (c = $(first(κ.c)))")
