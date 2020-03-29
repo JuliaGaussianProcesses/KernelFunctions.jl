@@ -4,7 +4,7 @@
     Neural network covariance function with a single parameter for the distance
     measure. The covariance function is parameterized as:
 ```math
-    κ(x,y) =  asin(x'*z / sqrt((1 + x'*x)*(1 + z'*z)))
+    κ(x,y) =  asin(x'*y / sqrt((1 + x'*x)*(1 + y'*y)))
 ```
 
 """
@@ -16,6 +16,5 @@ struct NeuralNetOneKernel{T<:Real, A<:AbstractMatrix{T}} <: BaseKernel
     end
 end
 
-kappa(κ::NeuralNetOneKernel, d::T) where {T<:Real} = exp(-d) 
-
-metric(κ::NeuralNetOneKernel) = SqMahalanobis(κ.P)
+kappa(κ::NeuralNetOneKernel, x, y) = asin(x'*y / sqrt((1 + x'*x)*(1 + y'*y)))
+)
