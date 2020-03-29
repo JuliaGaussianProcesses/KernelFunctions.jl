@@ -1,8 +1,8 @@
 """
     NeuralNetOneKernel(P::AbstractMatrix)
 
-    Neural network covariance function with a single parameter for the distance
-    measure. The covariance function is parameterized as:
+    Neural network kernel function with a single parameter for the distance
+    measure. The kernel function is parameterized as:
 ```math
     κ(x,y) =  asin(x'*y / sqrt((1 + x'*x)*(1 + y'*y)))
 ```
