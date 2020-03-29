@@ -1,3 +1,5 @@
+import Base.getproperty
+
 """
     GaborKernel(; ell::Real=1.0, p::Real=1.0)
 
@@ -8,14 +10,12 @@ Gabor kernel with length scale ell and period p. Given by
 
 """
 struct GaborKernel{T<:Real, K<:Kernel} <: BaseKernel
-    ell::T
-    p::T
     κ::K
     function GaborKernel(;ell=nothing, p=nothing)
         k = _gabor(ell=ell, p=p)
-        if ell==nothing ell=1.0 end
-        if p==nothing p=1.0 end
-        new{Union{typeof(ell),typeof(p)}, typeof(k)}(ell, p, k)
+        if ell == nothing ell=1.0 end
+        if p == nothing p=1.0 end
+        new{Union{typeof(ell),typeof(p)}, typeof(k)}(k)
     end
 end
 
@@ -30,6 +30,22 @@ function _gabor(; ell = nothing, p = nothing)
         return transform(SqExponentialKernel(), 1 ./ ell) * CosineKernel()
     else
         return transform(SqExponentialKernel(), 1 ./ ell) * transform(CosineKernel(), 1 ./ p)
+    end
+end
+
+function Base.getproperty(k::GaborKernel, v::Symbol)
+    if v == :κ 
+        return getfield(k, v)
+    elseif v == :ell && typeof(k.κ.kernels[1]) <: SqExponentialKernel
+        return 1.0
+    elseif v == :ell && typeof(k.κ.kernels[1]) <: TransformedKernel
+        return 1 ./ k.κ.kernels[1].transform.s[1]
+    elseif v == :p && typeof(k.κ.kernels[2]) <: CosineKernel
+        return 1.0
+    elseif v == :p && typeof(k.κ.kernels[2]) <: TransformedKernel
+        return 1 ./ k.κ.kernels[2].transform.s[1]
+    else
+        error("Invalid Property")
     end
 end
 
