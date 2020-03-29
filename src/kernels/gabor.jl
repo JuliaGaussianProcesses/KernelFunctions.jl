@@ -51,6 +51,8 @@ function Base.getproperty(k::GaborKernel, v::Symbol)
     end
 end
 
+Base.show(io::IO, κ::GaborKernel) = print(io, "Gabor Kernel (ell = $(κ.ell), p = $(κ.p))")
+
 kappa(κ::GaborKernel, x, y) = kappa(κ.kernel, x ,y)
 
 function kernelmatrix(
