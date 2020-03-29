@@ -17,7 +17,7 @@ struct FBMKernel{T<:Real} <: BaseKernel
     end
 end
 
-Base.show(io::IO, κ::FBMKernel) = print(io, "Fractional Brownian Motion Kernel (h = $(k.h))")
+Base.show(io::IO, κ::FBMKernel) = print(io, "Fractional Brownian Motion Kernel (h = $(κ.h))")
 
 _fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h)/2
 

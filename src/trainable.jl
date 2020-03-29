@@ -18,7 +18,7 @@ trainable(k::RationalQuadraticKernel) = (k.α,)
 
 trainable(k::MahalanobisKernel) = (k.P,)
 
-trainable(k::GaborKernel) = (k.κ,)
+trainable(k::GaborKernel) = (k.kernel,)
 
 #### Composite kernels
 

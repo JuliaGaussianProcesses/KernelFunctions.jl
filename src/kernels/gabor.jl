@@ -7,7 +7,7 @@ Gabor kernel with length scale ell and period p. Given by
 ```
 
 """
-struct GaborKernel{T<:Real, K<:Kernel} <: BaseKernel
+struct GaborKernel{K<:Kernel} <: BaseKernel
     kernel::K
     function GaborKernel(;ell=nothing, p=nothing)
         k = _gabor(ell=ell, p=p)
@@ -30,17 +30,17 @@ function _gabor(; ell = nothing, p = nothing)
 end
 
 function Base.getproperty(k::GaborKernel, v::Symbol)
-    if v == :κ 
+    if v == :kernel 
         return getfield(k, v)
     elseif v == :ell
-        kernel1 = k.κ.kernels[1]
+        kernel1 = k.kernel.kernels[1]
     	if kernel1 isa TransformedKernel
     	    return 1 ./ kernel1.transform.s[1]
     	else
     	    return 1.0
     	end
     elseif v == :p
-        kernel2 = k.κ.kernels[2]
+        kernel2 = k.kernel.kernels[2]
         if kernel2 isa TransformedKernel
             return 1 ./ kernel2.transform.s[1]
         else
@@ -51,13 +51,13 @@ function Base.getproperty(k::GaborKernel, v::Symbol)
     end
 end
 
-kappa(κ::GaborKernel, x, y) = kappa(κ.κ, x ,y)
+kappa(κ::GaborKernel, x, y) = kappa(κ.kernel, x ,y)
 
 function kernelmatrix(
     κ::GaborKernel,
     X::AbstractMatrix;
     obsdim::Int=defaultobs)
-    kernelmatrix(κ.κ, X; obsdim=obsdim)
+    kernelmatrix(κ.kernel, X; obsdim=obsdim)
 end
 
 function kernelmatrix(
@@ -65,12 +65,12 @@ function kernelmatrix(
     X::AbstractMatrix,
     Y::AbstractMatrix;
     obsdim::Int=defaultobs)
-    kernelmatrix(κ.κ, X, Y; obsdim=obsdim)
+    kernelmatrix(κ.kernel, X, Y; obsdim=obsdim)
 end
 
 function kerneldiagmatrix(
     κ::GaborKernel,
     X::AbstractMatrix;
     obsdim::Int=defaultobs) #TODO Add test
-    kerneldiagmatrix(κ.κ, X; obsdim=obsdim)
+    kerneldiagmatrix(κ.kernel, X; obsdim=obsdim)
 end
