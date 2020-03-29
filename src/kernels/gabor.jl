@@ -49,7 +49,7 @@ function Base.getproperty(k::GaborKernel, v::Symbol)
     end
 end
 
-kappa(κ::GaborKernel, x, y) where {T<:Real} = kappa(κ.κ, x ,y)
+kappa(κ::GaborKernel, x, y) = kappa(κ.κ, x ,y)
 
 function kernelmatrix(
     κ::GaborKernel,
