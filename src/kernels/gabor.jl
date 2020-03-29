@@ -11,9 +11,25 @@ struct GaborKernel{T<:Real, K<:Kernel} <: BaseKernel
     ell::T
     p::T
     κ::K
-    function GaborKernel(;ell::T=1.0, p::T=1.0) where {T<:Real}
-        k = transform(SqExponentialKernel(), 1/ell)*transform(CosineKernel(), 1/p)
-        new{T, typeof(k)}(ell, p, k)
+    function GaborKernel(;ell=nothing, p=nothing)
+        k = _gabor(ell=ell, p=p)
+        if ell==nothing ell=1.0 end
+        if p==nothing p=1.0 end
+        new{Union{typeof(ell),typeof(p)}, typeof(k)}(ell, p, k)
+    end
+end
+
+function _gabor(; ell = nothing, p = nothing)
+    if ell === nothing
+        if p === nothing
+            return SqExponentialKernel() * CosineKernel()
+        else
+            return SqExponentialKernel() * transform(CosineKernel(), 1 ./ p)
+        end
+    elseif p === nothing
+        return transform(SqExponentialKernel(), 1 ./ ell) * CosineKernel()
+    else
+        return transform(SqExponentialKernel(), 1 ./ ell) * transform(CosineKernel(), 1 ./ p)
     end
 end
 
