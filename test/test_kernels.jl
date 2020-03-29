@@ -69,9 +69,9 @@ x = rand()*2; v1 = rand(3); v2 = rand(3); id = IdentityTransform()
         end
     end
     @testset "Gabor" begin
-        k = GaborKernel(ell=2.0, p=2.0)
-        # @info kappa(k,v1,v2)
-        # @info k(v1,v2)
+        k = GaborKernel(ell=abs(rand()), p=abs(rand()))
+        @test kappa(k,v1,v2) ≈ exp(-sqeuclidean(v1,v2) ./(k.ell.^2))*cospi(euclidean(v1,v2)./ k.p) atol=1e-5
+        @test kappa(k,v1,v2) ≈ kappa(transform(SqExponentialKernel(), 1/k.ell),v1,v2)*kappa(transform(CosineKernel(), 1/k.p), v1,v2) atol=1e-5
     end
     @testset "Matern" begin
         @testset "MaternKernel" begin
