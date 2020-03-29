@@ -60,11 +60,16 @@ f(x) = sin.(x)
     ## Test SelectTransform
     @testset "SelectTransform" begin
         ts = SelectTransform(sdims)
+        mask = Mask(sdims)
+        @test mask == ts
+        @test all(KernelFunctions.apply(ts,X,obsdim=2).==KernelFunctions.apply(mask,X,obsdim=2))
         @test all(KernelFunctions.apply(ts,X,obsdim=2).==X[sdims,:])
         @test all(KernelFunctions.apply(ts,x).==x[sdims])
         sdims2 = [2,3,5]
         KernelFunctions.set!(ts,sdims2)
+        KernelFunctions.set!(mask,sdims2)
         @test all(ts.select.==sdims2)
+        @test all(ts.select.==mask.select)
     end
     ## Test ChainTransform
     @testset "ChainTransform" begin
