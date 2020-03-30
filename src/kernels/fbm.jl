@@ -19,19 +19,21 @@ end
 
 Base.show(io::IO, κ::FBMKernel) = print(io, "Fractional Brownian Motion Kernel (h = $(first(k.h)))")
 
-_fbm(modX, modY, modXY, h) = (modX^h + modY^h - abs(modXY)^h)/2
+const sqroundoff = 1e-15
+
+_fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h)/2
 
 function kernelmatrix(κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
     @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
     modX = sum(abs2, X; dims = feature_dim(obsdim))
-    modXX = pairwise(SqEuclidean(), X, dims = obsdim)
+    modXX = pairwise(SqEuclidean(sqroundoff), X, dims = obsdim)
     return _fbm.(vec(modX), reshape(modX, 1, :), modXX, κ.h)
 end
 
 function kernelmatrix!(K::AbstractMatrix, κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
     @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
     modX = sum(abs2, X; dims = feature_dim(obsdim))
-    modXX = pairwise(SqEuclidean(), X, dims = obsdim)
+    modXX = pairwise(SqEuclidean(sqroundoff), X, dims = obsdim)
     K .= _fbm.(vec(modX), reshape(modX, 1, :), modXX, κ.h)
     return K
 end
@@ -45,7 +47,7 @@ function kernelmatrix(
     @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
     modX = sum(abs2, X, dims = feature_dim(obsdim))
     modY = sum(abs2, Y, dims = feature_dim(obsdim))
-    modXY = pairwise(SqEuclidean(), X, Y,dims = obsdim)
+    modXY = pairwise(SqEuclidean(sqroundoff), X, Y,dims = obsdim)
     return _fbm.(vec(modX), reshape(modY, 1, :), modXY, κ.h)
 end
 
@@ -59,7 +61,7 @@ function kernelmatrix!(
     @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
     modX = sum(abs2, X, dims = feature_dim(obsdim))
     modY = sum(abs2, Y, dims = feature_dim(obsdim))
-    modXY = pairwise(SqEuclidean(), X, Y,dims = obsdim)
+    modXY = pairwise(SqEuclidean(sqroundoff), X, Y,dims = obsdim)
     K .= _fbm.(vec(modX), reshape(modY, 1, :), modXY, κ.h)
     return K
 end
@@ -78,7 +80,7 @@ end
 function kappa(κ::FBMKernel, x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modX = sum(abs2, x)
     modY = sum(abs2, y)
-    modXY = sqeuclidean(x, y)
+    modXY = evaluate(SqEuclidean(sqroundoff), x, y)
     h = first(κ.h)
     return (modX^h + modY^h - modXY^h)/2
 end
