@@ -69,6 +69,7 @@ using KernelFunctions: metric
         include(joinpath("kernels", "fbm.jl"))
         include(joinpath("kernels", "kernelproduct.jl"))
         include(joinpath("kernels", "kernelsum.jl"))
+        include(joinpath("kernels", "kernel_macro.jl"))
         include(joinpath("kernels", "matern.jl"))
         include(joinpath("kernels", "polynomial.jl"))
         include(joinpath("kernels", "rationalquad.jl"))
