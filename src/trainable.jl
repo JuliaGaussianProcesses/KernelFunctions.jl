@@ -4,6 +4,8 @@ import .Flux.trainable
 
 trainable(k::ConstantKernel) = (k.c,)
 
+trainable(k::FBMKernel) = (k.h,)
+
 trainable(k::GammaExponentialKernel) = (k.γ,)
 
 trainable(k::GammaRationalQuadraticKernel) = (k.α, k.γ)
@@ -15,6 +17,8 @@ trainable(k::LinearKernel) = (k.c,)
 trainable(k::PolynomialKernel) = (k.d, k.c)
 
 trainable(k::RationalQuadraticKernel) = (k.α,)
+
+trainable(k::MahalanobisKernel) = (k.P,)
 
 #### Composite kernels
 
