@@ -1,3 +1,8 @@
+using KernelFunctions
+using Distances
+
+using Test
+
 # minimal definition of a custom kernel
 struct MyKernel <: Kernel end
 
@@ -9,14 +14,12 @@ KernelFunctions.metric(::MyKernel) = SqEuclidean()
 (κ::MyKernel)(X::AbstractMatrix{<:Real}, Y::AbstractMatrix{<:Real}; obsdim = 2) = kernelmatrix(κ, X, Y; obsdim = obsdim)
 (κ::MyKernel)(X::AbstractMatrix{<:Real}; obsdim = 2) = kernelmatrix(κ, X; obsdim = obsdim)
 
-@testset "custom" begin
-    @test kappa(MyKernel(), 3) == kappa(SqExponentialKernel(), 3)
-    @test kappa(MyKernel(), 1, 3) == kappa(SqExponentialKernel(), 1, 3)
-    @test kappa(MyKernel(), [1, 2], [3, 4]) == kappa(SqExponentialKernel(), [1, 2], [3, 4])
-    @test kernelmatrix(MyKernel(), [1 2; 3 4], [5 6; 7 8]) == kernelmatrix(SqExponentialKernel(), [1 2; 3 4], [5 6; 7 8])
-    @test kernelmatrix(MyKernel(), [1 2; 3 4]) == kernelmatrix(SqExponentialKernel(), [1 2; 3 4])
+@test kappa(MyKernel(), 3) == kappa(SqExponentialKernel(), 3)
+@test kappa(MyKernel(), 1, 3) == kappa(SqExponentialKernel(), 1, 3)
+@test kappa(MyKernel(), [1, 2], [3, 4]) == kappa(SqExponentialKernel(), [1, 2], [3, 4])
+@test kernelmatrix(MyKernel(), [1 2; 3 4], [5 6; 7 8]) == kernelmatrix(SqExponentialKernel(), [1 2; 3 4], [5 6; 7 8])
+@test kernelmatrix(MyKernel(), [1 2; 3 4]) == kernelmatrix(SqExponentialKernel(), [1 2; 3 4])
 
-    @test MyKernel()([1, 2], [3, 4]) == SqExponentialKernel()([1, 2], [3, 4])
-    @test MyKernel()([1 2; 3 4], [5 6; 7 8]) == SqExponentialKernel()([1 2; 3 4], [5 6; 7 8])
-    @test MyKernel()([1 2; 3 4]) == SqExponentialKernel()([1 2; 3 4])
-end
+@test MyKernel()([1, 2], [3, 4]) == SqExponentialKernel()([1, 2], [3, 4])
+@test MyKernel()([1 2; 3 4], [5 6; 7 8]) == SqExponentialKernel()([1 2; 3 4], [5 6; 7 8])
+@test MyKernel()([1 2; 3 4]) == SqExponentialKernel()([1 2; 3 4])
