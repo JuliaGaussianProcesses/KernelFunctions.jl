@@ -12,14 +12,14 @@ positively correlated and for `h<1/2` the increments are negatively correlated.
 struct FBMKernel{T<:Real} <: BaseKernel
     h::Vector{T}
     function FBMKernel(; h::T=0.5) where {T<:Real}
-        @assert h<=1.0 && h>=0.0 "FBMKernel: Given Hurst index h is invalid."
+        @assert 0.0 <= h <= 1.0 "FBMKernel: Given Hurst index h is invalid."
         return new{T}([h])
     end
 end
 
 Base.show(io::IO, κ::FBMKernel) = print(io, "Fractional Brownian Motion Kernel (h = $(first(k.h)))")
 
-_fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h)/2
+_fbm(modX, modY, modXY, h) = (modX^h + modY^h - abs(modXY)^h)/2
 
 function kernelmatrix(κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
     @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
