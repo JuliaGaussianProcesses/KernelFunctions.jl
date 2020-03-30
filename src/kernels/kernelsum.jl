@@ -1,14 +1,15 @@
 """
-`KernelSum(kernels::Array{Kernel};weights::Array{Real}=ones(length(kernels)))`
-Create a positive weighted sum of kernels.
+    KernelSum(kernels::Array{Kernel}; weights::Array{Real}=ones(length(kernels)))
+
+Create a positive weighted sum of kernels. All weights should be positive.
 One can also use the operator `+`
 ```
-k1 = SqExponentialKernel()
-k2 = LinearKernel()
-k = KernelSum([k1,k2])
-kernelmatrix(k,X) == kernelmatrix(k1,X).+kernelmatrix(k2,X)
-kernelmatrix(k,X) == kernelmatrix(k1+k2,X)
-kweighted = 0.5*k1 + 2.0*k2
+    k1 = SqExponentialKernel()
+    k2 = LinearKernel()
+    k = KernelSum([k1, k2]) == k1 + k2
+    kernelmatrix(k, X) == kernelmatrix(k1, X) .+ kernelmatrix(k2, X)
+    kernelmatrix(k, X) == kernelmatrix(k1 + k2, X)
+    kweighted = 0.5* k1 + 2.0*k2 == KernelSum([k1, k2], weights = [0.5, 2.0])
 ```
 """
 struct KernelSum <: Kernel
@@ -68,14 +69,14 @@ function kerneldiagmatrix(
     sum(κ.weights[i] * kerneldiagmatrix(κ.kernels[i], X, obsdim = obsdim) for i in 1:length(κ))
 end
 
-function Base.show(io::IO,κ::KernelSum)
-    printshifted(io,κ,0)
+function Base.show(io::IO, κ::KernelSum)
+    printshifted(io, κ, 0)
 end
 
 function printshifted(io::IO,κ::KernelSum, shift::Int)
     print(io,"Sum of $(length(κ)) kernels:")
     for i in 1:length(κ)
-        print(io,"\n"*("\t"^(shift+1))*"- (w=$(κ.weights[i])) ")
-        printshifted(io,κ.kernels[i],shift+2)
+        print(io, "\n" * ("\t" ^ (shift + 1)) * "- (w = $(κ.weights[i])) ")
+        printshifted(io, κ.kernels[i], shift + 2)
     end
 end

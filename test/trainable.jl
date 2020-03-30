@@ -1,8 +1,4 @@
-using KernelFunctions
-using Test
-using Flux
-
-@testset "Params" begin
+@testset "trainable" begin
     ν = 2.0; c = 3.0; d = 2.0; γ = 2.0; α = 2.5
     kc = ConstantKernel(c=c)
     @test all(params(kc) .== params([c]))
@@ -43,5 +39,4 @@ using Flux
     c = Chain(Dense(3, 2))
     k = transform(km, FunctionTransform(c))
     @test all(params(k) .== params(c, km))
-
 end
