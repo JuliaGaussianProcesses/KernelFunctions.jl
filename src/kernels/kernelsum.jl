@@ -1,5 +1,5 @@
 """
-    KernelSum(kernels::Array{Kernel}; weights::Array{Real}=ones(length(kernels)))
+    KernelSum(k1::Kernel, k2::Kernel)
 
 Create a positive weighted sum of kernels. All weights should be positive.
 One can also use the operator `+`
@@ -11,7 +11,7 @@ One can also use the operator `+`
     kernelmatrix(k, X) == kernelmatrix(k1 + k2, X)
 ```
 """
-struct KernelSum{K₁,K₂} <: Kernel
+struct KernelSum{K₁<:Kernel, K₂<:Kernel} <: Kernel
     κ₁::K₁
     κ₂::K₂
 end
@@ -48,7 +48,7 @@ function Base.show(io::IO, κ::KernelSum)
 end
 
 function printshifted(io::IO, κ::KernelSum, shift::Int)
-    print(io,"Sum of $(length(κ)) kernels:")
+    print(io,"Kernel Sum :")
     print(io, "\n" * ("\t" ^ (shift + 1)))
     printshifted(io, κ.κ₁, shift + 2)
     print(io, "\n" * ("\t" ^ (shift + 1)))

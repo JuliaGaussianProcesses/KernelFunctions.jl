@@ -7,8 +7,7 @@
     k2 = SqExponentialKernel()
     k3 = RationalQuadraticKernel()
 
-    k = KernelProduct([k1,k2])
-    @test length(k) == 2
+    k = KernelProduct(k1, k2)
     @test kappa(k,v1,v2) == kappa(k1*k2,v1,v2)
     @test kappa(k*k,v1,v2) ≈ kappa(k,v1,v2)^2
     @test kappa(k*k3,v1,v2) ≈ kappa(k3*k,v1,v2)

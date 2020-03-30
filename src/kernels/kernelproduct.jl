@@ -1,36 +1,29 @@
 """
-    KernelProduct(kernels::Array{Kernel})
+    KernelProduct(k1::Kernel, k2::Kernel)
 
 Create a product of kernels.
 One can also use the operator `*` :
 ```
     k1 = SqExponentialKernel()
     k2 = LinearKernel()
-    k = KernelProduct([k1, k2]) == k1 * k2
+    k = KernelProduct(k1, k2) == k1 * k2
     kernelmatrix(k, X) == kernelmatrix(k1, X) .* kernelmatrix(k2, X)
     kernelmatrix(k, X) == kernelmatrix(k1 * k2, X)
 ```
 """
-struct KernelProduct <: Kernel
-    kernels::Vector{Kernel}
+struct KernelProduct{K₁<:Kernel, K₂<:Kernel} <: Kernel
+    κ₁::K₁
+    κ₂::K₂
 end
 
-Base.:*(k1::Kernel,k2::Kernel) = KernelProduct([k1,k2])
-Base.:*(k1::KernelProduct,k2::KernelProduct) = KernelProduct(vcat(k1.kernels,k2.kernels)) #TODO Add test
-Base.:*(k::Kernel,kp::KernelProduct) = KernelProduct(vcat(k,kp.kernels))
-Base.:*(kp::KernelProduct,k::Kernel) = KernelProduct(vcat(kp.kernels,k))
+Base.:*(k1::Kernel, k2::Kernel) = KernelProduct(k1, k2)
 
-Base.length(k::KernelProduct) = length(k.kernels)
-
-kappa(κ::KernelProduct, x ,y) = prod(kappa(k, x, y) for k in κ.kernels)
+kappa(κ::KernelProduct, x ,y) = kappa(κ.κ₁, x, y) * kappa(κ.κ₁, x, y)
 
 hadamard(x,y) = x.*y
 
-function kernelmatrix(
-    κ::KernelProduct,
-    X::AbstractMatrix;
-    obsdim::Int=defaultobs)
-    reduce(hadamard,kernelmatrix(κ.kernels[i],X,obsdim=obsdim) for i in 1:length(κ))
+function kernelmatrix(κ::KernelProduct, X::AbstractMatrix; obsdim::Int = defaultobs)
+    kernelmatrix(κ.κ₁, X, obsdim = obsdim) .* kernelmatrix(κ.κ₂, X, obsdim = obsdim)
 end
 
 function kernelmatrix(
@@ -38,14 +31,14 @@ function kernelmatrix(
     X::AbstractMatrix,
     Y::AbstractMatrix;
     obsdim::Int=defaultobs)
-    reduce(hadamard,_kernelmatrix(κ.kernels[i],X,Y,obsdim) for i in 1:length(κ))
+    kernelmatrix(κ.κ₁, X, Y, obsdim = obsdim) .* kernelmatrix(κ.κ₂, X, Y, obsdim = obsdim)
 end
 
 function kerneldiagmatrix(
     κ::KernelProduct,
     X::AbstractMatrix;
     obsdim::Int=defaultobs) #TODO Add test
-    reduce(hadamard,kerneldiagmatrix(κ.kernels[i],X,obsdim=obsdim) for i in 1:length(κ))
+    kerneldiagmatrix(κ.κ₁, X, obsdim = obsdim) .* kerneldiagmatrix(κ.κ₂, X, obsdim = obsdim)
 end
 
 function Base.show(io::IO, κ::KernelProduct)
@@ -53,9 +46,9 @@ function Base.show(io::IO, κ::KernelProduct)
 end
 
 function printshifted(io::IO, κ::KernelProduct, shift::Int)
-    print(io, "Product of $(length(κ)) kernels:")
-    for i in 1:length(κ)
-        print(io, "\n" * ("\t" ^ (shift + 1))* "- ")
-        printshifted(io, κ.kernels[i], shift + 2)
-    end
+    print(io, "Kernel Product :")
+    print(io, "\n" * ("\t" ^ (shift + 1)))
+    printshifted(io, κ.κ₁, shift + 2)
+    print(io, "\n" * ("\t" ^ (shift + 1)))
+    printshifted(io, κ.κ₂, shift + 2)
 end
