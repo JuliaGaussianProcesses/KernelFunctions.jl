@@ -1,4 +1,5 @@
 @testset "Gabor" begin
+    v1 = rand(3); v2 = rand(3)
     ell = abs(rand())
     p = abs(rand())
     k = GaborKernel(ell=ell, p=p)
