@@ -71,6 +71,7 @@ using KernelFunctions: metric
         include(joinpath("kernels", "kernelsum.jl"))
         include(joinpath("kernels", "matern.jl"))
         include(joinpath("kernels", "polynomial.jl"))
+        include(joinpath("kernels", "piecewisepolynomial.jl"))
         include(joinpath("kernels", "rationalquad.jl"))
         include(joinpath("kernels", "scaledkernel.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
