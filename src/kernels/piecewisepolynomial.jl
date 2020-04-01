@@ -1,5 +1,5 @@
 """
-    PiecewisePolynomialKernel(P::AbstractMatrix)
+    PiecewisePolynomialKernel(v::Type, maha::AbstractMatrix)
 
 Piecewise Polynomial covariance function with compact support, v = 0,1,2,3.
 The kernel functions are 2v times continuously differentiable and the corresponding
@@ -7,10 +7,10 @@ processes are hence v times  mean-square differentiable. The kernel function is:
 ```math
     κ(x,y) = max(1-r,0)^(j+v) * f(r,j) with j = floor(D/2)+v+1
 ```
-where r is the Mahalanobis distance sqrt(maha(x,z)).
+where r is the Mahalanobis distance mahalanobis(x,y) with `maha` as the metric.
 
 """
-struct PiecewisePolynomialKernel{T1<:Integer, T2<:Real, A<:AbstractMatrix{T2}} <: BaseKernel
+struct PiecewisePolynomialKernel{T1<:T1, T2<:Real, A<:AbstractMatrix{T2}} <: BaseKernel
     v::T1
     maha::A
     function PiecewisePolynomialKernel(v::T1, maha::AbstractMatrix{T2}) where {T1<:Integer,T2<:Real}
