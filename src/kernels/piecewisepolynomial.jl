@@ -35,7 +35,7 @@ function _f(κ, r, j)
 end
 
 function kappa(κ::PiecewisePolynomialKernel, r::T) where {T<:Real} 
-    j = floor(size(r,2)/2 + κ.v + 1)
+    j = div(size(r, 2), 2) + κ.v + 1
     return max(1-r,0)^(j + κ.v) * _f(κ,r,j)
 end
 metric(κ::PiecewisePolynomialKernel) = Mahalanobis(κ.maha)
