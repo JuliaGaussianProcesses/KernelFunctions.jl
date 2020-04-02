@@ -1,7 +1,5 @@
-abstract type V{Integer} end
-
 """
-    PiecewisePolynomialKernel(v::Type, maha::AbstractMatrix)
+    PiecewisePolynomialKernel{v}(maha::AbstractMatrix)
 
 Piecewise Polynomial covariance function with compact support, v = 0,1,2,3.
 The kernel functions are 2v times continuously differentiable and the corresponding
