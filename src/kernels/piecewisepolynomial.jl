@@ -13,12 +13,11 @@ where r is the Mahalanobis distance mahalanobis(x,y) with `maha` as the metric.
 
 """
 struct PiecewisePolynomialKernel{V, A<:AbstractMatrix{<:Real}} <: BaseKernel
-    v::Integer
     maha::A
-    function PiecewisePolynomialKernel(v, maha::AbstractMatrix{<:Real})
-        if v ∉ [0,1,2,3] error("Invalid paramter v=$(v). Should be 0,1,2 or 3.") end
+    function PiecewisePolynomialKernel{V}(maha::AbstractMatrix{<:Real}) where V
+        V in (0, 1, 2, 3) || error("Invalid paramter v=$(V). Should be 0, 1, 2 or 3.")
         LinearAlgebra.checksquare(maha)
-        new{V{v},typeof(maha)}(v,maha)
+        new{V,typeof(maha)}(maha)
     end
 end
 
