@@ -19,6 +19,16 @@ struct PiecewisePolynomialKernel{V, A<:AbstractMatrix{<:Real}} <: BaseKernel
     end
 end
 
+function Base.getproperty(κ::PiecewisePolynomialKernel, s::Symbol)
+    if s == :maha
+        return getfield(κ,s)
+    elseif s== :v
+        return typeof(κ).parameters[1]
+    else
+        error("Invalid Property")
+    end
+end
+
 function _f(κ, r, j)
     if κ.v==0
         return 1
