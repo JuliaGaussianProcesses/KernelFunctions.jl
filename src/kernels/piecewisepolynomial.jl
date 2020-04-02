@@ -1,3 +1,5 @@
+abstract type V{Integer} end
+
 """
     PiecewisePolynomialKernel(v::Type, maha::AbstractMatrix)
 
@@ -10,13 +12,13 @@ processes are hence v times  mean-square differentiable. The kernel function is:
 where r is the Mahalanobis distance mahalanobis(x,y) with `maha` as the metric.
 
 """
-struct PiecewisePolynomialKernel{T1<:T1, T2<:Real, A<:AbstractMatrix{T2}} <: BaseKernel
-    v::T1
+struct PiecewisePolynomialKernel{V, A<:AbstractMatrix{<:Real}} <: BaseKernel
+    v::Integer
     maha::A
-    function PiecewisePolynomialKernel(v::T1, maha::AbstractMatrix{T2}) where {T1<:Integer,T2<:Real}
+    function PiecewisePolynomialKernel(v, maha::AbstractMatrix{<:Real})
         if v ∉ [0,1,2,3] error("Invalid paramter v=$(v). Should be 0,1,2 or 3.") end
         LinearAlgebra.checksquare(maha)
-        new{T1,T2,typeof(maha)}(v,maha)
+        new{V{v},typeof(maha)}(v,maha)
     end
 end
 
