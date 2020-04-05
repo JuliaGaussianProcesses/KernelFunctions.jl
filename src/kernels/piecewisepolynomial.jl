@@ -20,9 +20,6 @@ struct PiecewisePolynomialKernel{V, A<:AbstractMatrix{<:Real}} <: BaseKernel
 end
 
 function PiecewisePolynomialKernel(;v::Integer=0, maha::AbstractMatrix{<:Real})
-    if maha==nothing
-        error("Please specify metric `maha` for Mahalanobis distance measure.")
-    end
     return PiecewisePolynomialKernel{v}(maha)
 end
 
