@@ -7,7 +7,7 @@ processes are hence v times  mean-square differentiable. The kernel function is:
 ```math
     κ(x,y) = max(1-r,0)^(j+V) * f(r,j) with j = floor(D/2)+V+1
 ```
-where r is the Mahalanobis distance mahalanobis(x,y) with `maha` as the metric.
+where `r` is the Mahalanobis distance mahalanobis(x,y) with `maha` as the metric.
 
 """
 struct PiecewisePolynomialKernel{V, A<:AbstractMatrix{<:Real}} <: BaseKernel
@@ -17,6 +17,13 @@ struct PiecewisePolynomialKernel{V, A<:AbstractMatrix{<:Real}} <: BaseKernel
         LinearAlgebra.checksquare(maha)
         new{V,typeof(maha)}(maha)
     end
+end
+
+function PiecewisePolynomialKernel(;v::Integer=0, maha::AbstractMatrix{<:Real})
+    if maha==nothing
+        error("Please specify metric `maha` for Mahalanobis distance measure.")
+    end
+    return PiecewisePolynomialKernel{v}(maha)
 end
 
 function _f(κ::PiecewisePolynomialKernel{V}, r, j) where V
@@ -68,7 +75,7 @@ function _kernelmatrix(κ::PiecewisePolynomialKernel{V},X,Y,obsdim) where {V}
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix
+    K::AbstractMatrix,
     κ::PiecewisePolynomialKernel{V},
     X::AbstractMatrix;
     obsdim::Int = defaultobs
