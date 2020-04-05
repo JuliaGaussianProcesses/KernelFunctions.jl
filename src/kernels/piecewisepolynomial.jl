@@ -100,7 +100,6 @@ function kernelmatrix!(
     map!(r->_piecewisepolynomial(κ,r,j),K,pairwise(metric(κ),X,Y,dims=obsdim))
 end
 
-
 metric(κ::PiecewisePolynomialKernel) = Mahalanobis(κ.maha)
 
 Base.show(io::IO, κ::PiecewisePolynomialKernel{V}) where V = print(io, "Piecewise Polynomial Kernel (v = $(V), size(maha) = $(size(κ.maha))")
