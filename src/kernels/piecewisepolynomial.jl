@@ -58,17 +58,17 @@ function kernelmatrix(
     X::AbstractMatrix;
     obsdim::Int = defaultobs
 ) where {V}
-    j = div(size(X, 3-obsdim), 2) + V + 1
+    j = div(size(X, feature_dim(obsdim)), 2) + V + 1
     return map(r->_piecewisepolynomial(κ,r,j),pairwise(metric(κ),X,dims=obsdim))
 end
 
 function _kernelmatrix(κ::PiecewisePolynomialKernel{V},X,Y,obsdim) where {V}
-    j = div(size(X, 3-obsdim), 2) + V + 1
+    j = div(size(X, feature_dim(obsdim)), 2) + V + 1
     return map(r->_piecewisepolynomial(κ,r,j),pairwise(metric(κ),X,Y,dims=obsdim))
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix,
+    K::AbstractMatrix
     κ::PiecewisePolynomialKernel{V},
     X::AbstractMatrix;
     obsdim::Int = defaultobs
@@ -77,7 +77,7 @@ function kernelmatrix!(
     if !check_dims(K,X,X,feature_dim(obsdim),obsdim)
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
     end
-    j = div(size(X, 3-obsdim), 2) + V + 1
+    j = div(size(X, feature_dim(obsdim)), 2) + V + 1
     map!(r->_piecewisepolynomial(κ,r,j),K,pairwise(metric(κ),X,dims=obsdim))
 end
 
@@ -92,7 +92,7 @@ function kernelmatrix!(
     if !check_dims(K,X,Y,feature_dim(obsdim),obsdim)
         throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not consistent with X ($(size(X))) and Y ($(size(Y)))"))
     end
-    j = div(size(X, 3-obsdim), 2) + V + 1
+    j = div(size(X, feature_dim(obsdim)), 2) + V + 1
     map!(r->_piecewisepolynomial(κ,r,j),K,pairwise(metric(κ),X,Y,dims=obsdim))
 end
 
