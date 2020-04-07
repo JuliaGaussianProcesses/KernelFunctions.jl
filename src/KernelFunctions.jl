@@ -9,7 +9,7 @@ export transform
 export duplicate, set! # Helpers
 
 export Kernel
-export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel
+export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel, WienerKernel
 export SqExponentialKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
@@ -46,7 +46,7 @@ include("distances/dotproduct.jl")
 include("distances/delta.jl")
 include("transform/transform.jl")
 
-for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated","cosine","maha","fbm"]
+for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated","cosine","maha","fbm","wiener"]
     include(joinpath("kernels",k*".jl"))
 end
 include("kernels/transformedkernel.jl")
