@@ -41,20 +41,23 @@ function WienerKernel(;i=0)
 end
 
 function _wiener(κ::WienerKernel{I},x,y) where I
+    X = sqrt(sum(abs2.(x)))
+    Y = sqrt(sum(abs2.(y)))
+    minXY = min(X,Y)
     if I==0
-        return         min(x,y)^(2I + 1)
+        return         minXY^(2I + 1)
     elseif I==1
-        return 1/3   * min(x,y)^(2I + 1) + 1/2   * min(x,y)^(I+1) * euclidean(x,y)
+        return 1/3   * minXY^(2I + 1) + 1/2   * minXY^(I+1) * euclidean(x,y)
     elseif I==2
-        return 1/20  * min(x,y)^(2I + 1) + 1/12  * min(x,y)^(I+1) * euclidean(x,y) * (x + y - 1/2 * min(x,y))
+        return 1/20  * minXY^(2I + 1) + 1/12  * minXY^(I+1) * euclidean(x,y) * (X + Y - 1/2 * minXY)
     elseif I==3
-        return 1/252 * min(x,y)^(2I + 1) + 1/720 * min(x,y)^(I+1) * euclidean(x,y) * (5*max(x,y)^2 + 2*x*y + 3 * min(x,y)^2)
+        return 1/252 * minXY^(2I + 1) + 1/720 * minXY^(I+1) * euclidean(x,y) * (5*max(X,Y)^2 + 2*X*Y + 3 * minXY^2)
     else
         error("Invalid I")
     end
 end
 
-function kappa(κ::WienerKernel, x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
+function kappa(κ::WienerKernel, x,y)
     return _wiener(κ, x, y)
 end
 
@@ -68,13 +71,13 @@ function _kernel(
     kappa(κ,x,y)
 end
 
-# function kernelmatrix(
-#     κ::WienerKernel,
-#     X::AbstractMatrix;
-#     obsdim::Int = defaultobs
-# )
-#     return map(r->_piecewisepolynomial(κ,r,j),pairwise(metric(κ),X,dims=obsdim))
-# end
+function kernelmatrix(
+    κ::WienerKernel,
+    X::AbstractMatrix;
+    obsdim::Int = defaultobs
+)
+    return map(r->_piecewisepolynomial(κ,r,j),pairwise(metric(κ),X,dims=obsdim))
+end
 
 
 Base.show(io::IO, κ::WienerKernel{I}) where I = print(io, "Wiener Kernel $(I)-times integrated")
