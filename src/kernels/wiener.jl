@@ -44,11 +44,11 @@ function _wiener(κ::WienerKernel{I},x,y) where I
     if I==0
         return         min(x,y)^(2I + 1)
     elseif I==1
-        return 1/3   * min(x,y)^(2i + 1) + 1/2   * min(x,y)^(i+1) * euclidean(x,y)
+        return 1/3   * min(x,y)^(2I + 1) + 1/2   * min(x,y)^(I+1) * euclidean(x,y)
     elseif I==2
-        return 1/20  * min(x,y)^(2i + 1) + 1/12  * min(x,y)^(i+1) * euclidean(x,y) * (x + y - 1/2 * min(x,y))
+        return 1/20  * min(x,y)^(2I + 1) + 1/12  * min(x,y)^(I+1) * euclidean(x,y) * (x + y - 1/2 * min(x,y))
     elseif I==3
-        return 1/252 * min(x,y)^(2i + 1) + 1/720 * min(x,y)^(i+1) * euclidean(x,y) * (5*max(x,y)^2 + 2*x*z + 3 * min(x,y)^2)
+        return 1/252 * min(x,y)^(2I + 1) + 1/720 * min(x,y)^(I+1) * euclidean(x,y) * (5*max(x,y)^2 + 2*x*y + 3 * min(x,y)^2)
     else
         error("Invalid I")
     end
