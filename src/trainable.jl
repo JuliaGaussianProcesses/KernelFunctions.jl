@@ -20,6 +20,8 @@ trainable(k::RationalQuadraticKernel) = (k.α,)
 
 trainable(k::MahalanobisKernel) = (k.P,)
 
+trainable(k::GaborKernel) = (k.kernel,)
+
 #### Composite kernels
 
 trainable(κ::KernelProduct) = κ.kernels
