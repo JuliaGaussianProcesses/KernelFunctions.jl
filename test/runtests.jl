@@ -71,6 +71,7 @@ using Test
             include(joinpath("kernels", "exponentiated.jl"))
         end
         @safetestset "fbm" begin include(joinpath("kernels", "fbm.jl")) end
+    @safetestset "gabor" begin include(joinpath("kernels", "gabor.jl")) end
         @safetestset "kernelproduct" begin
             include(joinpath("kernels", "kernelproduct.jl"))
         end
