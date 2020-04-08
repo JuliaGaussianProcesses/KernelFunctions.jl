@@ -23,20 +23,11 @@ function PiecewisePolynomialKernel(;v::Integer=0, maha::AbstractMatrix{<:Real})
     return PiecewisePolynomialKernel{v}(maha)
 end
 
-function _f(κ::PiecewisePolynomialKernel{V}, r, j) where V
-    if V==0
-        return 1
-    elseif V==1
-        return 1 + (j + 1) * r
-    elseif V==2
-        return 1 + (j + 2) * r + (j^2 + 4 * j + 3) / 3 * r.^2
-    elseif V==3
-        return 1 + (j + 3) * r + (6 * j^2 + 36j + 45) / 15 * r.^2 +
-            (j^3 + 9 * j^2 + 23j + 15) / 15 * r.^3
-    else
-        error("Invalid paramter v=$(V). Should be 0,1,2 or 3.")
-    end
-end
+_f(κ::PiecewisePolynomialKernel{0}, r, j) = 1
+_f(κ::PiecewisePolynomialKernel{1}, r, j) = 1 + (j + 1) * r
+_f(κ::PiecewisePolynomialKernel{2}, r, j) = 1 + (j + 2) * r + (j^2 + 4 * j + 3) / 3 * r.^2
+_f(κ::PiecewisePolynomialKernel{3}, r, j) = 1 + (j + 3) * r +
+    (6 * j^2 + 36j + 45) / 15 * r.^2 + (j^3 + 9 * j^2 + 23j + 15) / 15 * r.^3
 
 function _piecewisepolynomial(κ::PiecewisePolynomialKernel{V}, r, j) where V
     return max(1 - r, 0)^(j + V) * _f(κ, r, j)
