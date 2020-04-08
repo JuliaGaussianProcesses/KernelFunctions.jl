@@ -62,7 +62,7 @@ function kernelmatrix(
     return map(r->_piecewisepolynomial(κ, r, j), pairwise(metric(κ), X; dims=obsdim))
 end
 
-function _kernelmatrix(κ::PiecewisePolynomialKernel{V}, X, Y; obsdim) where {V}
+function _kernelmatrix(κ::PiecewisePolynomialKernel{V}, X, Y, obsdim) where {V}
     j = div(size(X, feature_dim(obsdim)), 2) + V + 1
     return map(r->_piecewisepolynomial(κ, r, j), pairwise(metric(κ), X, Y; dims=obsdim))
 end
