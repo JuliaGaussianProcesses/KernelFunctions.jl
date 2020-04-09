@@ -61,6 +61,8 @@ function kappa(κ::WienerKernel, x,y)
     return _wiener(κ, x, y)
 end
 
+(κ::WienerKernel)(x::Real, y::Real) = kappa(κ,x,y)
+
 function _kernel(
     κ::WienerKernel,
     x::AbstractVector,

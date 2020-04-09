@@ -63,6 +63,7 @@ using KernelFunctions: metric
 
     @testset "kernels" begin
         include(joinpath("kernels", "constant.jl"))
+        include(joinpath("kernels", "wiener.jl"))
         include(joinpath("kernels", "cosine.jl"))
         include(joinpath("kernels", "exponential.jl"))
         include(joinpath("kernels", "exponentiated.jl"))
