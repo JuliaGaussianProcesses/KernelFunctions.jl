@@ -15,7 +15,7 @@ export ExponentiatedKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
-export MahalanobisKernel, GaborKernel
+export MahalanobisKernel, GaborKernel, PiecewisePolynomialKernel
 export KernelSum, KernelProduct
 export TransformedKernel, ScaledKernel
 
@@ -47,7 +47,7 @@ include("distances/delta.jl")
 include("transform/transform.jl")
 
 for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated",
-    "cosine","maha","fbm","gabor","wiener"]
+    "cosine","maha","fbm","gabor","piecewisepolynomial","wiener"]
     include(joinpath("kernels",k*".jl"))
 end
 include("kernels/transformedkernel.jl")
