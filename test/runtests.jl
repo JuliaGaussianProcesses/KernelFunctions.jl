@@ -68,6 +68,7 @@ using KernelFunctions: metric
         include(joinpath("kernels", "exponential.jl"))
         include(joinpath("kernels", "exponentiated.jl"))
         include(joinpath("kernels", "fbm.jl"))
+        include(joinpath("kernels", "gabor.jl"))
         include(joinpath("kernels", "kernelproduct.jl"))
         include(joinpath("kernels", "kernelsum.jl"))
         include(joinpath("kernels", "matern.jl"))
