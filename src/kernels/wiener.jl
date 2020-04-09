@@ -40,21 +40,31 @@ function WienerKernel(;i=0)
     return WienerKernel{i}()
 end
 
-function _wiener(κ::WienerKernel{I},x,y) where I
+function _wiener(κ::WienerKernel{0},x,y)
+    X = sqrt(sum(abs2.(x)))
+    Y = sqrt(sum(abs2.(y)))
+    return min(X,Y)
+end
+
+function _wiener(κ::WienerKernel{1},x,y)
     X = sqrt(sum(abs2.(x)))
     Y = sqrt(sum(abs2.(y)))
     minXY = min(X,Y)
-    if I==0
-        return         minXY^(2I + 1)
-    elseif I==1
-        return 1/3   * minXY^(2I + 1) + 1/2   * minXY^(I+1) * euclidean(x,y)
-    elseif I==2
-        return 1/20  * minXY^(2I + 1) + 1/12  * minXY^(I+1) * euclidean(x,y) * (X + Y - 1/2 * minXY)
-    elseif I==3
-        return 1/252 * minXY^(2I + 1) + 1/720 * minXY^(I+1) * euclidean(x,y) * (5*max(X,Y)^2 + 2*X*Y + 3 * minXY^2)
-    else
-        error("Invalid I")
-    end
+    return 1/3 * minXY^3 + 1/2 * minXY^2 * euclidean(x,y)
+end
+
+function _wiener(κ::WienerKernel{2},x,y)
+    X = sqrt(sum(abs2.(x)))
+    Y = sqrt(sum(abs2.(y)))
+    minXY = min(X,Y)
+    return 1/20 * minXY^5 + 1/12 * minXY^3 * euclidean(x,y) * (X + Y - 1/2 * minXY)
+end
+
+function _wiener(κ::WienerKernel{3},x,y)
+    X = sqrt(sum(abs2.(x)))
+    Y = sqrt(sum(abs2.(y)))
+    minXY = min(X,Y)
+    return 1/252 * minXY^7 + 1/720 * minXY^4 * euclidean(x,y) * ( 5 * max(X,Y)^2 + 2 * X * Y + 3 * minXY^2 )
 end
 
 function kappa(κ::WienerKernel, x,y)
