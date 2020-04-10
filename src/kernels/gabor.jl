@@ -51,9 +51,13 @@ function Base.getproperty(k::GaborKernel, v::Symbol)
     end
 end
 
-Base.show(io::IO, κ::GaborKernel) = print(io, "Gabor Kernel (ell = $(κ.ell), p = $(κ.p))")
+function kappa(κ::GaborKernel, d::Real)
+    return kappa(κ.kernel.kernels[1], d^2) * kappa(κ.kernel.kernels[2], d)
+end
 
-kappa(κ::GaborKernel, x, y) = kappa(κ.kernel, x ,y)
+kappa(κ::GaborKernel, x, y) = kappa(κ.kernel, x, y)
+
+metric(::GaborKernel) = Euclidean()
 
 function kernelmatrix(
     κ::GaborKernel,
@@ -76,3 +80,6 @@ function kerneldiagmatrix(
     obsdim::Int=defaultobs) #TODO Add test
     kerneldiagmatrix(κ.kernel, X; obsdim=obsdim)
 end
+
+Base.show(io::IO, κ::GaborKernel) = print(io, "Gabor Kernel (ell = $(κ.ell), p = $(κ.p))")
+
