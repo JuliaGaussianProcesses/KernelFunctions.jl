@@ -1,13 +1,11 @@
-using KernelFunctions
-using Test
-using Flux
+@testset "trainable" begin
+    ν = 2.0; c = 3.0; d = 2.0; γ = 2.0; α = 2.5; h = 0.5
 
-#Alphabetic order
-@testset "Params" begin
-    ν = 2.0; c = 3.0; d = 2.0; γ = 2.0; α = 2.5; r = 2.0
-    ## Base kernels
     kc = ConstantKernel(c=c)
     @test all(params(kc) .== params([c]))
+
+    kfbm = FBMKernel(h = h)
+    @test all(params(kfbm) .== params([h]))
 
     kge = GammaExponentialKernel(γ=γ)
     @test all(params(kge) .== params([γ]))
@@ -15,14 +13,11 @@ using Flux
     kgr = GammaRationalQuadraticKernel(γ=γ, α=α)
     @test all(params(kgr) .== params([α], [γ]))
 
-    km = MaternKernel(ν=ν)
-    @test all(params(km) .== params([ν]))
-
     kl = LinearKernel(c=c)
     @test all(params(kl) .== params([c]))
 
-    kpe = PeriodicKernel(r=[r])
-    @test all(params(kpe) .== params(r))
+    km = MaternKernel(ν=ν)
+    @test all(params(km) .== params([ν]))
 
     kp = PolynomialKernel(c=c, d=d)
     @test all(params(kp) .== params([d], [c]))
@@ -54,5 +49,4 @@ using Flux
     c = Chain(Dense(3, 2))
     k = transform(km, FunctionTransform(c))
     @test all(params(k) .== params(c, km))
-
 end
