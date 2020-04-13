@@ -1,8 +1,11 @@
 """
     PeriodicKernel(r::AbstractVector)
     PeriodicKernel(dims::Int)
+    PeriodicKernel(T::DataType, dims::Int)
+
+Periodic Kernel as described in http://www.inference.org.uk/mackay/gpB.pdf eq. 47.
 ```
-    κ(x,y) = exp(-2 * sum_i(sin (π(x_i - y_i))/r_i))
+    κ(x,y) = exp( - 0.5 sum_i(sin (π(x_i - y_i))/r_i))
 ```
 """
 struct PeriodicKernel{T} <: BaseKernel
@@ -19,4 +22,6 @@ PeriodicKernel(T::DataType, dims::Int = 1) = PeriodicKernel(r = ones(T, dims))
 
 metric(κ::PeriodicKernel) = Sinus(κ.r)
 
-kappa(κ::PeriodicKernel, d::Real) = exp(-0.5 * d)
+kappa(κ::PeriodicKernel, d::Real) = exp(- 0.5d)
+
+Base.show(io::IO, κ::PeriodicKernel) = print(io, "Periodic Kernel, length(r) = $(length(κ.r))")
