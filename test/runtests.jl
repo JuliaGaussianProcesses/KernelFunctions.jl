@@ -49,6 +49,7 @@ using KernelFunctions: metric
     @testset "distances" begin
         include(joinpath("distances", "dotproduct.jl"))
         include(joinpath("distances", "delta.jl"))
+        include(joinpath("distances", "sinus.jl"))
     end
 
     @testset "transform" begin
@@ -71,6 +72,7 @@ using KernelFunctions: metric
         include(joinpath("kernels", "kernelproduct.jl"))
         include(joinpath("kernels", "kernelsum.jl"))
         include(joinpath("kernels", "matern.jl"))
+        include(joinpath("kernels", "periodic.jl"))
         include(joinpath("kernels", "polynomial.jl"))
         include(joinpath("kernels", "piecewisepolynomial.jl"))
         include(joinpath("kernels", "rationalquad.jl"))

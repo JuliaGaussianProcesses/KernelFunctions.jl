@@ -13,7 +13,7 @@ struct PeriodicKernel{T} <: BaseKernel
     end
 end
 
-PeriodicKernel(dims::Int = 1) = PeriodicKernel(Float64, dims)
+PeriodicKernel(dims::Int) = PeriodicKernel(Float64, dims)
 
 PeriodicKernel(T::DataType, dims::Int = 1) = PeriodicKernel(r = ones(T, dims))
 
