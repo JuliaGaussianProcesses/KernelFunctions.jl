@@ -47,9 +47,9 @@ function kernelmatrix!(
     size(X, featuredim) == length(kernel) ||
         error("number of kernels and groups of features are not consistent")
 
-    kernels_and_input = zip(kernel.kernels, eachslice(X; dims = featuredim))
-    kernelmatrix!(K, first(kernels_and_input)...)
-    for (k, Xi) in Iterators.drop(kernels_and_input, 1)
+    kernels_and_inputs = zip(kernel.kernels, eachslice(X; dims = featuredim))
+    kernelmatrix!(K, first(kernels_and_inputs)...)
+    for (k, Xi) in Iterators.drop(kernels_and_inputs, 1)
         K .*= kernelmatrix(k, Xi)
     end
 
@@ -74,7 +74,7 @@ function kernelmatrix!(
     size(X, featuredim) == length(kernel) ||
         error("number of kernels and groups of features are not consistent")
 
-    kernels_and_input = zip(
+    kernels_and_inputs = zip(
         kernel.kernels,
         eachslice(X; dims = featuredim),
         eachslice(Y; dims = featuredim),
@@ -154,9 +154,9 @@ function kerneldiagmatrix!(
     size(X, featuredim) == length(kernel) ||
         error("number of kernels and groups of features are not consistent")
 
-    kernels_and_input = zip(kernel.kernels, eachslice(X; dims = featuredim))
-    kerneldiagmatrix!(K, first(kernels_and_input)...)
-    for (k, Xi) in Iterators.drop(kernels_and_input, 1)
+    kernels_and_inputs = zip(kernel.kernels, eachslice(X; dims = featuredim))
+    kerneldiagmatrix!(K, first(kernels_and_inputs)...)
+    for (k, Xi) in Iterators.drop(kernels_and_inputs, 1)
         K .*= kerneldiagmatrix(k, Xi)
     end
 
