@@ -10,7 +10,7 @@ function kernelmatrix!(
     K::AbstractMatrix,
     kernel::Kernel,
     X::AbstractVector;
-    obsdim::Int = defaultobs
+    obsdim::Int = defaultobs,
 )
     return kernelmatrix!(K, kernel, reshape(X, 1, :); obsdim = 2)
 end
@@ -36,7 +36,7 @@ function kernelmatrix!(
     kernel::Kernel,
     X::AbstractVector,
     Y::AbstractVector;
-    obsdim::Int = defaultobs
+    obsdim::Int = defaultobs,
 )
     return kernelmatrix!(K, kernel, reshape(X, 1, :), reshape(Y, 1, :); obsdim = 2)
 end
@@ -110,7 +110,7 @@ function kernelmatrix(
     kernel::Kernel,
     X::AbstractVector{<:Real},
     Y::AbstractVector{<:Real};
-    obsdim::Int = defaultobs
+    obsdim::Int = defaultobs,
 )
     return kernelmatrix(kernel, reshape(X, 1, :), reshape(Y, 1, :); obsdim = 2)
 end
@@ -143,7 +143,7 @@ Calculate the diagonal matrix of `X` with respect to kernel `κ`
 function kerneldiagmatrix(
     kernel::Kernel,
     X::AbstractVector;
-    obsdim::Int = defaultobs
+    obsdim::Int = defaultobs,
 )
     return kerneldiagmatrix(kernel, reshape(X, 1, :); obsdim = 2)
 end
@@ -170,7 +170,7 @@ function kerneldiagmatrix!(
     K::AbstractVector,
     kernel::Kernel,
     X::AbstractVector;
-    obsdim::Int = defaultobs
+    obsdim::Int = defaultobs,
 )
     return kerneldiagmatrix!(K, kernel, reshape(X, 1, :); obsdim = 2)
 end

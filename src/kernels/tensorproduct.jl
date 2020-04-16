@@ -25,7 +25,7 @@ function kernelmatrix!(
     K::AbstractMatrix,
     kernel::TensorProduct,
     X::AbstractMatrix;
-    obsdim::Int = defaultobs
+    obsdim::Int = defaultobs,
 )
     obsdim ∈ (1, 2) || "obsdim should be 1 or 2 (see docs of kernelmatrix))"
 
@@ -50,7 +50,7 @@ function kernelmatrix!(
     kernel::TensorProduct,
     X::AbstractMatrix,
     Y::AbstractMatrix;
-    obsdim::Int = defaultobs
+    obsdim::Int = defaultobs,
 )
     obsdim ∈ (1, 2) || error("obsdim should be 1 or 2 (see docs of kernelmatrix))")
 
@@ -62,11 +62,13 @@ function kernelmatrix!(
     size(X, featuredim) == length(kernel) ||
         error("number of kernels and groups of features are not consistent")
 
-    kernelmatrix!(K, kernel.kernels[1], selectdim(X, featuredim, 1),
-                  selectdim(Y, featuredim, 1))
-    for (k, Xi, Yi) in Iterators.drop(zip(kernel.kernels,
-                                          eachslice(X; dims = featuredim),
-                                          eachslice(Y; dims = featuredim)), 1)
+    kernels_and_input = zip(
+        zip(kernel.kernels,
+        eachslice(X; dims = featuredim),
+        eachslice(Y; dims = featuredim),
+    )
+    kernelmatrix!(K, first(kernels_and_inputs)...)
+    for (k, Xi, Yi) in Iterators.drop(kernels_and_inputs, 1)
         K .*= kernelmatrix(k, Xi, Yi)
     end
 
@@ -78,7 +80,7 @@ end
 function kernelmatrix(
     kernel::TensorProduct,
     X::AbstractMatrix;
-    obsdim::Int = defaultobs
+    obsdim::Int = defaultobs,
 )
     obsdim ∈ (1, 2) || error("obsdim should be 1 or 2 (see docs of kernelmatrix))")
 
@@ -112,10 +114,12 @@ function kernelmatrix(
     size(X, featuredim) == length(kernel) ||
         error("number of kernels and groups of features are not consistent")
 
-    return mapreduce((x, y) -> x .* y,
-                     zip(kernel.kernels,
-                         eachslice(X; dims = featuredim),
-                         eachslice(Y; dims = featuredim))) do (k, Xi, Yi)
+    kernels_and_inputs = zip(
+        kernel.kernels,
+        eachslice(X; dims = featuredim),
+        eachslice(Y; dims = featuredim),
+    )
+    return mapreduce((x, y) -> x .* y, kernels_and_inputs) do (k, Xi, Yi)
         kernelmatrix(k, Xi, Yi)
     end
 end
@@ -154,9 +158,9 @@ function kerneldiagmatrix(
     size(X, featuredim) == length(kernel) ||
         error("number of kernels and groups of features are not consistent")
 
-    return mapreduce((x, y) -> x .* y,
-                     zip(kernel.kernels, eachslice(X; dims = featuredim))) do (k, Xi)
-         kerneldiagmatrix(k, Xi)
+    kernels_and_inputs = zip(kernel.kernels, eachslice(X; dims = featuredim))
+    return mapreduce((x, y) -> x .* y, kernels_and_inputs) do (k, Xi)
+        kerneldiagmatrix(k, Xi)
     end
 end
 
