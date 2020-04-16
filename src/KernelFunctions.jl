@@ -16,7 +16,7 @@ export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
 export MahalanobisKernel, GaborKernel, PiecewisePolynomialKernel
-export PeriodicKernel, NeuralNetOneKernel
+export PeriodicKernel, NeuralNetworkKernel
 export KernelSum, KernelProduct
 export TransformedKernel, ScaledKernel
 
@@ -48,7 +48,7 @@ include("distances/delta.jl")
 include("distances/sinus.jl")
 include("transform/transform.jl")
 
-for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated","cosine","maha","fbm","gabor","periodic","piecewisepolynomial","nnone"]
+for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated","cosine","maha","fbm","gabor","periodic","piecewisepolynomial","nn"]
     include(joinpath("kernels",k*".jl"))
 end
 include("kernels/transformedkernel.jl")
