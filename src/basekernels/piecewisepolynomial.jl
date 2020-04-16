@@ -43,16 +43,6 @@ function kappa(
     return _piecewisepolynomial(κ, r, j)
 end
 
-function _kernel(
-    κ::PiecewisePolynomialKernel,
-    x::AbstractVector,
-    y::AbstractVector;
-    obsdim::Int = defaultobs,
-)
-    @assert length(x) == length(y) "x and y don't have the same dimension!"
-    return kappa(κ,x,y)
-end
-
 function kernelmatrix(
     κ::PiecewisePolynomialKernel{V},
     X::AbstractMatrix;

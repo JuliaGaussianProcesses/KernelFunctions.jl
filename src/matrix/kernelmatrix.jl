@@ -101,7 +101,8 @@ function kernelmatrix(
     _kernelmatrix(κ,X,Y,obsdim)
 end
 
-@inline _kernelmatrix(κ::Kernel,X,Y,obsdim) = map(x->kappa(κ,x),pairwise(metric(κ),X,Y,dims=obsdim))
+@inline _kernelmatrix(κ::SimpleKernel, X, Y, obsdim) =
+        map(x -> kappa(κ, x), pairwise(metric(κ), X, Y, dims = obsdim))
 
 kernelmatrix(κ::TransformedKernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int = defaultobs) =
         kernelmatrix(kernel(κ), apply(κ.transform, X, obsdim = obsdim), apply(κ.transform, Y, obsdim = obsdim), obsdim = obsdim)
@@ -120,9 +121,9 @@ function kerneldiagmatrix(
         )
         @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
         if obsdim == 1
-            @compat eachrow(X) .|> x->_kernel(κ,x,x) #[@views _kernel(κ,X[i,:],X[i,:]) for i in 1:size(X,obsdim)]
+            @compat eachrow(X) .|> x-> κ(x, x) #[@views _kernel(κ,X[i,:],X[i,:]) for i in 1:size(X,obsdim)]
         elseif obsdim == 2
-            @compat eachcol(X) .|> x->_kernel(κ,x,x) #[@views _kernel(κ,X[:,i],X[:,i]) for i in 1:size(X,obsdim)]
+            @compat eachcol(X) .|> x-> κ(x, x) #[@views _kernel(κ,X[:,i],X[:,i]) for i in 1:size(X,obsdim)]
         end
 end
 
@@ -133,7 +134,7 @@ In place version of [`kerneldiagmatrix`](@ref)
 """
 function kerneldiagmatrix!(
         K::AbstractVector,
-        κ::Kernel,
+        κ::SimpleKernel,
         X::AbstractMatrix;
         obsdim::Int = defaultobs
         )
@@ -143,11 +144,11 @@ function kerneldiagmatrix!(
         end
         if obsdim == 1
             for i in eachindex(K)
-                @inbounds @views K[i] = _kernel(κ, X[i,:],X[i,:])
+                @inbounds @views K[i] = κ(X[i,:], X[i,:])
             end
         else
             for i in eachindex(K)
-                @inbounds @views K[i] = _kernel(κ,X[:,i],X[:,i])
+                @inbounds @views K[i] = κ(X[:,i], X[:,i])
             end
         end
         return K
