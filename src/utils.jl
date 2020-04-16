@@ -19,9 +19,11 @@ end
 #     return T <: Real ? T : Float64
 # end
 
-check_dims(K,X,Y,featdim,obsdim) = check_dims(X,Y,featdim,obsdim) && (size(K) == (size(X,obsdim),size(Y,obsdim)))
+check_dims(K, X, Y, featdim, obsdim) =
+    check_dims(X, Y, featdim, obsdim) &&
+    (size(K) == (size(X, obsdim), size(Y, obsdim)))
 
-check_dims(X,Y,featdim,obsdim) = size(X,featdim) == size(Y,featdim)
+check_dims(X, Y, featdim, obsdim) = size(X, featdim) == size(Y, featdim)
 
 
 feature_dim(obsdim::Int) = obsdim == 1 ? 2 : 1
