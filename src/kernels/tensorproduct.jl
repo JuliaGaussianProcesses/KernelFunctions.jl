@@ -40,14 +40,16 @@ function kernelmatrix!(
 
     featuredim = feature_dim(obsdim)
     if !check_dims(K, X, X, featuredim, obsdim)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
+        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not " *
+                                "consistent with X $(size(X))"))
     end
 
     size(X, featuredim) == length(kernel) ||
         error("number of kernels and groups of features are not consistent")
 
-    kernelmatrix!(K, kernel.kernels[1], selectdim(X, featuredim, 1))
-    for (k, Xi) in Iterators.drop(zip(kernel.kernels, eachslice(X; dims = featuredim)), 1)
+    kernels_and_input = zip(kernel.kernels, eachslice(X; dims = featuredim))
+    kernelmatrix!(K, first(kernels_and_input)...)
+    for (k, Xi) in Iterators.drop(kernels_and_input, 1)
         K .*= kernelmatrix(k, Xi)
     end
 
@@ -65,14 +67,15 @@ function kernelmatrix!(
 
     featuredim = feature_dim(obsdim)
     if !check_dims(K, X, Y, featuredim, obsdim)
-        throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not consistent with X ($(size(X))) and Y ($(size(Y)))"))
+        throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not " *
+                                "consistent with X ($(size(X))) and Y ($(size(Y)))"))
     end
 
     size(X, featuredim) == length(kernel) ||
         error("number of kernels and groups of features are not consistent")
 
     kernels_and_input = zip(
-        zip(kernel.kernels,
+        kernel.kernels,
         eachslice(X; dims = featuredim),
         eachslice(Y; dims = featuredim),
     )
@@ -95,7 +98,8 @@ function kernelmatrix(
 
     featuredim = feature_dim(obsdim)
     if !check_dims(X, X, featuredim, obsdim)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
+        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not " *
+                                "consistent with X $(size(X))"))
     end
 
     size(X, featuredim) == length(kernel) ||
@@ -113,11 +117,12 @@ function kernelmatrix(
     Y::AbstractMatrix;
     obsdim::Int = defaultobs
 )
-    @assert obsdim ∈ (1, 2) || error("obsdim should be 1 or 2 (see docs of kernelmatrix))")
+    obsdim ∈ (1, 2) || error("obsdim should be 1 or 2 (see docs of kernelmatrix))")
 
     featuredim = feature_dim(obsdim)
     if !check_dims(X, Y, featuredim, obsdim)
-        throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not consistent with X ($(size(X))) and Y ($(size(Y)))"))
+        throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not " *
+                                "consistent with X ($(size(X))) and Y ($(size(Y)))"))
     end
 
     size(X, featuredim) == length(kernel) ||
@@ -141,15 +146,17 @@ function kerneldiagmatrix!(
 )
     obsdim ∈ (1, 2) || error("obsdim should be 1 or 2 (see docs of kernelmatrix))")
     if length(K) != size(X, obsdim)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
+        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not " *
+                                "consistent with X $(size(X))"))
     end
 
     featuredim = feature_dim(obsdim)
     size(X, featuredim) == length(kernel) ||
         error("number of kernels and groups of features are not consistent")
 
-    kerneldiagmatrix!(K, kernel.kernels[1], selectdim(X, featuredim, 1))
-    for (k, Xi) in Iterators.drop(zip(kernel.kernels, eachslice(X; dims = featuredim)), 1)
+    kernels_and_input = zip(kernel.kernels, eachslice(X; dims = featuredim))
+    kerneldiagmatrix!(K, first(kernels_and_input)...)
+    for (k, Xi) in Iterators.drop(kernels_and_input, 1)
         K .*= kerneldiagmatrix(k, Xi)
     end
 
