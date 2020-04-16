@@ -7,7 +7,7 @@ The linear kernel is a Mercer kernel given by
 ```
 Where `c` is a real number
 """
-struct LinearKernel{Tc<:Real} <: BaseKernel
+struct LinearKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
     function LinearKernel(;c::T=0.0) where {T}
         new{T}([c])
@@ -28,7 +28,7 @@ The polynomial kernel is a Mercer kernel given by
 ```
 Where `c` is a real number, and `d` is a shape parameter bigger than 1. For `d = 1` see [`LinearKernel`](@ref)
 """
-struct PolynomialKernel{Td<:Real, Tc<:Real} <: BaseKernel
+struct PolynomialKernel{Td<:Real, Tc<:Real} <: SimpleKernel
     d::Vector{Td}
     c::Vector{Tc}
     function PolynomialKernel(; d::Td=2.0, c::Tc=0.0) where {Td<:Real, Tc<:Real}
