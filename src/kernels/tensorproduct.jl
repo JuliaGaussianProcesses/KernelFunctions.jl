@@ -1,7 +1,16 @@
 """
     TensorProduct(kernels...)
 
-Create a tensor product of kernels.
+Create a tensor product kernel from kernels ``k_1, \\ldots, k_n``, i.e.,
+a kernel ``k`` that is given by
+```math
+k(x, y) = \\prod_{i=1}^n k_i(x_i, y_i).
+```
+
+The `kernels` can be specified as individual arguments, a tuple, or an iterable data
+structure such as an array. Using a tuple or individual arguments guarantees that
+`TensorProduct` is concretely typed but might lead to large compilation times if the
+number of kernels is large.
 """
 struct TensorProduct{K} <: Kernel
     kernels::K
