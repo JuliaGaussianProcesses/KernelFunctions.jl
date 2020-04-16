@@ -19,6 +19,7 @@ export MahalanobisKernel, GaborKernel, PiecewisePolynomialKernel
 export PeriodicKernel
 export KernelSum, KernelProduct
 export TransformedKernel, ScaledKernel
+export TensorProduct
 
 export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
 
@@ -57,6 +58,7 @@ include("kernels/scaledkernel.jl")
 include("matrix/kernelmatrix.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
+include("kernels/tensorproduct.jl")
 include("approximations/nystrom.jl")
 include("generic.jl")
 
