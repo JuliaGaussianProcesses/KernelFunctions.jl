@@ -12,7 +12,7 @@ makedocs(
              "Transform"=>"transform.md",
              "Metrics"=>"metrics.md",
              "Theory"=>"theory.md",
-             "Custom Kernels"=>"create_kernel.md"
+             "Custom Kernels"=>"create_kernel.md",
              "API"=>"api.md"]
 )
 
@@ -21,6 +21,6 @@ makedocs(
 # for more information.
 deploydocs(
     deps = Deps.pip("mkdocs", "python-markdown-math"),
-    repo = "github.com/theogf/KernelFunctions.jl.git",
+    repo = "github.com/JuliaGaussianProcesses/KernelFunctions.jl.git",
     target = "build"
 )

@@ -1,11 +1,12 @@
 """
-KernelFunctions. [Github](https://github.com/theogf/KernelFunctions.jl) [Documentation](https://theogf.github.io/KernelFunctions.jl/dev/)
+KernelFunctions. [Github](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl)
+[Documentation](https://juliagaussianprocesses.github.io/KernelFunctions.jl/stable/)
 """
 module KernelFunctions
 
 export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
 export transform
-export params, duplicate, set! # Helpers
+export duplicate, set! # Helpers
 
 export Kernel
 export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel
@@ -14,7 +15,8 @@ export ExponentiatedKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
-export MahalanobisKernel, NeuralNetOneKernel
+export MahalanobisKernel, GaborKernel, PiecewisePolynomialKernel
+export PeriodicKernel, NeuralNetOneKernel
 export KernelSum, KernelProduct
 export TransformedKernel, ScaledKernel
 
@@ -43,9 +45,10 @@ abstract type BaseKernel <: Kernel end
 include("utils.jl")
 include("distances/dotproduct.jl")
 include("distances/delta.jl")
+include("distances/sinus.jl")
 include("transform/transform.jl")
 
-for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated","cosine","maha","nnone"]
+for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated","cosine","maha","fbm","gabor","periodic","piecewisepolynomial","nnone"]
     include(joinpath("kernels",k*".jl"))
 end
 include("kernels/transformedkernel.jl")

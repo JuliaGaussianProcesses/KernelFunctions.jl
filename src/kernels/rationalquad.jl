@@ -1,6 +1,7 @@
 """
-RationalQuadraticKernel([ρ=1.0[,α=2.0]])
-The rational-quadratic kernel is an isotropic Mercer kernel given by the formula:
+    RationalQuadraticKernel(; α = 2.0)
+
+The rational-quadratic kernel is a Mercer kernel given by the formula:
 ```
     κ(x,y)=(1+||x−y||²/α)^(-α)
 ```
@@ -15,8 +16,9 @@ struct RationalQuadraticKernel{Tα<:Real} <: BaseKernel
 end
 
 kappa(κ::RationalQuadraticKernel, d²::T) where {T<:Real} = (one(T)+d²/first(κ.α))^(-first(κ.α))
-
 metric(::RationalQuadraticKernel) = SqEuclidean()
+
+Base.show(io::IO, κ::RationalQuadraticKernel) = print(io, "Rational Quadratic Kernel (α = $(first(κ.α)))")
 
 """
 `GammaRationalQuadraticKernel([ρ=1.0[,α=2.0[,γ=2.0]]])`
@@ -37,5 +39,6 @@ struct GammaRationalQuadraticKernel{Tα<:Real, Tγ<:Real} <: BaseKernel
 end
 
 kappa(κ::GammaRationalQuadraticKernel, d²::T) where {T<:Real} = (one(T)+d²^first(κ.γ)/first(κ.α))^(-first(κ.α))
-
 metric(::GammaRationalQuadraticKernel) = SqEuclidean()
+
+Base.show(io::IO, κ::GammaRationalQuadraticKernel) = print(io, "Gamma Rational Quadratic Kernel (α = $(first(κ.α)), γ = $(first(κ.γ)))")
