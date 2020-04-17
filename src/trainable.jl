@@ -14,6 +14,8 @@ trainable(k::MaternKernel) = (k.ν,)
 
 trainable(k::LinearKernel) = (k.c,)
 
+trainable(k::PeriodicKernel) = (k.r,)
+
 trainable(k::PolynomialKernel) = (k.d, k.c)
 
 trainable(k::RationalQuadraticKernel) = (k.α,)

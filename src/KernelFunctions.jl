@@ -16,8 +16,10 @@ export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
 export MahalanobisKernel, GaborKernel, PiecewisePolynomialKernel
+export PeriodicKernel
 export KernelSum, KernelProduct
 export TransformedKernel, ScaledKernel
+export TensorProduct
 
 export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
 
@@ -44,17 +46,19 @@ abstract type BaseKernel <: Kernel end
 include("utils.jl")
 include("distances/dotproduct.jl")
 include("distances/delta.jl")
+include("distances/sinus.jl")
 include("transform/transform.jl")
 
-for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated",
-    "cosine","maha","fbm","gabor","piecewisepolynomial","wiener"]
-    include(joinpath("kernels",k*".jl"))
+for f in readdir(joinpath(@__DIR__, "basekernels"))
+    endswith(f, ".jl") && include(joinpath("basekernels", f))
 end
+
 include("kernels/transformedkernel.jl")
 include("kernels/scaledkernel.jl")
 include("matrix/kernelmatrix.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
+include("kernels/tensorproduct.jl")
 include("approximations/nystrom.jl")
 include("generic.jl")
 
