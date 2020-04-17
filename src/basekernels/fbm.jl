@@ -17,7 +17,7 @@ struct FBMKernel{T<:Real} <: BaseKernel
     end
 end
 
-Base.show(io::IO, κ::FBMKernel) = print(io, "Fractional Brownian Motion Kernel (h = $(first(κ.h)))")
+Base.show(io::IO, κ::FBMKernel) = print(io, "Fractional Brownian Motion Kernel (h = ", first(κ.h), ")")
 
 const sqroundoff = 1e-15
 
