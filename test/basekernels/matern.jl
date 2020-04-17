@@ -13,6 +13,7 @@
         @test kappa(MaternKernel(ν=ν),x) == kappa(k,x)
         @test metric(MaternKernel()) == Euclidean()
         @test metric(MaternKernel(ν=2.0)) == Euclidean()
+        @test repr(k) == "Matern Kernel (ν = $(ν))"
     end
     @testset "Matern32Kernel" begin
         k = Matern32Kernel()
@@ -20,6 +21,7 @@
         @test k(v1,v2) ≈ (1+sqrt(3)*norm(v1-v2))exp(-sqrt(3)*norm(v1-v2))
         @test kappa(Matern32Kernel(),x) == kappa(k,x)
         @test metric(Matern32Kernel()) == Euclidean()
+        @test repr(k) == "Matern 3/2 Kernel"
     end
     @testset "Matern52Kernel" begin
         k = Matern52Kernel()
@@ -27,6 +29,7 @@
         @test k(v1,v2) ≈ (1+sqrt(5)*norm(v1-v2)+5/3*norm(v1-v2)^2)exp(-sqrt(5)*norm(v1-v2))
         @test kappa(Matern52Kernel(),x) == kappa(k,x)
         @test metric(Matern52Kernel()) == Euclidean()
+        @test repr(k) == "Matern 5/2 Kernel"
     end
     @testset "Coherence Materns" begin
         @test kappa(MaternKernel(ν=0.5),x) ≈ kappa(ExponentialKernel(),x)

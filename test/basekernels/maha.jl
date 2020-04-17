@@ -10,4 +10,5 @@
     @test kappa(k, x) == exp(-x)
     @test k(v1, v2) ≈ exp(-sqmahalanobis(v1, v2, P))
     @test kappa(ExponentialKernel(), x) == kappa(k, x)
+    @test repr(k) == "Mahalanobis Kernel (size(P) = $(size(P)))"
 end

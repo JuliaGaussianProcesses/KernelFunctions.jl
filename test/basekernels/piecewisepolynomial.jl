@@ -4,9 +4,10 @@
     m1 = rand(3, 4)
     m2 = rand(3, 4)
     maha = ones(3, 3)
-    k = PiecewisePolynomialKernel{3}(maha)
+    v = 3
+    k = PiecewisePolynomialKernel{v}(maha)
 
-    k2 = PiecewisePolynomialKernel(v=3, maha=maha)
+    k2 = PiecewisePolynomialKernel(v=v, maha=maha)
 
     @test k2(v1, v2) ≈ k(v1, v2) atol=1e-5
 
@@ -28,6 +29,8 @@
     A3 = ones(4)
     kerneldiagmatrix!(A3, k, m1)
     @test A3 == kerneldiagmatrix(k, m1)
+
+    @test repr(k) == "Piecewise Polynomial Kernel (v = $(v), size(maha) = $(size(maha)))"
 
     @test_throws ErrorException PiecewisePolynomialKernel{4}(maha)
 end

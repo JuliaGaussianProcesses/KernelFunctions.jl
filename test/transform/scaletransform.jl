@@ -8,4 +8,5 @@
     KernelFunctions.set!(t,s2)
     @test all(t.s.==[s2])
     @test isequal(ScaleTransform(s),ScaleTransform(s))
+    @test repr(t) == "Scale Transform s=$(s2)"
 end
