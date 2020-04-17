@@ -19,6 +19,7 @@ export MahalanobisKernel, GaborKernel, PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
 export KernelSum, KernelProduct
 export TransformedKernel, ScaledKernel
+export TensorProduct
 
 export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
 
@@ -48,14 +49,16 @@ include("distances/delta.jl")
 include("distances/sinus.jl")
 include("transform/transform.jl")
 
-for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated","cosine","maha","fbm","gabor","periodic","piecewisepolynomial","nn"]
-    include(joinpath("kernels",k*".jl"))
+for f in readdir(joinpath(@__DIR__, "basekernels"))
+    endswith(f, ".jl") && include(joinpath("basekernels", f))
 end
+
 include("kernels/transformedkernel.jl")
 include("kernels/scaledkernel.jl")
 include("matrix/kernelmatrix.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
+include("kernels/tensorproduct.jl")
 include("approximations/nystrom.jl")
 include("generic.jl")
 

@@ -62,21 +62,26 @@ using KernelFunctions: metric
         include(joinpath("transform", "transform.jl"))
     end
 
+    @testset "basekernels" begin
+        include(joinpath("basekernels", "constant.jl"))
+        include(joinpath("basekernels", "cosine.jl"))
+        include(joinpath("basekernels", "exponential.jl"))
+        include(joinpath("basekernels", "exponentiated.jl"))
+        include(joinpath("basekernels", "fbm.jl"))
+        include(joinpath("basekernels", "gabor.jl"))
+        include(joinpath("basekernels", "maha.jl"))
+        include(joinpath("basekernels", "matern.jl"))
+        include(joinpath("basekernels", "periodic.jl"))
+        include(joinpath("basekernels", "polynomial.jl"))
+        include(joinpath("basekernels", "piecewisepolynomial.jl"))
+        include(joinpath("basekernels", "rationalquad.jl"))
+    end
+
     @testset "kernels" begin
-        include(joinpath("kernels", "constant.jl"))
-        include(joinpath("kernels", "cosine.jl"))
-        include(joinpath("kernels", "exponential.jl"))
-        include(joinpath("kernels", "exponentiated.jl"))
-        include(joinpath("kernels", "fbm.jl"))
-        include(joinpath("kernels", "gabor.jl"))
         include(joinpath("kernels", "kernelproduct.jl"))
         include(joinpath("kernels", "kernelsum.jl"))
-        include(joinpath("kernels", "matern.jl"))
-        include(joinpath("kernels", "periodic.jl"))
-        include(joinpath("kernels", "polynomial.jl"))
-        include(joinpath("kernels", "piecewisepolynomial.jl"))
-        include(joinpath("kernels", "rationalquad.jl"))
         include(joinpath("kernels", "scaledkernel.jl"))
+        include(joinpath("kernels", "tensorproduct.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
 
         # Legacy tests that don't correspond to anything meaningful in src. Unclear how
