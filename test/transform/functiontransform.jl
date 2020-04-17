@@ -5,4 +5,5 @@
     tf = FunctionTransform(f)
     KernelFunctions.apply(tf,X,obsdim=1)
     @test all(KernelFunctions.apply(tf,X,obsdim=1).==f(X))
+    @test repr(tf) == "Function Transform : $(f)"
 end

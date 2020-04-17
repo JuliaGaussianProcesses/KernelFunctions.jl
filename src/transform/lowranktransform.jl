@@ -32,3 +32,5 @@ function apply(t::LowRankTransform, x::AbstractVector{<:Real}; obsdim::Int = def
 end
 
 _transform(t::LowRankTransform,X::AbstractVecOrMat{<:Real},obsdim::Int=defaultobs) = obsdim == 2 ? t.proj * X : X * t.proj'
+
+Base.show(io::IO, t::LowRankTransform) = print(io::IO, "Low Rank Transform (size(P) = $(size(t.proj)))")
