@@ -15,9 +15,12 @@ end
 
 A lightweight box for an `AbstractMatrix` to make it behave like a vector of vectors.
 """
-struct ColVecs{T, TX<:AbstractMatrix{T}} <: AbstractVector{SubArray}
+struct ColVecs{T, TX<:AbstractMatrix{T}, S} <: AbstractVector{S}
     X::TX
-    ColVecs(X::TX) where {T, TX<:AbstractMatrix{T}} = new{T, TX}(X)
+    function ColVecs(X::TX) where {T, TX<:AbstractMatrix{T}}
+        S = typeof(view(X, :, 1))
+        new{T, TX, S}(X)
+    end
 end
 
 Base.size(D::ColVecs) = (size(D.X, 2),)
