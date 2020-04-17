@@ -41,8 +41,11 @@ Base.:∘(tc::ChainTransform, t::Transform) =
 Base.show(io::IO, t::ChainTransform) = printshifted(io, t, 0)
 
 function printshifted(io::IO, t::ChainTransform, shift::Int)
-    print(io, "Chain of $(length(t)) transforms:")
-    print(io, "\n" * ("\t" ^ (shift + 1))* " - ")
+    println(io, "Chain of ", length(t), " transforms:")
+    for _ in 1:(shift + 1)
+        print(io, "\t")
+    end
+    print(io, " - ")
     printshifted(io, t.transforms[1], shift + 2)
     for i in 2:length(t)
         print(io, " |> ")
