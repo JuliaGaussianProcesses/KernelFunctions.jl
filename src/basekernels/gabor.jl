@@ -52,10 +52,8 @@ function Base.getproperty(k::GaborKernel, v::Symbol)
 end
 
 function kappa(κ::GaborKernel, d::Real)
-    return kappa(κ.kernel.kernels[1], d^2) * kappa(κ.kernel.kernels[2], d)
+    return kappa(κ.kernel.kernels[1], (d/κ.ell)^2) * kappa(κ.kernel.kernels[2], d/κ.p)
 end
-
-kappa(κ::GaborKernel, x, y) = kappa(κ.kernel, x, y)
 
 metric(::GaborKernel) = Euclidean()
 
