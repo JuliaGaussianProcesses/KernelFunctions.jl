@@ -1,12 +1,13 @@
 """
-SelectTransform
+    SelectTransform(dims::AbstractVector{Int})
+
+Select the dimensions `dims` that the kernel is applied to.
 ```
     dims = [1,3,5,6,7]
     tr = SelectTransform(dims)
     X = rand(100,10)
     transform(tr,X,obsdim=2) == X[dims,:]
 ```
-Select the dimensions `dims` that the kernel is applied to.
 """
 struct SelectTransform{T<:AbstractVector{<:Int}} <: Transform
     select::T

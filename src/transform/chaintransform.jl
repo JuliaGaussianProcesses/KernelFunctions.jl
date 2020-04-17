@@ -1,10 +1,12 @@
 """
+    ChainTransform(ts::AbstractVector{<:Transform})
+
 Chain a series of transform, here `t1` will be called first
 ```
     t1 = ScaleTransform()
     t2 = LowRankTransform(rand(3,4))
     ct = ChainTransform([t1,t2]) #t1 will be called first
-    ct == t2∘t1
+    ct == t2 ∘ t1
 ```
 """
 struct ChainTransform{V<:AbstractVector{<:Transform}} <: Transform

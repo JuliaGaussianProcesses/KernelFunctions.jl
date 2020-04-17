@@ -1,11 +1,12 @@
 """
     ARDTransform(v::AbstractVector)
     ARDTransform(s::Real, dims::Int)
+
+Multiply every vector of observation by `v` element-wise
 ```
     v = rand(3)
     tr = ARDTransform(v)
 ```
-Multiply every vector of observation by `v` element-wise
 """
 struct ARDTransform{T,N} <: Transform
     v::Vector{T}

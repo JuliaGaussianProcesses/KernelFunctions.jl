@@ -1,10 +1,11 @@
 """
-Scale Transform
+    ScaleTransform(l::Real)
+
+Multiply every element of the input by `l`
 ```
     l = 2.0
     tr = ScaleTransform(l)
 ```
-Multiply every element of the input by `l`
 """
 struct ScaleTransform{T<:Real} <: Transform
     s::Vector{T}
