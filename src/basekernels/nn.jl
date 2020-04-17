@@ -16,7 +16,7 @@ function kappa(κ::NeuralNetworkKernel, x::AbstractVector{<:Real}, y::AbstractVe
 end
 
 function _kernel(
-        κ::Kernel,
+        κ::NeuralNetworkKernel,
         x::AbstractVector,
         y::AbstractVector;
         obsdim::Int = defaultobs
