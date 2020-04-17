@@ -17,4 +17,4 @@ apply(t::FunctionTransform, X::T; obsdim::Int = defaultobs) where {T} = mapslice
 
 duplicate(t::FunctionTransform,f) = FunctionTransform(f)
 
-Base.show(io::IO, t::FunctionTransform) = print(io, "Function Transform : $(t.f)")
+Base.show(io::IO, t::FunctionTransform) = print(io, "Function Transform: ", t.f)
