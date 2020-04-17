@@ -49,4 +49,4 @@ _transform(
 Base.isequal(t::ARDTransform, t2::ARDTransform) = isequal(t.v, t2.v)
 
 Base.show(io::IO, t::ARDTransform) =
-    print(io, "ARD Transform (dims : $(dim(t)))")
+    print(io, "ARD Transform (dims: ", dim(t),")")

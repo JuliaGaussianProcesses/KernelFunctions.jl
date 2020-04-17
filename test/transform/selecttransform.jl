@@ -11,5 +11,5 @@
     sdims2 = [2,3,5]
     KernelFunctions.set!(ts,sdims2)
     @test all(ts.select.==sdims2)
-    @test repr(ts) == "Select Transform (dims : $(sdims2))"
+    @test repr(ts) == "Select Transform (dims: $(sdims2))"
 end

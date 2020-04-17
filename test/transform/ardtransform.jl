@@ -14,5 +14,5 @@
     @test all(vt1.v .== newv1)
     @test ARDTransform(s,dims[2]).v == ARDTransform(s*ones(dims[2])).v
     @test_throws DimensionMismatch KernelFunctions.apply(vt1,rand(3,4))
-    @test repr(vt1) == "ARD Transform (dims : $(dims[2]))"
+    @test repr(vt1) == "ARD Transform (dims: $(dims[2]))"
 end
