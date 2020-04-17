@@ -13,9 +13,9 @@
         @test getindex(DX, 5) == X[:, 5]
         @test getindex(DX, 1:2:6) isa ColVecs
         @test getindex(DX, 1:2:6) == ColVecs(X[:, 1:2:6])
+        @test getindex(DX, :) == ColVecs(X)
         @test eachindex(DX) == 1:N
         @test first(DX) == X[:, 1]
-
 
         let
             @test Zygote.pullback(ColVecs, X)[1] == DX
