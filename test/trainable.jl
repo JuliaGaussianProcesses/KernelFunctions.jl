@@ -1,4 +1,5 @@
 @testset "trainable" begin
+    using Flux: params
     ν = 2.0; c = 3.0; d = 2.0; γ = 2.0; α = 2.5; h = 0.5; r = rand(3)
 
     kc = ConstantKernel(c=c)

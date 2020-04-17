@@ -1,6 +1,6 @@
 """
-    kernelmatrix!(K::Matrix, κ::Kernel, X::Matrix; obsdim::Integer = 2)
-    kernelmatrix!(K::Matrix, κ::Kernel, X::Matrix, Y::Matrix; obsdim::Integer = 2)
+    kernelmatrix!(K::AbstractMatrix, κ::Kernel, X; obsdim::Integer = 2)
+    kernelmatrix!(K::AbstractMatrix, κ::Kernel, X, Y; obsdim::Integer = 2)
 
 In-place version of [`kernelmatrix`](@ref) where pre-allocated matrix `K` will be overwritten with the kernel matrix.
 """
@@ -83,8 +83,8 @@ function kernelmatrix!(
 end
 
 """
-    kernelmatrix(κ::Kernel, X::Matrix; obsdim::Int = 2)
-    kernelmatrix(κ::Kernel, X::Matrix, Y::Matrix; obsdim::Int = 2)
+    kernelmatrix(κ::Kernel, X; obsdim::Int = 2)
+    kernelmatrix(κ::Kernel, X, Y; obsdim::Int = 2)
 
 Calculate the kernel matrix of `X` (and `Y`) with respect to kernel `κ`.
 `obsdim = 1` means the matrix `X` (and `Y`) has size #samples x #dimension
@@ -141,7 +141,7 @@ end
     map(x -> kappa(κ, x), pairwise(metric(κ), X, Y, dims = obsdim))
 
 """
-    kerneldiagmatrix(κ::Kernel, X::Matrix; obsdim::Int = 2)
+    kerneldiagmatrix(κ::Kernel, X; obsdim::Int = 2)
 
 Calculate the diagonal matrix of `X` with respect to kernel `κ`
 `obsdim = 1` means the matrix `X` has size #samples x #dimension
@@ -165,7 +165,7 @@ function kerneldiagmatrix(κ::Kernel, X::AbstractVector)
 end
 
 """
-    kerneldiagmatrix!(K::AbstractVector,κ::Kernel, X::Matrix; obsdim::Int = 2)
+    kerneldiagmatrix!(K::AbstractVector, κ::Kernel, X; obsdim::Int = 2)
 
 In place version of [`kerneldiagmatrix`](@ref)
 """

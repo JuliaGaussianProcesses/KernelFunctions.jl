@@ -81,6 +81,7 @@ using KernelFunctions: metric
         include(joinpath("kernels", "kernelproduct.jl"))
         include(joinpath("kernels", "kernelsum.jl"))
         include(joinpath("kernels", "scaledkernel.jl"))
+        include(joinpath("kernels", "tensorproduct.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
 
         # Legacy tests that don't correspond to anything meaningful in src. Unclear how
