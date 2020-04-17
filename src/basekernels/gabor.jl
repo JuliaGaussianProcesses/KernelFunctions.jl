@@ -3,7 +3,7 @@
 
 Gabor kernel with length scale ell and period p. Given by
 ```math
-    κ(x,y) =  h(x-z), h(t) = exp(-sum(t.^2./(ell.^2)))*cos(pi*sum(t./p))
+    Îº(x,y) =  h(x-z), h(t) = exp(-sum(t.^2./(ell.^2)))*cos(pi*sum(t./p))
 ```
 
 """
