@@ -19,7 +19,9 @@ Return exactly the input
 """
 struct IdentityTransform <: Transform end
 
-apply(t::IdentityTransform, x; obsdim::Int=defaultobs) = x
+apply(t::IdentityTransform, x; obsdim::Int = defaultobs) = x
+
+apply(t::Transform, x::ColVecs; obsdim::Int = defaultobs) = ColVecs(apply(t, x.X, obsdim = 1))
 
 ### TODO Maybe defining adjoints could help but so far it's not working
 
