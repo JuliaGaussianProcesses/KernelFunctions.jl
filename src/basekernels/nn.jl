@@ -15,6 +15,16 @@ function kappa(κ::NeuralNetworkKernel, x::AbstractVector{<:Real}, y::AbstractVe
     return asin(dot(x, y) / sqrt((1 + sum(abs2, x)) * (1 + sum(abs2, y))))
 end
 
+function _kernel(
+        κ::Kernel,
+        x::AbstractVector,
+        y::AbstractVector;
+        obsdim::Int = defaultobs
+    )
+    @assert length(x) == length(y) "x and y don't have the same dimension!"
+    kappa(κ, x, y)
+end
+
 (κ::NeuralNetworkKernel)(x::Real, y::Real) = asin(x * y/sqrt((1 + x^2) * (1 + y^2)))
 
 function kernelmatrix!(
