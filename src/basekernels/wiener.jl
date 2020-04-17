@@ -28,7 +28,7 @@ See the paper *Probabilistic ODE Solvers with Runge-Kutta Means* by Schober, Duv
 """
 struct WienerKernel{I} <: BaseKernel
     function WienerKernel{I}() where I
-        I in (-1, 0, 1, 2, 3) || error("Invalid paramter i=$(I). Should be -1, 0, 1, 2 or 3.")
+        @assert I ∈ (-1, 0, 1, 2, 3) "Invalid parameter i=$(I). Should be -1, 0, 1, 2 or 3."
         if I == -1
             return WhiteKernel()
         end

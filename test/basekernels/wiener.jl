@@ -14,8 +14,8 @@
     k3 = WienerKernel(i=3)
     @test typeof(k3) <: WienerKernel{3}
 
-    @test_throws ErrorException WienerKernel(i=4)
-    @test_throws ErrorException WienerKernel(i=-2)
+    @test_throws AssertionError WienerKernel(i=4)
+    @test_throws AssertionError WienerKernel(i=-2)
 
     v1 = rand(3); v2 = rand(3)
     @test k0(v1,v2) ≈ kappa(k0,v1,v2)
