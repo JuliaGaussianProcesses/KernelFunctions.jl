@@ -1,5 +1,5 @@
 """
-    NeuralNetworkKernel(P::AbstractMatrix)
+    NeuralNetworkKernel()
 
 Neural network kernel function with a single parameter for the distance
 measure. The kernel function is parameterized as:
