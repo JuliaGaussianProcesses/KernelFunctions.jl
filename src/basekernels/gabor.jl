@@ -81,5 +81,5 @@ function kerneldiagmatrix(
     kerneldiagmatrix(κ.kernel, X; obsdim=obsdim)
 end
 
-Base.show(io::IO, κ::GaborKernel) = print(io, "Gabor Kernel (ell = $(κ.ell), p = $(κ.p))")
+Base.show(io::IO, κ::GaborKernel) = print(io, "Gabor Kernel (ell = ", κ.ell, ", p = ", κ.p, ")")
 
