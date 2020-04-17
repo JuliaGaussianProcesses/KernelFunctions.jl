@@ -14,4 +14,6 @@
     x1 = rand()
     x2 = rand()
     @test kernelmatrix(k, x1*ones(1,1), x2*ones(1,1))[1] ≈ k(x1, x2) atol=1e-5
+
+    @test repr(k) == "Fractional Brownian Motion Kernel (h = $(h))"
 end

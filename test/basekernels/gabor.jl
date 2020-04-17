@@ -13,4 +13,5 @@
     @test k.p ≈ 1.0 atol=1e-5
 
     @test kappa(k, v1, v2) ≈ kappa(k, evaluate(KernelFunctions.metric(k), v1, v2))
+    @test repr(k) == "Gabor Kernel (ell = 1.0, p = 1.0)"
 end

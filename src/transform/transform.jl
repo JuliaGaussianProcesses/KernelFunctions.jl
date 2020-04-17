@@ -8,13 +8,15 @@ include("selecttransform.jl")
 include("chaintransform.jl")
 
 """
-`apply(t::Transform, x; obsdim::Int=defaultobs)`
-Apply the transform `t` per slice on the array `x`
+    apply(t::Transform, x; obsdim::Int=defaultobs)
+
+Apply the transform `t` vector-wise on the array `x`
 """
 apply
 
 """
-IdentityTransform
+    IdentityTransform()
+
 Return exactly the input
 """
 struct IdentityTransform <: Transform end

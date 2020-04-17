@@ -9,6 +9,10 @@
         @test k(v1,v2) ≈ exp(-norm(v1-v2)^2)
         @test kappa(SqExponentialKernel(),x) == kappa(k,x)
         @test metric(SqExponentialKernel()) == SqEuclidean()
+        @test RBFKernel == SqExponentialKernel
+        @test GaussianKernel == SqExponentialKernel
+        @test SEKernel == SqExponentialKernel
+        @test repr(k) == "Squared Exponential Kernel"
     end
     @testset "ExponentialKernel" begin
         k = ExponentialKernel()
@@ -16,6 +20,8 @@
         @test k(v1,v2) ≈ exp(-norm(v1-v2))
         @test kappa(ExponentialKernel(),x) == kappa(k,x)
         @test metric(ExponentialKernel()) == Euclidean()
+        @test repr(k) == "Exponential Kernel"
+        @test LaplacianKernel == ExponentialKernel
     end
     @testset "GammaExponentialKernel" begin
         γ = 2.0
@@ -26,6 +32,7 @@
         @test GammaExponentialKernel(gamma=γ).γ == [γ]
         @test metric(GammaExponentialKernel()) == SqEuclidean()
         @test metric(GammaExponentialKernel(γ=2.0)) == SqEuclidean()
+        @test repr(k) == "Gamma Exponential Kernel (γ = $(γ))"
 
         #Coherence :
         @test KernelFunctions._kernel(GammaExponentialKernel(γ=1.0),v1,v2) ≈ KernelFunctions._kernel(SqExponentialKernel(),v1,v2)

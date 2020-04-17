@@ -14,4 +14,5 @@
     @test all(tp.proj.==P2)
     @test_throws AssertionError KernelFunctions.set!(tp,rand(6,10))
     @test_throws DimensionMismatch KernelFunctions.apply(tp,rand(11,3))
+    @test repr(tp) == "Low Rank Transform (size(P) = $(size(P2)))"
 end

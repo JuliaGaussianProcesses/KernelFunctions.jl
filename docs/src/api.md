@@ -28,6 +28,7 @@ LinearKernel
 PolynomialKernel
 RationalQuadraticKernel
 GammaRationalQuadraticKernel
+PeriodicKernel
 ZeroKernel
 ConstantKernel
 WhiteKernel

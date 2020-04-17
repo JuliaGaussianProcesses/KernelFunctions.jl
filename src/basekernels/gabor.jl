@@ -30,7 +30,7 @@ function _gabor(; ell = nothing, p = nothing)
 end
 
 function Base.getproperty(k::GaborKernel, v::Symbol)
-    if v == :kernel 
+    if v == :kernel
         return getfield(k, v)
     elseif v == :ell
         kernel1 = k.kernel.kernels[1]
