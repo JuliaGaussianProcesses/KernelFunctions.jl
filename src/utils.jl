@@ -15,24 +15,14 @@ end
 
 A lightweight box for an `AbstractMatrix` to make it behave like a vector of vectors.
 """
-struct ColVecs{T, TX<:AbstractMatrix{T}} <: AbstractVector{Vector{T}}
+struct ColVecs{T, TX<:AbstractMatrix{T}} <: AbstractVector{SubArray}
     X::TX
     ColVecs(X::TX) where {T, TX<:AbstractMatrix{T}} = new{T, TX}(X)
 end
 
-Base.:(==)(D1::ColVecs, D2::ColVecs) = D1.X == D2.X
 Base.size(D::ColVecs) = (size(D.X, 2),)
-Base.length(D::ColVecs) = size(D.X, 2)
-Base.getindex(D::ColVecs, n::Int) = D.X[:, n]
-Base.getindex(D::ColVecs, n::CartesianIndex{1}) = getindex(D, n[1])
-Base.getindex(D::ColVecs, n) = ColVecs(D.X[:, n])
-Base.view(D::ColVecs, n::Int) = view(D.X, :, n)
-Base.view(D::ColVecs, n) = ColVecs(view(D.X, :, n))
-Base.eltype(::Type{<:ColVecs{T}}) where T = Vector{T}
-Base.zero(D::ColVecs) = ColVecs(zero(D.X))
-Base.iterate(D::ColVecs) = (view(D.X, :, 1), 2)
-Base.iterate(D::ColVecs, state) = state > length(D) ? nothing : (view(D.X, :, state), state + 1)
-
+Base.getindex(D::ColVecs, i::Int) = view(D.X, :, i)
+Base.getindex(D::ColVecs, i::AbstractVector{Int}) = ColVecs(view(D.X, :, i))
 
 # Take highest Float among possibilities
 # function promote_float(Tₖ::DataType...)

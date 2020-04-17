@@ -1,3 +1,12 @@
+using Test
+using KernelFunctions
+using Random
+using KernelFunctions: ColVecs
+rng, N, D = MersenneTwister(123456), 10, 2
+x, X = randn(rng, N), randn(rng, D, N)
+DX = ColVecs(X)
+
+
 @testset "utils" begin
     using KernelFunctions: ColVecs
     rng, N, D = MersenneTwister(123456), 10, 2
@@ -9,16 +18,13 @@
         @test DX == DX
         @test size(DX) == (N,)
         @test length(DX) == N
-        @test getindex(DX, 5) isa Vector
+        @test getindex(DX, 5) isa AbstractVector
         @test getindex(DX, 5) == X[:, 5]
         @test getindex(DX, 1:2:6) isa ColVecs
         @test getindex(DX, 1:2:6) == ColVecs(X[:, 1:2:6])
-        @test view(DX, 4) isa AbstractVector
-        @test view(DX, 4) == view(X, :, 4)
-        @test view(DX, 1:2:4) isa ColVecs
-        @test view(DX, 1:2:4) == ColVecs(view(X, :, 1:2:4))
-        @test eltype(DX) == Vector{Float64}
         @test eachindex(DX) == 1:N
+        @test first(DX) == X[:, 1]
+
 
         let
             @test Zygote.pullback(ColVecs, X)[1] == DX
