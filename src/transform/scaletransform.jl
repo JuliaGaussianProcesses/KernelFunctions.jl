@@ -1,10 +1,11 @@
 """
-Scale Transform
+    ScaleTransform(l::Real)
+
+Multiply every element of the input by `l`
 ```
     l = 2.0
     tr = ScaleTransform(l)
 ```
-Multiply every element of the input by `l`
 """
 struct ScaleTransform{T<:Real} <: Transform
     s::Vector{T}
@@ -22,4 +23,4 @@ apply(t::ScaleTransform,x::AbstractVecOrMat;obsdim::Int=defaultobs) = first(t.s)
 
 Base.isequal(t::ScaleTransform,t2::ScaleTransform) = isequal(first(t.s),first(t2.s))
 
-Base.show(io::IO,t::ScaleTransform) = print(io,"Scale Transform s=$(first(t.s))")
+Base.show(io::IO,t::ScaleTransform) = print(io,"Scale Transform (s = ", first(t.s), ")")

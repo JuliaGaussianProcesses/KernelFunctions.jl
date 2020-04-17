@@ -19,4 +19,4 @@ end
 kappa(κ::MahalanobisKernel, d::T) where {T<:Real} = exp(-d)
 metric(κ::MahalanobisKernel) = SqMahalanobis(κ.P)
 
-Base.show(io::IO, κ::MahalanobisKernel) = print(io, "Mahalanobis Kernel (size(P) = $(size(κ.P))")
+Base.show(io::IO, κ::MahalanobisKernel) = print(io, "Mahalanobis Kernel (size(P) = ", size(κ.P), ")")

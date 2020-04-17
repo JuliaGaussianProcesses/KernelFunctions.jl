@@ -10,7 +10,8 @@ export duplicate, set! # Helpers
 
 export Kernel
 export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel
-export SqExponentialKernel, ExponentialKernel, GammaExponentialKernel
+export SqExponentialKernel, RBFKernel, GaussianKernel, SEKernel
+export LaplacianKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
