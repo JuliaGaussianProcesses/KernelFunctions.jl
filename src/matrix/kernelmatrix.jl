@@ -6,6 +6,15 @@ In-place version of [`kernelmatrix`](@ref) where pre-allocated matrix `K` will b
 """
 kernelmatrix!
 
+## Wrapper for vector of reals
+function kernelmatrix!(
+    K::AbstractMatrix,
+    κ::Kernel,
+    X::AbstractVector{<:Real}
+)
+    kernelmatrix!(K, κ, reshape(X, 1, :), obsdim = 2)
+end
+
 function kernelmatrix!(
     K::AbstractMatrix,
     κ::SimpleKernel,
@@ -27,9 +36,9 @@ function kernelmatrix!(
 )
     @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of `kernelmatrix`))"
     if obsdim == 1
-        @compat kernelmatrix!(K, κ, ColVecs(X))
+        kernelmatrix!(K, κ, ColVecs(X))
     else
-        @compat kernelmatrix!(K, κ, RowVecs(X))
+        kernelmatrix!(K, κ, ColVecs(X'))
     end
 end
 
@@ -42,6 +51,16 @@ function kernelmatrix!(
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
     end
     map!(κ, K, X, X')
+end
+
+## Wrapper for vector of reals
+function kernelmatrix!(
+    K::AbstractMatrix,
+    κ::Kernel,
+    X::AbstractVector{<:Real},
+    Y::AbstractVector{<:Real}
+)
+    kernelmatrix!(K, κ, reshape(X, 1, :), reshape(Y, 1, :), obsdim = 2)
 end
 
 function kernelmatrix!(
@@ -108,8 +127,6 @@ function kernelmatrix(κ::Kernel, X::AbstractVector, Y::AbstractVector)
     κ.(X, Y')
 end
 
-
-
 function kernelmatrix(κ::SimpleKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
     @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of `kernelmatrix`))"
     K = map(x -> kappa(κ, x), pairwise(metric(κ), X, dims = obsdim))
@@ -122,6 +139,14 @@ function kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int = defaultobs)
     else
         kernelmatrix(κ, RowVecs(X))
     end
+end
+
+function kernelmatrix(
+    κ::Kernel,
+    X::AbstractVector{<:Real},
+    Y::AbstractMatrix{<:Real}
+    )
+    kernelmatrix(κ, reshape(X, 1, :), reshape(Y, 1, :), obsdim = 2)
 end
 
 function kernelmatrix(
@@ -147,6 +172,8 @@ Calculate the diagonal matrix of `X` with respect to kernel `κ`
 `obsdim = 1` means the matrix `X` has size #samples x #dimension
 `obsdim = 2` means the matrix `X` has size #dimension x #samples
 """
+kerneldiagmatrix
+
 function kerneldiagmatrix(
     κ::Kernel,
     X::AbstractMatrix;
@@ -154,9 +181,9 @@ function kerneldiagmatrix(
     )
     @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
     if obsdim == 1
-        @compat kerneldiagmatrix(κ, ColVecs(X)) #[@views _kernel(κ,X[i,:],X[i,:]) for i in 1:size(X,obsdim)]
+        kerneldiagmatrix(κ, ColVecs(X)) #[@views _kernel(κ,X[i,:],X[i,:]) for i in 1:size(X,obsdim)]
     elseif obsdim == 2
-        @compat kerneldiagmatrix(κ, RowVecs(X)) #[@views _kernel(κ,X[:,i],X[:,i]) for i in 1:size(X,obsdim)]
+        kerneldiagmatrix(κ, ColVecs(X')) #[@views _kernel(κ,X[:,i],X[:,i]) for i in 1:size(X,obsdim)]
     end
 end
 
