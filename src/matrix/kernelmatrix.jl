@@ -26,11 +26,7 @@ function kernelmatrix!(
     obsdim::Int = defaultobs
 )
     @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of `kernelmatrix`))"
-    if obsdim == 1
-        kernelmatrix!(K, κ, ColVecs(X'))
-    else
-        kernelmatrix!(K, κ, ColVecs(X))
-    end
+    kernelmatrix!(K, κ, vec_of_vecs(X, obsdim = obsdim))
 end
 
 function kernelmatrix!(
@@ -66,11 +62,8 @@ function kernelmatrix!(
     obsdim::Int = defaultobs
 )
     @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of `kernelmatrix`))"
-    if obsdim == 1
-        kernelmatrix!(K, κ, ColVecs(X'), ColVecs(Y'))
-    else
-        kernelmatrix!(K, κ, ColVecs(X), ColVecs(Y))
-    end
+    kernelmatrix!(K, κ, vec_of_vecs(X, obsdim = obsdim), vec_of_vecs(Y, obsdim = obsdim))
+
 end
 
 function kernelmatrix!(
@@ -110,11 +103,7 @@ end
 
 function kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int = defaultobs)
     @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of `kernelmatrix`))"
-    if obsdim == 1
-        kernelmatrix(κ, ColVecs(X'))
-    else
-        kernelmatrix(κ, ColVecs(X))
-    end
+    kernelmatrix(κ, vec_of_vecs(X, obsdim = obsdim))
 end
 
 function kernelmatrix(
@@ -127,20 +116,13 @@ function kernelmatrix(
     if !check_dims(X, Y, feature_dim(obsdim))
         throw(DimensionMismatch("X $(size(X)) and Y $(size(Y)) do not have the same number of features on the dimension : $(feature_dim(obsdim))"))
     end
-    _kernelmatrix(κ, X, Y, obsdim)
+    map(x -> kappa(κ, x), pairwise(metric(κ), X, Y, dims = obsdim))
 end
 
 function kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int = defaultobs)
     @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of `kernelmatrix`))"
-    if obsdim == 1
-        kernelmatrix(κ, ColVecs(X'), ColVecs(Y'))
-    else
-        kernelmatrix(κ, ColVecs(X), ColVecs(Y))
-    end
+    kernelmatrix(κ, vec_of_vecs(X, obsdim = obsdim), vec_of_vecs(Y, obsdim = obsdim))
 end
-
-@inline _kernelmatrix(κ::SimpleKernel, X, Y, obsdim) =
-    map(x -> kappa(κ, x), pairwise(metric(κ), X, Y, dims = obsdim))
 
 """
     kerneldiagmatrix(κ::Kernel, X; obsdim::Int = 2)
@@ -157,11 +139,7 @@ function kerneldiagmatrix(
     obsdim::Int = defaultobs
     )
     @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    if obsdim == 1
-        kerneldiagmatrix(κ, ColVecs(X'))
-    else
-        kerneldiagmatrix(κ, ColVecs(X))
-    end
+    kerneldiagmatrix(κ, vec_of_vecs(X, obsdim = obsdim))
 end
 
 function kerneldiagmatrix(κ::Kernel, X::AbstractVector)
@@ -183,11 +161,7 @@ function kerneldiagmatrix!(
     if length(K) != size(X,obsdim)
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
     end
-    if obsdim == 1
-        kerneldiagmatrix!(K, κ, ColVecs(X'))
-    else
-        kerneldiagmatrix!(K, κ, ColVecs(X))
-    end
+    kerneldiagmatrix!(K, κ, vec_of_vecs(X, obsdim = obsdim))
     return K
 end
 
