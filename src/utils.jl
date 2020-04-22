@@ -43,7 +43,7 @@ Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
     RowVecs(X::AbstractMatrix)
 
 A lightweight wrapper for an `AbstractMatrix` to make it behave like a vector of vectors.
-Each vector represents a colum of the matrix
+Each vector represents a row of the matrix
 """
 struct RowVecs{T, TX<:AbstractMatrix{T}, S} <: AbstractVector{S} # VecOfVecs{T, TX, S}
     X::TX
