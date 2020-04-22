@@ -1,7 +1,7 @@
+using KernelFunctions
 using Distances
 using FiniteDifferences
 using Flux
-using KernelFunctions
 using Kronecker
 using LinearAlgebra
 using PDMats

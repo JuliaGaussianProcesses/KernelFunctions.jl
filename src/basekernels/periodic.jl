@@ -24,4 +24,4 @@ metric(κ::PeriodicKernel) = Sinus(κ.r)
 
 kappa(κ::PeriodicKernel, d::Real) = exp(- 0.5d)
 
-Base.show(io::IO, κ::PeriodicKernel) = print(io, "Periodic Kernel, length(r) = $(length(κ.r))")
+Base.show(io::IO, κ::PeriodicKernel) = print(io, "Periodic Kernel, length(r) = ", length(κ.r), ")")
