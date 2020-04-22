@@ -1,10 +1,10 @@
 @testset "utils" begin
-    using KernelFunctions: VecOfVecs, ColVecs, RowVecs
+    using KernelFunctions: vec_of_vecs, ColVecs, RowVecs
     rng, N, D = MersenneTwister(123456), 10, 4
     x, X = randn(rng, N), randn(rng, D, N)
     @testset "VecOfVecs" begin
-        @test vec_of_vecs(X, 2) == ColVecs(X)
-        @test vec_of_vecs(X, 1) == RowVecs(X)
+        @test vec_of_vecs(X, obsdim = 2) == ColVecs(X)
+        @test vec_of_vecs(X, obsdim = 1) == RowVecs(X)
     end
     # Test Matrix data sets.
     @testset "ColVecs" begin

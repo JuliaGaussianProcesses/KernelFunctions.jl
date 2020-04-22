@@ -9,10 +9,7 @@ macro check_args(K, param, cond, desc=string(cond))
     end
 end
 
-
-# abstract type VecOfVecs{T, TX <: AbstractMatrix{T}, S} <: AbstractVector{S} end
-
-function vec_of_vecs(X::AbstractMatrix, obsdim)
+function vec_of_vecs(X::AbstractMatrix; obsdim::Int = 2)
     @assert obsdim ∈ (1, 2) "obsdim should be 1 or 2"
     if obsdim == 1
         RowVecs(X)
