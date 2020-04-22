@@ -15,12 +15,12 @@
     @testset "Kernel Matrix Operations" begin
         @testset "Inplace Kernel Matrix" begin
             for obsdim in [1,2]
-                @test kernelmatrix!(K[obsdim],k,A,B,obsdim=obsdim) == kernelmatrix(k,A,B,obsdim=obsdim)
-                @test kernelmatrix!(K[obsdim],k,A,obsdim=obsdim) == kernelmatrix(k,A,obsdim=obsdim)
-                @test kerneldiagmatrix!(Kdiag[obsdim],k,A,obsdim=obsdim) == kerneldiagmatrix(k,A,obsdim=obsdim)
-                @test_throws DimensionMismatch kernelmatrix!(K[obsdim],k,A,C,obsdim=obsdim)
-                @test_throws DimensionMismatch kernelmatrix!(K[obsdim],k,C,obsdim=obsdim)
-                @test_throws DimensionMismatch kerneldiagmatrix!(Kdiag[obsdim],k,C,obsdim=obsdim)
+                @test kernelmatrix!(K[obsdim], k, A, B, obsdim = obsdim) == kernelmatrix(k, A, B, obsdim = obsdim)
+                @test kernelmatrix!(K[obsdim], k, A, obsdim = obsdim) == kernelmatrix(k, A, obsdim = obsdim)
+                @test kerneldiagmatrix!(Kdiag[obsdim], k, A, obsdim = obsdim) == kerneldiagmatrix(k, A, obsdim = obsdim)
+                @test_throws DimensionMismatch kernelmatrix!(K[obsdim], k, A, C, obsdim=obsdim)
+                @test_throws DimensionMismatch kernelmatrix!(K[obsdim], k, C, obsdim=obsdim)
+                @test_throws DimensionMismatch kerneldiagmatrix!(Kdiag[obsdim], k, C, obsdim=obsdim)
             end
         end
         @testset "Kernel matrix" begin
