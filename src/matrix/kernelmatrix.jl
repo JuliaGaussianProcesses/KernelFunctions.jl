@@ -30,21 +30,21 @@ end
 
 function kernelmatrix!(
     K::AbstractMatrix,
-    κ::BaseKernel,
+    κ::Kernel,
     X::AbstractMatrix;
     obsdim::Int = defaultobs
 )
     @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of `kernelmatrix`))"
     if obsdim == 1
-        kernelmatrix!(K, κ, ColVecs(X))
-    else
         kernelmatrix!(K, κ, ColVecs(X'))
+    else
+        kernelmatrix!(K, κ, ColVecs(X))
     end
 end
 
 function kernelmatrix!(
     K::AbstractMatrix,
-    κ::BaseKernel,
+    κ::Kernel,
     X::AbstractVector
     )
     if !check_dims(K, X, X, feature_dim(obsdim), obsdim)
@@ -74,27 +74,27 @@ function kernelmatrix!(
     if !check_dims(K, X, Y, feature_dim(obsdim), obsdim)
         throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not consistent with X ($(size(X))) and Y ($(size(Y)))"))
     end
-    map!(κ, K, pairwise(metric(κ), X, Y, dims = obsdim))
+    map!(x -> kappa(κ, x), K, pairwise(metric(κ), X, Y, dims = obsdim))
 end
 
 function kernelmatrix!(
     K::AbstractMatrix,
-    κ::BaseKernel,
+    κ::Kernel,
     X::AbstractMatrix,
     Y::AbstractMatrix;
     obsdim::Int = defaultobs
 )
     @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of `kernelmatrix`))"
     if obsdim == 1
-        @compat kernelmatrix!(K, κ, ColVecs(X), ColVecs(Y))
+        kernelmatrix!(K, κ, ColVecs(X'), ColVecs(Y'))
     else
-        @compat kernelmatrix!(K, κ, RowVecs(X), RowVecs(Y))
+        kernelmatrix!(K, κ, ColVecs(X), ColVecs(Y))
     end
 end
 
 function kernelmatrix!(
     K::AbstractMatrix,
-    κ::BaseKernel,
+    κ::Kernel,
     X::AbstractVector,
     Y::AbstractVector
     )
@@ -135,9 +135,9 @@ end
 function kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int = defaultobs)
     @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of `kernelmatrix`))"
     if obsdim == 1
-        kernelmatrix(κ, ColVecs(X))
+        kernelmatrix(κ, ColVecs(X'))
     else
-        kernelmatrix(κ, RowVecs(X))
+        kernelmatrix(κ, ColVecs(X))
     end
 end
 
@@ -181,9 +181,9 @@ function kerneldiagmatrix(
     )
     @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
     if obsdim == 1
-        kerneldiagmatrix(κ, ColVecs(X))
-    elseif obsdim == 2
         kerneldiagmatrix(κ, ColVecs(X'))
+    else
+        kerneldiagmatrix(κ, ColVecs(X))
     end
 end
 
@@ -207,13 +207,9 @@ function kerneldiagmatrix!(
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
     end
     if obsdim == 1
-        for i in eachindex(K)
-            @inbounds @views K[i] = κ(X[i,:], X[i,:])
-        end
+        kerneldiagmatrix!(K, κ, ColVecs(X'))
     else
-        for i in eachindex(K)
-            @inbounds @views K[i] = κ(X[:,i], X[:,i])
-        end
+        kerneldiagmatrix!(K, κ, ColVecs(X))
     end
     return K
 end
