@@ -10,7 +10,7 @@ macro check_args(K, param, cond, desc=string(cond))
 end
 
 
-abstract type VecOfVecs{T, TX <: AbstractMatrix{T}, S} <: AbstractVector{S} end
+# abstract type VecOfVecs{T, TX <: AbstractMatrix{T}, S} <: AbstractVector{S} end
 
 function vec_of_vecs(X::AbstractMatrix; obsdim = 1)
     @assert obsdim ∈ (1, 2) "obsdim should be 1 or 2"
@@ -26,7 +26,7 @@ end
 
 A lightweight box for an `AbstractMatrix` to make it behave like a vector of vectors.
 """
-struct ColVecs{T, TX<:AbstractMatrix{T}, S} <: VecOfVecs{T, TX, S}
+struct ColVecs{T, TX<:AbstractMatrix{T}, S} <: AbstractVector{S} # VecOfVecs{T, TX, S}
     X::TX
     function ColVecs(X::TX) where {T, TX<:AbstractMatrix{T}}
         S = typeof(view(X, :, 1))
@@ -43,7 +43,7 @@ Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
 
 A lightweight box for an `AbstractMatrix` to make it behave like a vector of vectors.
 """
-struct RowVecs{T, TX<:AbstractMatrix{T}, S} <: VecOfVecs{T, TX, S}
+struct RowVecs{T, TX<:AbstractMatrix{T}, S} <: AbstractVector{S} # VecOfVecs{T, TX, S}
     X::TX
     function RowVecs(X::TX) where {T, TX<:AbstractMatrix{T}}
         S = typeof(view(X, 1, :))
