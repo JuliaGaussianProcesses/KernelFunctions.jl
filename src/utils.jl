@@ -24,7 +24,8 @@ end
 """
     ColVecs(X::AbstractMatrix)
 
-A lightweight box for an `AbstractMatrix` to make it behave like a vector of vectors.
+A lightweight wrapper for an `AbstractMatrix` to make it behave like a vector of vectors.
+Each vector represents a colum of the matrix
 """
 struct ColVecs{T, TX<:AbstractMatrix{T}, S} <: AbstractVector{S} # VecOfVecs{T, TX, S}
     X::TX
@@ -41,7 +42,8 @@ Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
 """
     RowVecs(X::AbstractMatrix)
 
-A lightweight box for an `AbstractMatrix` to make it behave like a vector of vectors.
+A lightweight wrapper for an `AbstractMatrix` to make it behave like a vector of vectors.
+Each vector represents a colum of the matrix
 """
 struct RowVecs{T, TX<:AbstractMatrix{T}, S} <: AbstractVector{S} # VecOfVecs{T, TX, S}
     X::TX
