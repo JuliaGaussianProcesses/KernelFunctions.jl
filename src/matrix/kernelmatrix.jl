@@ -47,10 +47,10 @@ function kernelmatrix!(
     κ::Kernel,
     X::AbstractVector
     )
-    if !check_dims(K, X, X, feature_dim(obsdim), obsdim)
+    if (size(K, 1) != size(K, 2)) || (length(X) != size(K, 1))
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
     end
-    map!(κ, K, X, X')
+    K .= κ.(X, X')
 end
 
 ## Wrapper for vector of reals
@@ -98,7 +98,10 @@ function kernelmatrix!(
     X::AbstractVector,
     Y::AbstractVector
     )
-    map!(K, κ, X, Y')
+    if (size(K, 1) != length(X)) || (size(K, 2) != length(Y))
+        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X)) and Y $(size(Y))"))
+    end
+    K .= κ.(X, Y')
 end
 
 """
@@ -160,6 +163,15 @@ function kernelmatrix(
         throw(DimensionMismatch("X $(size(X)) and Y $(size(Y)) do not have the same number of features on the dimension : $(feature_dim(obsdim))"))
     end
     _kernelmatrix(κ, X, Y, obsdim)
+end
+
+function kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int = defaultobs)
+    @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of `kernelmatrix`))"
+    if obsdim == 1
+        kernelmatrix(κ, ColVecs(X'), ColVecs(Y'))
+    else
+        kernelmatrix(κ, ColVecs(X), ColVecs(Y))
+    end
 end
 
 @inline _kernelmatrix(κ::SimpleKernel, X, Y, obsdim) =

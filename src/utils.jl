@@ -25,6 +25,7 @@ end
 
 Base.size(D::ColVecs) = (size(D.X, 2),)
 Base.getindex(D::ColVecs, i::Int) = view(D.X, :, i)
+Base.getindex(D::ColVecs, i::CartesianIndex{1}) = view(D.X, :, i)
 Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
 
 # Take highest Float among possibilities
