@@ -1,3 +1,8 @@
+### Needs to be kept out for julia 1.0
+
+struct baseSE <: KernelFunctions.BaseKernel end
+(k::baseSE)(x, y) = exp(-evaluate(SqEuclidean(), x, y))
+
 @testset "kernelmatrix" begin
 
     rng = MersenneTwister(123456)
@@ -17,8 +22,6 @@
     Kdiag = [zeros(dims[1]),zeros(dims[2])]
     s = rand(rng)
     k = SqExponentialKernel()
-    struct baseSE <: KernelFunctions.BaseKernel end
-    (k::baseSE)(x, y) = exp(-evaluate(SqEuclidean(), x, y))
     newk = baseSE()
     kt = transform(SqExponentialKernel(),s)
 
@@ -29,7 +32,6 @@
             @test kernelmatrix!(K[2], k, vA) ≈ kernelmatrix(k, A) atol = 1e-5
             @test kernelmatrix!(K[2], k, vA, vB) ≈ kernelmatrix(k, A, B) atol = 1e-5
             for obsdim in [1,2]
-                @show obsdim
                 @test kernelmatrix!(K[obsdim], k, A, B, obsdim = obsdim) == kernelmatrix(k, A, B, obsdim = obsdim)
                 @test kernelmatrix!(K[obsdim], k, A, obsdim = obsdim) == kernelmatrix(k, A, obsdim = obsdim)
                 @test kerneldiagmatrix!(Kdiag[obsdim], k, A, obsdim = obsdim) == kerneldiagmatrix(k, A, obsdim = obsdim)
@@ -54,9 +56,9 @@
                 @test k(A,obsdim=obsdim) == kernelmatrix(k,A,obsdim=obsdim)
                 # @test KernelFunctions._kernel(k,1.0,2.0) == KernelFunctions._kernel(k,[1.0],[2.0])
                 @test_throws DimensionMismatch kernelmatrix(k,A,C,obsdim=obsdim)
-                @test kernelmatrix!(K[obsdim], newk, A, B, obsdim = obsdim) ≈ kernelmatrix(k, A, B, obsdim = obsdim)
-                @test kernelmatrix!(K[obsdim], newk, A, obsdim = obsdim) ≈ kernelmatrix(k, A, obsdim = obsdim)
-                @test kerneldiagmatrix!(Kdiag[obsdim], newk, A, obsdim = obsdim) ≈ kerneldiagmatrix(k, A, obsdim = obsdim)
+                @test kernelmatrix(newk, A, B, obsdim = obsdim) ≈ kernelmatrix(k, A, B, obsdim = obsdim)
+                @test kernelmatrix(newk, A, obsdim = obsdim) ≈ kernelmatrix(k, A, obsdim = obsdim)
+                @test kerneldiagmatrix(newk, A, obsdim = obsdim) ≈ kerneldiagmatrix(k, A, obsdim = obsdim)
             end
         end
         @testset "Transformed Kernel Matrix Operations" begin
