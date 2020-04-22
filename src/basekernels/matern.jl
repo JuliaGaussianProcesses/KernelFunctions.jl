@@ -27,7 +27,7 @@ end
 
 metric(::MaternKernel) = Euclidean()
 
-Base.show(io::IO, κ::MaternKernel) = print(io, "Matern Kernel (ν = $(first(κ.ν)))")
+Base.show(io::IO, κ::MaternKernel) = print(io, "Matern Kernel (ν = ", first(κ.ν), ")")
 
 """
     Matern32Kernel()

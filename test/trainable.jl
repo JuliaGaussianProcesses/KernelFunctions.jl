@@ -1,5 +1,6 @@
 @testset "trainable" begin
-    ν = 2.0; c = 3.0; d = 2.0; γ = 2.0; α = 2.5; h = 0.5
+    using Flux: params
+    ν = 2.0; c = 3.0; d = 2.0; γ = 2.0; α = 2.5; h = 0.5; r = rand(3)
 
     kc = ConstantKernel(c=c)
     @test all(params(kc) .== params([c]))
@@ -21,6 +22,9 @@
 
     kp = PolynomialKernel(c=c, d=d)
     @test all(params(kp) .== params([d], [c]))
+
+    kpe = PeriodicKernel(r = r)
+    @test all(params(kpe) .== params(r))
 
     kr = RationalQuadraticKernel(α=α)
     @test all(params(kr) .== params([α]))

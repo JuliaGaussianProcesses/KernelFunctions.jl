@@ -59,4 +59,4 @@ kappa(κ::ConstantKernel,x::Real) = first(κ.c)*one(x)
 
 metric(::ConstantKernel) = Delta()
 
-Base.show(io::IO, κ::ConstantKernel) = print(io, "Constant Kernel (c = $(first(κ.c)))")
+Base.show(io::IO, κ::ConstantKernel) = print(io, "Constant Kernel (c = ", first(κ.c), ")")
