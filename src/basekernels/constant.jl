@@ -15,7 +15,6 @@ metric(::ZeroKernel) = Delta()
 
 Base.show(io::IO, ::ZeroKernel) = print(io, "Zero Kernel")
 
-issimple(ZeroKernel) = true
 
 """
     WhiteKernel()
