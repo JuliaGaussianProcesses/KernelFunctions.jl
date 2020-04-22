@@ -37,11 +37,18 @@ Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
 #     return T <: Real ? T : Float64
 # end
 
-check_dims(K, X, Y, featdim, obsdim) =
-    check_dims(X, Y, featdim, obsdim) &&
-    (size(K) == (size(X, obsdim), size(Y, obsdim)))
+function check_dims(K, X::AbstractVector, Y::AbstractVector)
+    size(K) == (length(X), length(Y))
+end
 
-check_dims(X, Y, featdim, obsdim) = size(X, featdim) == size(Y, featdim)
+
+## Won't be needed with full ColVecs implementation
+function check_dims(K, X::AbstractMatrix, Y::AbstractMatrix, featdim, obsdim)
+    check_dims(X, Y, featdim) &&
+    (size(K) == (size(X, obsdim), size(Y, obsdim)))
+end
+
+check_dims(X::AbstractMatrix, Y::AbstractMatrix, featdim) = size(X, featdim) == size(Y, featdim)
 
 
 feature_dim(obsdim::Int) = obsdim == 1 ? 2 : 1

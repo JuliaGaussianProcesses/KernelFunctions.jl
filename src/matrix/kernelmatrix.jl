@@ -12,7 +12,7 @@ function kernelmatrix!(
     κ::Kernel,
     X::AbstractVector{<:Real}
 )
-    kernelmatrix!(K, κ, reshape(X, 1, :), obsdim = 2)
+    kernelmatrix!(K, κ, ColVecs(reshape(X, 1, :)))
 end
 
 function kernelmatrix!(
@@ -47,7 +47,7 @@ function kernelmatrix!(
     κ::Kernel,
     X::AbstractVector
     )
-    if (size(K, 1) != size(K, 2)) || (length(X) != size(K, 1))
+    if !check_dims(K, X, X)
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
     end
     K .= κ.(X, X')
@@ -60,7 +60,7 @@ function kernelmatrix!(
     X::AbstractVector{<:Real},
     Y::AbstractVector{<:Real}
 )
-    kernelmatrix!(K, κ, reshape(X, 1, :), reshape(Y, 1, :), obsdim = 2)
+    kernelmatrix!(K, κ, ColVecs(reshape(X, 1, :)), ColVecs(reshape(Y, 1, :)))
 end
 
 function kernelmatrix!(
@@ -98,7 +98,7 @@ function kernelmatrix!(
     X::AbstractVector,
     Y::AbstractVector
     )
-    if (size(K, 1) != length(X)) || (size(K, 2) != length(Y))
+    if !check_dims(K, X, Y)
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X)) and Y $(size(Y))"))
     end
     K .= κ.(X, Y')
@@ -147,9 +147,9 @@ end
 function kernelmatrix(
     κ::Kernel,
     X::AbstractVector{<:Real},
-    Y::AbstractMatrix{<:Real}
+    Y::AbstractVector{<:Real}
     )
-    kernelmatrix(κ, reshape(X, 1, :), reshape(Y, 1, :), obsdim = 2)
+    kernelmatrix(κ, ColVecs(reshape(X, 1, :)), ColVecs(reshape(Y, 1, :)))
 end
 
 function kernelmatrix(
@@ -231,5 +231,8 @@ function kerneldiagmatrix!(
     κ::Kernel,
     X::AbstractVector
     )
+    if length(K) != length(X)
+        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(length(X))"))
+    end
     map!(κ, K, X, X)
 end
