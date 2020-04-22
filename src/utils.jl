@@ -12,7 +12,7 @@ end
 
 abstract type VecOfVecs{T, TX <: AbstractMatrix{T}, S} <: AbstractVector{S} end
 
-function VecOfVecs(X::AbstractMatrix; obsdim = 1)
+function vec_of_vecs(X::AbstractMatrix; obsdim = 1)
     @assert obsdim ∈ (1, 2) "obsdim should be 1 or 2"
     if obsdim == 1
         RowVecs(X)
