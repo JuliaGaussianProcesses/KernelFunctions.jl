@@ -10,12 +10,23 @@ macro check_args(K, param, cond, desc=string(cond))
 end
 
 
+abstract type VecOfVecs{T, TX <: AbstractMatrix{T}, S} <: AbstractVector{S} end
+
+function VecOfVecs(X::AbstractMatrix; obsdim = 1)
+    @assert obsdim ∈ (1, 2) "obsdim should be 1 or 2"
+    if obsdim == 1
+        RowVecs(X)
+    else
+        ColVecs(X)
+    end
+end
+
 """
     ColVecs(X::AbstractMatrix)
 
 A lightweight box for an `AbstractMatrix` to make it behave like a vector of vectors.
 """
-struct ColVecs{T, TX<:AbstractMatrix{T}, S} <: AbstractVector{S}
+struct ColVecs{T, TX<:AbstractMatrix{T}, S} <: VecOfVecs{T, TX, S}
     X::TX
     function ColVecs(X::TX) where {T, TX<:AbstractMatrix{T}}
         S = typeof(view(X, :, 1))
@@ -26,6 +37,23 @@ end
 Base.size(D::ColVecs) = (size(D.X, 2),)
 Base.getindex(D::ColVecs, i::Int) = view(D.X, :, i)
 Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
+
+"""
+    RowVecs(X::AbstractMatrix)
+
+A lightweight box for an `AbstractMatrix` to make it behave like a vector of vectors.
+"""
+struct RowVecs{T, TX<:AbstractMatrix{T}, S} <: VecOfVecs{T, TX, S}
+    X::TX
+    function RowVecs(X::TX) where {T, TX<:AbstractMatrix{T}}
+        S = typeof(view(X, 1, :))
+        new{T, TX, S}(X)
+    end
+end
+
+Base.size(D::RowVecs) = (size(D.X, 1),)
+Base.getindex(D::RowVecs, i::Int) = view(D.X, i, :)
+Base.getindex(D::RowVecs, i) = RowVecs(view(D.X, i, :))
 
 # Take highest Float among possibilities
 # function promote_float(Tₖ::DataType...)
