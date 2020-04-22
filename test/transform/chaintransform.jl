@@ -12,4 +12,5 @@
     @test all(KernelFunctions.apply(tchain,X,obsdim=2).==f(P*(s*X)))
     @test all(KernelFunctions.apply(tchain,X,obsdim=2).==
                 KernelFunctions.apply(tf∘tp∘t,X,obsdim=2))
+    @test repr(t∘tf) == "Chain of 2 transforms:\n\t - $(tf) |> $(t)"
 end

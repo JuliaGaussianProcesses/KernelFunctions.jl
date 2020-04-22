@@ -30,7 +30,7 @@ function _gabor(; ell = nothing, p = nothing)
 end
 
 function Base.getproperty(k::GaborKernel, v::Symbol)
-    if v == :kernel 
+    if v == :kernel
         return getfield(k, v)
     elseif v == :ell
         kernel1 = k.kernel.kernels[1]
@@ -51,7 +51,7 @@ function Base.getproperty(k::GaborKernel, v::Symbol)
     end
 end
 
-Base.show(io::IO, κ::GaborKernel) = print(io, "Gabor Kernel (ell = $(κ.ell), p = $(κ.p))")
+Base.show(io::IO, κ::GaborKernel) = print(io, "Gabor Kernel (ell = ", κ.ell, ", p = ", κ.p, ")")
 
 kappa(κ::GaborKernel, x, y) = kappa(κ.kernel, x ,y)
 

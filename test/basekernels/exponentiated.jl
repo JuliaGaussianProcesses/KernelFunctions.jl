@@ -9,4 +9,5 @@
     @test kappa(k,-x) ≈ exp(-x)
     @test k(v1,v2) ≈ exp(dot(v1,v2))
     @test metric(ExponentiatedKernel()) == KernelFunctions.DotProduct()
+    @test repr(k) == "Exponentiated Kernel"
 end

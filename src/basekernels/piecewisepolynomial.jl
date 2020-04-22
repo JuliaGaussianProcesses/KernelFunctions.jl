@@ -95,5 +95,5 @@ end
 metric(κ::PiecewisePolynomialKernel) = Mahalanobis(κ.maha)
 
 function Base.show(io::IO, κ::PiecewisePolynomialKernel{V}) where {V}
-    print(io, "Piecewise Polynomial Kernel (v = $(V), size(maha) = $(size(κ.maha))")
+    print(io, "Piecewise Polynomial Kernel (v = ", V, ", size(maha) = ", size(κ.maha), ")")
 end

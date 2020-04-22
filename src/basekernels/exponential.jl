@@ -63,4 +63,4 @@ kappa(κ::GammaExponentialKernel, d²::Real) = exp(-d²^first(κ.γ))
 iskroncompatible(::GammaExponentialKernel) = true
 metric(::GammaExponentialKernel) = SqEuclidean()
 
-Base.show(io::IO, κ::GammaExponentialKernel) = print(io, "Gamma Exponential Kernel (γ = $(first(κ.γ)))")
+Base.show(io::IO, κ::GammaExponentialKernel) = print(io, "Gamma Exponential Kernel (γ = ", first(κ.γ), ")")
