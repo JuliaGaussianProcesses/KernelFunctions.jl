@@ -12,7 +12,7 @@ where `r` is the Mahalanobis distance mahalanobis(x,y) with `maha` as the metric
 """
 struct PiecewisePolynomialKernel{V, A<:AbstractMatrix{<:Real}} <: SimpleKernel
     maha::A
-    j::Int64
+    j::Int
     function PiecewisePolynomialKernel{V}(maha::AbstractMatrix{<:Real}) where V
         V in (0, 1, 2, 3) || error("Invalid paramter v=$(V). Should be 0, 1, 2 or 3.")
         LinearAlgebra.checksquare(maha)
@@ -31,11 +31,7 @@ _f(κ::PiecewisePolynomialKernel{2}, r, j) = 1 + (j + 2) * r + (j^2 + 4 * j + 3)
 _f(κ::PiecewisePolynomialKernel{3}, r, j) = 1 + (j + 3) * r +
     (6 * j^2 + 36j + 45) / 15 * r.^2 + (j^3 + 9 * j^2 + 23j + 15) / 15 * r.^3
 
-function _piecewisepolynomial(κ::PiecewisePolynomialKernel{V}, r, j) where V
-    return max(1 - r, 0)^(j + V) * _f(κ, r, j)
-end
-
-kappa(κ::PiecewisePolynomialKernel, d::Real) = _piecewisepolynomial(κ, r, κ.j)
+kappa(κ::PiecewisePolynomialKernel{V}, r) where V = max(1 - r, 0)^(κ.j + V) * _f(κ, r, κ.j)
 
 metric(κ::PiecewisePolynomialKernel) = Mahalanobis(κ.maha)
 
