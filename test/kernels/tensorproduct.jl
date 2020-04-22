@@ -95,7 +95,7 @@
             trueXY = kernelmatrix(k1, X, Y)
             tmp = Matrix{Float64}(undef, 10, 10)
 
-            @test kernelmatrix(kernel, X) == trueX
+            @test kernelmatrix(kernel, X) ≈ trueX
             @test kernelmatrix(kernel, X'; obsdim = 1) ≈ trueX
 
             @test kernelmatrix(kernel, X, Y) ≈ trueXY
@@ -103,19 +103,19 @@
 
             fill!(tmp, 0)
             kernelmatrix!(tmp, kernel, X)
-            @test tmp == trueX
+            @test tmp ≈ trueX
 
             fill!(tmp, 0)
             kernelmatrix!(tmp, kernel, X'; obsdim = 1)
-            @test tmp == trueX
+            @test tmp ≈ trueX
 
             fill!(tmp, 0)
             kernelmatrix!(tmp, kernel, X, Y)
-            @test tmp == trueXY
+            @test tmp ≈ trueXY
 
             fill!(tmp, 0)
             kernelmatrix!(tmp, kernel, X', Y'; obsdim = 1)
-            @test tmp == trueXY
+            @test tmp ≈ trueXY
         end
 
         @testset "kerneldiagmatrix" begin

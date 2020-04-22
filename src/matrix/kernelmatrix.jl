@@ -6,15 +6,6 @@ In-place version of [`kernelmatrix`](@ref) where pre-allocated matrix `K` will b
 """
 kernelmatrix!
 
-## Wrapper for vector of reals
-function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::Kernel,
-    X::AbstractVector{<:Real}
-)
-    kernelmatrix!(K, κ, ColVecs(reshape(X, 1, :)))
-end
-
 function kernelmatrix!(
     K::AbstractMatrix,
     κ::SimpleKernel,
@@ -51,16 +42,6 @@ function kernelmatrix!(
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
     end
     K .= κ.(X, X')
-end
-
-## Wrapper for vector of reals
-function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::Kernel,
-    X::AbstractVector{<:Real},
-    Y::AbstractVector{<:Real}
-)
-    kernelmatrix!(K, κ, ColVecs(reshape(X, 1, :)), ColVecs(reshape(Y, 1, :)))
 end
 
 function kernelmatrix!(
@@ -114,14 +95,6 @@ Calculate the kernel matrix of `X` (and `Y`) with respect to kernel `κ`.
 """
 kernelmatrix
 
-function kernelmatrix(
-    κ::Kernel,
-    X::AbstractVector{<:Real};
-    obsdim::Int = defaultobs,
-)
-    kernelmatrix(κ, reshape(X, 1, :), obsdim = 2)
-end
-
 function kernelmatrix(κ::Kernel, X::AbstractVector)
     kernelmatrix(κ, X, X) #TODO Can be optimized later
 end
@@ -145,21 +118,13 @@ function kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int = defaultobs)
 end
 
 function kernelmatrix(
-    κ::Kernel,
-    X::AbstractVector{<:Real},
-    Y::AbstractVector{<:Real}
-    )
-    kernelmatrix(κ, ColVecs(reshape(X, 1, :)), ColVecs(reshape(Y, 1, :)))
-end
-
-function kernelmatrix(
     κ::SimpleKernel,
     X::AbstractMatrix,
     Y::AbstractMatrix;
     obsdim = defaultobs,
 )
     @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    if !check_dims(X, Y, feature_dim(obsdim), obsdim)
+    if !check_dims(X, Y, feature_dim(obsdim))
         throw(DimensionMismatch("X $(size(X)) and Y $(size(Y)) do not have the same number of features on the dimension : $(feature_dim(obsdim))"))
     end
     _kernelmatrix(κ, X, Y, obsdim)
