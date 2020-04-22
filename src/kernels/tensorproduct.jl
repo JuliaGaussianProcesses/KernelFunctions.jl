@@ -22,7 +22,6 @@ end
 
 Base.length(kernel::TensorProduct) = length(kernel.kernels)
 
-(kernel::TensorProduct)(x, y) = kappa(kernel, x, y)
 function kappa(kernel::TensorProduct, x, y)
     return prod(kappa(k, xi, yi) for (k, xi, yi) in zip(kernel.kernels, x, y))
 end
