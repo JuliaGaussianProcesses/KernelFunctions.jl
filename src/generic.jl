@@ -12,13 +12,6 @@ function concretetypes(k, ktypes::Vector)
     return ktypes
 end
 
-for k in concretetypes(Kernel, [])
-    @eval begin
-        @inline (κ::$k)(X::AbstractMatrix{T}, Y::AbstractMatrix{T}; obsdim::Integer=defaultobs) where {T} = kernelmatrix(κ, X, Y, obsdim=obsdim)
-        @inline (κ::$k)(X::AbstractMatrix{T}; obsdim::Integer=defaultobs) where {T} = kernelmatrix(κ, X, obsdim=obsdim)
-    end
-end
-
 for k in nameof.(subtypes(BaseKernel))
     @eval begin
         @deprecate($k(ρ::Real;args...),transform($k(args...),ρ))
