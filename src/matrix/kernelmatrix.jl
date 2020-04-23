@@ -24,7 +24,7 @@ function kernelmatrix!(
     K::AbstractMatrix,
     κ::Kernel,
     X::AbstractMatrix;
-    obsdim::Int = defaultobs
+    obsdim::Int = defaultobs,
 )
     return kernelmatrix!(K, κ, vec_of_vecs(X, obsdim = obsdim))
 end
@@ -32,7 +32,7 @@ end
 function kernelmatrix!(
     K::AbstractMatrix,
     κ::Kernel,
-    X::AbstractVector
+    X::AbstractVector,
     )
     if !check_dims(K, X, X)
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
@@ -60,7 +60,7 @@ function kernelmatrix!(
     κ::Kernel,
     X::AbstractMatrix,
     Y::AbstractMatrix;
-    obsdim::Int = defaultobs
+    obsdim::Int = defaultobs,
 )
     return kernelmatrix!(K, κ, vec_of_vecs(X, obsdim = obsdim), vec_of_vecs(Y, obsdim = obsdim))
 end
@@ -69,7 +69,7 @@ function kernelmatrix!(
     K::AbstractMatrix,
     κ::Kernel,
     X::AbstractVector,
-    Y::AbstractVector
+    Y::AbstractVector,
     )
     if !check_dims(K, X, Y)
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X)) and Y $(size(Y))"))
@@ -130,7 +130,7 @@ kerneldiagmatrix
 function kerneldiagmatrix(
     κ::Kernel,
     X::AbstractMatrix;
-    obsdim::Int = defaultobs
+    obsdim::Int = defaultobs,
     )
     return kerneldiagmatrix(κ, vec_of_vecs(X, obsdim = obsdim))
 end
@@ -146,7 +146,7 @@ function kerneldiagmatrix!(
     K::AbstractVector,
     κ::Kernel,
     X::AbstractMatrix;
-    obsdim::Int = defaultobs
+    obsdim::Int = defaultobs,
 )
     if length(K) != size(X,obsdim)
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
@@ -157,7 +157,7 @@ end
 function kerneldiagmatrix!(
     K::AbstractVector,
     κ::Kernel,
-    X::AbstractVector
+    X::AbstractVector,
 )
     if length(K) != length(X)
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(length(X))"))

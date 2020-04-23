@@ -53,7 +53,7 @@ end
 
 Base.size(D::RowVecs) = (size(D.X, 1),)
 Base.getindex(D::RowVecs, i::Int) = view(D.X, i, :)
-Base.getindex(D::ColVecs, i::CartesianIndex{1}) = view(D.X, i, :)
+Base.getindex(D::RowVecs, i::CartesianIndex{1}) = view(D.X, i, :)
 Base.getindex(D::RowVecs, i) = RowVecs(view(D.X, i, :))
 
 # Take highest Float among possibilities
