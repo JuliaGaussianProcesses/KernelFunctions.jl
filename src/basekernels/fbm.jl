@@ -17,6 +17,16 @@ struct FBMKernel{T<:Real} <: BaseKernel
     end
 end
 
+function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
+    modX = sum(abs2, x)
+    modY = sum(abs2, y)
+    modXY = evaluate(SqEuclidean(sqroundoff), x, y)
+    h = first(κ.h)
+    return (modX^h + modY^h - modXY^h)/2
+end
+
+(κ::FBMKernel)(x::Real, y::Real) = (abs2(x)^first(κ.h) + abs2(y)^first(κ.h) - abs2(x-y)^first(κ.h))/2
+
 Base.show(io::IO, κ::FBMKernel) = print(io, "Fractional Brownian Motion Kernel (h = ", first(κ.h), ")")
 
 const sqroundoff = 1e-15
@@ -65,13 +75,3 @@ function kernelmatrix!(
     K .= _fbm.(vec(modX), reshape(modY, 1, :), modXY, κ.h)
     return K
 end
-
-function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
-    modX = sum(abs2, x)
-    modY = sum(abs2, y)
-    modXY = evaluate(SqEuclidean(sqroundoff), x, y)
-    h = first(κ.h)
-    return (modX^h + modY^h - modXY^h)/2
-end
-
-(κ::FBMKernel)(x::Real, y::Real) = (abs2(x)^first(κ.h) + abs2(y)^first(κ.h) - abs2(x-y)^first(κ.h))/2

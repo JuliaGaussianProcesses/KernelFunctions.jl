@@ -9,6 +9,12 @@ struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
     transform::Tr
 end
 
+function (k::TransformedKernel)(x, y)
+    x′ = vec(apply(k.transform, reshape(x, :, 1); obsdim=2))
+    y′ = vec(apply(k.transform, reshape(y, :, 1); obsdim=2))
+    return k.kernel(x′, y′)
+end
+
 """
 ```julia
     transform(k::BaseKernel, t::Transform) (1)

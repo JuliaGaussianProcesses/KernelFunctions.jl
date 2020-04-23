@@ -50,8 +50,6 @@ struct baseSE <: KernelFunctions.BaseKernel end
             @test kernelmatrix(k, vA, vB) ≈ kernelmatrix(k, A, B) atol = 1e-5
             for obsdim in [1,2]
                 @test kerneldiagmatrix(k,A,obsdim=obsdim) == diag(kernelmatrix(k,A,obsdim=obsdim))
-                @test k(A,B,obsdim=obsdim) == kernelmatrix(k,A,B,obsdim=obsdim)
-                @test k(A,obsdim=obsdim) == kernelmatrix(k,A,obsdim=obsdim)
                 @test_throws DimensionMismatch kernelmatrix(k,A,C,obsdim=obsdim)
                 @test kernelmatrix(newk, A, B, obsdim = obsdim) ≈ kernelmatrix(k, A, B, obsdim = obsdim)
                 @test kernelmatrix(newk, A, obsdim = obsdim) ≈ kernelmatrix(k, A, obsdim = obsdim)

@@ -18,3 +18,5 @@ for k in nameof.(subtypes(BaseKernel))
         @deprecate($k(ρ::AbstractVector{<:Real};args...),transform($k(args...),ρ))
     end
 end
+
+eval_fallback(k::Kernel, x, y) = kappa(k, evaluate(metric(k), x, y))

@@ -17,6 +17,9 @@ struct MahalanobisKernel{T<:Real, A<:AbstractMatrix{T}} <: SimpleKernel
 end
 
 kappa(κ::MahalanobisKernel, d::T) where {T<:Real} = exp(-d)
+
 metric(κ::MahalanobisKernel) = SqMahalanobis(κ.P)
+
+(k::MahalanobisKernel)(x, y) = eval_fallback(k, x, y)
 
 Base.show(io::IO, κ::MahalanobisKernel) = print(io, "Mahalanobis Kernel (size(P) = ", size(κ.P), ")")

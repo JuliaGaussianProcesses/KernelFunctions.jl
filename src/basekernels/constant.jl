@@ -13,6 +13,8 @@ kappa(κ::ZeroKernel, d::T) where {T<:Real} = zero(T)
 
 metric(::ZeroKernel) = Delta()
 
+(κ::ZeroKernel)(x, y) = eval_fallback(κ, x, y)
+
 Base.show(io::IO, ::ZeroKernel) = print(io, "Zero Kernel")
 
 
@@ -37,6 +39,8 @@ kappa(κ::WhiteKernel, δₓₓ::Real) = δₓₓ
 
 metric(::WhiteKernel) = Delta()
 
+(κ::EyeKernel)(x, y) = eval_fallback(κ, x, y)
+
 Base.show(io::IO, ::WhiteKernel) = print(io, "White Kernel")
 
 
@@ -58,5 +62,7 @@ end
 kappa(κ::ConstantKernel,x::Real) = first(κ.c)*one(x)
 
 metric(::ConstantKernel) = Delta()
+
+(κ::ConstantKernel)(x, y) = eval_fallback(κ, x, y)
 
 Base.show(io::IO, κ::ConstantKernel) = print(io, "Constant Kernel (c = ", first(κ.c), ")")
