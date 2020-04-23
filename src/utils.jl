@@ -66,14 +66,14 @@ Base.getindex(D::RowVecs, i) = RowVecs(view(D.X, i, :))
 # end
 
 function check_dims(K, X::AbstractVector, Y::AbstractVector)
-    size(K) == (length(X), length(Y))
+    return size(K) == (length(X), length(Y))
 end
 
 
 ## Won't be needed with full ColVecs implementation
 function check_dims(K, X::AbstractMatrix, Y::AbstractMatrix, featdim, obsdim)
-    check_dims(X, Y, featdim) &&
-    (size(K) == (size(X, obsdim), size(Y, obsdim)))
+    return check_dims(X, Y, featdim) &&
+        (size(K) == (size(X, obsdim), size(Y, obsdim)))
 end
 
 check_dims(X::AbstractMatrix, Y::AbstractMatrix, featdim) = size(X, featdim) == size(Y, featdim)
