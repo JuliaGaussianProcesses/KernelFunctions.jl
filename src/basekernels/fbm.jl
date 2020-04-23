@@ -66,17 +66,6 @@ function kernelmatrix!(
     return K
 end
 
-## Apply kernel on two vectors ##
-function _kernel(
-        κ::FBMKernel,
-        x::AbstractVector,
-        y::AbstractVector;
-        obsdim::Int = defaultobs
-    )
-    @assert length(x) == length(y) "x and y don't have the same dimension!"
-    return kappa(κ, x, y)
-end
-
 function kappa(κ::FBMKernel, x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modX = sum(abs2, x)
     modY = sum(abs2, y)

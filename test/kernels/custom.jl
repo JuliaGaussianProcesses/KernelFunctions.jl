@@ -1,5 +1,5 @@
 # minimal definition of a custom kernel
-struct MyKernel <: Kernel end
+struct MyKernel <: SimpleKernel end
 
 KernelFunctions.kappa(::MyKernel, d2::Real) = exp(-d2)
 KernelFunctions.metric(::MyKernel) = SqEuclidean()

@@ -35,7 +35,7 @@
         @test repr(k) == "Gamma Exponential Kernel (γ = $(γ))"
 
         #Coherence :
-        @test KernelFunctions._kernel(GammaExponentialKernel(γ=1.0),v1,v2) ≈ KernelFunctions._kernel(SqExponentialKernel(),v1,v2)
-        @test KernelFunctions._kernel(GammaExponentialKernel(γ=0.5),v1,v2) ≈ KernelFunctions._kernel(ExponentialKernel(),v1,v2)
+        @test GammaExponentialKernel(γ=1.0)(v1,v2) ≈ SqExponentialKernel()(v1,v2)
+        @test GammaExponentialKernel(γ=0.5)(v1,v2) ≈ ExponentialKernel()(v1,v2)
     end
 end

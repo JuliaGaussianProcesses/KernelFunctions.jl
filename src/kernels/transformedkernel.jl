@@ -39,3 +39,17 @@ function printshifted(io::IO, κ::TransformedKernel, shift::Int)
     printshifted(io, κ.kernel, shift)
     print(io,"\n" * ("\t" ^ (shift + 1)) * "- $(κ.transform)")
 end
+
+# Kernel matrix operations
+
+kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, X::AbstractMatrix; obsdim::Int = defaultobs) =
+    kernelmatrix!(K, kernel(κ), apply(κ.transform, X, obsdim = obsdim), obsdim = obsdim)
+
+kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int = defaultobs) =
+    kernelmatrix!(K, kernel(κ), apply(κ.transform, X, obsdim = obsdim), apply(κ.transform, Y, obsdim = obsdim), obsdim = obsdim)
+
+kernelmatrix(κ::TransformedKernel, X::AbstractMatrix; obsdim::Int = defaultobs) =
+    kernelmatrix(kernel(κ), apply(κ.transform, X, obsdim = obsdim), obsdim = obsdim)
+    
+kernelmatrix(κ::TransformedKernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int = defaultobs) =
+    kernelmatrix(kernel(κ), apply(κ.transform, X, obsdim = obsdim), apply(κ.transform, Y, obsdim = obsdim), obsdim = obsdim)

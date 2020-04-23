@@ -10,6 +10,7 @@ export duplicate, set! # Helpers
 
 export Kernel
 export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel
+export CosineKernel
 export SqExponentialKernel, RBFKernel, GaussianKernel, SEKernel
 export LaplacianKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
@@ -43,6 +44,7 @@ Abstract type defining a slice-wise transformation on an input matrix
 abstract type Transform end
 abstract type Kernel end
 abstract type BaseKernel <: Kernel end
+abstract type SimpleKernel <: BaseKernel end
 
 include("utils.jl")
 include("distances/dotproduct.jl")

@@ -10,7 +10,7 @@ macro check_args(K, param, cond, desc=string(cond))
 end
 
 function vec_of_vecs(X::AbstractMatrix; obsdim::Int = 2)
-    @assert obsdim ∈ (1, 2) "obsdim should be 1 or 2"
+    @assert obsdim ∈ (1, 2) "obsdim should be 1 or 2, see docs of kernelmatrix"
     if obsdim == 1
         RowVecs(X)
     else
@@ -34,6 +34,7 @@ end
 
 Base.size(D::ColVecs) = (size(D.X, 2),)
 Base.getindex(D::ColVecs, i::Int) = view(D.X, :, i)
+Base.getindex(D::ColVecs, i::CartesianIndex{1}) = view(D.X, :, i)
 Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
 
 """
@@ -52,6 +53,7 @@ end
 
 Base.size(D::RowVecs) = (size(D.X, 1),)
 Base.getindex(D::RowVecs, i::Int) = view(D.X, i, :)
+Base.getindex(D::RowVecs, i::CartesianIndex{1}) = view(D.X, i, :)
 Base.getindex(D::RowVecs, i) = RowVecs(view(D.X, i, :))
 
 # Take highest Float among possibilities
@@ -63,9 +65,18 @@ Base.getindex(D::RowVecs, i) = RowVecs(view(D.X, i, :))
 #     return T <: Real ? T : Float64
 # end
 
-check_dims(K,X,Y,featdim,obsdim) = check_dims(X,Y,featdim,obsdim) && (size(K) == (size(X,obsdim),size(Y,obsdim)))
+function check_dims(K, X::AbstractVector, Y::AbstractVector)
+    return size(K) == (length(X), length(Y))
+end
 
-check_dims(X,Y,featdim,obsdim) = size(X,featdim) == size(Y,featdim)
+
+## Won't be needed with full ColVecs implementation
+function check_dims(K, X::AbstractMatrix, Y::AbstractMatrix, featdim, obsdim)
+    return check_dims(X, Y, featdim) &&
+        (size(K) == (size(X, obsdim), size(Y, obsdim)))
+end
+
+check_dims(X::AbstractMatrix, Y::AbstractMatrix, featdim) = size(X, featdim) == size(Y, featdim)
 
 
 feature_dim(obsdim::Int) = obsdim == 1 ? 2 : 1

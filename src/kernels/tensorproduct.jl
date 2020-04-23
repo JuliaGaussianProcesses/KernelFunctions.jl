@@ -22,7 +22,6 @@ end
 
 Base.length(kernel::TensorProduct) = length(kernel.kernels)
 
-(kernel::TensorProduct)(x, y) = kappa(kernel, x, y)
 function kappa(kernel::TensorProduct, x, y)
     return prod(kappa(k, xi, yi) for (k, xi, yi) in zip(kernel.kernels, x, y))
 end
@@ -97,7 +96,7 @@ function kernelmatrix(
     obsdim ∈ (1, 2) || error("obsdim should be 1 or 2 (see docs of kernelmatrix))")
 
     featuredim = feature_dim(obsdim)
-    if !check_dims(X, X, featuredim, obsdim)
+    if !check_dims(X, X, featuredim)
         throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not " *
                                 "consistent with X $(size(X))"))
     end
@@ -120,7 +119,7 @@ function kernelmatrix(
     obsdim ∈ (1, 2) || error("obsdim should be 1 or 2 (see docs of kernelmatrix))")
 
     featuredim = feature_dim(obsdim)
-    if !check_dims(X, Y, featuredim, obsdim)
+    if !check_dims(X, Y, featuredim)
         throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not " *
                                 "consistent with X ($(size(X))) and Y ($(size(Y)))"))
     end

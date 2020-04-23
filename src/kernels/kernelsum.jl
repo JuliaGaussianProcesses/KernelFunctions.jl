@@ -58,7 +58,7 @@ function kernelmatrix(
     Y::AbstractMatrix;
     obsdim::Int = defaultobs,
 )
-    sum(κ.weights[i] * _kernelmatrix(κ.kernels[i], X, Y, obsdim) for i in 1:length(κ))
+    sum(κ.weights[i] * kernelmatrix(κ.kernels[i], X, Y, obsdim = obsdim) for i in 1:length(κ))
 end
 
 function kerneldiagmatrix(

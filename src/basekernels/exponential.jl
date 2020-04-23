@@ -9,7 +9,7 @@ Can also be called via `SEKernel`, `GaussianKernel` or `SEKernel`.
 See also [`ExponentialKernel`](@ref) for a
 related form of the kernel or [`GammaExponentialKernel`](@ref) for a generalization.
 """
-struct SqExponentialKernel <: BaseKernel end
+struct SqExponentialKernel <: SimpleKernel end
 
 kappa(κ::SqExponentialKernel, d²::Real) = exp(-d²)
 iskroncompatible(::SqExponentialKernel) = true
@@ -30,7 +30,7 @@ The exponential kernel is a Mercer kernel given by the formula:
     κ(x,y) = exp(-‖x-y‖)
 ```
 """
-struct ExponentialKernel <: BaseKernel end
+struct ExponentialKernel <: SimpleKernel end
 
 kappa(κ::ExponentialKernel, d::Real) = exp(-d)
 iskroncompatible(::ExponentialKernel) = true
@@ -51,7 +51,7 @@ The γ-exponential kernel is an isotropic Mercer kernel given by the formula:
 Where `γ > 0`, (the keyword `γ` can be replaced by `gamma`)
 For `γ = 1`, see `SqExponentialKernel` and `γ = 0.5`, see `ExponentialKernel`
 """
-struct GammaExponentialKernel{Tγ<:Real} <: BaseKernel
+struct GammaExponentialKernel{Tγ<:Real} <: SimpleKernel
     γ::Vector{Tγ}
     function GammaExponentialKernel(; gamma::T=2.0, γ::T=gamma) where {T<:Real}
         @check_args(GammaExponentialKernel, γ, γ >= zero(T), "γ > 0")
