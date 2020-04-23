@@ -27,8 +27,6 @@ end
 
 metric(::MaternKernel) = Euclidean()
 
-(k::MaternKernel)(x, y) = eval_fallback(k, x, y)
-
 Base.show(io::IO, κ::MaternKernel) = print(io, "Matern Kernel (ν = ", first(κ.ν), ")")
 
 """
@@ -45,8 +43,6 @@ kappa(κ::Matern32Kernel, d::Real) = (1 + sqrt(3) * d) * exp(-sqrt(3) * d)
 
 metric(::Matern32Kernel) = Euclidean()
 
-(k::Matern32Kernel)(x, y) = eval_fallback(k, x, y)
-
 Base.show(io::IO, ::Matern32Kernel) = print(io, "Matern 3/2 Kernel")
 
 """
@@ -62,7 +58,5 @@ struct Matern52Kernel <: SimpleKernel end
 kappa(κ::Matern52Kernel, d::Real) = (1 + sqrt(5) * d + 5 * d^2 / 3) * exp(-sqrt(5) * d)
 
 metric(::Matern52Kernel) = Euclidean()
-
-(k::Matern52Kernel)(x, y) = eval_fallback(k, x, y)
 
 Base.show(io::IO, ::Matern52Kernel) = print(io, "Matern 5/2 Kernel")

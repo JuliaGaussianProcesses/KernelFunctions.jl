@@ -35,8 +35,6 @@ kappa(κ::PiecewisePolynomialKernel{V}, r) where V = max(1 - r, 0)^(κ.j + V) * 
 
 metric(κ::PiecewisePolynomialKernel) = Mahalanobis(κ.maha)
 
-(k::PiecewisePolynomialKernel)(x, y) = eval_fallback(k, x, y)
-
 function Base.show(io::IO, κ::PiecewisePolynomialKernel{V}) where {V}
     print(io, "Piecewise Polynomial Kernel (v = ", V, ", size(maha) = ", size(κ.maha), ")")
 end

@@ -24,6 +24,4 @@ metric(κ::PeriodicKernel) = Sinus(κ.r)
 
 kappa(κ::PeriodicKernel, d::Real) = exp(- 0.5d)
 
-(k::PeriodicKernel)(x, y) = eval_fallback(k, x, y)
-
 Base.show(io::IO, κ::PeriodicKernel) = print(io, "Periodic Kernel, length(r) = ", length(κ.r), ")")

@@ -15,8 +15,6 @@ kappa(κ::SqExponentialKernel, d²::Real) = exp(-d²)
 
 metric(::SqExponentialKernel) = SqEuclidean()
 
-(k::SqExponentialKernel)(x, y) = eval_fallback(k, x, y)
-
 iskroncompatible(::SqExponentialKernel) = true
 
 Base.show(io::IO,::SqExponentialKernel) = print(io,"Squared Exponential Kernel")
@@ -39,8 +37,6 @@ struct ExponentialKernel <: SimpleKernel end
 kappa(κ::ExponentialKernel, d::Real) = exp(-d)
 
 metric(::ExponentialKernel) = Euclidean()
-
-(k::ExponentialKernel)(x, y) = eval_fallback(k, x, y)
 
 iskroncompatible(::ExponentialKernel) = true
 
@@ -70,8 +66,6 @@ end
 kappa(κ::GammaExponentialKernel, d²::Real) = exp(-d²^first(κ.γ))
 
 metric(::GammaExponentialKernel) = SqEuclidean()
-
-(k::GammaExponentialKernel)(x, y) = eval_fallback(k, x, y)
 
 iskroncompatible(::GammaExponentialKernel) = true
 

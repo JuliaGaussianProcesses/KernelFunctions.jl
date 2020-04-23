@@ -19,8 +19,6 @@ kappa(κ::RationalQuadraticKernel, d²::Real) = (1 + d² / first(κ.α))^(-first
 
 metric(::RationalQuadraticKernel) = SqEuclidean()
 
-(k::RationalQuadraticKernel)(x, y) = eval_fallback(k, x, y)
-
 Base.show(io::IO, κ::RationalQuadraticKernel) = print(io, "Rational Quadratic Kernel (α = ", first(κ.α), ")")
 
 """
@@ -46,7 +44,5 @@ function kappa(κ::GammaRationalQuadraticKernel, d²::Real)
 end
 
 metric(::GammaRationalQuadraticKernel) = SqEuclidean()
-
-(k::GammaRationalQuadraticKernel)(x, y) = eval_fallback(k, x, y)
 
 Base.show(io::IO, κ::GammaRationalQuadraticKernel) = print(io, "Gamma Rational Quadratic Kernel (α = ", first(κ.α), ", γ = ", first(κ.γ), ")")

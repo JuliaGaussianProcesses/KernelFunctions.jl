@@ -18,8 +18,6 @@ kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + first(κ.c)
 
 metric(::LinearKernel) = DotProduct()
 
-(k::LinearKernel)(x, y) = eval_fallback(k, x, y)
-
 Base.show(io::IO, κ::LinearKernel) = print(io, "Linear Kernel (c = ", first(κ.c), ")")
 
 """
@@ -43,7 +41,5 @@ end
 kappa(κ::PolynomialKernel, xᵀy::Real) = (xᵀy + first(κ.c))^(first(κ.d))
 
 metric(::PolynomialKernel) = DotProduct()
-
-(k::PolynomialKernel)(x, y) = eval_fallback(k, x, y)
 
 Base.show(io::IO, κ::PolynomialKernel) = print(io, "Polynomial Kernel (c = ", first(κ.c), ", d = ", first(κ.d), ")")

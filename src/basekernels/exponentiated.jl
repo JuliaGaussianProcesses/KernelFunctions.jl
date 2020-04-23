@@ -12,8 +12,6 @@ kappa(κ::ExponentiatedKernel, xᵀy::Real) = exp(xᵀy)
 
 metric(::ExponentiatedKernel) = DotProduct()
 
-(k::ExponentiatedKernel)(x, y) = eval_fallback(k, x, y)
-
 iskroncompatible(::ExponentiatedKernel) = true
 
 Base.show(io::IO, ::ExponentiatedKernel) = print(io, "Exponentiated Kernel")
