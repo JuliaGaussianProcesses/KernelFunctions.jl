@@ -7,9 +7,6 @@ Base.iterate(k::Kernel, ::Any) = nothing
 kappa(κ::Kernel, x, y) = kappa(κ, evaluate(metric(κ), x, y))
 kappa(κ::TransformedKernel, x, y) = kappa(kernel(κ), apply(κ.transform,x), apply(κ.transform,y))
 kappa(κ::TransformedKernel{<:BaseKernel,<:ScaleTransform}, x, y) = kappa(κ, _scale(κ.transform, metric(κ), x, y))
-_scale(t::ScaleTransform, metric::Euclidean, x, y) =  first(t.s) * evaluate(metric, x, y)
-_scale(t::ScaleTransform, metric::Union{SqEuclidean,DotProduct}, x, y) =  first(t.s)^2 * evaluate(metric, x, y)
-_scale(t::ScaleTransform, metric, x, y) = evaluate(metric, apply(t, x), apply(t, y))
 
 printshifted(io::IO, o, shift::Int) = print(io, o)
 Base.show(io::IO, κ::Kernel) = print(io, nameof(typeof(κ)))
