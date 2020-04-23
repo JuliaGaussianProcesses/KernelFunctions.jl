@@ -22,8 +22,8 @@ end
 
 Base.length(kernel::TensorProduct) = length(kernel.kernels)
 
-function kappa(kernel::TensorProduct, x, y)
-    return prod(kappa(k, xi, yi) for (k, xi, yi) in zip(kernel.kernels, x, y))
+function (kernel::TensorProduct)(x, y)
+    return prod(k(xi, yi) for (k, xi, yi) in zip(kernel.kernels, x, y))
 end
 
 # TODO: General implementation of `kernelmatrix` and `kerneldiagmatrix`

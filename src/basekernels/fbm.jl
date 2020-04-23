@@ -66,7 +66,7 @@ function kernelmatrix!(
     return K
 end
 
-function kappa(κ::FBMKernel, x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
+function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modX = sum(abs2, x)
     modY = sum(abs2, y)
     modXY = evaluate(SqEuclidean(sqroundoff), x, y)

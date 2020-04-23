@@ -9,11 +9,11 @@
     k = SqExponentialKernel()
     kt = TransformedKernel(k,ScaleTransform(s))
     ktard = TransformedKernel(k,ARDTransform(v))
-    @test kappa(kt,v1,v2) == kappa(transform(k,ScaleTransform(s)),v1,v2)
-    @test kappa(kt,v1,v2) == kappa(transform(k,s),v1,v2)
-    @test kappa(kt,v1,v2) ≈ kappa(k,s*v1,s*v2) atol=1e-5
-    @test kappa(ktard,v1,v2) ≈ kappa(transform(k,ARDTransform(v)),v1,v2) atol=1e-5
-    @test kappa(ktard,v1,v2) == kappa(transform(k,v),v1,v2)
-    @test kappa(ktard,v1,v2) == kappa(k,v.*v1,v.*v2)
+    @test kt(v1, v2) == transform(k, ScaleTransform(s))(v1, v2)
+    @test kt(v1, v2) == transform(k, s)(v1,v2)
+    @test kt(v1, v2) ≈ k(s * v1, s * v2) atol=1e-5
+    @test ktard(v1, v2) ≈ transform(k, ARDTransform(v))(v1, v2) atol=1e-5
+    @test ktard(v1, v2) == transform(k,v)(v1, v2)
+    @test ktard(v1, v2) == k(v .* v1, v .* v2)
     @test KernelFunctions.metric(kt) == KernelFunctions.metric(k)
 end

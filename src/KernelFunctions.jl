@@ -4,7 +4,7 @@ KernelFunctions. [Github](https://github.com/JuliaGaussianProcesses/KernelFuncti
 """
 module KernelFunctions
 
-export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
+export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!
 export transform
 export duplicate, set! # Helpers
 
