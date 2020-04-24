@@ -22,3 +22,6 @@ for k in nameof.(subtypes(BaseKernel))
         @deprecate($k(ρ::AbstractVector{<:Real};args...),transform($k(args...),ρ))
     end
 end
+
+# Fallback implementation of evaluate for `SimpleKernel`s.
+(k::SimpleKernel)(x, y) = kappa(k, evaluate(metric(k), x, y))

@@ -45,7 +45,6 @@ using KernelFunctions: metric, kappa
 @testset "KernelFunctions" begin
 
     include("utils.jl")
-    include("abstract_types.jl")
 
     @testset "distances" begin
         include(joinpath("distances", "dotproduct.jl"))
