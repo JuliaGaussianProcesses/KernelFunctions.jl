@@ -4,7 +4,6 @@ Base.iterate(k::Kernel) = (k,nothing)
 Base.iterate(k::Kernel, ::Any) = nothing
 
 printshifted(io::IO, o, shift::Int) = print(io, o)
-Base.show(io::IO, κ::Kernel) = print(io, nameof(typeof(κ)))
 
 # See 
 _scale(t::ScaleTransform, metric::Euclidean, x, y) =  first(t.s) * evaluate(metric, x, y)
