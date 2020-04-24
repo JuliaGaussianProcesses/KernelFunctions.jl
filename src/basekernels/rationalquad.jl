@@ -15,8 +15,7 @@ struct RationalQuadraticKernel{Tα<:Real} <: SimpleKernel
     end
 end
 
-kappa(κ::RationalQuadraticKernel, d²::Real) = (1 + d² / first(κ.α))^(-first(κ.α))
-
+kappa(κ::RationalQuadraticKernel, d²::T) where {T<:Real} = (one(T)+d²/first(κ.α))^(-first(κ.α))
 metric(::RationalQuadraticKernel) = SqEuclidean()
 
 Base.show(io::IO, κ::RationalQuadraticKernel) = print(io, "Rational Quadratic Kernel (α = ", first(κ.α), ")")
@@ -39,10 +38,7 @@ struct GammaRationalQuadraticKernel{Tα<:Real, Tγ<:Real} <: SimpleKernel
     end
 end
 
-function kappa(κ::GammaRationalQuadraticKernel, d²::Real)
-    return (1 + d²^first(κ.γ) / first(κ.α))^(-first(κ.α))
-end
-
+kappa(κ::GammaRationalQuadraticKernel, d²::T) where {T<:Real} = (one(T)+d²^first(κ.γ)/first(κ.α))^(-first(κ.α))
 metric(::GammaRationalQuadraticKernel) = SqEuclidean()
 
 Base.show(io::IO, κ::GammaRationalQuadraticKernel) = print(io, "Gamma Rational Quadratic Kernel (α = ", first(κ.α), ", γ = ", first(κ.γ), ")")
