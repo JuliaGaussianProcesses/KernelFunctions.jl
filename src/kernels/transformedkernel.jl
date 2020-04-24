@@ -10,8 +10,8 @@ struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
 end
 
 function (k::TransformedKernel)(x, y)
-    x′ = vec(apply(k.transform, reshape(x, :, 1); obsdim=2))
-    y′ = vec(apply(k.transform, reshape(y, :, 1); obsdim=2))
+    x′ = apply(k.transform, x)
+    y′ = apply(k.transform, y)
     return k.kernel(x′, y′)
 end
 
