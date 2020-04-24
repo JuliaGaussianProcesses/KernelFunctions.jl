@@ -37,6 +37,10 @@ Base.getindex(D::ColVecs, i::Int) = view(D.X, :, i)
 Base.getindex(D::ColVecs, i::CartesianIndex{1}) = view(D.X, :, i)
 Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
 
+Distances.pairwise(d::PreMetric, x::ColVecs) = pairwise(d, x.X; dims=2)
+Distances.pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = pairwise(d, x.X, y.X; dims=2)
+
+
 """
     RowVecs(X::AbstractMatrix)
 
@@ -55,6 +59,9 @@ Base.size(D::RowVecs) = (size(D.X, 1),)
 Base.getindex(D::RowVecs, i::Int) = view(D.X, i, :)
 Base.getindex(D::RowVecs, i::CartesianIndex{1}) = view(D.X, i, :)
 Base.getindex(D::RowVecs, i) = RowVecs(view(D.X, i, :))
+
+Distances.pairwise(d::PreMetric, x::RowVecs) = pairwise(d, x.X; dims=1)
+Distances.pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = pairwise(d, x.X, y.X; dims=1)
 
 # Take highest Float among possibilities
 # function promote_float(Tₖ::DataType...)
