@@ -33,45 +33,35 @@ const sqroundoff = 1e-15
 
 _fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h)/2
 
-function kernelmatrix(κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
-    @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    modX = sum(abs2, X; dims = feature_dim(obsdim))
-    modXX = pairwise(SqEuclidean(sqroundoff), X, dims = obsdim)
-    return _fbm.(vec(modX), reshape(modX, 1, :), modXX, κ.h)
+_mod(x::AbstractVector{<:Real}) = abs2.(x)
+_mod(x::ColVecs) = vec(sum(abs2, x.X; dims=1))
+_mod(x::RowVecs) = vec(sum(abs2, x.X; dims=2))
+
+function kernelmatrix(κ::FBMKernel, x::AbstractVector)
+    modx = _mod(x)
+    modxx = pairwise(SqEuclidean(sqroundoff), x)
+    return _fbm.(modx, reshape(modx, 1, :), modxx, κ.h)
 end
 
-function kernelmatrix!(K::AbstractMatrix, κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
-    @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    modX = sum(abs2, X; dims = feature_dim(obsdim))
-    modXX = pairwise(SqEuclidean(sqroundoff), X, dims = obsdim)
-    K .= _fbm.(vec(modX), reshape(modX, 1, :), modXX, κ.h)
+function kernelmatrix!(K::AbstractMatrix, κ::FBMKernel, x::AbstractVector)
+    modx = _mod(x)
+    modxx = pairwise(SqEuclidean(sqroundoff), x)
+    K .= _fbm.(modx, reshape(modx, 1, :), modxx, κ.h)
     return K
 end
 
-function kernelmatrix(
-    κ::FBMKernel,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int = defaultobs,
-)
-    @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    modX = sum(abs2, X, dims = feature_dim(obsdim))
-    modY = sum(abs2, Y, dims = feature_dim(obsdim))
-    modXY = pairwise(SqEuclidean(sqroundoff), X, Y,dims = obsdim)
-    return _fbm.(vec(modX), reshape(modY, 1, :), modXY, κ.h)
+function kernelmatrix(κ::FBMKernel, x::AbstractVector, y::AbstractVector)
+    modxy = pairwise(SqEuclidean(sqroundoff), x, y)
+    return _fbm.(_mod(x), reshape(_mod(y), 1, :), modxy, κ.h)
 end
 
 function kernelmatrix!(
     K::AbstractMatrix,
     κ::FBMKernel,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int = defaultobs,
+    X::AbstractVector,
+    Y::AbstractVector,
 )
-    @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    modX = sum(abs2, X, dims = feature_dim(obsdim))
-    modY = sum(abs2, Y, dims = feature_dim(obsdim))
-    modXY = pairwise(SqEuclidean(sqroundoff), X, Y,dims = obsdim)
-    K .= _fbm.(vec(modX), reshape(modY, 1, :), modXY, κ.h)
+    modxy = pairwise(SqEuclidean(sqroundoff), X, Y,dims = obsdim)
+    K .= _fbm.(_mod(x), reshape(_mod(y), 1, :), modxy, κ.h)
     return K
 end

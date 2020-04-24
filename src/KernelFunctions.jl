@@ -36,8 +36,6 @@ using StatsFuns: logtwo
 using InteractiveUtils: subtypes
 using StatsBase
 
-const defaultobs = 2
-
 """
 Abstract type defining a slice-wise transformation on an input matrix
 """

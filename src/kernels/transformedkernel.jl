@@ -9,11 +9,7 @@ struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
     transform::Tr
 end
 
-function (k::TransformedKernel)(x, y)
-    x′ = apply(k.transform, x)
-    y′ = apply(k.transform, y)
-    return k.kernel(x′, y′)
-end
+(k::TransformedKernel)(x, y) = k.kernel(k.transform(x), k.transform(y))
 
 """
 ```julia
@@ -44,14 +40,23 @@ end
 
 # Kernel matrix operations
 
-kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, X::AbstractMatrix; obsdim::Int = defaultobs) =
-    kernelmatrix!(K, kernel(κ), apply(κ.transform, X, obsdim = obsdim), obsdim = obsdim)
+function kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector)
+    return kernelmatrix!(K, kernel(κ), map(κ.transform, x))
+end
 
-kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int = defaultobs) =
-    kernelmatrix!(K, kernel(κ), apply(κ.transform, X, obsdim = obsdim), apply(κ.transform, Y, obsdim = obsdim), obsdim = obsdim)
+function kernelmatrix!(
+    K::AbstractMatrix,
+    κ::TransformedKernel,
+    x::AbstractVector,
+    y::AbstractVector,
+)
+    return kernelmatrix!(K, kernel(κ), map(κ.transform, x), map(κ.transform, y))
+end
 
-kernelmatrix(κ::TransformedKernel, X::AbstractMatrix; obsdim::Int = defaultobs) =
-    kernelmatrix(kernel(κ), apply(κ.transform, X, obsdim = obsdim), obsdim = obsdim)
-    
-kernelmatrix(κ::TransformedKernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int = defaultobs) =
-    kernelmatrix(kernel(κ), apply(κ.transform, X, obsdim = obsdim), apply(κ.transform, Y, obsdim = obsdim), obsdim = obsdim)
+function kernelmatrix(κ::TransformedKernel, x::AbstractVector)
+    return kernelmatrix(kernel(κ), map(κ.transform, x))
+end
+
+function kernelmatrix(κ::TransformedKernel, x::AbstractVector, y::AbstractVector)
+    return kernelmatrix(kernel(κ), map(κ.transform, x), map(κ.transform, y))
+end
