@@ -9,35 +9,23 @@ Select the dimensions `dims` that the kernel is applied to.
     transform(tr,X,obsdim=2) == X[dims,:]
 ```
 """
-struct SelectTransform{T<:AbstractVector{<:Int}} <: Transform
+struct SelectTransform{T<:AbstractVector{Int}} <: Transform
     select::T
-    function SelectTransform{V}(dims::V) where {V}
-        new{V}(dims)
+    function SelectTransform{V}(dims::V) where {V<:AbstractVector{Int}}
+        @assert all(dims .> 0) "Selective dimensions should all be positive integers"
+        return new{V}(dims)
     end
 end
 
-function SelectTransform(dims::V) where {V<:AbstractVector{T} where  {T<:Int}}
-    @assert all(dims.>0) "Selective dimensions should all be positive integers"
-    SelectTransform{V}(dims)
-end
+SelectTransform(x::T) where {T<:AbstractVector{Int}} = SelectTransform{T}(x)
 
-set!(t::SelectTransform{<:AbstractVector{T}},dims::AbstractVector{T}) where {T<:Int} = t.select .= dims
+set!(t::SelectTransform{<:AbstractVector{T}}, dims::AbstractVector{T}) where {T<:Int} = t.select .= dims
 
 duplicate(t::SelectTransform,θ) = t
 
-Base.maximum(t::SelectTransform) = maximum(t.select)
+(t::SelectTransform)(x::AbstractVector) = view(x, t.select)
 
-function apply(t::SelectTransform, X::AbstractMatrix{<:Real}; obsdim::Int = defaultobs)
-    @boundscheck maximum(t) >= size(X,feature_dim(obsdim)) ?
-        throw(DimensionMismatch("The highest index $(maximum(t)) is higher then the feature dimension of X : $(size(X,feature_dim(obsdim)))")) : nothing
-    @inbounds _transform(t,X,obsdim)
-end
-
-function apply(t::SelectTransform, x::AbstractVector{<:Real}; obsdim::Int = defaultobs) #TODO Add test
-    @assert maximum(t) <= length(x) "The highest index $(maximum(t)) is higher then the vector length : $(length(x))"
-    return @inbounds view(x,t.select)
-end
-
-_transform(t::SelectTransform,X::AbstractMatrix{<:Real},obsdim::Int=defaultobs) = obsdim == 2 ? view(X,t.select,:) : view(X,:,t.select)
+Base.map(t::SelectTransform, x::ColVecs) = ColVecs(view(x.X, t.select, :))
+Base.map(t::SelectTransform, x::RowVecs) = RowVecs(view(x.X, :, t.select))
 
 Base.show(io::IO, t::SelectTransform) = print(io, "Select Transform (dims: ", t.select, ")")

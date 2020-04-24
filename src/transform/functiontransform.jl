@@ -13,7 +13,11 @@ struct FunctionTransform{F} <: Transform
     f::F
 end
 
-apply(t::FunctionTransform, X::T; obsdim::Int = defaultobs) where {T} = mapslices(t.f, X, dims = feature_dim(obsdim))
+(t::FunctionTransform)(x) = t.f(x)
+
+Base.map(t::FunctionTransform, x::AbstractVector{<:Real}) = map(t.f, x)
+Base.map(t::FunctionTransform, x::ColVecs) = ColVecs(mapslices(t.f, x.X; dims=1))
+Base.map(t::FunctionTransform, x::RowVecs) = RowVecs(mapslices(t.f, x.X; dims=2))
 
 duplicate(t::FunctionTransform,f) = FunctionTransform(f)
 

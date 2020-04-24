@@ -1,16 +1,19 @@
 @testset "chaintransform" begin
     rng = MersenneTwister(123546)
-    X = rand(rng, 10, 5)
-    s = 3.0
-    P = rand(rng, 5,10)
-    f(x) = sin.(x)
 
-    t = ScaleTransform(s)
+    P = rand(rng, 3, 2)
     tp = LowRankTransform(P)
+
+    f(x) = sin.(x)
     tf = FunctionTransform(f)
-    tchain = ChainTransform([t,tp,tf])
-    @test all(KernelFunctions.apply(tchain,X,obsdim=2).==f(P*(s*X)))
-    @test all(KernelFunctions.apply(tchain,X,obsdim=2).==
-                KernelFunctions.apply(tf∘tp∘t,X,obsdim=2))
-    @test repr(t∘tf) == "Chain of 2 transforms:\n\t - $(tf) |> $(t)"
+
+    t = ChainTransform([tp, tf])
+
+    x = ColVecs(randn(rng, 2, 3))
+    x′ = map(t, x)
+
+    @test all([t(x[n]) ≈ f(P * x[n]) for n in eachindex(x)])
+    @test all([t(x[n]) ≈ x′[n] for n in eachindex(x)])
+
+    @test repr(tp ∘ tf) == "Chain of 2 transforms:\n\t - $(tf) |> $(tp)"
 end

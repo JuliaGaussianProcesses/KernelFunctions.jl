@@ -21,17 +21,13 @@ end
 Base.size(tr::LowRankTransform,i::Int) = size(tr.proj,i)
 Base.size(tr::LowRankTransform) = size(tr.proj) #  TODO Add test
 
-function apply(t::LowRankTransform, X::AbstractMatrix{<:Real}; obsdim::Int = defaultobs)
-    @boundscheck size(t,2) != size(X,feature_dim(obsdim)) ?
-        throw(DimensionMismatch("The projection matrix has size $(size(t)) and cannot be used on X with dimensions $(size(X))")) : nothing
-    @inbounds _transform(t,X,obsdim)
-end
+(t::LowRankTransform)(x::Real) = t([x])
+(t::LowRankTransform)(x::AbstractVector{<:Real}) = t.proj * x
 
-function apply(t::LowRankTransform, x::AbstractVector{<:Real}; obsdim::Int = defaultobs) #TODO Add test
-    @assert size(t,2) == length(x) "Vector has wrong dimensions $(length(x)) compared to projection matrix"
-    t.proj*x
+function Base.map(t::LowRankTransform, x::AbstractVector{<:Real})
+    return ColVecs(t.proj * reshape(x, 1, :))
 end
-
-_transform(t::LowRankTransform,X::AbstractVecOrMat{<:Real},obsdim::Int=defaultobs) = obsdim == 2 ? t.proj * X : X * t.proj'
+Base.map(t::LowRankTransform, x::ColVecs) = ColVecs(t.proj * x.X)
+Base.map(t::LowRankTransform, x::RowVecs) = RowVecs(x.X * t.proj')
 
 Base.show(io::IO, t::LowRankTransform) = print(io::IO, "Low Rank Transform (size(P) = ", size(t.proj), ")")

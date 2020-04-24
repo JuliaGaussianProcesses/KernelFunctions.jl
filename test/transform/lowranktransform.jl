@@ -1,18 +1,44 @@
 @testset "lowranktransform" begin
-    dims = (10,5)
     rng = MersenneTwister(123546)
-    X = rand(rng, dims...)
-    x = rand(rng, dims[1])
-    P = rand(rng, 5, 10)
 
-    tp = LowRankTransform(P)
-    @test all(KernelFunctions.apply(tp,X,obsdim=2).==P*X)
-    @test all(KernelFunctions.apply(tp,x).==P*x)
-    @test tp.proj == P
-    P2 = rand(5,10)
-    KernelFunctions.set!(tp,P2)
-    @test all(tp.proj.==P2)
-    @test_throws AssertionError KernelFunctions.set!(tp,rand(6,10))
-    @test_throws DimensionMismatch KernelFunctions.apply(tp,rand(11,3))
-    @test repr(tp) == "Low Rank Transform (size(P) = $(size(P2)))"
+    @testset "Real inputs" begin
+        P = randn(rng, 3, 1)
+        t = LowRankTransform(P)
+
+        x = randn(rng, 4)
+        x′ = map(t, x)
+
+        @test all([t(x[n]) ≈ P * x[n] for n in eachindex(x)])
+        @test all([t(x[n]) ≈ x′[n] for n in eachindex(x)])
+    end
+
+    @testset "Vector inputs" begin
+        Din = 3
+        Dout = 4
+        P = randn(rng, Dout, Din)
+        t = LowRankTransform(P)
+
+        x_cols = ColVecs(randn(rng, Din, 8))
+        x_rows = RowVecs(randn(rng, 9, Din))
+
+        @testset "$(typeof(x))" for x in [x_cols, x_rows]
+            x′ = map(t, x)
+            @test all([t(x[n]) ≈ P * x[n] for n in eachindex(x)])
+            @test all([t(x[n]) ≈ x′[n] for n in eachindex(x)])
+        end
+    end
+
+    Din = 2
+    Dout = 5
+    P = randn(rng, Dout, Din)
+    t = LowRankTransform(P)
+
+    P2 = randn(rng, Dout, Din)
+    KernelFunctions.set!(t, P2)
+    @test t.proj == P2
+    @test_throws AssertionError KernelFunctions.set!(t, rand(rng, Din + 1, Dout))
+
+    @test_throws DimensionMismatch map(t, ColVecs(randn(rng, Din + 1, Dout)))
+
+    @test repr(t) == "Low Rank Transform (size(P) = ($Dout, $Din))"
 end

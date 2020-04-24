@@ -19,7 +19,11 @@ end
 set!(t::ScaleTransform,ρ::Real) = t.s .= [ρ]
 dim(str::ScaleTransform) = 1
 
-apply(t::ScaleTransform,x::AbstractVecOrMat;obsdim::Int=defaultobs) = first(t.s) * x
+(t::ScaleTransform)(x) = first(t.s) .* x
+
+Base.map(t::ScaleTransform, x::AbstractVector{<:Real}) = first(t.s) .* x
+Base.map(t::ScaleTransform, x::ColVecs) = ColVecs(first(t.s) .* x.X)
+Base.map(t::ScaleTransform, x::RowVecs) = RowVecs(first(t.s) .* x.X)
 
 Base.isequal(t::ScaleTransform,t2::ScaleTransform) = isequal(first(t.s),first(t2.s))
 
