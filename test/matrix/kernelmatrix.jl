@@ -74,33 +74,4 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
             @test kerneldiagmatrix(k, x) ≈ kerneldiagmatrix!(tmp_diag, k, X; obsdim=obsdim)
         end
     end
-
-
-    # @testset "KernelSum" begin
-    #     k1 = SqExponentialKernel()
-    #     k2 = LinearKernel()
-    #     ks = k1 + k2
-    #     w1 = 0.4; w2 = 1.2;
-    #     ks2 = KernelSum([k1,k2],weights=[w1,w2])
-    #     @test all(kernelmatrix(ks,A) .== kernelmatrix(k1,A) + kernelmatrix(k2,A))
-    #     @test all(kernelmatrix(ks+k1,A) .≈ 2*kernelmatrix(k1,A) + kernelmatrix(k2,A))
-    #     @test all(kernelmatrix(k1+ks,A) .≈ 2*kernelmatrix(k1,A) + kernelmatrix(k2,A))
-    #     @test all(kernelmatrix(ks,A,B) .== kernelmatrix(k1,A,B) + kernelmatrix(k2,A,B))
-    #     @test all(kerneldiagmatrix(ks,A) .== kerneldiagmatrix(k1,A) + kerneldiagmatrix(k2,A))
-    #     @test all(kernelmatrix(ks2,A) .== w1*kernelmatrix(k1,A) + w2*kernelmatrix(k2,A))
-    # end
-    # @testset "KernelProduct" begin
-    #     k1 = SqExponentialKernel()
-    #     k2 = LinearKernel()
-    #     k3 = RationalQuadraticKernel()
-    #     kp = k1 * k2
-    #     kp2 = k1 * k3
-    #     @test all(kernelmatrix(kp,A) .≈ kernelmatrix(k1,A) .* kernelmatrix(k2,A))
-    #     @test all(kernelmatrix(kp*k1,A) .≈ kernelmatrix(k1,A).^2 .* kernelmatrix(k2,A))
-    #     @test all(kernelmatrix(k1*kp,A) .≈ kernelmatrix(k1,A).^2 .* kernelmatrix(k2,A))
-    #     @test all(kernelmatrix(kp,A) .≈ kernelmatrix(k1,A) .* kernelmatrix(k2,A))
-    #     @test all(kernelmatrix(kp,A,B) .≈ kernelmatrix(k1,A,B) .* kernelmatrix(k2,A,B))
-    #     @test all(kernelmatrix(kp,A) .≈ kernelmatrix(k1,A) .* kernelmatrix(k2,A))
-    #     @test all(kerneldiagmatrix(kp,A) .== kerneldiagmatrix(k1,A) .* kerneldiagmatrix(k2,A))
-    # end
 end
