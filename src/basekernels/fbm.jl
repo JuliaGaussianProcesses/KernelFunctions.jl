@@ -46,7 +46,7 @@ end
 function kernelmatrix!(K::AbstractMatrix, κ::FBMKernel, x::AbstractVector)
     modx = _mod(x)
     modxx = pairwise(SqEuclidean(sqroundoff), x)
-    K .= _fbm.(modx, reshape(modx, 1, :), modxx, κ.h)
+    K .= _fbm.(modx, modx', modxx, κ.h)
     return K
 end
 
