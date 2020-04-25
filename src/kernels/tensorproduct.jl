@@ -29,27 +29,24 @@ end
 # TODO: General implementation of `kernelmatrix` and `kerneldiagmatrix`
 # Default implementation assumes 1D observations
 
-function kernelmatrix!(
-    K::AbstractMatrix,
-    kernel::TensorProduct,
-    X::AbstractMatrix;
-    obsdim::Int = defaultobs,
-)
-    obsdim ∈ (1, 2) || "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-
-    featuredim = feature_dim(obsdim)
-    if !check_dims(K, X, X, featuredim, obsdim)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not " *
-                                "consistent with X $(size(X))"))
-    end
-
-    size(X, featuredim) == length(kernel) ||
+function validate_domain(k::TensorProduct, x::AbstractVector)
+    dim(x) == length(k) ||
         error("number of kernels and groups of features are not consistent")
+end
 
-    kernels_and_inputs = zip(kernel.kernels, eachslice(X; dims = featuredim))
+# Utility for slicing up inputs.
+slices(x::AbstractVector{<:Real}) = [x]
+slices(x::ColVecs) = eachslice(x.X; dims=1)
+slices(x::RowVecs) = eachslice(x.X; dims=2)
+
+function kernelmatrix!(K::AbstractMatrix, k::TensorProduct, x::AbstractVector)
+    validate_inplace_dims(K, x)
+    validate_domain(k, x)
+
+    kernels_and_inputs = zip(k.kernels, slices(x))
     kernelmatrix!(K, first(kernels_and_inputs)...)
-    for (k, Xi) in Iterators.drop(kernels_and_inputs, 1)
-        K .*= kernelmatrix(k, Xi)
+    for (k, xi) in Iterators.drop(kernels_and_inputs, 1)
+        K .*= kernelmatrix(k, xi)
     end
 
     return K
@@ -57,30 +54,17 @@ end
 
 function kernelmatrix!(
     K::AbstractMatrix,
-    kernel::TensorProduct,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int = defaultobs,
+    k::TensorProduct,
+    x::AbstractVector,
+    y::AbstractVector,
 )
-    obsdim ∈ (1, 2) || error("obsdim should be 1 or 2 (see docs of kernelmatrix))")
+    validate_inplace_dims(K, x, y)
+    validate_domain(k, x)
 
-    featuredim = feature_dim(obsdim)
-    if !check_dims(K, X, Y, featuredim, obsdim)
-        throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not " *
-                                "consistent with X ($(size(X))) and Y ($(size(Y)))"))
-    end
-
-    size(X, featuredim) == length(kernel) ||
-        error("number of kernels and groups of features are not consistent")
-
-    kernels_and_inputs = zip(
-        kernel.kernels,
-        eachslice(X; dims = featuredim),
-        eachslice(Y; dims = featuredim),
-    )
+    kernels_and_inputs = zip(k.kernels, slices(x), slices(y))
     kernelmatrix!(K, first(kernels_and_inputs)...)
-    for (k, Xi, Yi) in Iterators.drop(kernels_and_inputs, 1)
-        K .*= kernelmatrix(k, Xi, Yi)
+    for (k, xi, yi) in Iterators.drop(kernels_and_inputs, 1)
+        K .*= kernelmatrix(k, xi, yi)
     end
 
     return K
@@ -88,94 +72,42 @@ end
 
 # mapreduce with multiple iterators requires Julia 1.2 or later.
 
-function kernelmatrix(
-    kernel::TensorProduct,
-    X::AbstractMatrix;
-    obsdim::Int = defaultobs,
-)
-    obsdim ∈ (1, 2) || error("obsdim should be 1 or 2 (see docs of kernelmatrix))")
+function kernelmatrix(k::TensorProduct, x::AbstractVector)
+    validate_domain(k, x)
 
-    featuredim = feature_dim(obsdim)
-    if !check_dims(X, X, featuredim)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not " *
-                                "consistent with X $(size(X))"))
-    end
-
-    size(X, featuredim) == length(kernel) ||
-        error("number of kernels and groups of features are not consistent")
-
-    return mapreduce((x, y) -> x .* y,
-                     zip(kernel.kernels, eachslice(X; dims = featuredim))) do (k, Xi)
-        kernelmatrix(k, Xi)
+    return mapreduce((x, y) -> x .* y, zip(k.kernels, slices(x))) do (k, xi)
+        kernelmatrix(k, xi)
     end
 end
 
-function kernelmatrix(
-    kernel::TensorProduct,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int = defaultobs
-)
-    obsdim ∈ (1, 2) || error("obsdim should be 1 or 2 (see docs of kernelmatrix))")
+function kernelmatrix(k::TensorProduct, x::AbstractVector, y::AbstractVector)
+    validate_domain(k, x)
 
-    featuredim = feature_dim(obsdim)
-    if !check_dims(X, Y, featuredim)
-        throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not " *
-                                "consistent with X ($(size(X))) and Y ($(size(Y)))"))
-    end
-
-    size(X, featuredim) == length(kernel) ||
-        error("number of kernels and groups of features are not consistent")
-
-    kernels_and_inputs = zip(
-        kernel.kernels,
-        eachslice(X; dims = featuredim),
-        eachslice(Y; dims = featuredim),
-    )
-    return mapreduce((x, y) -> x .* y, kernels_and_inputs) do (k, Xi, Yi)
-        kernelmatrix(k, Xi, Yi)
+    kernels_and_inputs = zip(k.kernels, slices(x), slices(y))
+    return mapreduce((x, y) -> x .* y, kernels_and_inputs) do (k, xi, yi)
+        kernelmatrix(k, xi, yi)
     end
 end
 
-function kerneldiagmatrix!(
-    K::AbstractVector,
-    kernel::TensorProduct,
-    X::AbstractMatrix;
-    obsdim::Int = defaultobs
-)
-    obsdim ∈ (1, 2) || error("obsdim should be 1 or 2 (see docs of kernelmatrix))")
-    if length(K) != size(X, obsdim)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not " *
-                                "consistent with X $(size(X))"))
-    end
+function kerneldiagmatrix!(K::AbstractVector, k::TensorProduct, x::AbstractVector)
+    validate_inplace_dims(K, x)
+    validate_domain(k, x)
 
-    featuredim = feature_dim(obsdim)
-    size(X, featuredim) == length(kernel) ||
-        error("number of kernels and groups of features are not consistent")
-
-    kernels_and_inputs = zip(kernel.kernels, eachslice(X; dims = featuredim))
+    kernels_and_inputs = zip(k.kernels, slices(x))
     kerneldiagmatrix!(K, first(kernels_and_inputs)...)
-    for (k, Xi) in Iterators.drop(kernels_and_inputs, 1)
-        K .*= kerneldiagmatrix(k, Xi)
+    for (k, xi) in Iterators.drop(kernels_and_inputs, 1)
+        K .*= kerneldiagmatrix(k, xi)
     end
 
     return K
 end
 
-function kerneldiagmatrix(
-    kernel::TensorProduct,
-    X::AbstractMatrix;
-    obsdim::Int = defaultobs
-)
-    obsdim ∈ (1,2) || error("obsdim should be 1 or 2 (see docs of kernelmatrix))")
+function kerneldiagmatrix(k::TensorProduct, x::AbstractVector)
+    validate_domain(k, x)
 
-    featuredim = feature_dim(obsdim)
-    size(X, featuredim) == length(kernel) ||
-        error("number of kernels and groups of features are not consistent")
-
-    kernels_and_inputs = zip(kernel.kernels, eachslice(X; dims = featuredim))
-    return mapreduce((x, y) -> x .* y, kernels_and_inputs) do (k, Xi)
-        kerneldiagmatrix(k, Xi)
+    kernels_and_inputs = zip(k.kernels, slices(x))
+    return mapreduce((x, y) -> x .* y, kernels_and_inputs) do (k, xi)
+        kerneldiagmatrix(k, xi)
     end
 end
 

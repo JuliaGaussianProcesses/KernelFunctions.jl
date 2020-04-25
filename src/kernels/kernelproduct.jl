@@ -24,31 +24,18 @@ Base.length(k::KernelProduct) = length(k.kernels)
 
 (κ::KernelProduct)(x, y) = prod(k(x, y) for k in κ.kernels)
 
-hadamard(x,y) = x.*y
+hadamard(x, y) = x .* y
 
-function kernelmatrix(
-    κ::KernelProduct,
-    X::AbstractMatrix;
-    obsdim::Int=defaultobs,
-)
-    reduce(hadamard, kernelmatrix(κ.kernels[i], X, obsdim = obsdim) for i in 1:length(κ))
+function kernelmatrix(κ::KernelProduct, x::AbstractVector)
+    return reduce(hadamard, kernelmatrix(κ.kernels[i], x) for i in 1:length(κ))
 end
 
-function kernelmatrix(
-    κ::KernelProduct,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int=defaultobs,
-)
-    reduce(hadamard, kernelmatrix(κ.kernels[i], X, Y, obsdim = obsdim) for i in 1:length(κ))
+function kernelmatrix(κ::KernelProduct, x::AbstractVector, y::AbstractVector)
+    return reduce(hadamard, kernelmatrix(κ.kernels[i], x, y) for i in 1:length(κ))
 end
 
-function kerneldiagmatrix(
-    κ::KernelProduct,
-    X::AbstractMatrix;
-    obsdim::Int=defaultobs,
-) #TODO Add test
-    reduce(hadamard, kerneldiagmatrix(κ.kernels[i], X, obsdim = obsdim) for i in 1:length(κ))
+function kerneldiagmatrix(κ::KernelProduct, x::AbstractVector)
+    return reduce(hadamard, kerneldiagmatrix(κ.kernels[i], x) for i in 1:length(κ))
 end
 
 function Base.show(io::IO, κ::KernelProduct)

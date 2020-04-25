@@ -22,54 +22,37 @@
         end
     end
 
-    @testset "kernelmatrix" begin
+    @testset "kernelmatrix and kerneldiagmatrix" begin
         X = rand(rng, 2, 10)
+        x_cols = ColVecs(X)
+        x_rows = RowVecs(X')
         Y = rand(rng, 2, 10)
+        y_cols = ColVecs(Y)
+        y_rows = RowVecs(Y')
+
         trueX = kernelmatrix(k1, X[1, :]) .* kernelmatrix(k2, X[2, :])
         trueXY = kernelmatrix(k1, X[1, :], Y[1, :]) .* kernelmatrix(k2, X[2, :], Y[2, :])
         tmp = Matrix{Float64}(undef, 10, 10)
+        tmp_diag = Vector{Float64}(undef, 10)
 
-        for kernel in (kernel1, kernel2)
-            @test kernelmatrix(kernel, X) ≈ trueX
-            @test kernelmatrix(kernel, X'; obsdim = 1) ≈ trueX
+        for kernel in (kernel1, kernel2), (x, y) in ((x_cols, y_cols), (x_rows, y_rows))
+            @test kernelmatrix(kernel, x) ≈ trueX
 
-            @test kernelmatrix(kernel, X, Y) ≈ trueXY
-            @test kernelmatrix(kernel, X', Y'; obsdim = 1) ≈ trueXY
+            @test kernelmatrix(kernel, x, y) ≈ trueXY
 
             fill!(tmp, 0)
-            kernelmatrix!(tmp, kernel, X)
+            kernelmatrix!(tmp, kernel, x)
             @test tmp ≈ trueX
 
             fill!(tmp, 0)
-            kernelmatrix!(tmp, kernel, X'; obsdim = 1)
-            @test tmp ≈ trueX
-
-            fill!(tmp, 0)
-            kernelmatrix!(tmp, kernel, X, Y)
+            kernelmatrix!(tmp, kernel, x, y)
             @test tmp ≈ trueXY
 
-            fill!(tmp, 0)
-            kernelmatrix!(tmp, kernel, X', Y'; obsdim = 1)
-            @test tmp ≈ trueXY
-        end
-    end
+            @test kerneldiagmatrix(kernel, x) ≈ diag(kernelmatrix(kernel, x))
 
-    @testset "kerneldiagmatrix" begin
-        X = rand(rng, 2, 10)
-        trueval = ones(10)
-        tmp = Vector{Float64}(undef, 10)
-
-        for kernel in (kernel1, kernel2)
-            @test kerneldiagmatrix(kernel, X) == trueval
-            @test kerneldiagmatrix(kernel, X'; obsdim = 1) == trueval
-
-            fill!(tmp, 0)
-            kerneldiagmatrix!(tmp, kernel, X)
-            @test tmp == trueval
-
-            fill!(tmp, 0)
-            kerneldiagmatrix!(tmp, kernel, X'; obsdim = 1)
-            @test tmp == trueval
+            fill!(tmp_diag, 0)
+            kerneldiagmatrix!(tmp_diag, kernel, x)
+            @test tmp_diag ≈ diag(kernelmatrix(kernel, x))
         end
     end
 
@@ -86,50 +69,44 @@
         end
 
         @testset "kernelmatrix" begin
-            X = rand(rng, 1, 10)
-            Y = rand(rng, 1, 10)
-            trueX = kernelmatrix(k1, X)
-            trueXY = kernelmatrix(k1, X, Y)
-            tmp = Matrix{Float64}(undef, 10, 10)
+            N = 10
 
-            @test kernelmatrix(kernel, X) ≈ trueX
-            @test kernelmatrix(kernel, X'; obsdim = 1) ≈ trueX
+            x = randn(rng, N)
+            y = randn(rng, N)
+            vectors = (x, y)
 
-            @test kernelmatrix(kernel, X, Y) ≈ trueXY
-            @test kernelmatrix(kernel, X', Y'; obsdim = 1) ≈ trueXY
+            X = reshape(x, 1, :)
+            x_cols = ColVecs(X)
+            x_rows = RowVecs(X')
+            Y = reshape(y, 1, :)
+            y_cols = ColVecs(Y)
+            y_rows = RowVecs(Y')
 
-            fill!(tmp, 0)
-            kernelmatrix!(tmp, kernel, X)
-            @test tmp ≈ trueX
+            trueX = kernelmatrix(k1, x)
+            trueXY = kernelmatrix(k1, x, y)
+            tmp = Matrix{Float64}(undef, N, N)
+            tmp_diag = Vector{Float64}(undef, N)
 
-            fill!(tmp, 0)
-            kernelmatrix!(tmp, kernel, X'; obsdim = 1)
-            @test tmp ≈ trueX
+            for (x, y) in ((x, y), (x_cols, y_cols), (x_rows, y_rows))
 
-            fill!(tmp, 0)
-            kernelmatrix!(tmp, kernel, X, Y)
-            @test tmp ≈ trueXY
+                @test kernelmatrix(kernel, x) ≈ trueX
 
-            fill!(tmp, 0)
-            kernelmatrix!(tmp, kernel, X', Y'; obsdim = 1)
-            @test tmp ≈ trueXY
-        end
+                @test kernelmatrix(kernel, x, y) ≈ trueXY
 
-        @testset "kerneldiagmatrix" begin
-            X = rand(rng, 1, 10)
-            trueval = ones(10)
-            tmp = Vector{Float64}(undef, 10)
+                fill!(tmp, 0)
+                kernelmatrix!(tmp, kernel, x)
+                @test tmp ≈ trueX
 
-            @test kerneldiagmatrix(kernel, X) == trueval
-            @test kerneldiagmatrix(kernel, X'; obsdim = 1) == trueval
+                fill!(tmp, 0)
+                kernelmatrix!(tmp, kernel, x, y)
+                @test tmp ≈ trueXY
 
-            fill!(tmp, 0)
-            kerneldiagmatrix!(tmp, kernel, X)
-            @test tmp == trueval
+                @test kerneldiagmatrix(kernel, x) ≈ diag(kernelmatrix(kernel, x))
 
-            fill!(tmp, 0)
-            kerneldiagmatrix!(tmp, kernel, X'; obsdim = 1)
-            @test tmp == trueval
+                fill!(tmp_diag, 0)
+                kerneldiagmatrix!(tmp_diag, kernel, x)
+                @test tmp_diag ≈ diag(kernelmatrix(kernel, x))
+            end
         end
     end
 end
