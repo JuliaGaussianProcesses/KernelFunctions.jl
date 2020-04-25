@@ -22,7 +22,7 @@ Return exactly the input
 struct IdentityTransform <: Transform end
 
 (t::IdentityTransform)(x) = x
-map(::IdentityTransform, x::AbstractVector) = x
+Base.map(::IdentityTransform, x::AbstractVector) = x
 
 ### TODO Maybe defining adjoints could help but so far it's not working
 
