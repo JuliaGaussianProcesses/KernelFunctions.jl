@@ -12,8 +12,10 @@ related form of the kernel or [`GammaExponentialKernel`](@ref) for a generalizat
 struct SqExponentialKernel <: SimpleKernel end
 
 kappa(κ::SqExponentialKernel, d²::Real) = exp(-d²)
-iskroncompatible(::SqExponentialKernel) = true
+
 metric(::SqExponentialKernel) = SqEuclidean()
+
+iskroncompatible(::SqExponentialKernel) = true
 
 Base.show(io::IO,::SqExponentialKernel) = print(io,"Squared Exponential Kernel")
 
@@ -33,8 +35,10 @@ The exponential kernel is a Mercer kernel given by the formula:
 struct ExponentialKernel <: SimpleKernel end
 
 kappa(κ::ExponentialKernel, d::Real) = exp(-d)
-iskroncompatible(::ExponentialKernel) = true
+
 metric(::ExponentialKernel) = Euclidean()
+
+iskroncompatible(::ExponentialKernel) = true
 
 Base.show(io::IO, ::ExponentialKernel) = print(io, "Exponential Kernel")
 
@@ -60,7 +64,9 @@ struct GammaExponentialKernel{Tγ<:Real} <: SimpleKernel
 end
 
 kappa(κ::GammaExponentialKernel, d²::Real) = exp(-d²^first(κ.γ))
-iskroncompatible(::GammaExponentialKernel) = true
+
 metric(::GammaExponentialKernel) = SqEuclidean()
+
+iskroncompatible(::GammaExponentialKernel) = true
 
 Base.show(io::IO, κ::GammaExponentialKernel) = print(io, "Gamma Exponential Kernel (γ = ", first(κ.γ), ")")

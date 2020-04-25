@@ -40,6 +40,7 @@ The matern 3/2 kernel is a Mercer kernel given by the formula:
 struct Matern32Kernel <: SimpleKernel end
 
 kappa(κ::Matern32Kernel, d::Real) = (1 + sqrt(3) * d) * exp(-sqrt(3) * d)
+
 metric(::Matern32Kernel) = Euclidean()
 
 Base.show(io::IO, ::Matern32Kernel) = print(io, "Matern 3/2 Kernel")
@@ -55,6 +56,7 @@ The matern 5/2 kernel is a Mercer kernel given by the formula:
 struct Matern52Kernel <: SimpleKernel end
 
 kappa(κ::Matern52Kernel, d::Real) = (1 + sqrt(5) * d + 5 * d^2 / 3) * exp(-sqrt(5) * d)
+
 metric(::Matern52Kernel) = Euclidean()
 
 Base.show(io::IO, ::Matern52Kernel) = print(io, "Matern 5/2 Kernel")

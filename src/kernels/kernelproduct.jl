@@ -22,7 +22,7 @@ Base.:*(kp::KernelProduct,k::Kernel) = KernelProduct(vcat(kp.kernels,k))
 
 Base.length(k::KernelProduct) = length(k.kernels)
 
-kappa(κ::KernelProduct, x ,y) = prod(kappa(k, x, y) for k in κ.kernels)
+(κ::KernelProduct)(x, y) = prod(k(x, y) for k in κ.kernels)
 
 hadamard(x,y) = x.*y
 

@@ -4,7 +4,7 @@ KernelFunctions. [Github](https://github.com/JuliaGaussianProcesses/KernelFuncti
 """
 module KernelFunctions
 
-export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
+export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!
 export transform
 export duplicate, set! # Helpers
 
@@ -42,6 +42,7 @@ const defaultobs = 2
 Abstract type defining a slice-wise transformation on an input matrix
 """
 abstract type Transform end
+
 abstract type Kernel end
 abstract type BaseKernel <: Kernel end
 abstract type SimpleKernel <: BaseKernel end

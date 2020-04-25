@@ -9,6 +9,12 @@ struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
     transform::Tr
 end
 
+function (k::TransformedKernel)(x, y)
+    x′ = apply(k.transform, x)
+    y′ = apply(k.transform, y)
+    return k.kernel(x′, y′)
+end
+
 """
 ```julia
     transform(k::BaseKernel, t::Transform) (1)
@@ -28,10 +34,6 @@ transform(k::BaseKernel, ρ::Real) = TransformedKernel(k, ScaleTransform(ρ))
 transform(k::BaseKernel,ρ::AbstractVector) = TransformedKernel(k, ARDTransform(ρ))
 
 kernel(κ) = κ.kernel
-
-kappa(κ::TransformedKernel, x) = kappa(κ.kernel, x)
-
-metric(κ::TransformedKernel) = metric(κ.kernel)
 
 Base.show(io::IO, κ::TransformedKernel) = printshifted(io, κ, 0)
 

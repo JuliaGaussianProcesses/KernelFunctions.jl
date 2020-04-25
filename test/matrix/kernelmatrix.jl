@@ -49,12 +49,7 @@ struct baseSE <: KernelFunctions.BaseKernel end
             @test kernelmatrix(k, vA) ≈ kernelmatrix(k, A) atol = 1e-5
             @test kernelmatrix(k, vA, vB) ≈ kernelmatrix(k, A, B) atol = 1e-5
             for obsdim in [1,2]
-                @test kernelmatrix(k,A,B,obsdim=obsdim) == kappa.(k,pairwise(KernelFunctions.metric(k),A,B,dims=obsdim))
-                @test kernelmatrix(k,A,obsdim=obsdim) == kappa.(k,pairwise(KernelFunctions.metric(k),A,dims=obsdim))
                 @test kerneldiagmatrix(k,A,obsdim=obsdim) == diag(kernelmatrix(k,A,obsdim=obsdim))
-                @test k(A,B,obsdim=obsdim) == kernelmatrix(k,A,B,obsdim=obsdim)
-                @test k(A,obsdim=obsdim) == kernelmatrix(k,A,obsdim=obsdim)
-                # @test KernelFunctions._kernel(k,1.0,2.0) == KernelFunctions._kernel(k,[1.0],[2.0])
                 @test_throws DimensionMismatch kernelmatrix(k,A,C,obsdim=obsdim)
                 @test kernelmatrix(newk, A, B, obsdim = obsdim) ≈ kernelmatrix(k, A, B, obsdim = obsdim)
                 @test kernelmatrix(newk, A, obsdim = obsdim) ≈ kernelmatrix(k, A, obsdim = obsdim)

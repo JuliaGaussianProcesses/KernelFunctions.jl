@@ -15,7 +15,7 @@ end
 
 kappa(k::ScaledKernel, x) = first(k.σ²) * kappa(k.kernel, x)
 
-kappa(k::ScaledKernel, x, y) = first(k.σ²) * kappa(k.kernel, x, y)
+(k::ScaledKernel)(x, y) = first(k.σ²) * k.kernel(x, y)
 
 metric(k::ScaledKernel) = metric(k.kernel)
 

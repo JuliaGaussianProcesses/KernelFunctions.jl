@@ -13,6 +13,7 @@
         @test GaussianKernel == SqExponentialKernel
         @test SEKernel == SqExponentialKernel
         @test repr(k) == "Squared Exponential Kernel"
+        @test KernelFunctions.iskroncompatible(k) == true
     end
     @testset "ExponentialKernel" begin
         k = ExponentialKernel()
@@ -22,6 +23,7 @@
         @test metric(ExponentialKernel()) == Euclidean()
         @test repr(k) == "Exponential Kernel"
         @test LaplacianKernel == ExponentialKernel
+        @test KernelFunctions.iskroncompatible(k) == true
     end
     @testset "GammaExponentialKernel" begin
         γ = 2.0
@@ -33,6 +35,7 @@
         @test metric(GammaExponentialKernel()) == SqEuclidean()
         @test metric(GammaExponentialKernel(γ=2.0)) == SqEuclidean()
         @test repr(k) == "Gamma Exponential Kernel (γ = $(γ))"
+        @test KernelFunctions.iskroncompatible(k) == true
 
         #Coherence :
         @test GammaExponentialKernel(γ=1.0)(v1,v2) ≈ SqExponentialKernel()(v1,v2)

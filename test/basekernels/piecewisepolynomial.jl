@@ -11,7 +11,6 @@
 
     @test k2(v1, v2) ≈ k(v1, v2) atol=1e-5
 
-    @test k(v1, v2) ≈ kappa(k, v1, v2) atol=1e-5
     @test typeof(k(v1, v2)) <: Real
     @test size(kernelmatrix(k, m1, m2)) == (4, 4)
     @test size(kernelmatrix(k, m1)) == (4, 4)
