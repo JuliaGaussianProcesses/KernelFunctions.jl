@@ -52,7 +52,7 @@ end
 
 function kernelmatrix(κ::FBMKernel, x::AbstractVector, y::AbstractVector)
     modxy = pairwise(SqEuclidean(sqroundoff), x, y)
-    return _fbm.(_mod(x), reshape(_mod(y), 1, :), modxy, κ.h)
+    return _fbm.(_mod(x), _mod(y)', modxy, κ.h)
 end
 
 function kernelmatrix!(
