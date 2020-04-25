@@ -75,22 +75,7 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
         end
     end
 
-    # @testset "Transformed Kernel Matrix Operations" begin
-    #     @testset "Inplace Kernel Matrix" begin
-    #         for obsdim in [1,2]
-    #             @test kernelmatrix!(K[obsdim],kt,A,B,obsdim=obsdim) == kernelmatrix(k,s*A,s*B,obsdim=obsdim)
-    #             @test kernelmatrix!(K[obsdim],kt,A,obsdim=obsdim) == kernelmatrix(k,s*A,obsdim=obsdim)
-    #             @test kerneldiagmatrix!(Kdiag[obsdim],kt,A,obsdim=obsdim) == kerneldiagmatrix(k,s*A,obsdim=obsdim)
-    #         end
-    #     end
-    #     @testset "Kernel matrix" begin
-    #         for obsdim in [1,2]
-    #             @test kernelmatrix(kt,A,B,obsdim=obsdim) == kernelmatrix(k,s*A,s*B,obsdim=obsdim)
-    #             @test kernelmatrix(kt,A,obsdim=obsdim) == kernelmatrix(k,s*A,obsdim=obsdim)
-    #             @test kerneldiagmatrix(kt,A,obsdim=obsdim) == kerneldiagmatrix(k,s*A,obsdim=obsdim)
-    #         end
-    #     end
-    # end
+
     # @testset "KernelSum" begin
     #     k1 = SqExponentialKernel()
     #     k2 = LinearKernel()

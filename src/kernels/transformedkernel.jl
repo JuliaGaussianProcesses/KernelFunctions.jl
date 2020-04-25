@@ -40,6 +40,10 @@ end
 
 # Kernel matrix operations
 
+function kerneldiagmatrix!(K::AbstractVector, κ::TransformedKernel, x::AbstractVector)
+    return kerneldiagmatrix!(K, κ.kernel, map(κ.transform, x))
+end
+
 function kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector)
     return kernelmatrix!(K, kernel(κ), map(κ.transform, x))
 end
@@ -51,6 +55,10 @@ function kernelmatrix!(
     y::AbstractVector,
 )
     return kernelmatrix!(K, kernel(κ), map(κ.transform, x), map(κ.transform, y))
+end
+
+function kerneldiagmatrix(κ::TransformedKernel, x::AbstractVector)
+    return kerneldiagmatrix(κ.kernel, map(κ.transform, x))
 end
 
 function kernelmatrix(κ::TransformedKernel, x::AbstractVector)

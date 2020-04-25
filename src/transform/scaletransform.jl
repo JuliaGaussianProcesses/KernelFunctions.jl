@@ -12,7 +12,6 @@ struct ScaleTransform{T<:Real} <: Transform
 end
 
 function ScaleTransform(s::T=1.0) where {T<:Real}
-    @check_args(ScaleTransform, s, s > zero(T), "s > 0")
     ScaleTransform{T}([s])
 end
 
