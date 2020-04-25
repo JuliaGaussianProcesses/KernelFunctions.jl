@@ -62,6 +62,6 @@ function kernelmatrix!(
     Y::AbstractVector,
 )
     modxy = pairwise(SqEuclidean(sqroundoff), X, Y,dims = obsdim)
-    K .= _fbm.(_mod(x), reshape(_mod(y), 1, :), modxy, κ.h)
+    K .= _fbm.(_mod(x), _mod(y)', modxy, κ.h)
     return K
 end
