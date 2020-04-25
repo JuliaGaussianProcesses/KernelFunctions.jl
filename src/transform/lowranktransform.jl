@@ -25,7 +25,7 @@ Base.size(tr::LowRankTransform) = size(tr.proj) #  TODO Add test
 (t::LowRankTransform)(x::AbstractVector{<:Real}) = t.proj * x
 
 function Base.map(t::LowRankTransform, x::AbstractVector{<:Real})
-    return ColVecs(t.proj * reshape(x, 1, :))
+    return ColVecs(t.proj * x')
 end
 Base.map(t::LowRankTransform, x::ColVecs) = ColVecs(t.proj * x.X)
 Base.map(t::LowRankTransform, x::RowVecs) = RowVecs(x.X * t.proj')
