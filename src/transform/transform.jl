@@ -21,7 +21,8 @@ Return exactly the input
 """
 struct IdentityTransform <: Transform end
 
-apply(t::IdentityTransform, x::AbstractVector) = x
+(t::IdentityTransform)(x) = x
+map(::IdentityTransform, x::AbstractVector) = x
 
 ### TODO Maybe defining adjoints could help but so far it's not working
 

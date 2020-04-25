@@ -4,6 +4,7 @@
     XC = ColVecs(randn(rng, 5, 10))
     XR = RowVecs(randn(rng, 11, 3))
     @testset "IdentityTransform($(typeof(x)))" for x in [x, XC, XR]
-        @test KernelFunctions.apply(IdentityTransform(), x) == x
+        @test IdentityTransform()(x) == x
+        @test map(IdentityTransform(), x) == x
     end
 end
