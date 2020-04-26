@@ -36,8 +36,8 @@ end
 
 # Utility for slicing up inputs.
 slices(x::AbstractVector{<:Real}) = [x]
-slices(x::ColVecs) = eachslice(x.X; dims=1)
-slices(x::RowVecs) = eachslice(x.X; dims=2)
+slices(x::ColVecs) = eachrow(x.X)
+slices(x::RowVecs) = eachcol(x.X)
 
 function kernelmatrix!(K::AbstractMatrix, k::TensorProduct, x::AbstractVector)
     validate_inplace_dims(K, x)
