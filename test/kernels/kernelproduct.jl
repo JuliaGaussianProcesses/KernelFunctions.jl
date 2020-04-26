@@ -38,13 +38,13 @@
             @test kerneldiagmatrix(k, x) ≈ K_diag_manual
 
             tmp = Matrix{Float64}(undef, length(x), length(y))
-            @test_broken kernelmatrix!(tmp, k, x, y) ≈ kernelmatrix(k, x, y)
+            @test kernelmatrix!(tmp, k, x, y) ≈ kernelmatrix(k, x, y)
 
             tmp_square = Matrix{Float64}(undef, length(x), length(x))
-            @test_broken kernelmatrix!(tmp_square, k, x) ≈ kernelmatrix(k, x)
+            @test kernelmatrix!(tmp_square, k, x) ≈ kernelmatrix(k, x)
 
             tmp_diag = Vector{Float64}(undef, length(x))
-            @test_broken kerneldiagmatrix!(tmp_diag, k, x) ≈ kerneldiagmatrix(k, x)
+            @test kerneldiagmatrix!(tmp_diag, k, x) ≈ kerneldiagmatrix(k, x)
         end
     end
 end

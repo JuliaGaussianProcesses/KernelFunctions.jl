@@ -1,3 +1,8 @@
+# Custom Kernel implementation that only defines how to evaluate itself. This is used to
+# test that fallback kernelmatrix / kerneldiagmatrix methods work properly.
+struct BaseSE <: KernelFunctions.BaseKernel end
+(k::BaseSE)(x, y) = exp(-evaluate(SqEuclidean(), x, y))
+
 # Custom kernel to test `SimpleKernel` interface on, independently the `SimpleKernel`s that
 # are implemented in the package. That this happens to be an exponentiated quadratic kernel
 # is a complete coincidence.
@@ -6,6 +11,40 @@ KernelFunctions.metric(::ToySimpleKernel) = SqEuclidean()
 KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
 
 @testset "kernelmatrix" begin
+
+    @testset "Kernels" begin
+        rng = MersenneTwister(123456)
+        k = BaseSE()
+        k_se = SqExponentialKernel()
+
+        Nx = 5
+        Ny = 3
+        D = 2
+
+        vecs = (randn(rng, Nx), randn(rng, Ny))
+        colvecs = (ColVecs(randn(rng, D, Nx)), ColVecs(randn(rng, D, Ny)))
+        rowvecs = (RowVecs(randn(rng, Nx, D)), RowVecs(randn(rng, Ny, D)))
+
+        @testset "$(typeof(x))" for (x, y) in [vecs, colvecs, rowvecs]
+
+            @test kernelmatrix(k_se, x, y) ≈ kernelmatrix(k, x, y)
+
+            @test kernelmatrix(k, x) ≈ kernelmatrix(k, x, x)
+
+            @test kernelmatrix(k, x, y) ≈ transpose(kernelmatrix(k, y, x))
+
+            @test kerneldiagmatrix(k, x) ≈ diag(kernelmatrix(k, x))
+
+            tmp = Matrix{Float64}(undef, length(x), length(y))
+            @test kernelmatrix!(tmp, k, x, y) ≈ kernelmatrix(k, x, y)
+
+            tmp_square = Matrix{Float64}(undef, length(x), length(x))
+            @test kernelmatrix!(tmp_square, k, x) ≈ kernelmatrix(k, x)
+
+            tmp_diag = Vector{Float64}(undef, length(x))
+            @test kerneldiagmatrix!(tmp_diag, k, x) ≈ kerneldiagmatrix(k, x)
+        end
+    end
 
     @testset "SimpleKernels" begin
         rng = MersenneTwister(123456)

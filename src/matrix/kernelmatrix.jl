@@ -36,7 +36,35 @@ kerneldiagmatrix
 
 
 #
-# SimpleKernel implementations.
+# Kernel implementations. Generic fallbacks that shouldn't ever be hit in practice.
+#
+
+kernelmatrix!(K::AbstractMatrix, κ::Kernel, x::AbstractVector) = kernelmatrix!(K, κ, x, x)
+
+function kernelmatrix!(K::AbstractMatrix, κ::Kernel, x::AbstractVector, y::AbstractVector)
+    validate_inplace_dims(K, x, y)
+    K .= κ.(x, permutedims(y))
+    return K
+end
+
+kernelmatrix(κ::Kernel, x::AbstractVector) = kernelmatrix(κ, x, x)
+
+function kernelmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector)
+    validate_dims(x, y)
+    return κ.(x, permutedims(y))
+end
+
+function kerneldiagmatrix!(K::AbstractVector, κ::Kernel, x::AbstractVector)
+    validate_inplace_dims(K, x)
+    return map!(x -> κ(x, x), K, x)
+end
+
+kerneldiagmatrix(κ::Kernel, x::AbstractVector) = map(x -> κ(x, x), x)
+
+
+
+#
+# SimpleKernel optimisations.
 #
 
 function kernelmatrix!(K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector)
@@ -62,13 +90,6 @@ function kernelmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
     validate_dims(x, y)
     return map(d -> kappa(κ, d), pairwise(metric(κ), x, y))
 end
-
-function kerneldiagmatrix!(K::AbstractVector, κ::SimpleKernel, x::AbstractVector)
-    validate_inplace_dims(K, x)
-    return map!(x -> κ(x, x), K, x)
-end
-
-kerneldiagmatrix(κ::SimpleKernel, x::AbstractVector) = map(x -> κ(x, x), x)
 
 
 
