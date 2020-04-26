@@ -35,7 +35,7 @@ function validate_domain(k::TensorProduct, x::AbstractVector)
 end
 
 # Utility for slicing up inputs.
-slices(x::AbstractVector{<:Real}) = [x]
+slices(x::AbstractVector{<:Real}) = (x,)
 slices(x::ColVecs) = eachrow(x.X)
 slices(x::RowVecs) = eachcol(x.X)
 
