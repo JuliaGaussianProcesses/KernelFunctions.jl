@@ -45,7 +45,7 @@ function kernelmatrix!(K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector)
 end
 
 function kerneldiagmatrix!(K::AbstractVector, κ::ScaledKernel, x::AbstractVector)
-    K = kerneldiagmatrix!(K, κ, x)
+    kerneldiagmatrix!(K, κ, x)
     K .*= κ.σ²
     return K
 end
