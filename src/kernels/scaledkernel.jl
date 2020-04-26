@@ -33,7 +33,7 @@ function kernelmatrix!(
     x::AbstractVector,
     y::AbstractVector,
 )
-    K = kernelmatrix!(K, κ, x, y)
+    kernelmatrix!(K, κ, x, y)
     K .*= κ.σ² 
     return K
 end
