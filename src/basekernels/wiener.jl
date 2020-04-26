@@ -11,15 +11,20 @@ i-times integrated Wiener process kernel function.
 
 where `κᵢ` is given by
 
-```math
+\```math
     κ₋₁(x, y) =  δ(x, y)
-    i >= 0, κᵢ(x, y) = 1 / ai * min(x, y)^(2i + 1) + bi * min(x, y)^(i + 1) * |x - y| * ri(x, y),
-    with the coefficients ai, bi and the residual ri(x, y) defined as follows:
+\```
+and for `i >= 0`,
+\```math
+    κᵢ(x, y) = 1 / ai * min(x, y)^(2i + 1) + bi * min(x, y)^(i + 1) * |x - y| * ri(x, y),
+\```
+    with the coefficients `ai`, `bi` and the residual `ri(x, y)` defined as follows:
+\```math
         i = 0, ai =   1, bi = 0
         i = 1, ai =   3, bi = 1/  2, ri(x, y) = 1
         i = 2, ai =  20, bi = 1/ 12, ri(x, y) = x + y - 1 / 2 * min(x, y)
         i = 3, ai = 252, bi = 1/720, ri(x, y) = 5 * max(x, y)² + 2 * x * z + 3 * min(x, y)²
-```
+\```
 
 # References:
 See the paper *Probabilistic ODE Solvers with Runge-Kutta Means* by Schober, Duvenaud and Hennig, NIPS, 2014, for more details.
