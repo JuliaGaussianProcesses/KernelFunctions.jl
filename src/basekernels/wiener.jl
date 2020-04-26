@@ -3,7 +3,7 @@
 
 i-times integrated Wiener process kernel function.
 
-For i=-1, this is just the white noise covariance, see WhiteKernel.\\
+For i=-1, this is just the white noise covariance, see [`WhiteKernel`](@ref).
 For i= 0, this is the Wiener process covariance,\\
 For i= 1, this is the integrated Wiener process covariance (velocity),\\
 For i= 2, this is the twice-integrated Wiener process covariance (accel.),\\
@@ -152,4 +152,4 @@ function kernelmatrix(
     return kernelmatrix(κ, X, X; obsdim=obsdim)
 end
 
-Base.show(io::IO, κ::WienerKernel{I}) where I = print(io, "Wiener Kernel $(I)-times integrated")
+Base.show(io::IO, κ::WienerKernel{I}) where I = print(io, "Wiener Kernel ", I, "-times integrated")
