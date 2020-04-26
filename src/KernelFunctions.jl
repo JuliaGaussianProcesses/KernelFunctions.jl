@@ -4,13 +4,15 @@ KernelFunctions. [Github](https://github.com/JuliaGaussianProcesses/KernelFuncti
 """
 module KernelFunctions
 
-export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
+export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!
 export transform
 export duplicate, set! # Helpers
 
 export Kernel
 export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel
-export SqExponentialKernel, ExponentialKernel, GammaExponentialKernel
+export CosineKernel
+export SqExponentialKernel, RBFKernel, GaussianKernel, SEKernel
+export LaplacianKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
@@ -40,8 +42,10 @@ const defaultobs = 2
 Abstract type defining a slice-wise transformation on an input matrix
 """
 abstract type Transform end
+
 abstract type Kernel end
 abstract type BaseKernel <: Kernel end
+abstract type SimpleKernel <: BaseKernel end
 
 include("utils.jl")
 include("distances/dotproduct.jl")

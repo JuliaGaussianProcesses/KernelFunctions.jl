@@ -14,9 +14,9 @@
     ks1 = 2.0*k1
     ks2 = 0.5*k2
     @test length(k) == 2
-    @test kappa(k,v1,v2) == kappa(2.0*k1+0.5*k2,v1,v2)
-    @test kappa(k+k3,v1,v2) ≈ kappa(k3+k,v1,v2)
-    @test kappa(k1+k2,v1,v2) == kappa(KernelSum([k1,k2]),v1,v2)
-    @test kappa(k+ks1,v1,v2) ≈ kappa(ks1+k,v1,v2)
-    @test kappa(k+k,v1,v2) == kappa(KernelSum([k1,k2,k1,k2],vcat(w,w)),v1,v2)
+    @test k(v1, v2) == (2.0 * k1 + 0.5 * k2)(v1, v2)
+    @test (k + k3)(v1,v2) ≈ (k3 + k)(v1, v2)
+    @test (k1 + k2)(v1, v2) == KernelSum([k1, k2])(v1, v2)
+    @test (k + ks1)(v1, v2) ≈ (ks1 + k)(v1, v2)
+    @test (k + k)(v1, v2) == KernelSum([k1, k2, k1, k2], vcat(w, w))(v1, v2)
 end
