@@ -3,15 +3,15 @@
 
 i-times integrated Wiener process kernel function.
 
-For i=-1, this is just the white noise covariance, see [`WhiteKernel`](@ref).
-For i= 0, this is the Wiener process covariance,\\
-For i= 1, this is the integrated Wiener process covariance (velocity),\\
-For i= 2, this is the twice-integrated Wiener process covariance (accel.),\\
-For i= 3, this is the thrice-integrated Wiener process covariance,\\
+- For i=-1, this is just the white noise covariance, see [`WhiteKernel`](@ref).
+- For i= 0, this is the Wiener process covariance,
+- For i= 1, this is the integrated Wiener process covariance (velocity),
+- For i= 2, this is the twice-integrated Wiener process covariance (accel.),
+- For i= 3, this is the thrice-integrated Wiener process covariance,
 
 where `κᵢ` is given by
 
-```julia
+```math
     κ₋₁(x, y) =  δ(x, y)
     i >= 0, κᵢ(x, y) = 1 / ai * min(x, y)^(2i + 1) + bi * min(x, y)^(i + 1) * |x - y| * ri(x, y),
     with the coefficients ai, bi and the residual ri(x, y) defined as follows:
@@ -66,88 +66,6 @@ function (::WienerKernel{3})(x, y)
     minXY = min(X, Y)
     return 1 / 252 * minXY^7 + 1 / 720 * minXY^4 * euclidean(x, y) *
         ( 5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2 )
-end
-
-function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::WienerKernel,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int = defaultobs
-)
-    @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    if !check_dims(K, X, X, feature_dim(obsdim), obsdim)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
-    end
-
-    if obsdim == 1
-        for j = 1:size(K, 2)
-            for i = 1:size(K, 1)
-                @inbounds @views K[i,j] = κ(X[i,:], Y[j,:])
-            end
-        end
-    else
-        for j = 1:size(K, 2)
-            for i = 1:size(K, 1)
-                @inbounds @views K[i,j] = κ(X[:,i], Y[:,j])
-            end
-        end
-    end
-    return K
-end
-
-function kernelmatrix(
-    κ::WienerKernel,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int = defaultobs
-)
-    @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    if !check_dims(X, Y, feature_dim(obsdim), obsdim)
-        throw(DimensionMismatch("X $(size(X)) and Y $(size(Y)) do not have the same number of features on the dimension : $(feature_dim(obsdim))"))
-    end
-    if obsdim == 1
-        outdim = size(X, 1)
-    else
-        outdim = size(X, 2)
-    end
-    K = zeros(outdim, outdim)
-    if obsdim == 1
-        for j = 1:size(K, 2)
-            for i = 1:size(K, 1)
-                @inbounds @views K[i,j] = κ(X[i,:], Y[j,:])
-            end
-        end
-    else
-        for j = 1:size(K, 2)
-            for i = 1:size(K, 1)
-                @inbounds @views K[i,j] = κ(X[:,i], Y[:,j])
-            end
-        end
-    end
-    return K
-end
-
-function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::WienerKernel,
-    X::AbstractMatrix;
-    obsdim::Int = defaultobs
-)
-    @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    if !check_dims(K, X, X, feature_dim(obsdim), obsdim)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
-    end
-    kernelmatrix!(K, κ, X, X; obsdim=obsdim)
-    return K
-end
-
-function kernelmatrix(
-    κ::WienerKernel,
-    X::AbstractMatrix;
-    obsdim::Int = defaultobs
-)
-    return kernelmatrix(κ, X, X; obsdim=obsdim)
 end
 
 Base.show(io::IO, κ::WienerKernel{I}) where I = print(io, "Wiener Kernel ", I, "-times integrated")
