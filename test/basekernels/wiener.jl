@@ -21,7 +21,6 @@
     m1 = rand(3,4)
     m2 = rand(3,4)
     @test kernelmatrix(k0, m1, m1) ≈ kernelmatrix(k0, m1) atol=1e-5
-    @test_broken kernelmatrix(k0, m1, m2) ≈ k0(m1, m2) atol=1e-5
 
     K = zeros(4,4)
     kernelmatrix!(K,k0,m1,m2)
