@@ -74,4 +74,4 @@ function (::WienerKernel{3})(x, y)
         ( 5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2 )
 end
 
-Base.show(io::IO, κ::WienerKernel{I}) where I = print(io, "Wiener Kernel ", I, "-times integrated")
+Base.show(io::IO, ::WienerKernel{I}) where I = print(io, I, "-times integrated Wiener kernel")
