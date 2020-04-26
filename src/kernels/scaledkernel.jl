@@ -33,19 +33,19 @@ function kernelmatrix!(
     x::AbstractVector,
     y::AbstractVector,
 )
-    K = kernelmatrix!(K, κ, x, y)
+    kernelmatrix!(K, κ, x, y)
     K .*= κ.σ² 
     return K
 end
 
 function kernelmatrix!(K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector)
-    K = kernelmatrix!(K, κ, x)
+    kernelmatrix!(K, κ, x)
     K .*= κ.σ²
     return K
 end
 
 function kerneldiagmatrix!(K::AbstractVector, κ::ScaledKernel, x::AbstractVector)
-    K = kerneldiagmatrix!(K, κ, x)
+    kerneldiagmatrix!(K, κ, x)
     K .*= κ.σ²
     return K
 end
