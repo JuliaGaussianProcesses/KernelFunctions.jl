@@ -36,7 +36,7 @@ kerneldiagmatrix
 
 
 #
-# Kernel implementations. Generic fallbacks that shouldn't ever be hit in practice.
+# Kernel implementations. Generic fallbacks that depend only on kernel evaluation.
 #
 
 kernelmatrix!(K::AbstractMatrix, κ::Kernel, x::AbstractVector) = kernelmatrix!(K, κ, x, x)
