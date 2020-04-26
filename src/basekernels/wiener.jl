@@ -1,20 +1,19 @@
 """
     WienerKernel{i}()
 
-i-times integrated Wiener process kernel function given by
-```julia
-    κ(x, y) =  kᵢ(x, y)
-```
+i-times integrated Wiener process kernel function.
 
 For i=-1, this is just the white noise covariance, see WhiteKernel.\\
 For i= 0, this is the Wiener process covariance,\\
-for i= 1, this is the integrated Wiener process covariance (velocity),\\
-for i= 2, this is the twice-integrated Wiener process covariance (accel.),\\
-for i= 3, this is the thrice-integrated Wiener process covariance. where `kᵢ` is given by\\
+For i= 1, this is the integrated Wiener process covariance (velocity),\\
+For i= 2, this is the twice-integrated Wiener process covariance (accel.),\\
+For i= 3, this is the thrice-integrated Wiener process covariance,\\
+
+where `κᵢ` is given by
 
 ```julia
-    k₋₁(x, y) =  δ(x, y)
-    i >= 0, kᵢ(x, y) = 1 / ai * min(x, y)^(2i + 1) + bi * min(x, y)^(i + 1) * |x - y| * ri(x, y),
+    κ₋₁(x, y) =  δ(x, y)
+    i >= 0, κᵢ(x, y) = 1 / ai * min(x, y)^(2i + 1) + bi * min(x, y)^(i + 1) * |x - y| * ri(x, y),
     with the coefficients ai, bi and the residual ri(x, y) defined as follows:
         i = 0, ai =   1, bi = 0
         i = 1, ai =   3, bi = 1/  2, ri(x, y) = 1
@@ -22,7 +21,7 @@ for i= 3, this is the thrice-integrated Wiener process covariance. where `kᵢ` 
         i = 3, ai = 252, bi = 1/720, ri(x, y) = 5 * max(x, y)² + 2 * x * z + 3 * min(x, y)²
 ```
 
-**References:**\\
+# References:
 See the paper *Probabilistic ODE Solvers with Runge-Kutta Means* by Schober, Duvenaud and Hennig, NIPS, 2014, for more details.
 
 """
