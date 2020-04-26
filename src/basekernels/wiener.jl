@@ -39,36 +39,34 @@ function WienerKernel(;i::Integer=0)
     return WienerKernel{i}()
 end
 
-function _wiener(κ::WienerKernel{0}, x, y)
-    X = sqrt(sum(abs2.(x)))
-    Y = sqrt(sum(abs2.(y)))
+function (::WienerKernel{0})(x, y)
+    X = sqrt(sum(abs2, x))
+    Y = sqrt(sum(abs2, y))
     return min(X, Y)
 end
 
-function _wiener(κ::WienerKernel{1}, x, y)
-    X = sqrt(sum(abs2.(x)))
-    Y = sqrt(sum(abs2.(y)))
+function (::WienerKernel{1})(x, y)
+    X = sqrt(sum(abs2, x))
+    Y = sqrt(sum(abs2, y))
     minXY = min(X, Y)
     return 1 / 3 * minXY^3 + 1 / 2 * minXY^2 * euclidean(x, y)
 end
 
-function _wiener(κ::WienerKernel{2}, x, y)
-    X = sqrt(sum(abs2.(x)))
-    Y = sqrt(sum(abs2.(y)))
+function (::WienerKernel{2})(x, y)
+    X = sqrt(sum(abs2, x))
+    Y = sqrt(sum(abs2, y))
     minXY = min(X, Y)
     return 1 / 20 * minXY^5 + 1 / 12 * minXY^3 * euclidean(x, y) *
         ( X + Y - 1 / 2 * minXY )
 end
 
-function _wiener(κ::WienerKernel{3}, x, y)
-    X = sqrt(sum(abs2.(x)))
-    Y = sqrt(sum(abs2.(y)))
+function (::WienerKernel{3})(x, y)
+    X = sqrt(sum(abs2, x))
+    Y = sqrt(sum(abs2, y))
     minXY = min(X, Y)
     return 1 / 252 * minXY^7 + 1 / 720 * minXY^4 * euclidean(x, y) *
         ( 5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2 )
 end
-
-(κ::WienerKernel)(x::Real, y::Real) = wiener(κ, x, y)
 
 function kernelmatrix!(
     K::AbstractMatrix,
