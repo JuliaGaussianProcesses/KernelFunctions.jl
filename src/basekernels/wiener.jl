@@ -68,21 +68,7 @@ function _wiener(κ::WienerKernel{3}, x, y)
         ( 5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2 )
 end
 
-function kappa(κ::WienerKernel, x, y)
-    return _wiener(κ, x, y)
-end
-
-(κ::WienerKernel)(x::Real, y::Real) = kappa(κ, x, y)
-
-function _kernel(
-    κ::WienerKernel,
-    x::AbstractVector,
-    y::AbstractVector;
-    obsdim::Int = defaultobs
-)
-    @assert length(x) == length(y) "x and y don't have the same dimension!"
-    return kappa(κ, x, y)
-end
+(κ::WienerKernel)(x::Real, y::Real) = wiener(κ, x, y)
 
 function kernelmatrix!(
     K::AbstractMatrix,
@@ -99,13 +85,13 @@ function kernelmatrix!(
     if obsdim == 1
         for j = 1:size(K, 2)
             for i = 1:size(K, 1)
-                @inbounds @views K[i,j] = _kernel(κ, X[i,:], Y[j,:])
+                @inbounds @views K[i,j] = κ(X[i,:], Y[j,:])
             end
         end
     else
         for j = 1:size(K, 2)
             for i = 1:size(K, 1)
-                @inbounds @views K[i,j] = _kernel(κ, X[:,i], Y[:,j])
+                @inbounds @views K[i,j] = κ(X[:,i], Y[:,j])
             end
         end
     end
@@ -131,13 +117,13 @@ function kernelmatrix(
     if obsdim == 1
         for j = 1:size(K, 2)
             for i = 1:size(K, 1)
-                @inbounds @views K[i,j] = _kernel(κ, X[i,:], Y[j,:])
+                @inbounds @views K[i,j] = κ(X[i,:], Y[j,:])
             end
         end
     else
         for j = 1:size(K, 2)
             for i = 1:size(K, 1)
-                @inbounds @views K[i,j] = _kernel(κ, X[:,i], Y[:,j])
+                @inbounds @views K[i,j] = κ(X[:,i], Y[:,j])
             end
         end
     end
