@@ -13,14 +13,14 @@ where ``κᵢ`` is given by
 
 ```math
     κ₋₁(x, y) =  δ(x, y)
+    κ₀(x, y)  =  min(x, y)
 ```
-and for ``i >= 0``,
+and for ``i >= 1``,
 ```math
     κᵢ(x, y) = 1 / aᵢ * min(x, y)^(2i + 1) + bᵢ * min(x, y)^(i + 1) * |x - y| * rᵢ(x, y),
 ```
     with the coefficients ``aᵢ``, ``bᵢ`` and the residual ``rᵢ(x, y)`` defined as follows:
 ```math
-    a₀ = 1, b₀ = 0,
     a₁ = 3, b₁ = 1/2, r₁(x, y) = 1,
     a₂ = 20, b₂ = 1/12, r₂(x, y) = x + y - min(x, y) / 2,
     a₃ = 252, b₃ = 1/720, r₃(x, y) = 5 * max(x, y)² + 2 * x * z + 3 * min(x, y)²
