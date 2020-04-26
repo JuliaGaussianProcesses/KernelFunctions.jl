@@ -7,7 +7,7 @@ Create a kernel that always returning zero
 ```
 The output type depends of `x` and `y`
 """
-struct ZeroKernel <: BaseKernel end
+struct ZeroKernel <: SimpleKernel end
 
 kappa(κ::ZeroKernel, d::T) where {T<:Real} = zero(T)
 
@@ -24,7 +24,7 @@ Base.show(io::IO, ::ZeroKernel) = print(io, "Zero Kernel")
 ```
 Kernel function working as an equivalent to add white noise. Can also be called via `EyeKernel()`
 """
-struct WhiteKernel <: BaseKernel end
+struct WhiteKernel <: SimpleKernel end
 
 """
     EyeKernel()
@@ -48,7 +48,7 @@ Kernel function always returning a constant value `c`
     κ(x,y) = c
 ```
 """
-struct ConstantKernel{Tc<:Real} <: BaseKernel
+struct ConstantKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
     function ConstantKernel(;c::T=1.0) where {T<:Real}
         new{T}([c])

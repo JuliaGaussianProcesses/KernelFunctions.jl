@@ -8,8 +8,8 @@ function kernelkronmat(
     dims::Int
     )
     @assert iskroncompatible(κ) "The chosen kernel is not compatible for kroenecker matrices (see `iskroncompatible()`)"
-    k = kernelmatrix(κ,reshape(X,:,1),obsdim=1)
-    kronecker(k,dims)
+    k = kernelmatrix(κ, X)
+    kronecker(k, dims)
 end
 
 function kernelkronmat(
@@ -18,8 +18,8 @@ function kernelkronmat(
     obsdim::Int=defaultobs
     )
     @assert iskroncompatible(κ) "The chosen kernel is not compatible for kroenecker matrices"
-    Ks = kernelmatrix.(κ,X,obsdim=obsdim)
-    K = reduce(⊗,Ks)
+    Ks = kernelmatrix.(κ, X)
+    K = reduce(⊗, Ks)
 end
 
 

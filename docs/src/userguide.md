@@ -27,8 +27,9 @@ To premultiply the kernel by a variance, you can use `*` or create a `ScaledKern
 To compute the kernel function on two vectors you can call
 ```julia
   k = SqExponentialKernel()
-  x1 = rand(3); x2 = rand(3)
-  kappa(k,x1,x2) == k(x1,x2) # Syntactic sugar
+  x1 = rand(3)
+  x2 = rand(3)
+  k(x1,x2)
 ```
 
 ## Creating a kernel matrix

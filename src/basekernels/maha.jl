@@ -8,7 +8,7 @@ Mahalanobis distance-based kernel given by
 where the matrix P is the metric.
 
 """
-struct MahalanobisKernel{T<:Real, A<:AbstractMatrix{T}} <: BaseKernel
+struct MahalanobisKernel{T<:Real, A<:AbstractMatrix{T}} <: SimpleKernel
     P::A
     function MahalanobisKernel(P::AbstractMatrix{T}) where {T<:Real}
         LinearAlgebra.checksquare(P)
@@ -17,6 +17,7 @@ struct MahalanobisKernel{T<:Real, A<:AbstractMatrix{T}} <: BaseKernel
 end
 
 kappa(κ::MahalanobisKernel, d::T) where {T<:Real} = exp(-d)
+
 metric(κ::MahalanobisKernel) = SqMahalanobis(κ.P)
 
 Base.show(io::IO, κ::MahalanobisKernel) = print(io, "Mahalanobis Kernel (size(P) = ", size(κ.P), ")")

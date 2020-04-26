@@ -10,7 +10,7 @@ using SpecialFunctions
 using Test
 using Zygote
 
-using KernelFunctions: metric
+using KernelFunctions: metric, kappa
 
 # Writing tests:
 # 1. The file structure of the test should match precisely the file structure of src.
