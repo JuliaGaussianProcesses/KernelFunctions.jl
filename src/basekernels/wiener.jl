@@ -16,14 +16,15 @@ where `κᵢ` is given by
 \```
 and for `i >= 0`,
 \```math
-    κᵢ(x, y) = 1 / ai * min(x, y)^(2i + 1) + bi * min(x, y)^(i + 1) * |x - y| * ri(x, y),
+    κᵢ(x, y) = 1 / aᵢ * min(x, y)^(2i + 1) + bᵢ * min(x, y)^(i + 1) * |x - y| * rᵢ(x, y),
 \```
-    with the coefficients `ai`, `bi` and the residual `ri(x, y)` defined as follows:
+    with the coefficients `aᵢ`, `bᵢ` and the residual `rᵢ(x, y)` defined as follows:
 \```math
-        i = 0, ai =   1, bi = 0
-        i = 1, ai =   3, bi = 1/  2, ri(x, y) = 1
-        i = 2, ai =  20, bi = 1/ 12, ri(x, y) = x + y - 1 / 2 * min(x, y)
-        i = 3, ai = 252, bi = 1/720, ri(x, y) = 5 * max(x, y)² + 2 * x * z + 3 * min(x, y)²
+    a₀ = 1, b₀ = 0,
+    a₁ = 3, b₁ = 1/2, r₁(x, y) = 1,
+    a₂ = 20, b₂ = 1/12, r₂(x, y) = x + y - min(x, y) / 2,
+    a₃ = 252, b₃ = 1/720, r₃(x, y) = 5 * max(x, y)² + 2 * x * z + 3 * min(x, y)²
+
 \```
 
 # References:
