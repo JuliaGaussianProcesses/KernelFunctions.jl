@@ -54,26 +54,43 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
         Ny = 3
         D = 2
 
-        vecs = (randn(rng, Nx), randn(rng, Ny))
-        colvecs = (ColVecs(randn(rng, D, Nx)), ColVecs(randn(rng, D, Ny)))
-        rowvecs = (RowVecs(randn(rng, Nx, D)), RowVecs(randn(rng, Ny, D)))
+        vecs = (
+            randn(rng, Nx),
+            randn(rng, Ny),
+            ColVecs(randn(rng, D, Ny)),
+        )
+        colvecs = (
+            x = ColVecs(randn(rng, D, Nx)),
+            y = ColVecs(randn(rng, D, Ny)),
+            x_bad = ColVecs(randn(rng, D + 1, Nx)),
+        )
+        rowvecs = (
+            x = RowVecs(randn(rng, Nx, D)),
+            y = RowVecs(randn(rng, Ny, D)),
+            x_bad = RowVecs(randn(rng, Ny, D + 1)),
+        )
 
-        @testset "$(typeof(x))" for (x, y) in [vecs, colvecs, rowvecs]
-
-            @test kernelmatrix(k, x) ≈ kernelmatrix(k, x, x)
+        @testset "$(typeof(x))" for (x, y, x_bad) in [vecs, colvecs, rowvecs]
 
             @test kernelmatrix(k, x, y) ≈ transpose(kernelmatrix(k, y, x))
+            @test_throws DimensionMismatch kernelmatrix(k, x, x_bad)
+
+            @test kernelmatrix(k, x) ≈ kernelmatrix(k, x, x)
 
             @test kerneldiagmatrix(k, x) ≈ diag(kernelmatrix(k, x))
 
             tmp = Matrix{Float64}(undef, length(x), length(y))
             @test kernelmatrix!(tmp, k, x, y) ≈ kernelmatrix(k, x, y)
+            @test_throws DimensionMismatch kernelmatrix!(tmp, k, x, x)
+            @test_throws DimensionMismatch kernelmatrix!(tmp, k, x, x_bad)
 
             tmp_square = Matrix{Float64}(undef, length(x), length(x))
             @test kernelmatrix!(tmp_square, k, x) ≈ kernelmatrix(k, x)
+            @test_throws DimensionMismatch kernelmatrix!(tmp_square, k, y)
 
             tmp_diag = Vector{Float64}(undef, length(x))
             @test kerneldiagmatrix!(tmp_diag, k, x) ≈ kerneldiagmatrix(k, x)
+            @test_throws DimensionMismatch kerneldiagmatrix!(tmp_diag, k, y)            
         end
     end
 

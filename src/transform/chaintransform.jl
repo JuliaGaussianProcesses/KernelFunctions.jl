@@ -31,14 +31,6 @@ function Base.map(t::ChainTransform, x::AbstractVector)
     return foldl((x, t) -> map(t, x), t.transforms; init=x)
 end
 
-# function apply(t::ChainTransform,X::T;obsdim::Int=defaultobs) where {T}
-#     Xtr = copy(X)
-#     for tr in t.transforms
-#         Xtr = apply(tr, Xtr, obsdim = obsdim)
-#     end
-#     return Xtr
-# end
-
 set!(t::ChainTransform,θ) = set!.(t.transforms,θ)
 duplicate(t::ChainTransform,θ) = ChainTransform(duplicate.(t.transforms,θ))
 

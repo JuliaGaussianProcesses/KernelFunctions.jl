@@ -3,7 +3,7 @@
     s = rand(rng) + 1e-3
     t = ScaleTransform(s)
 
-    x = randn(rng)
+    x = randn(rng, 7)
     XC = ColVecs(randn(rng, 10, 5))
     XR = RowVecs(randn(rng, 6, 11))
 

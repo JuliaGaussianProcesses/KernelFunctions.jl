@@ -70,34 +70,6 @@ Distances.pairwise(d::PreMetric, x::RowVecs) = pairwise(d, x.X; dims=1)
 Distances.pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = pairwise(d, x.X, y.X; dims=1)
 
 
-# Take highest Float among possibilities
-# function promote_float(Tₖ::DataType...)
-#     if length(Tₖ) == 0
-#         return Float64
-#     end
-#     T = promote_type(Tₖ...)
-#     return T <: Real ? T : Float64
-# end
-
-function check_dims(K, X::AbstractVector, Y::AbstractVector)
-    return size(K) == (length(X), length(Y))
-end
-
-
-## Won't be needed with full ColVecs implementation
-function check_dims(K, X::AbstractMatrix, Y::AbstractMatrix, featdim, obsdim)
-    return check_dims(X, Y, featdim) &&
-        (size(K) == (size(X, obsdim), size(Y, obsdim)))
-end
-
-check_dims(X::AbstractMatrix, Y::AbstractMatrix, featdim) = size(X, featdim) == size(Y, featdim)
-
-
-feature_dim(obsdim::Int) = obsdim == 1 ? 2 : 1
-
-base_kernel(k::Kernel) = eval(nameof(typeof(k)))
-
-base_transform(t::Transform) = eval(nameof(typeof(t)))
 
 """
 Will be implemented at some point

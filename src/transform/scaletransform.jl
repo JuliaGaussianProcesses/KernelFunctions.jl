@@ -16,7 +16,6 @@ function ScaleTransform(s::T=1.0) where {T<:Real}
 end
 
 set!(t::ScaleTransform,ρ::Real) = t.s .= [ρ]
-dim(str::ScaleTransform) = 1
 
 (t::ScaleTransform)(x) = first(t.s) .* x
 
