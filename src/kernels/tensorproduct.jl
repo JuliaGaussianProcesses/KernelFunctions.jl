@@ -26,9 +26,6 @@ function (kernel::TensorProduct)(x, y)
     return prod(k(xi, yi) for (k, xi, yi) in zip(kernel.kernels, x, y))
 end
 
-# TODO: General implementation of `kernelmatrix` and `kerneldiagmatrix`
-# Default implementation assumes 1D observations
-
 function validate_domain(k::TensorProduct, x::AbstractVector)
     dim(x) == length(k) ||
         error("number of kernels and groups of features are not consistent")
@@ -70,25 +67,6 @@ function kernelmatrix!(
     return K
 end
 
-# mapreduce with multiple iterators requires Julia 1.2 or later.
-
-function kernelmatrix(k::TensorProduct, x::AbstractVector)
-    validate_domain(k, x)
-
-    return mapreduce((x, y) -> x .* y, zip(k.kernels, slices(x))) do (k, xi)
-        kernelmatrix(k, xi)
-    end
-end
-
-function kernelmatrix(k::TensorProduct, x::AbstractVector, y::AbstractVector)
-    validate_domain(k, x)
-
-    kernels_and_inputs = zip(k.kernels, slices(x), slices(y))
-    return mapreduce((x, y) -> x .* y, kernels_and_inputs) do (k, xi, yi)
-        kernelmatrix(k, xi, yi)
-    end
-end
-
 function kerneldiagmatrix!(K::AbstractVector, k::TensorProduct, x::AbstractVector)
     validate_inplace_dims(K, x)
     validate_domain(k, x)
@@ -102,13 +80,19 @@ function kerneldiagmatrix!(K::AbstractVector, k::TensorProduct, x::AbstractVecto
     return K
 end
 
+function kernelmatrix(k::TensorProduct, x::AbstractVector)
+    validate_domain(k, x)
+    return mapreduce(kernelmatrix, hadamard, k.kernels, slices(x))
+end
+
+function kernelmatrix(k::TensorProduct, x::AbstractVector, y::AbstractVector)
+    validate_domain(k, x)
+    return mapreduce(kernelmatrix, hadamard, k.kernels, slices(x), slices(y))
+end
+
 function kerneldiagmatrix(k::TensorProduct, x::AbstractVector)
     validate_domain(k, x)
-
-    kernels_and_inputs = zip(k.kernels, slices(x))
-    return mapreduce((x, y) -> x .* y, kernels_and_inputs) do (k, xi)
-        kerneldiagmatrix(k, xi)
-    end
+    return mapreduce(kerneldiagmatrix, hadamard, k.kernels, slices(x))
 end
 
 Base.show(io::IO, kernel::TensorProduct) = printshifted(io, kernel, 0)
