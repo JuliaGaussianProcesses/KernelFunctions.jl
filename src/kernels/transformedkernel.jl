@@ -10,6 +10,19 @@ struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
 end
 
 (k::TransformedKernel)(x, y) = k.kernel(k.transform(x), k.transform(y))
+function (k::TransformedKernel{<:SimpleKernel,<:ScaleTransform})(x, y)
+    return kappa(k.kernel, _scale(k.transform, metric(k.kernel), x, y))
+end
+
+function _scale(t::ScaleTransform, metric::Euclidean, x, y)
+    return first(t.s) * evaluate(metric, x, y)
+end
+function _scale(t::ScaleTransform, metric::Union{SqEuclidean,DotProduct}, x, y)
+    return first(t.s)^2 * evaluate(metric, x, y)
+end
+function _scale(t::ScaleTransform, metric, x, y)
+    evaluate(metric, apply(t, x), apply(t, y))
+end
 
 """
 ```julia
