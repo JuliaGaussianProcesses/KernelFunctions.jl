@@ -21,7 +21,7 @@ function _scale(t::ScaleTransform, metric::Union{SqEuclidean,DotProduct}, x, y)
     return first(t.s)^2 * evaluate(metric, x, y)
 end
 function _scale(t::ScaleTransform, metric, x, y)
-    evaluate(metric, apply(t, x), apply(t, y))
+    evaluate(metric, t(x), t(y))
 end
 
 """
