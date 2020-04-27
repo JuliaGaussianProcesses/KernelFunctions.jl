@@ -2,81 +2,10 @@
     kernelmatrix!(K::AbstractMatrix, κ::Kernel, X; obsdim::Integer = 2)
     kernelmatrix!(K::AbstractMatrix, κ::Kernel, X, Y; obsdim::Integer = 2)
 
-In-place version of [`kernelmatrix`](@ref) where pre-allocated matrix `K` will be overwritten with the kernel matrix.
-Will return the computed matrix `K`
+In-place version of [`kernelmatrix`](@ref) where pre-allocated matrix `K` will be
+overwritten with the kernel matrix.
 """
 kernelmatrix!
-
-function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::SimpleKernel,
-    X::AbstractMatrix;
-    obsdim::Int = defaultobs,
-)
-    @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of `kernelmatrix`)"
-    if !check_dims(K, X, X, feature_dim(obsdim), obsdim)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
-    end
-    return map!(x -> kappa(κ, x), K, pairwise(metric(κ), X, dims = obsdim))
-end
-
-function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::Kernel,
-    X::AbstractMatrix;
-    obsdim::Int = defaultobs,
-)
-    return kernelmatrix!(K, κ, vec_of_vecs(X, obsdim = obsdim))
-end
-
-function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::Kernel,
-    X::AbstractVector,
-    )
-    if !check_dims(K, X, X)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
-    end
-    K .= κ.(X, X')
-    return K
-end
-
-function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::SimpleKernel,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int = defaultobs,
-)
-    @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    if !check_dims(K, X, Y, feature_dim(obsdim), obsdim)
-        throw(DimensionMismatch("Dimensions $(size(K)) of the target array K are not consistent with X ($(size(X))) and Y ($(size(Y)))"))
-    end
-    return map!(x -> kappa(κ, x), K, pairwise(metric(κ), X, Y, dims = obsdim))
-end
-
-function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::Kernel,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int = defaultobs,
-)
-    return kernelmatrix!(K, κ, vec_of_vecs(X, obsdim = obsdim), vec_of_vecs(Y, obsdim = obsdim))
-end
-
-function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::Kernel,
-    X::AbstractVector,
-    Y::AbstractVector,
-    )
-    if !check_dims(K, X, Y)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X)) and Y $(size(Y))"))
-    end
-    K .= κ.(X, Y')
-    return K
-end
 
 """
     kernelmatrix(κ::Kernel, X; obsdim::Int = 2)
@@ -88,35 +17,12 @@ Calculate the kernel matrix of `X` (and `Y`) with respect to kernel `κ`.
 """
 kernelmatrix
 
-kernelmatrix(κ::Kernel, X::AbstractVector) = kernelmatrix(κ, X, X)
+"""
+    kerneldiagmatrix!(K::AbstractVector, κ::Kernel, X; obsdim::Int = 2)
 
-kernelmatrix(κ::Kernel, X::AbstractVector, Y::AbstractVector) = κ.(X, Y')
-
-function kernelmatrix(κ::SimpleKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
-    @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of `kernelmatrix`))"
-    return map(x -> kappa(κ, x), pairwise(metric(κ), X, dims = obsdim))
-end
-
-function kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int = defaultobs)
-    return kernelmatrix(κ, vec_of_vecs(X, obsdim = obsdim))
-end
-
-function kernelmatrix(
-    κ::SimpleKernel,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim = defaultobs,
-)
-    @assert obsdim ∈ [1, 2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    if !check_dims(X, Y, feature_dim(obsdim))
-        throw(DimensionMismatch("X $(size(X)) and Y $(size(Y)) do not have the same number of features on the dimension : $(feature_dim(obsdim))"))
-    end
-    return map(x -> kappa(κ, x), pairwise(metric(κ), X, Y, dims = obsdim))
-end
-
-function kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int = defaultobs)
-    return kernelmatrix(κ, vec_of_vecs(X, obsdim = obsdim), vec_of_vecs(Y, obsdim = obsdim))
-end
+In place version of [`kerneldiagmatrix`](@ref)
+"""
+kerneldiagmatrix!
 
 """
     kerneldiagmatrix(κ::Kernel, X; obsdim::Int = 2)
@@ -127,40 +33,112 @@ Calculate the diagonal matrix of `X` with respect to kernel `κ`
 """
 kerneldiagmatrix
 
-function kerneldiagmatrix(
-    κ::Kernel,
-    X::AbstractMatrix;
-    obsdim::Int = defaultobs,
-    )
-    return kerneldiagmatrix(κ, vec_of_vecs(X, obsdim = obsdim))
+
+
+#
+# Kernel implementations. Generic fallbacks that depend only on kernel evaluation.
+#
+
+kernelmatrix!(K::AbstractMatrix, κ::Kernel, x::AbstractVector) = kernelmatrix!(K, κ, x, x)
+
+function kernelmatrix!(K::AbstractMatrix, κ::Kernel, x::AbstractVector, y::AbstractVector)
+    validate_inplace_dims(K, x, y)
+    K .= κ.(x, permutedims(y))
+    return K
 end
 
-kerneldiagmatrix(κ::Kernel, X::AbstractVector) = κ.(X, X)
+kernelmatrix(κ::Kernel, x::AbstractVector) = kernelmatrix(κ, x, x)
 
-"""
-    kerneldiagmatrix!(K::AbstractVector, κ::Kernel, X; obsdim::Int = 2)
+function kernelmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector)
+    validate_dims(x, y)
+    return κ.(x, permutedims(y))
+end
 
-In place version of [`kerneldiagmatrix`](@ref)
-"""
+function kerneldiagmatrix!(K::AbstractVector, κ::Kernel, x::AbstractVector)
+    validate_inplace_dims(K, x)
+    return map!(x -> κ(x, x), K, x)
+end
+
+kerneldiagmatrix(κ::Kernel, x::AbstractVector) = map(x -> κ(x, x), x)
+
+
+
+#
+# SimpleKernel optimisations.
+#
+
+function kernelmatrix!(K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector)
+    validate_inplace_dims(K, x)
+    return map!(d -> kappa(κ, d), K, pairwise(metric(κ), x))
+end
+
+function kernelmatrix!(
+    K::AbstractMatrix,
+    κ::SimpleKernel,
+    x::AbstractVector,
+    y::AbstractVector,
+)
+    validate_inplace_dims(K, x, y)
+    return map!(d -> kappa(κ, d), K, pairwise(metric(κ), x, y))
+end
+
+function kernelmatrix(κ::SimpleKernel, x::AbstractVector)
+    return map(d -> kappa(κ, d), pairwise(metric(κ), x))
+end
+
+function kernelmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
+    validate_dims(x, y)
+    return map(d -> kappa(κ, d), pairwise(metric(κ), x, y))
+end
+
+
+
+#
+# Wrapper methods for AbstractMatrix inputs to maintain obsdim interface.
+#
+
+const defaultobs = 2
+
+function kernelmatrix!(
+    K::AbstractMatrix,
+    κ::Kernel,
+    X::AbstractMatrix;
+    obsdim::Int = defaultobs
+)
+    return kernelmatrix!(K, κ, vec_of_vecs(X; obsdim=obsdim))
+end
+
+function kernelmatrix!(
+    K::AbstractMatrix,
+    κ::Kernel,
+    X::AbstractMatrix,
+    Y::AbstractMatrix;
+    obsdim::Int = defaultobs
+)
+    x = vec_of_vecs(X; obsdim=obsdim)
+    y = vec_of_vecs(Y; obsdim=obsdim)
+    return kernelmatrix!(K, κ, x, y)
+end
+
+function kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int = defaultobs)
+    return kernelmatrix(κ, vec_of_vecs(X; obsdim=obsdim))
+end
+
+function kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim=defaultobs)
+    x = vec_of_vecs(X; obsdim=obsdim)
+    y = vec_of_vecs(Y; obsdim=obsdim)
+    return kernelmatrix(κ, x, y)
+end
+
 function kerneldiagmatrix!(
     K::AbstractVector,
     κ::Kernel,
     X::AbstractMatrix;
-    obsdim::Int = defaultobs,
+    obsdim::Int = defaultobs
 )
-    if length(K) != size(X,obsdim)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(size(X))"))
-    end
-    return kerneldiagmatrix!(K, κ, vec_of_vecs(X, obsdim = obsdim))
+    return kerneldiagmatrix!(K, κ, vec_of_vecs(X; obsdim=obsdim))
 end
 
-function kerneldiagmatrix!(
-    K::AbstractVector,
-    κ::Kernel,
-    X::AbstractVector,
-)
-    if length(K) != length(X)
-        throw(DimensionMismatch("Dimensions of the target array K $(size(K)) are not consistent with X $(length(X))"))
-    end
-    return map!(κ, K, X, X)
+function kerneldiagmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int = defaultobs)
+    return kerneldiagmatrix(κ, vec_of_vecs(X; obsdim=obsdim))
 end

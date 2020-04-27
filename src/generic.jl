@@ -25,3 +25,16 @@ end
 
 # Fallback implementation of evaluate for `SimpleKernel`s.
 (k::SimpleKernel)(x, y) = kappa(k, evaluate(metric(k), x, y))
+
+# This is type piracy. We should not doing this.
+function Distances.pairwise(d::PreMetric, x::AbstractVector{<:Real})
+    return pairwise(d, reshape(x, :, 1); dims=1)
+end
+
+function Distances.pairwise(
+    d::PreMetric,
+    x::AbstractVector{<:Real},
+    y::AbstractVector{<:Real},
+)
+    return pairwise(d, reshape(x, :, 1), reshape(y, :, 1); dims=1)
+end

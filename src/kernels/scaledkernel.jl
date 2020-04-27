@@ -13,11 +13,42 @@ function ScaledKernel(kernel::Tk, σ²::Tσ²=1.0) where {Tk<:Kernel,Tσ²<:Real
     return ScaledKernel{Tk, Tσ²}(kernel, [σ²])
 end
 
-kappa(k::ScaledKernel, x) = first(k.σ²) * kappa(k.kernel, x)
-
 (k::ScaledKernel)(x, y) = first(k.σ²) * k.kernel(x, y)
 
-metric(k::ScaledKernel) = metric(k.kernel)
+function kernelmatrix(κ::ScaledKernel, x::AbstractVector, y::AbstractVector)
+    return κ.σ² .* kernelmatrix(κ.kernel, x, y)
+end
+
+function kernelmatrix(κ::ScaledKernel, x::AbstractVector)
+    return κ.σ² .* kernelmatrix(κ.kernel, x)
+end
+
+function kerneldiagmatrix(κ::ScaledKernel, x::AbstractVector)
+    return κ.σ² .* kerneldiagmatrix(κ.kernel, x)
+end
+
+function kernelmatrix!(
+    K::AbstractMatrix,
+    κ::ScaledKernel,
+    x::AbstractVector,
+    y::AbstractVector,
+)
+    kernelmatrix!(K, κ, x, y)
+    K .*= κ.σ² 
+    return K
+end
+
+function kernelmatrix!(K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector)
+    kernelmatrix!(K, κ, x)
+    K .*= κ.σ²
+    return K
+end
+
+function kerneldiagmatrix!(K::AbstractVector, κ::ScaledKernel, x::AbstractVector)
+    kerneldiagmatrix!(K, κ, x)
+    K .*= κ.σ²
+    return K
+end
 
 Base.:*(w::Real, k::Kernel) = ScaledKernel(k, w)
 
