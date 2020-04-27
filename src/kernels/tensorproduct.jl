@@ -82,19 +82,16 @@ end
 
 function kernelmatrix(k::TensorProduct, x::AbstractVector)
     validate_domain(k, x)
-
     return mapreduce(kernelmatrix, hadamard, k.kernels, slices(x))
 end
 
 function kernelmatrix(k::TensorProduct, x::AbstractVector, y::AbstractVector)
     validate_domain(k, x)
-
     return mapreduce(kernelmatrix, hadamard, k.kernels, slices(x), slices(y))
 end
 
 function kerneldiagmatrix(k::TensorProduct, x::AbstractVector)
     validate_domain(k, x)
-
     return mapreduce(kerneldiagmatrix, hadamard, k.kernels, slices(x))
 end
 
