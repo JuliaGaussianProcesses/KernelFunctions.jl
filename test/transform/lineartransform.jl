@@ -36,7 +36,7 @@
     P2 = randn(rng, Dout, Din)
     KernelFunctions.set!(t, P2)
     @test t.A == P2
-    @test_throws AssertionError KernelFunctions.set!(t, rand(rng, Din + 1, Dout))
+    @test_throws ErrorException KernelFunctions.set!(t, rand(rng, Din + 1, Dout))
 
     @test_throws DimensionMismatch map(t, ColVecs(randn(rng, Din + 1, Dout)))
 
