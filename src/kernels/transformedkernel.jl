@@ -16,7 +16,7 @@ end
 # we perform a scalar multiplcation of the distance of the original inputs, if possible.
 function (k::TransformedKernel{<:SimpleKernel,<:ScaleTransform})(
     x::AbstractVector{<:Real},
-    y::AbstractVector{<:Real}
+    y::AbstractVector{<:Real},
 )
     return kappa(k.kernel, _scale(k.transform, metric(k.kernel), x, y))
 end
