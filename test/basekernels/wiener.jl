@@ -1,4 +1,6 @@
 @testset "wiener" begin
+    using Distances
+    
     k_1 = WienerKernel(i=-1)
     @test typeof(k_1) <: WhiteKernel
 
@@ -16,6 +18,20 @@
 
     @test_throws AssertionError WienerKernel(i=4)
     @test_throws AssertionError WienerKernel(i=-2)
+
+    v1 = rand(4)
+    v2 = rand(4)
+
+    X = sqrt(sum(abs2, v1))
+    Y = sqrt(sum(abs2, v2))
+    minXY = min(X, Y)
+
+    @test k0(v1, v2) ≈ minXY
+    @test k1(v1, v2) ≈ 1 / 3 * minXY^3 + 1 / 2 * minXY^2 * euclidean(v1, v2)
+    @test k2(v1, v2) ≈ 1 / 20 * minXY^5 + 1 / 12 * minXY^3 * euclidean(v1, v2) *
+        ( X + Y - 1 / 2 * minXY )
+    @test k3(v1, v2) ≈ 1 / 252 * minXY^7 + 1 / 720 * minXY^4 * euclidean(v1, v2) *
+        ( 5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2 )
 
     # kernelmatrix tests
     m1 = rand(3,4)
