@@ -18,16 +18,15 @@ struct LinearTransform{T<:AbstractMatrix{<:Real}} <: Transform
 end
 
 function set!(t::LinearTransform{<:AbstractMatrix{T}}, A::AbstractMatrix{T}) where {T<:Real}
-    @assert size(t.A) == size(A) "Size of the given matrix $(size(A)) and the transformation matrix $(size(t.A)) are not the same"
+    size(t.A) == size(A) || 
+        error("Size of the given matrix $(size(A)) and the transformation matrix $(size(t.A)) are not the same")
     t.A .= A
 end
 
 (t::LinearTransform)(x::Real) = vec(t.A * x)
 (t::LinearTransform)(x::AbstractVector{<:Real}) = t.A * x
 
-function Base.map(t::LinearTransform, x::AbstractVector{<:Real})
-    return ColVecs(t.A * x')
-end
+Base.map(t::LinearTransform, x::AbstractVector{<:Real}) = ColVecs(t.A * x')
 Base.map(t::LinearTransform, x::ColVecs) = ColVecs(t.A * x.X)
 Base.map(t::LinearTransform, x::RowVecs) = RowVecs(x.X * t.A')
 
