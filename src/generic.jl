@@ -5,11 +5,6 @@ Base.iterate(k::Kernel, ::Any) = nothing
 
 printshifted(io::IO, o, shift::Int) = print(io, o)
 
-# See https://github.com/JuliaGaussianProcesses/KernelFunctions.jl/issues/96
-_scale(t::ScaleTransform, metric::Euclidean, x, y) =  first(t.s) * evaluate(metric, x, y)
-_scale(t::ScaleTransform, metric::Union{SqEuclidean,DotProduct}, x, y) =  first(t.s)^2 * evaluate(metric, x, y)
-_scale(t::ScaleTransform, metric, x, y) = evaluate(metric, apply(t, x), apply(t, y))
-
 ### Syntactic sugar for creating matrices and using kernel functions
 function concretetypes(k, ktypes::Vector)
     isempty(subtypes(k)) ? push!(ktypes, k) : concretetypes.(subtypes(k), Ref(ktypes))
