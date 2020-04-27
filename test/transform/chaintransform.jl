@@ -2,7 +2,7 @@
     rng = MersenneTwister(123546)
 
     P = rand(rng, 3, 2)
-    tp = LowRankTransform(P)
+    tp = LinearTransform(P)
 
     f(x) = sin.(x)
     tf = FunctionTransform(f)

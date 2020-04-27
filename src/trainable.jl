@@ -42,6 +42,6 @@ trainable(t::ChainTransform) = t.transforms
 
 trainable(t::FunctionTransform) = (t.f,)
 
-trainable(t::LowRankTransform) = (t.proj,)
+trainable(t::LinearTransform) = (t.A,)
 
 trainable(t::ScaleTransform) = (t.s,)

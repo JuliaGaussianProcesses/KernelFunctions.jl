@@ -1,8 +1,6 @@
-export Transform, IdentityTransform, ScaleTransform, ARDTransform, LowRankTransform, FunctionTransform, ChainTransform
-
 include("scaletransform.jl")
 include("ardtransform.jl")
-include("lowranktransform.jl")
+include("lineartransform.jl")
 include("functiontransform.jl")
 include("selecttransform.jl")
 include("chaintransform.jl")
