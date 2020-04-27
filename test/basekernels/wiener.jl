@@ -1,6 +1,4 @@
 @testset "wiener" begin
-    using Distances
-    
     k_1 = WienerKernel(i=-1)
     @test typeof(k_1) <: WhiteKernel
 
