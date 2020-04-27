@@ -43,7 +43,12 @@ dim(x::ColVecs) = size(x.X, 1)
 
 Distances.pairwise(d::PreMetric, x::ColVecs) = pairwise(d, x.X; dims=2)
 Distances.pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = pairwise(d, x.X, y.X; dims=2)
-
+function Distances.pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs)
+    return pairwise!(out, d, x.X; dims=2)
+end
+function Distances.pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs, y::ColVecs)
+    return pairwise!(out, d, x.X, y.X; dims=2)
+end
 
 """
     RowVecs(X::AbstractMatrix)
@@ -68,8 +73,12 @@ dim(x::RowVecs) = size(x.X, 2)
 
 Distances.pairwise(d::PreMetric, x::RowVecs) = pairwise(d, x.X; dims=1)
 Distances.pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = pairwise(d, x.X, y.X; dims=1)
-
-
+function Distances.pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs)
+    return pairwise!(out, d, x.X; dims=1)
+end
+function Distances.pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs, y::RowVecs)
+    return pairwise!(out, d, x.X, y.X; dims=1)
+end
 
 """
 Will be implemented at some point

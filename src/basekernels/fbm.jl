@@ -45,8 +45,8 @@ end
 
 function kernelmatrix!(K::AbstractMatrix, κ::FBMKernel, x::AbstractVector)
     modx = _mod(x)
-    modxx = pairwise(SqEuclidean(sqroundoff), x)
-    K .= _fbm.(modx, modx', modxx, κ.h)
+    pairwise!(K, SqEuclidean(sqroundoff), x)
+    K .= _fbm.(modx, modx', K, κ.h)
     return K
 end
 
@@ -58,10 +58,10 @@ end
 function kernelmatrix!(
     K::AbstractMatrix,
     κ::FBMKernel,
-    X::AbstractVector,
-    Y::AbstractVector,
+    x::AbstractVector,
+    y::AbstractVector,
 )
-    modxy = pairwise(SqEuclidean(sqroundoff), X, Y,dims = obsdim)
-    K .= _fbm.(_mod(x), _mod(y)', modxy, κ.h)
+    pairwise!(K, SqEuclidean(sqroundoff), x, y)
+    K .= _fbm.(_mod(x), _mod(y)', K, κ.h)
     return K
 end
