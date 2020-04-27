@@ -45,10 +45,10 @@ end
             transform_AD(Val(Symbol($AD)),ScaleTransform(l),A)
             # ARD Transform
             transform_AD(Val(Symbol($AD)),ARDTransform(vl),A)
-            # LowRankTransform
-            transform_AD(Val(Symbol($AD)),LowRankTransform(rand(2,10)),A)
+            # Linear transform
+            transform_AD(Val(Symbol($AD)), LinearTransform(rand(2,10)),A)
             # Chain Transform
-            # transform_AD(Val(Symbol($AD)),LowRankTransform,A)
+            # transform_AD(Val(Symbol($AD)), LinearTransform, A)
             end
         end
     end

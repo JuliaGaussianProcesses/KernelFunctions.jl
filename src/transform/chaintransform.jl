@@ -4,7 +4,7 @@
 Chain a series of transform, here `t1` will be called first
 ```
     t1 = ScaleTransform()
-    t2 = LowRankTransform(rand(3,4))
+    t2 = LinearTransform(rand(3,4))
     ct = ChainTransform([t1,t2]) #t1 will be called first
     ct == t2 ∘ t1
 ```

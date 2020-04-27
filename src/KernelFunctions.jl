@@ -23,7 +23,8 @@ export KernelSum, KernelProduct
 export TransformedKernel, ScaledKernel
 export TensorProduct
 
-export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
+export Transform, SelectTransform, ChainTransform, ScaleTransform, LinearTransform,
+    ARDTransform, IdentityTransform, FunctionTransform
 
 export NystromFact, nystrom
 

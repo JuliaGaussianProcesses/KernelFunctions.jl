@@ -44,10 +44,10 @@
     @test all(params(k) .== params(v, kc))
 
     P = rand(3, 2)
-    k = transform(km,LowRankTransform(P))
+    k = transform(km, LinearTransform(P))
     @test all(params(k) .== params(P, km))
 
-    k = transform(km, LowRankTransform(P) ∘ ScaleTransform(s))
+    k = transform(km, LinearTransform(P) ∘ ScaleTransform(s))
     @test all(params(k) .== params([s], P, km))
 
     c = Chain(Dense(3, 2))
