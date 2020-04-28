@@ -33,3 +33,16 @@ function Distances.pairwise(
 )
     return pairwise(d, reshape(x, :, 1), reshape(y, :, 1); dims=1)
 end
+
+function Distances.pairwise!(out::AbstractMatrix, d::PreMetric, x::AbstractVector{<:Real})
+    return pairwise!(out, d, reshape(x, :, 1); dims=1)
+end
+
+function Distances.pairwise!(
+    out::AbstractMatrix,
+    d::PreMetric,
+    x::AbstractVector{<:Real},
+    y::AbstractVector{<:Real},
+)
+    return pairwise!(out, d, reshape(x, :, 1), reshape(y, :, 1); dims=1)
+end

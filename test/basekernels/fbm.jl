@@ -7,8 +7,14 @@
     # kernelmatrix tests
     m1 = rand(3,3)
     m2 = rand(3,3)
-    @test kernelmatrix(k, m1, m1) ≈ kernelmatrix(k, m1) atol=1e-5
-
+    Kref = kernelmatrix(k, m1, m1)
+    @test kernelmatrix(k, m1) ≈ Kref atol=1e-5
+    K = zeros(3, 3)
+    kernelmatrix!(K, k, m1, m1)
+    @test K ≈ Kref atol=1e-5
+    fill!(K, 0)
+    kernelmatrix!(K, k, m1)
+    @test K ≈ Kref atol=1e-5
 
     x1 = rand()
     x2 = rand()
