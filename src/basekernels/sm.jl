@@ -41,34 +41,29 @@ Note that for D=1, the two modes +Q and -Q are exactly the same.
 """
 struct SpectralMixtureKernel{
     K<:Kernel,
-    M1<:AbstractVector{<:Real},
-    M2<:AbstractMatrix{<:Real},
-    M3<:AbstractMatrix{<:Real}} <: BaseKernel
-    w::M1
-    m::M2
-    v::M3
+    V<:AbstractVector{<:Real},
+    M1<:AbstractMatrix{<:Real},
+    M2<:AbstractMatrix{<:Real}} <: BaseKernel
+    w::V
+    m::M1
+    v::M2
     kernel::K
     function SpectralMixtureKernel(;w , m , v)
-        size(m) == size(v) || error("Dimensions of means m and variances v do not match.")
-        size(w, 1) == size(m, 2) == size(v, 2) ||
-            error("First dimension of weights w, means m, variances v are does not match.")
+        @assert size(m) == size(v) "Dimensions of means m and variances v do not match."
+        @assert size(w, 1) == size(m, 2) == size(v, 2) "First dimension of weights w, means m, variances v are does not match."
         k = GaborKernel(ell= 1 / (2 * pi^2), p= 1 / 2)
         new{typeof(k), typeof(w),typeof(m),typeof(v)}(w, m, v, k)
     end
 end
 
-function kappa(
-    κ::SpectralMixtureKernel,
-    x::AbstractVector{<:Real},
-    y::AbstractVector{<:Real})
-
+function (κ::SpectralMixtureKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     D = size(κ.w, 1)
     P = size(κ.w, 2)
     Q = size(κ.m, 2)
     t = x - y
-
+    @info size(t)
     return dot(κ.w', map(d -> kappa(κ.kernel.kernel.kernels[1], d), (t.^2)' * κ.v) .*
         map(d -> kappa(κ.kernel.kernel.kernels[2], d), t' * κ.m))
 end
 
-Base.show(io::IO, κ::SpectralMixtureKernel) = print(io, "Spectral Mixture Kernel (with D=$(size(κ.m, 1)), Q=$(size(κ.m, 2)))")
+Base.show(io::IO, κ::SpectralMixtureKernel) = print(io, "Spectral Mixture Kernel (with D=", size(κ.m, 1), ", Q=", size(κ.m, 2), ")")

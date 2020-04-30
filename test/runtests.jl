@@ -75,6 +75,7 @@ using KernelFunctions: metric
         include(joinpath("basekernels", "polynomial.jl"))
         include(joinpath("basekernels", "piecewisepolynomial.jl"))
         include(joinpath("basekernels", "rationalquad.jl"))
+        include(joinpath("basekernels", "sm.jl"))
     end
 
     @testset "kernels" begin
