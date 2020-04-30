@@ -1,33 +1,13 @@
 """
-    SpectralMixtureKernel()
+    SpectralMixtureKernel(w<:AbstractVector{<:Real}, M<:AbstractMatrix{<:Real}, V<:AbstractMatrix{<:Real})
 
-Gaussian Spectral Mixture kernel function. The kernel function
-parametrization depends on the sign of Q.
+Gaussian Spectral Mixture kernel function.
 
-Let `t(Dx1)` be an offset vector in dataspace e.g. `t = x-z`. Then `w(DxP)`
-are the weights and `m(Dx|Q|) = 1/p`, `v(Dx|Q|) = (2*pi*ell)^-2` are spectral
-means (frequencies) and variances, where `p` is the period and `ell` the length
-scale of the Gabor function `h(t2v,tm)` given by the expression
-
-```julia
-    h(t2v, tm) = exp(-2 * pi^2 * t2v) .* cos(2 * pi * tm)
+```math
+   κ(x, y) = w' (exp(- 1 / 2 * V' * t^2) .* cos(M' * t), t = x - y
 ```
 
-Then, the two covariances are obtained as follows:
-
- SM, spectral mixture:          Q>0 => P = 1
-```julia
-   k(x, y) = w' * h((t .* t)' * v, t' * m), t = x-y
-```
-
- SMP, spectral mixture product: Q<0 => P = D
-```julia
-   k(x, y) = prod(w' * h(T * T * v, T * m)), T = diag(t), t = x-y
-```
-
-Note that for D=1, the two modes +Q and -Q are exactly the same.
-
-**References:**\\
+# References:
     [1] SM: Gaussian Process Kernels for Pattern Discovery and Extrapolation,
         ICML, 2013, by Andrew Gordon Wilson and Ryan Prescott Adams,
     [2] SMP: GPatt: Fast Multidimensional Pattern Extrapolation with GPs,
@@ -40,30 +20,58 @@ Note that for D=1, the two modes +Q and -Q are exactly the same.
 
 """
 struct SpectralMixtureKernel{
-    K<:Kernel,
     V<:AbstractVector{<:Real},
     M1<:AbstractMatrix{<:Real},
     M2<:AbstractMatrix{<:Real}} <: BaseKernel
     w::V
-    m::M1
-    v::M2
-    kernel::K
-    function SpectralMixtureKernel(;w , m , v)
-        @assert size(m) == size(v) "Dimensions of means m and variances v do not match."
-        @assert size(w, 1) == size(m, 2) == size(v, 2) "First dimension of weights w, means m, variances v are does not match."
-        k = GaborKernel(ell= 1 / (2 * pi^2), p= 1 / 2)
-        new{typeof(k), typeof(w),typeof(m),typeof(v)}(w, m, v, k)
+    M::M1
+    V::M2
+    function SpectralMixtureKernel(;w , M , V)
+        @assert size(M) == size(V) "Dimensions of means m and variances v do not match."
+        @assert size(w, 1) == size(M, 2) == size(V, 2) "First dimension of weights w, means m, variances v are does not match."
+        new{typeof(w),typeof(M),typeof(V)}(w, M, V)
     end
 end
 
 function (κ::SpectralMixtureKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
-    D = size(κ.w, 1)
-    P = size(κ.w, 2)
-    Q = size(κ.m, 2)
-    t = x - y
-    @info size(t)
-    return dot(κ.w', map(d -> kappa(κ.kernel.kernel.kernels[1], d), (t.^2)' * κ.v) .*
-        map(d -> kappa(κ.kernel.kernel.kernels[2], d), t' * κ.m))
+    t = 2π * (x - y)
+    return dot(κ.w, (cos.((t.^2)' * κ.V) .* exp.(t' * κ.M))')
 end
 
-Base.show(io::IO, κ::SpectralMixtureKernel) = print(io, "Spectral Mixture Kernel (with D=", size(κ.m, 1), ", Q=", size(κ.m, 2), ")")
+Base.show(io::IO, κ::SpectralMixtureKernel) = print(io, "Spectral Mixture Kernel (with D=",
+                                                    size(κ.M, 1), ", Q=", size(κ.M, 2), ")")
+
+
+"""
+    SpectralMixtureProductKernel(W<:AbstractMatrix{<:Real}, M<:AbstractMatrix{<:Real}, V<:AbstractMatrix{<:Real})
+
+Spectral Mixture Product Kernel.
+
+```math
+   \kappa(x, y) = \Pi_{d=1}^D w^t_d (exp(-\frac{1}{2} * v_d * t^2_d) .* cos(m_d * t_d)), t_d = 2 * \pi * (x_d - y_d)
+```
+"""
+struct SpectralMixtureProductKernel{
+    M1<:AbstractMatrix{<:Real},
+    M2<:AbstractMatrix{<:Real},
+    M3<:AbstractMatrix{<:Real}} <: BaseKernel
+    W::M1
+    M::M2
+    V::M3
+    function SpectralMixtureProductKernel(;W , M , V)
+        @assert size(W) == size(M) == size(V) "Dimensions of weights W, means M and variances V do not match."
+        new{typeof(W),typeof(M),typeof(V)}(W, M, V)
+    end
+end
+
+function (κ::SpectralMixtureProductKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
+    t = 2π * (x - y)
+    @info zip(κ.W, κ.M, κ.V, t)
+    return 1
+    #return dot(κ.w, (cos.((t.^2)' * κ.V) .* exp.(t' * κ.M))')
+end
+
+Base.show(io::IO, κ::SpectralMixtureProductKernel) =
+    print(io, "Spectral Mixture Product Kernel (with D=", size(κ.M, 1), ", Q=",
+          size(κ.M, 2), ")")
+
