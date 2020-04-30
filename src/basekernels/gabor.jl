@@ -15,6 +15,8 @@ struct GaborKernel{K<:Kernel} <: BaseKernel
     end
 end
 
+(κ::GaborKernel)(x, y) = κ.kernel(x ,y)
+
 function _gabor(; ell = nothing, p = nothing)
     if ell === nothing
         if p === nothing
@@ -52,8 +54,6 @@ function Base.getproperty(k::GaborKernel, v::Symbol)
 end
 
 Base.show(io::IO, κ::GaborKernel) = print(io, "Gabor Kernel (ell = ", κ.ell, ", p = ", κ.p, ")")
-
-kappa(κ::GaborKernel, x, y) = kappa(κ.kernel, x ,y)
 
 function kernelmatrix(
     κ::GaborKernel,

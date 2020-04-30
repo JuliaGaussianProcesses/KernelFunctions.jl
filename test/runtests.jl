@@ -10,7 +10,7 @@ using SpecialFunctions
 using Test
 using Zygote
 
-using KernelFunctions: metric
+using KernelFunctions: metric, kappa
 
 # Writing tests:
 # 1. The file structure of the test should match precisely the file structure of src.
@@ -53,13 +53,13 @@ using KernelFunctions: metric
     end
 
     @testset "transform" begin
+        include(joinpath("transform", "transform.jl"))
         include(joinpath("transform", "scaletransform.jl"))
         include(joinpath("transform", "ardtransform.jl"))
-        include(joinpath("transform", "lowranktransform.jl"))
+        include(joinpath("transform", "lineartransform.jl"))
         include(joinpath("transform", "functiontransform.jl"))
         include(joinpath("transform", "selecttransform.jl"))
         include(joinpath("transform", "chaintransform.jl"))
-        include(joinpath("transform", "transform.jl"))
     end
 
     @testset "basekernels" begin

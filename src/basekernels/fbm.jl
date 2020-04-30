@@ -17,67 +17,7 @@ struct FBMKernel{T<:Real} <: BaseKernel
     end
 end
 
-Base.show(io::IO, κ::FBMKernel) = print(io, "Fractional Brownian Motion Kernel (h = ", first(κ.h), ")")
-
-const sqroundoff = 1e-15
-
-_fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h)/2
-
-function kernelmatrix(κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
-    @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    modX = sum(abs2, X; dims = feature_dim(obsdim))
-    modXX = pairwise(SqEuclidean(sqroundoff), X, dims = obsdim)
-    return _fbm.(vec(modX), reshape(modX, 1, :), modXX, κ.h)
-end
-
-function kernelmatrix!(K::AbstractMatrix, κ::FBMKernel, X::AbstractMatrix; obsdim::Int = defaultobs)
-    @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    modX = sum(abs2, X; dims = feature_dim(obsdim))
-    modXX = pairwise(SqEuclidean(sqroundoff), X, dims = obsdim)
-    K .= _fbm.(vec(modX), reshape(modX, 1, :), modXX, κ.h)
-    return K
-end
-
-function kernelmatrix(
-    κ::FBMKernel,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int = defaultobs,
-)
-    @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    modX = sum(abs2, X, dims = feature_dim(obsdim))
-    modY = sum(abs2, Y, dims = feature_dim(obsdim))
-    modXY = pairwise(SqEuclidean(sqroundoff), X, Y,dims = obsdim)
-    return _fbm.(vec(modX), reshape(modY, 1, :), modXY, κ.h)
-end
-
-function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::FBMKernel,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int = defaultobs,
-)
-    @assert obsdim ∈ [1,2] "obsdim should be 1 or 2 (see docs of kernelmatrix))"
-    modX = sum(abs2, X, dims = feature_dim(obsdim))
-    modY = sum(abs2, Y, dims = feature_dim(obsdim))
-    modXY = pairwise(SqEuclidean(sqroundoff), X, Y,dims = obsdim)
-    K .= _fbm.(vec(modX), reshape(modY, 1, :), modXY, κ.h)
-    return K
-end
-
-## Apply kernel on two vectors ##
-function _kernel(
-        κ::FBMKernel,
-        x::AbstractVector,
-        y::AbstractVector;
-        obsdim::Int = defaultobs
-    )
-    @assert length(x) == length(y) "x and y don't have the same dimension!"
-    return kappa(κ, x, y)
-end
-
-function kappa(κ::FBMKernel, x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
+function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modX = sum(abs2, x)
     modY = sum(abs2, y)
     modXY = evaluate(SqEuclidean(sqroundoff), x, y)
@@ -85,4 +25,43 @@ function kappa(κ::FBMKernel, x::AbstractVector{<:Real}, y::AbstractVector{<:Rea
     return (modX^h + modY^h - modXY^h)/2
 end
 
-(κ::FBMKernel)(x::Real, y::Real) = (abs2(x)^first(κ.h) + abs2(y)^first(κ.h) - abs2(x-y)^first(κ.h))/2
+(κ::FBMKernel)(x::Real, y::Real) = (abs2(x)^first(κ.h) + abs2(y)^first(κ.h) - abs2(x - y)^first(κ.h)) / 2
+
+Base.show(io::IO, κ::FBMKernel) = print(io, "Fractional Brownian Motion Kernel (h = ", first(κ.h), ")")
+
+const sqroundoff = 1e-15
+
+_fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h)/2
+
+_mod(x::AbstractVector{<:Real}) = abs2.(x)
+_mod(x::ColVecs) = vec(sum(abs2, x.X; dims=1))
+_mod(x::RowVecs) = vec(sum(abs2, x.X; dims=2))
+
+function kernelmatrix(κ::FBMKernel, x::AbstractVector)
+    modx = _mod(x)
+    modxx = pairwise(SqEuclidean(sqroundoff), x)
+    return _fbm.(modx, modx', modxx, κ.h)
+end
+
+function kernelmatrix!(K::AbstractMatrix, κ::FBMKernel, x::AbstractVector)
+    modx = _mod(x)
+    pairwise!(K, SqEuclidean(sqroundoff), x)
+    K .= _fbm.(modx, modx', K, κ.h)
+    return K
+end
+
+function kernelmatrix(κ::FBMKernel, x::AbstractVector, y::AbstractVector)
+    modxy = pairwise(SqEuclidean(sqroundoff), x, y)
+    return _fbm.(_mod(x), _mod(y)', modxy, κ.h)
+end
+
+function kernelmatrix!(
+    K::AbstractMatrix,
+    κ::FBMKernel,
+    x::AbstractVector,
+    y::AbstractVector,
+)
+    pairwise!(K, SqEuclidean(sqroundoff), x, y)
+    K .= _fbm.(_mod(x), _mod(y)', K, κ.h)
+    return K
+end

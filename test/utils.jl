@@ -20,6 +20,17 @@
         @test eachindex(DX) == 1:N
         @test first(DX) == X[:, 1]
 
+        Y = randn(rng, D, N + 1)
+        DY = ColVecs(Y)
+        @test pairwise(SqEuclidean(), DX) ≈ pairwise(SqEuclidean(), X; dims=2)
+        @test pairwise(SqEuclidean(), DX, DY) ≈ pairwise(SqEuclidean(), X, Y; dims=2)
+        K = zeros(N, N)
+        pairwise!(K, SqEuclidean(), DX)
+        @test K ≈ pairwise(SqEuclidean(), X; dims=2)
+        K = zeros(N, N + 1)
+        pairwise!(K, SqEuclidean(), DX, DY)
+        @test K ≈ pairwise(SqEuclidean(), X, Y; dims=2)
+
         let
             @test Zygote.pullback(ColVecs, X)[1] == DX
             DX, back = Zygote.pullback(ColVecs, X)
@@ -42,6 +53,17 @@
         @test getindex(DX, :) == RowVecs(X)
         @test eachindex(DX) == 1:D
         @test first(DX) == X[1, :]
+
+        Y = randn(rng, D + 1, N)
+        DY = RowVecs(Y)
+        @test pairwise(SqEuclidean(), DX) ≈ pairwise(SqEuclidean(), X; dims=1)
+        @test pairwise(SqEuclidean(), DX, DY) ≈ pairwise(SqEuclidean(), X, Y; dims=1)
+        K = zeros(D, D)
+        pairwise!(K, SqEuclidean(), DX)
+        @test K ≈ pairwise(SqEuclidean(), X; dims=1)
+        K = zeros(D, D + 1)
+        pairwise!(K, SqEuclidean(), DX, DY)
+        @test K ≈ pairwise(SqEuclidean(), X, Y; dims=1)
 
         let
             @test Zygote.pullback(RowVecs, X)[1] == DX
