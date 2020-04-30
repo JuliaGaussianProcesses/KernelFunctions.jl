@@ -9,7 +9,7 @@ export transform
 export duplicate, set! # Helpers
 
 export Kernel
-export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel
+export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel, WienerKernel
 export CosineKernel
 export SqExponentialKernel, RBFKernel, GaussianKernel, SEKernel
 export LaplacianKernel, ExponentialKernel, GammaExponentialKernel
