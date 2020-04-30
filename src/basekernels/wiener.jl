@@ -28,7 +28,8 @@ and for ``i >= 1``,
 ```
 
 # References:
-See the paper *Probabilistic ODE Solvers with Runge-Kutta Means* by Schober, Duvenaud and Hennig, NIPS, 2014, for more details.
+See the paper *Probabilistic ODE Solvers with Runge-Kutta Means* by Schober, Duvenaud and
+Hennig, NIPS, 2014, for more details.
 
 """
 struct WienerKernel{I} <: BaseKernel
