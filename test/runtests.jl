@@ -71,6 +71,7 @@ using KernelFunctions: metric, kappa
         include(joinpath("basekernels", "gabor.jl"))
         include(joinpath("basekernels", "maha.jl"))
         include(joinpath("basekernels", "matern.jl"))
+        include(joinpath("basekernels", "nn.jl"))
         include(joinpath("basekernels", "periodic.jl"))
         include(joinpath("basekernels", "polynomial.jl"))
         include(joinpath("basekernels", "piecewisepolynomial.jl"))

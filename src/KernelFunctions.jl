@@ -18,7 +18,7 @@ export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
 export MahalanobisKernel, GaborKernel, PiecewisePolynomialKernel
-export PeriodicKernel
+export PeriodicKernel, NeuralNetworkKernel
 export KernelSum, KernelProduct
 export TransformedKernel, ScaledKernel
 export TensorProduct
