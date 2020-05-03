@@ -4,6 +4,7 @@ include("lineartransform.jl")
 include("functiontransform.jl")
 include("selecttransform.jl")
 include("chaintransform.jl")
+include("stretchtransform.jl")
 
 """
     apply(t::Transform, x; obsdim::Int=defaultobs)
