@@ -52,7 +52,7 @@ end
 Spectral Mixture Product Kernel.
 
 ```math
-   κ(x, y) = Πᵢ₌₁ᴷ Σ(αsᵢᵀ .* (exp(-(γsᵢᵀ * tᵢ)²) .* cos(ωsᵢᵀ * tᵢ))), tᵢ = 2 * π * (xᵢ - yᵢ)
+   κ(x, y) = Πᵢ₌₁ᴷ Σ(αsᵢᵀ .* (exp(-(γsᵢᵀ * tᵢ)²) .* cos(ωsᵢᵀ * tᵢ))), tᵢ = xᵢ - yᵢ
 ```
 
 # References:
