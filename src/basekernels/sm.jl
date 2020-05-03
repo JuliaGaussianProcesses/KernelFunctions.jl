@@ -69,8 +69,8 @@ function SpectralMixtureProductKernel(
     @assert size(αs) == size(γs) == size(ωs) "The dimensions of αs, γs,
 ans ωs do not match"
 
-    return prod(zip(eachrow(αs), eachrow(γs), eachrow(ωs))) do (α, γ, ω)
-        return SpectralMixtureKernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :))
-    end
+    kernels = [SpectralMixtureKernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :))
+               for (α, γ, ω) in zip(eachrow(αs), eachrow(γs), eachrow(ωs))]
+    return TensorProduct(kernels)
 end
 
