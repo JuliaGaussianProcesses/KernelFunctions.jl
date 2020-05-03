@@ -1,5 +1,10 @@
 """
-    SpectralMixtureKernel(αs<:AbstractVector{<:Real}, γs<:AbstractMatrix{<:Real}, ωs<:AbstractMatrix{<:Real})
+    SpectralMixtureKernel(
+        h::Kernel,
+        αs::AbstractVector{<:Real},
+        γs::AbstractMatrix{<:Real},
+        ωs::AbstractMatrix{<:Real},
+    )
 
 Generalised Spectral Mixture kernel function. This family of functions is  dense
 in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
@@ -21,10 +26,14 @@ in the family of stationary real-valued kernels with respect to the pointwise co
 function SpectralMixtureKernel(
     h::Kernel,
     αs::AbstractVector{<:Real},
-    γs::AbstractVector{<:AbstractVector{<:Real}},
-    ωs::AbstractVector{<:AbstractVector{<:Real}},
+    γs::AbstractMatrix{<:Real},
+    ωs::AbstractMatrix{<:Real},
 )
-    return sum(zip(αs, γs, ωs)) do (α, γ, ω)
+    @assert size(αs, 1) == size(γs, 2) == size(ωs, 2) "The dimensions of αs, γs,
+ans ωs do not match"
+    @assert size(γs) == size(ωs) "The dimensions of γs ans ωs do not match"
+
+    return sum(zip(αs, eachcol(γs), eachcol(ωs))) do (α, γ, ω)
         a = TransformedKernel(h, LinearTransform(γ'))
         b = TransformedKernel(CosineKernel(), LinearTransform(ω'))
         return α * a * b
@@ -33,12 +42,17 @@ end
 
 
 """
-    SpectralMixtureProductKernel(W<:AbstractMatrix{<:Real}, M<:AbstractMatrix{<:Real}, V<:AbstractMatrix{<:Real})
+    SpectralMixtureProductKernel(
+        h::Kernel,
+        αs::AbstractMatrix{<:Real},
+        γs::AbstractMatrix{<:Real},
+        ωs::AbstractMatrix{<:Real},
+    )
 
 Spectral Mixture Product Kernel.
 
 ```math
-   κ(x, y) = Πᵢ₌₁ᴷ w^tᵢ (exp(-½ * vᵢ * t²ᵢ) .* cos(mᵢ * tᵢ)), tᵢ = 2 * π * (xᵢ - yᵢ)
+   κ(x, y) = Πᵢ₌₁ᴷ wᵢᵀ (exp(-½ * vᵢ * t²ᵢ) .* cos(mᵢ * tᵢ)), tᵢ = 2 * π * (xᵢ - yᵢ)
 ```
 
 # References:
@@ -46,27 +60,17 @@ Spectral Mixture Product Kernel.
         arXiv 1310.5288, 2013, by Andrew Gordon Wilson, Elad Gilboa,
         Arye Nehorai and John P. Cunningham
 """
-# struct SpectralMixtureProductKernel{
-#     M1<:AbstractMatrix{<:Real},
-#     M2<:AbstractMatrix{<:Real},
-#     M3<:AbstractMatrix{<:Real}} <: BaseKernel
-#     W::M1
-#     M::M2
-#     V::M3
-#     function SpectralMixtureProductKernel(;W , M , V)
-#         @assert size(W) == size(M) == size(V) "Dimensions of weights W, means M and variances V do not match."
-#         new{typeof(W),typeof(M),typeof(V)}(W, M, V)
-#     end
-# end
+function SpectralMixtureProductKernel(
+    h::Kernel,
+    αs::AbstractMatrix{<:Real},
+    γs::AbstractMatrix{<:Real},
+    ωs::AbstractMatrix{<:Real},
+)
+    @assert size(αs) == size(γs) == size(ωs) "The dimensions of αs, γs,
+ans ωs do not match"
 
-# function (κ::SpectralMixtureProductKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
-#     t = 2π * (x - y)
-#     @info zip(κ.W, κ.M, κ.V, t)
-#     return 
-#     #return dot(κ.w, (cos.((t.^2)' * κ.V) .* exp.(t' * κ.M))')
-# end
-
-# Base.show(io::IO, κ::SpectralMixtureProductKernel) =
-#     print(io, "Spectral Mixture Product Kernel (with D=", size(κ.M, 1), ", Q=",
-#           size(κ.M, 2), ")")
+    return prod(zip(eachrow(αs), eachrow(γs), eachrow(ωs))) do (α, γ, ω)
+        return SpectralMixtureKernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :))
+    end
+end
 

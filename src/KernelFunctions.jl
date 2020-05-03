@@ -20,7 +20,7 @@ export RationalQuadraticKernel, GammaRationalQuadraticKernel
 export MahalanobisKernel, GaborKernel, PiecewisePolynomialKernel
 export PeriodicKernel
 export KernelSum, KernelProduct
-export SpectralMixtureKernel
+export SpectralMixtureKernel, SpectralMixtureProductKernel
 export TransformedKernel, ScaledKernel
 export TensorProduct
 
