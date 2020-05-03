@@ -20,7 +20,6 @@ export RationalQuadraticKernel, GammaRationalQuadraticKernel
 export MahalanobisKernel, GaborKernel, PiecewisePolynomialKernel
 export PeriodicKernel
 export KernelSum, KernelProduct
-export SpectralMixtureKernel, SpectralMixtureProductKernel
 export TransformedKernel, ScaledKernel
 export TensorProduct
 
@@ -28,6 +27,9 @@ export Transform, SelectTransform, ChainTransform, ScaleTransform, LinearTransfo
     ARDTransform, IdentityTransform, FunctionTransform
 
 export NystromFact, nystrom
+
+export spectral_mixture_kernel, spectral_mixture_product_kernel
+
 
 using Compat
 using Requires

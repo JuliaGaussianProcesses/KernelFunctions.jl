@@ -8,8 +8,8 @@
     γs = rand(5, 3)
     ωs = rand(5, 3)
 
-    k1 = SpectralMixtureKernel(h, αs₁, γs, ωs)
-    k2 = SpectralMixtureProductKernel(h, αs₂, γs, ωs)
+    k1 = spectral_mixture_kernel(h, αs₁, γs, ωs)
+    k2 = spectral_mixture_product_kernel(h, αs₂, γs, ωs)
 
     t = v1 - v2
 

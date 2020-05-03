@@ -1,5 +1,5 @@
 """
-    SpectralMixtureKernel(
+    spectral_mixture_kernel(
         h::Kernel,
         αs::AbstractVector{<:Real},
         γs::AbstractMatrix{<:Real},
@@ -10,7 +10,7 @@ Generalised Spectral Mixture kernel function. This family of functions is  dense
 in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
 
 ```math
-   κ(x, y) = αs' (h(-(V' * t)^2) .* cos(π * M' * t), t = x - y
+   κ(x, y) = αs' (h(-(γs' * t)^2) .* cos(π * ωs' * t), t = x - y
 ```
 
 # References:
@@ -23,7 +23,7 @@ in the family of stationary real-valued kernels with respect to the pointwise co
     [4] http://www.cs.cmu.edu/~andrewgw/pattern/.
 
 """
-function SpectralMixtureKernel(
+function spectral_mixture_kernel(
     h::Kernel,
     αs::AbstractVector{<:Real},
     γs::AbstractMatrix{<:Real},
@@ -42,7 +42,7 @@ end
 
 
 """
-    SpectralMixtureProductKernel(
+    spectral_mixture_product_kernel(
         h::Kernel,
         αs::AbstractMatrix{<:Real},
         γs::AbstractMatrix{<:Real},
@@ -52,7 +52,7 @@ end
 Spectral Mixture Product Kernel.
 
 ```math
-   κ(x, y) = Πᵢ₌₁ᴷ wᵢᵀ (exp(-½ * vᵢ * t²ᵢ) .* cos(mᵢ * tᵢ)), tᵢ = 2 * π * (xᵢ - yᵢ)
+   κ(x, y) = Πᵢ₌₁ᴷ Σ(αsᵢᵀ .* (exp(-(γsᵢᵀ * tᵢ)²) .* cos(ωsᵢᵀ * tᵢ))), tᵢ = 2 * π * (xᵢ - yᵢ)
 ```
 
 # References:
@@ -60,7 +60,7 @@ Spectral Mixture Product Kernel.
         arXiv 1310.5288, 2013, by Andrew Gordon Wilson, Elad Gilboa,
         Arye Nehorai and John P. Cunningham
 """
-function SpectralMixtureProductKernel(
+function spectral_mixture_product_kernel(
     h::Kernel,
     αs::AbstractMatrix{<:Real},
     γs::AbstractMatrix{<:Real},
@@ -69,7 +69,7 @@ function SpectralMixtureProductKernel(
     @assert size(αs) == size(γs) == size(ωs) "The dimensions of αs, γs,
 ans ωs do not match"
 
-    kernels = [SpectralMixtureKernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :))
+    kernels = [spectral_mixture_kernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :))
                for (α, γ, ω) in zip(eachrow(αs), eachrow(γs), eachrow(ωs))]
     return TensorProduct(kernels)
 end
