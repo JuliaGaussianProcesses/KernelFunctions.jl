@@ -3,7 +3,7 @@
     v2 = rand(5)
     h = SqExponentialKernel()
 
-    αs₁ = rand(3) .+ 1e-3
+    αs₁ = rand(3)
     αs₂ = rand(5, 3)
     γs = rand(5, 3)
     ωs = rand(5, 3)
@@ -14,8 +14,7 @@
     t = v1 - v2
 
     @test k1(v1, v2) ≈ sum(αs₁ .* exp.(-(t' * γs)'.^2) .*
-                          cospi.((t' * ωs)')) atol=1e-5
-    i=1
+                           cospi.((t' * ωs)')) atol=1e-5
 
     @test k2(v1, v2) ≈ prod(sum(αs₂[i,:]' .* (exp.(-(γs[i,:]' * t[i]).^2) .* cospi.(ωs[i,:]' * t[i]))) for i in 1:length(t)) atol=1e-5
 end
