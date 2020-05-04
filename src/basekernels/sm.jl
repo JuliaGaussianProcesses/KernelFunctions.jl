@@ -6,6 +6,10 @@
         ωs::AbstractMatrix{<:Real},
     )
 
+where αs are the weights of dimension (A, ), γs is the covariance matrix of
+dimension (D, A) and ωs are the mean vectors and is of dimension (D, A).
+Here, D is input dimension and A is the number of spectral components.
+
 Generalised Spectral Mixture kernel function. This family of functions is  dense
 in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
 
@@ -49,7 +53,13 @@ end
         ωs::AbstractMatrix{<:Real},
     )
 
-Spectral Mixture Product Kernel.
+where αs are the weights of dimension (D, A), γs is the covariance matrix of
+dimension (D, A) and ωs are the mean vectors and is of dimension (D, A).
+Here, D is input dimension and A is the number of spectral components.
+
+Spectral Mixture Product Kernel. With enough components A, the SMP kernel
+can model any product kernel to arbitrary precision, and is flexible even
+with a small number of components [1]
 
 ```math
    κ(x, y) = Πᵢ₌₁ᴷ Σ(αsᵢᵀ .* (h(-(γsᵢᵀ * tᵢ)²) .* cos(ωsᵢᵀ * tᵢ))), tᵢ = xᵢ - yᵢ
@@ -69,8 +79,7 @@ function spectral_mixture_product_kernel(
     @assert size(αs) == size(γs) == size(ωs) "The dimensions of αs, γs,
 ans ωs do not match"
 
-    kernels = [spectral_mixture_kernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :))
-               for (α, γ, ω) in zip(eachrow(αs), eachrow(γs), eachrow(ωs))]
-    return TensorProduct(kernels)
+    return TensorProduct(spectral_mixture_kernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :))
+               for (α, γ, ω) in zip(eachrow(αs), eachrow(γs), eachrow(ωs)))
 end
 
