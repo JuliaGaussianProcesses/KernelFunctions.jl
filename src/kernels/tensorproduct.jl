@@ -23,6 +23,8 @@ end
 Base.length(kernel::TensorProduct) = length(kernel.kernels)
 
 function (kernel::TensorProduct)(x, y)
+    @assert length(x) == length(kernel) && length(x) == length(kernel) "number
+of kernels and number of features are not consistent"
     return prod(k(xi, yi) for (k, xi, yi) in zip(kernel.kernels, x, y))
 end
 
