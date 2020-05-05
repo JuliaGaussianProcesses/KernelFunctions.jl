@@ -15,7 +15,8 @@
     @test k1(v1, v2) ≈ sum(αs₁ .* exp.(-(t' * γs)'.^2) .*
                            cospi.((t' * ωs)')) atol=1e-5
 
-    @test k2(v1, v2) ≈ prod(sum(αs₂[i,:]' .* (exp.(-(γs[i,:]' * t[i]).^2) .* cospi.(ωs[i,:]' * t[i]))) for i in 1:length(t)) atol=1e-5
+    @test k2(v1, v2) ≈ prod(sum(αs₂[i,:]' .* exp.(-(γs[i,:]' * t[i]).^2) .*
+                                cospi.(ωs[i,:]' * t[i])) for i in 1:length(t)) atol=1e-5
 
     @test_throws DimensionMismatch spectral_mixture_kernel(rand(5) ,rand(4,3), rand(4,3))
     @test_throws DimensionMismatch spectral_mixture_kernel(rand(3) ,rand(4,3), rand(5,3))
