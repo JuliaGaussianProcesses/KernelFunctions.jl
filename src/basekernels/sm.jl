@@ -1,6 +1,6 @@
 """
     spectral_mixture_kernel(
-        h::Kernel,
+        h::Kernel=SqExponentialKernel(),
         αs::AbstractVector{<:Real},
         γs::AbstractMatrix{<:Real},
         ωs::AbstractMatrix{<:Real},
@@ -9,6 +9,8 @@
 where αs are the weights of dimension (A, ), γs is the covariance matrix of
 dimension (D, A) and ωs are the mean vectors and is of dimension (D, A).
 Here, D is input dimension and A is the number of spectral components.
+
+`h` is the kernel, which defaults to [`SqExponentialKernel`](@ref) if not specified.
 
 Generalised Spectral Mixture kernel function. This family of functions is  dense
 in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
@@ -57,7 +59,7 @@ end
 
 """
     spectral_mixture_product_kernel(
-        h::Kernel,
+        h::Kernel=SqExponentialKernel(),
         αs::AbstractMatrix{<:Real},
         γs::AbstractMatrix{<:Real},
         ωs::AbstractMatrix{<:Real},
@@ -70,6 +72,9 @@ Here, D is input dimension and A is the number of spectral components.
 Spectral Mixture Product Kernel. With enough components A, the SMP kernel
 can model any product kernel to arbitrary precision, and is flexible even
 with a small number of components [1]
+
+
+`h` is the kernel, which defaults to [`SqExponentialKernel`](@ref) if not specified.
 
 ```math
    κ(x, y) = Πᵢ₌₁ᴷ Σ(αsᵢᵀ .* (h(-(γsᵢᵀ * tᵢ)²) .* cos(ωsᵢᵀ * tᵢ))), tᵢ = xᵢ - yᵢ
