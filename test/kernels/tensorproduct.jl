@@ -13,6 +13,7 @@
 
     @test kernel1.kernels === (k1, k2) === TensorProduct((k1, k2)).kernels
     @test length(kernel1) == length(kernel2) == 2
+    @test_throws DimensionMismatch kernel1(rand(3), rand(3))
 
     @testset "val" begin
         for (x, y) in (((v1, u1), (v2, u2)), ([v1, u1], [v2, u2]))
