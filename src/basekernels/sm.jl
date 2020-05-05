@@ -33,9 +33,12 @@ function spectral_mixture_kernel(
     γs::AbstractMatrix{<:Real},
     ωs::AbstractMatrix{<:Real},
 )
-    @assert size(αs, 1) == size(γs, 2) == size(ωs, 2) "The dimensions of αs, γs,
-ans ωs do not match"
-    @assert size(γs) == size(ωs) "The dimensions of γs ans ωs do not match"
+    if !(size(αs, 1) == size(γs, 2) == size(ωs, 2))
+        throw(DimensionMismatch("The dimensions of αs, γs, ans ωs do not match"))
+    end
+    if size(γs) != size(ωs)
+        throw(DimensionMismatch("The dimensions of γs ans ωs do not match"))
+    end
 
     return sum(zip(αs, eachcol(γs), eachcol(ωs))) do (α, γ, ω)
         a = TransformedKernel(h, LinearTransform(γ'))
@@ -76,9 +79,9 @@ function spectral_mixture_product_kernel(
     γs::AbstractMatrix{<:Real},
     ωs::AbstractMatrix{<:Real},
 )
-    @assert size(αs) == size(γs) == size(ωs) "The dimensions of αs, γs,
-ans ωs do not match"
-
+    if !(size(αs) == size(γs) == size(ωs))
+        throw(DimensionMismatch("The dimensions of αs, γs, ans ωs do not match"))
+    end
     return TensorProduct(spectral_mixture_kernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :))
                for (α, γ, ω) in zip(eachrow(αs), eachrow(γs), eachrow(ωs)))
 end
