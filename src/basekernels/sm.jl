@@ -47,6 +47,13 @@ function spectral_mixture_kernel(
     end
 end
 
+function spectral_mixture_kernel(
+    αs::AbstractVector{<:Real},
+    γs::AbstractMatrix{<:Real},
+    ωs::AbstractMatrix{<:Real}
+)
+    spectral_mixture_kernel(SqExponentialKernel(), αs, γs, ωs)
+end
 
 """
     spectral_mixture_product_kernel(
@@ -84,5 +91,13 @@ function spectral_mixture_product_kernel(
     end
     return TensorProduct(spectral_mixture_kernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :))
                for (α, γ, ω) in zip(eachrow(αs), eachrow(γs), eachrow(ωs)))
+end
+
+function spectral_mixture_product_kernel(
+    αs::AbstractMatrix{<:Real},
+    γs::AbstractMatrix{<:Real},
+    ωs::AbstractMatrix{<:Real}
+)
+    spectral_mixture_product_kernel(SqExponentialKernel(), αs, γs, ωs)
 end
 
