@@ -28,6 +28,9 @@ export Transform, SelectTransform, ChainTransform, ScaleTransform, LinearTransfo
 
 export NystromFact, nystrom
 
+export spectral_mixture_kernel, spectral_mixture_product_kernel
+
+
 using Compat
 using Requires
 using Distances, LinearAlgebra

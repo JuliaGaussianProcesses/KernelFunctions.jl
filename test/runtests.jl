@@ -76,6 +76,7 @@ using KernelFunctions: metric, kappa
         include(joinpath("basekernels", "polynomial.jl"))
         include(joinpath("basekernels", "piecewisepolynomial.jl"))
         include(joinpath("basekernels", "rationalquad.jl"))
+        include(joinpath("basekernels", "sm.jl"))
         include(joinpath("basekernels", "wiener.jl"))
     end
 
