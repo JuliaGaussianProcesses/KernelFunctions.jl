@@ -134,6 +134,7 @@ function validate_kernel_dims(k::Kernel, x)
 end
 
 function validate_kernel_dims(k::Kernel, x, y)
+    validate_dims(x, y)
     if !(dims_are_compatible(k, x) && dims_are_compatible(k, y))
         throw(DimensionMismatch(
             "Dimensionality of kernel not compatible with that of input")
