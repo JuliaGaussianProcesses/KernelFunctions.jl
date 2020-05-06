@@ -117,11 +117,27 @@ function validate_inplace_dims(K::AbstractVector, x::AbstractVector)
     end
 end
 
-function validate_dims(x::AbstractVector, y::AbstractVector)
+function validate_dims(x, y)
     if dim(x) != dim(y)
         throw(DimensionMismatch(
             "Dimensionality of x ($(dim(x))) not equality to that of y ($(dim(y)))",
         ))
+    end
+end
+
+function validate_kernel_dims(k::Kernel, x)
+    if !dims_are_compatible(k, x)
+        throw(DimensionMismatch(
+            "Dimensionality of kernel not compatible with that of input")
+              )
+    end
+end
+
+function validate_kernel_dims(k::Kernel, x, y)
+    if !(dims_are_compatible(k, x) && dims_are_compatible(k, y))
+        throw(DimensionMismatch(
+            "Dimensionality of kernel not compatible with that of input")
+              )
     end
 end
 
