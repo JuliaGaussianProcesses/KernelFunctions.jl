@@ -25,7 +25,7 @@ Base.length(kernel::TensorProduct) = length(kernel.kernels)
 dims_are_compatible(k::TensorProduct, x) = length(k) == length(x)
 
 function (kernel::TensorProduct)(x, y)
-    validate_kernel_dims(kernel, x)
+    validate_kernel_dims(kernel, x, y)
     return prod(k(xi, yi) for (k, xi, yi) in zip(kernel.kernels, x, y))
 end
 
