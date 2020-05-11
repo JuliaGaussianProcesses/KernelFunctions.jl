@@ -50,7 +50,7 @@ transform(k::Kernel, ρ::Real) = TransformedKernel(k, ScaleTransform(ρ))
 
 transform(k::Kernel,ρ::AbstractVector) = TransformedKernel(k, ARDTransform(ρ))
 
-transform(k::BaseKernel,::Nothing) = k
+transform(k::Kernel, ::Nothing) = k
 
 kernel(κ) = κ.kernel
 
