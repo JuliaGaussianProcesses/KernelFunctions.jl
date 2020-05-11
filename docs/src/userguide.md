@@ -4,18 +4,24 @@
 
 To create a kernel chose one of the kernels proposed, see [Kernels](@ref), or create your own, see [Creating Kernels](@ref)
 For example to create a square exponential kernel
+
 ```julia
   k = SqExponentialKernel()
 ```
-Instead of having lengthscale(s) for each kernel we use `Transform` objects (see [Transform](@ref)) which are directly going to act on the inputs before passing them to the kernel.
-For example to premultiply the input by 2.0 we create the kernel the following options are possible
+
+Instead of having lengthscale(s) for each kernel we use `Transform` objects (see [Transform](@ref)). The transform operations are going to be applied on the inputs before they are passed to the kernel.
+For example, the [ScaleTransform](@ref) multiply every sample by a scalar $\rho$. A `SqExponentialKernel` with a `ScaleTransform(ρ)`, is therefore equivalent to have a `SqExponentialKernel` with lengthscale `1/ρ`.
+Here are some examples on how to use these transformations and are all equivalent:
 ```julia
-  k = transform(SqExponentialKernel(),ScaleTransform(2.0)) # returns a TransformedKernel
-  k = @kernel SqExponentialKernel() l=2.0 # Will be available soon
-  k = TransformedKernel(SqExponentialKernel(),ScaleTransform(2.0))
+  k = TransformedKernel(SqExponentialKernel(), ScaleTransform(2.0)) # Constructor
+  k = transform(SqExponentialKernel(), ScaleTransform(2.0)) # wrapper for a constructor
+  k = @kernel SqExponentialKernel() l=2.0 # Convenience macro
 ```
+
 Check the [`Transform`](@ref) page to see the other options.
-To premultiply the kernel by a variance, you can use `*` or create a `ScaledKernel`
+---
+To pre-multiply the kernel by a variance parameter, you can use `*` or create a `ScaledKernel`
+
 ```julia
   k = 3.0*SqExponentialKernel()
   k = ScaledKernel(SqExponentialKernel(),3.0)

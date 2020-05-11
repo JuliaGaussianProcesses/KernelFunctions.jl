@@ -19,7 +19,7 @@ Here are some examples :
     k == ScaleTransform(transform(ExponentiatedKernel(), ScaleTransform(3.0)), 4.0)
 """
 macro kernel(expr::Expr, arg = nothing)
-    @capture(expr, (scale_ * k_ | k_)) || throw(error("@kernel first arguments should be of the form `σ*kernel` or `kernel`"))
+    @capture(expr, (scale_ * k_ | k_)) || throw(error("@kernel first arguments should be of the form `σ * kernel` or `kernel`"))
     t = if @capture(arg, kw_ = val_)
         if kw == :l
             val
@@ -34,6 +34,6 @@ macro kernel(expr::Expr, arg = nothing)
     if isnothing(scale)
         return esc(:(transform($k, $t)))
     else
-        return esc(:($scale*transform($k, $t)))
+        return esc(:($scale * transform($k, $t)))
     end
 end
