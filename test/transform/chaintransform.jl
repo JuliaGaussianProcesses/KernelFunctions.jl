@@ -1,15 +1,29 @@
 @testset "chaintransform" begin
     rng = MersenneTwister(123546)
-    X = rand(rng, 10, 5)
-    s = 3.0
-    P = rand(rng, 5,10)
-    f(x) = sin.(x)
 
-    t = ScaleTransform(s)
-    tp = LowRankTransform(P)
+    P = rand(rng, 3, 2)
+    tp = LinearTransform(P)
+
+    f(x) = sin.(x)
     tf = FunctionTransform(f)
-    tchain = ChainTransform([t,tp,tf])
-    @test all(KernelFunctions.apply(tchain,X,obsdim=2).==f(P*(s*X)))
-    @test all(KernelFunctions.apply(tchain,X,obsdim=2).==
-                KernelFunctions.apply(tf∘tp∘t,X,obsdim=2))
+
+    t = ChainTransform([tp, tf])
+
+    # Check composition constructors.
+    @test (tf ∘ ChainTransform([tp])).transforms == [tp, tf]
+    @test (ChainTransform([tf]) ∘ tp).transforms == [tp, tf]
+
+    # Verify correctness.
+    x = ColVecs(randn(rng, 2, 3))
+    x′ = map(t, x)
+
+    @test all([t(x[n]) ≈ f(P * x[n]) for n in eachindex(x)])
+    @test all([t(x[n]) ≈ x′[n] for n in eachindex(x)])
+
+    # Verify printing works as expected.
+    @test repr(tp ∘ tf) == "Chain of 2 transforms:\n\t - $(tf) |> $(tp)"
 end
+
+
+Base.:∘(t::Transform, tc::ChainTransform) = ChainTransform(vcat(tc.transforms, t))
+Base.:∘(tc::ChainTransform, t::Transform) = ChainTransform(vcat(t, tc.transforms))

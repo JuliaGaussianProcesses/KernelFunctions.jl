@@ -91,6 +91,14 @@ The [Polynomial Kernel](@ref KernelFunctions.PolynomialKernel) is defined as
   k(x,x';c,d) = \left(\langle x,x'\rangle + c\right)^d
 ```
 
+## Periodic Kernels
+
+### PeriodicKernel
+
+```math
+  k(x,x';r) = \exp\left(-0.5 \sum_i (sin (π(x_i - x'_i))/r_i)^2\right)
+```
+
 ## Constant Kernels
 
 ### ConstantKernel

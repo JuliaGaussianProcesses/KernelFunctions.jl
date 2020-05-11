@@ -46,27 +46,18 @@ Base.:*(w::Real, k::KernelSum) = KernelSum(k.kernels, weights = w * k.weights) #
 
 Base.length(k::KernelSum) = length(k.kernels)
 
-kappa(κ::KernelSum, x, y) = sum(κ.weights[i] * kappa(κ.kernels[i], x, y) for i in 1:length(κ))
+(κ::KernelSum)(x, y) = sum(κ.weights[i] * κ.kernels[i](x, y) for i in 1:length(κ))
 
-function kernelmatrix(κ::KernelSum, X::AbstractMatrix; obsdim::Int = defaultobs)
-    sum(κ.weights[i] * kernelmatrix(κ.kernels[i], X, obsdim = obsdim) for i in 1:length(κ))
+function kernelmatrix(κ::KernelSum, x::AbstractVector)
+    return sum(κ.weights[i] * kernelmatrix(κ.kernels[i], x) for i in 1:length(κ))
 end
 
-function kernelmatrix(
-    κ::KernelSum,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int = defaultobs,
-)
-    sum(κ.weights[i] * _kernelmatrix(κ.kernels[i], X, Y, obsdim) for i in 1:length(κ))
+function kernelmatrix(κ::KernelSum, x::AbstractVector, y::AbstractVector)
+    return sum(κ.weights[i] * kernelmatrix(κ.kernels[i], x, y) for i in 1:length(κ))
 end
 
-function kerneldiagmatrix(
-    κ::KernelSum,
-    X::AbstractMatrix;
-    obsdim::Int = defaultobs,
-)
-    sum(κ.weights[i] * kerneldiagmatrix(κ.kernels[i], X, obsdim = obsdim) for i in 1:length(κ))
+function kerneldiagmatrix(κ::KernelSum, x::AbstractVector)
+    return sum(κ.weights[i] * kerneldiagmatrix(κ.kernels[i], x) for i in 1:length(κ))
 end
 
 function Base.show(io::IO, κ::KernelSum)

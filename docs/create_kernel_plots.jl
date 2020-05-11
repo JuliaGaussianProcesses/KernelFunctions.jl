@@ -23,7 +23,7 @@ p = heatmap(K2,yflip=true,colorbar=false,framestyle=:none,background_color=RGBA(
 savefig(joinpath(@__DIR__,"src","assets","heatmap_matern.png"))
 
 
-k = transform(PolynomialKernel(c=0.0,d=2.0),LowRankTransform(randn(3,1)))
+k = transform(PolynomialKernel(c=0.0,d=2.0), LinearTransform(randn(3,1)))
 K3 = kernelmatrix(k,xrange,obsdim=1)
 p = heatmap(K3,yflip=true,colorbar=false,framestyle=:none,background_color=RGBA(0.0,0.0,0.0,0.0))
 savefig(joinpath(@__DIR__,"src","assets","heatmap_poly.png"))

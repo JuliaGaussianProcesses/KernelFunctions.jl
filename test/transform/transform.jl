@@ -1,8 +1,10 @@
 @testset "transform" begin
-    dims = (10,5)
     rng = MersenneTwister(123546)
-    X = rand(rng, dims...)
-    @testset "IdentityTransform" begin
-        @test KernelFunctions.apply(IdentityTransform(),X)==X
+    x = randn(rng, 8)
+    XC = ColVecs(randn(rng, 5, 10))
+    XR = RowVecs(randn(rng, 11, 3))
+    @testset "IdentityTransform($(typeof(x)))" for x in [x, XC, XR]
+        @test IdentityTransform()(x) == x
+        @test map(IdentityTransform(), x) == x
     end
 end

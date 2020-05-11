@@ -1,7 +1,7 @@
+using KernelFunctions
 using Distances
 using FiniteDifferences
 using Flux
-using KernelFunctions
 using Kronecker
 using LinearAlgebra
 using PDMats
@@ -10,7 +10,7 @@ using SpecialFunctions
 using Test
 using Zygote
 
-using KernelFunctions: metric
+using KernelFunctions: metric, kappa
 
 # Writing tests:
 # 1. The file structure of the test should match precisely the file structure of src.
@@ -49,31 +49,43 @@ using KernelFunctions: metric
     @testset "distances" begin
         include(joinpath("distances", "dotproduct.jl"))
         include(joinpath("distances", "delta.jl"))
+        include(joinpath("distances", "sinus.jl"))
     end
 
     @testset "transform" begin
+        include(joinpath("transform", "transform.jl"))
         include(joinpath("transform", "scaletransform.jl"))
         include(joinpath("transform", "ardtransform.jl"))
-        include(joinpath("transform", "lowranktransform.jl"))
+        include(joinpath("transform", "lineartransform.jl"))
         include(joinpath("transform", "functiontransform.jl"))
         include(joinpath("transform", "selecttransform.jl"))
         include(joinpath("transform", "chaintransform.jl"))
-        include(joinpath("transform", "transform.jl"))
+    end
+
+    @testset "basekernels" begin
+        include(joinpath("basekernels", "constant.jl"))
+        include(joinpath("basekernels", "cosine.jl"))
+        include(joinpath("basekernels", "exponential.jl"))
+        include(joinpath("basekernels", "exponentiated.jl"))
+        include(joinpath("basekernels", "fbm.jl"))
+        include(joinpath("basekernels", "gabor.jl"))
+        include(joinpath("basekernels", "maha.jl"))
+        include(joinpath("basekernels", "matern.jl"))
+        include(joinpath("basekernels", "nn.jl"))
+        include(joinpath("basekernels", "periodic.jl"))
+        include(joinpath("basekernels", "polynomial.jl"))
+        include(joinpath("basekernels", "piecewisepolynomial.jl"))
+        include(joinpath("basekernels", "rationalquad.jl"))
+        include(joinpath("basekernels", "sm.jl"))
+        include(joinpath("basekernels", "wiener.jl"))
     end
 
     @testset "kernels" begin
-        include(joinpath("kernels", "constant.jl"))
-        include(joinpath("kernels", "cosine.jl"))
-        include(joinpath("kernels", "exponential.jl"))
-        include(joinpath("kernels", "exponentiated.jl"))
-        include(joinpath("kernels", "fbm.jl"))
         include(joinpath("kernels", "kernelproduct.jl"))
         include(joinpath("kernels", "kernelsum.jl"))
         include(joinpath("kernels", "kernel_macro.jl"))
-        include(joinpath("kernels", "matern.jl"))
-        include(joinpath("kernels", "polynomial.jl"))
-        include(joinpath("kernels", "rationalquad.jl"))
         include(joinpath("kernels", "scaledkernel.jl"))
+        include(joinpath("kernels", "tensorproduct.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
 
         # Legacy tests that don't correspond to anything meaningful in src. Unclear how

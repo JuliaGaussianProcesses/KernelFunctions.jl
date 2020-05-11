@@ -14,11 +14,15 @@ trainable(k::MaternKernel) = (k.ν,)
 
 trainable(k::LinearKernel) = (k.c,)
 
+trainable(k::PeriodicKernel) = (k.r,)
+
 trainable(k::PolynomialKernel) = (k.d, k.c)
 
 trainable(k::RationalQuadraticKernel) = (k.α,)
 
 trainable(k::MahalanobisKernel) = (k.P,)
+
+trainable(k::GaborKernel) = (k.kernel,)
 
 #### Composite kernels
 
@@ -38,6 +42,6 @@ trainable(t::ChainTransform) = t.transforms
 
 trainable(t::FunctionTransform) = (t.f,)
 
-trainable(t::LowRankTransform) = (t.proj,)
+trainable(t::LinearTransform) = (t.A,)
 
 trainable(t::ScaleTransform) = (t.s,)

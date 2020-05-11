@@ -1,14 +1,21 @@
 @testset "selecttransform" begin
-    dims = (10,5)
-    rng = MersenneTwister(123546)
-    X = rand(rng, dims...)
-    x = rand(rng, dims[1])
-    sdims = [1,2,3]
+    rng = MersenneTwister(123456)
 
-    ts = SelectTransform(sdims)
-    @test all(KernelFunctions.apply(ts,X,obsdim=2).==X[sdims,:])
-    @test all(KernelFunctions.apply(ts,x).==x[sdims])
-    sdims2 = [2,3,5]
-    KernelFunctions.set!(ts,sdims2)
-    @test all(ts.select.==sdims2)
+    select = [1, 3, 5]
+    t = SelectTransform(select)
+
+    x_cols = ColVecs(randn(rng, maximum(select), 6))
+    x_rows = RowVecs(randn(rng, 4, maximum(select)))
+
+    @testset "$(typeof(x))" for x in [x_cols, x_rows]
+        x′ = map(t, x)
+        @test all([t(x[n]) == x[n][select] for n in eachindex(x)])
+        @test all([t(x[n]) == x′[n] for n in eachindex(x)])
+    end
+
+    select2 = [2, 3, 5]
+    KernelFunctions.set!(t, select2)
+    @test t.select == select2
+
+    @test repr(t) == "Select Transform (dims: $(select2))"
 end

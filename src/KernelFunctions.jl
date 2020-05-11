@@ -4,24 +4,32 @@ KernelFunctions. [Github](https://github.com/JuliaGaussianProcesses/KernelFuncti
 """
 module KernelFunctions
 
-export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!, kappa
+export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!
 export transform
 export duplicate, set! # Helpers
 
 export Kernel, BaseKernel, @kernel
-export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel
-export SqExponentialKernel, ExponentialKernel, GammaExponentialKernel
+export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel, WienerKernel
+export CosineKernel
+export SqExponentialKernel, RBFKernel, GaussianKernel, SEKernel
+export LaplacianKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
-export MahalanobisKernel
+export MahalanobisKernel, GaborKernel, PiecewisePolynomialKernel
+export PeriodicKernel, NeuralNetworkKernel
 export KernelSum, KernelProduct
 export TransformedKernel, ScaledKernel
+export TensorProduct
 
-export Transform, SelectTransform, ChainTransform, ScaleTransform, LowRankTransform, IdentityTransform, FunctionTransform
+export Transform, SelectTransform, ChainTransform, ScaleTransform, LinearTransform,
+    ARDTransform, IdentityTransform, FunctionTransform
 
 export NystromFact, nystrom
+
+export spectral_mixture_kernel, spectral_mixture_product_kernel
+
 
 using Compat
 using Requires
@@ -33,29 +41,32 @@ using InteractiveUtils: subtypes
 using MacroTools: @capture
 using StatsBase
 
-const defaultobs = 2
-
 """
 Abstract type defining a slice-wise transformation on an input matrix
 """
 abstract type Transform end
+
 abstract type Kernel end
 abstract type BaseKernel <: Kernel end
+abstract type SimpleKernel <: BaseKernel end
 
 include("utils.jl")
 include("distances/dotproduct.jl")
 include("distances/delta.jl")
+include("distances/sinus.jl")
 include("transform/transform.jl")
 
-for k in ["exponential","matern","polynomial","constant","rationalquad","exponentiated","cosine","maha","fbm"]
-    include(joinpath("kernels",k*".jl"))
+for f in readdir(joinpath(@__DIR__, "basekernels"))
+    endswith(f, ".jl") && include(joinpath("basekernels", f))
 end
+
 include("kernels/transformedkernel.jl")
 include("kernels/scaledkernel.jl")
 include("kernels/kernel_macro.jl")
 include("matrix/kernelmatrix.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
+include("kernels/tensorproduct.jl")
 include("approximations/nystrom.jl")
 include("generic.jl")
 
