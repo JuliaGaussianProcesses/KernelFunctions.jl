@@ -37,14 +37,14 @@ true
 ```
 """
 macro kernel(expr::Expr, arg = nothing)
-    @capture(expr, (scale_ * k_ | k_)) || error("@kernel first arguments should be of the form `σ * kernel` or `kernel`")
+    @capture(expr, ((scale_ * k_) | (k_)))
     if arg === nothing
         t = nothing
     else
         if @capture(arg, ((l = val_) | (t = val_)))
             t = val
         else
-            error("The additional argument of `@kernel` is incorrect")
+            return :(error("The additional argument of `@kernel` is incorrect"))
         end
     end
     if scale === nothing
