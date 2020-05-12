@@ -1,7 +1,8 @@
 using KernelFunctions
-using KernelFunctions: kappa
+using KernelFunctions: kappa, ColVecs, RowVecs
 using Flux: params
 import Zygote, ForwardDiff, ReverseDiff
+using Zygote: pullback
 using Test, LinearAlgebra, Random
 using FiniteDifferences
 
@@ -26,10 +27,10 @@ kernels = [
     SqExponentialKernel(),
     ExponentialKernel(),
     MaternKernel(ν = ν),
-    # transform(SqExponentialKernel(), l),
-    # transform(SqExponentialKernel(), vl),
-    # ExponentiatedKernel() + LinearKernel(),
-    # 2.0 * PolynomialKernel() * Matern32Kernel(),
+    transform(SqExponentialKernel(), l),
+    transform(SqExponentialKernel(), vl),
+    ExponentiatedKernel() + LinearKernel(),
+    2.0 * PolynomialKernel() * Matern32Kernel(),
 ]
 
 ds = log.([eps(), rand(rng)])
