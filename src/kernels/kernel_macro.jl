@@ -37,21 +37,19 @@ true
 ```
 """
 macro kernel(expr::Expr, arg = nothing)
-    @capture(expr, (scale_ * k_ | k_)) || throw(error("@kernel first arguments should be of the form `σ * kernel` or `kernel`"))
-    t = if @capture(arg, kw_ = val_)
-        if kw == :l
-            val
-        elseif kw == :t
-            val
+    @capture(expr, (scale_ * k_ | k_)) || error("@kernel first arguments should be of the form `σ * kernel` or `kernel`")
+    if arg === nothing
+        t = nothing
+    else
+        if @capture(arg, ((l = val_) | (t = val_)))
+            t = val
         else
-            throw(error("The additional argument could not be intepreted. Please see documentation of `@kernel`"))
+            error("The additional argument of `@kernel` is incorrect")
         end
-    else
-        arg
     end
-    if isnothing(scale)
-        return esc(:(transform($k, $t)))
+    if scale === nothing
+        return :(transform($(esc(k)), $(esc(t))))
     else
-        return esc(:($scale * transform($k, $t)))
+        return :($(esc(scale)) * transform($(esc(k)), $(esc(t))))
     end
 end
