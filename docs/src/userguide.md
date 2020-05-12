@@ -9,12 +9,13 @@ For example to create a square exponential kernel
   k = SqExponentialKernel()
 ```
 
-Instead of having lengthscale(s) for each kernel we use `Transform` objects (see [Transform](@ref)). The transform operations are going to be applied on the inputs before they are passed to the kernel.
-For example, the [ScaleTransform](@ref) multiply every sample by a scalar $\rho$. A `SqExponentialKernel` with a `ScaleTransform(ρ)`, is therefore equivalent to have a `SqExponentialKernel` with lengthscale `1/ρ`.
-Here are some examples on how to use these transformations and are all equivalent:
+Instead of having lengthscale(s) for each kernel we use `Transform` objects (see [`Transform`](@ref)). The transformations are going to be applied on the inputs before the kernel is evaluated.
+For example, the [`ScaleTransform`](@ref) multiplies every sample with a scalar. A `SqExponentialKernel` with a `ScaleTransform(ρ)`, is therefore equivalent to have a Squared Exponential Kernel with lengthscale `1/ρ`.
+Here are some examples of how to use these transformations that are all equivalent:
 ```julia
   k = TransformedKernel(SqExponentialKernel(), ScaleTransform(2.0)) # Constructor
-  k = transform(SqExponentialKernel(), ScaleTransform(2.0)) # wrapper for a constructor
+  k = transform(SqExponentialKernel(), ScaleTransform(2.0)) # wrapper for the constructor
+  k = transform(SqExponentialKernel(), 2.0) # Syntactic sugar
   k = @kernel SqExponentialKernel() l=2.0 # Convenience macro
 ```
 
@@ -35,7 +36,7 @@ To compute the kernel function on two vectors you can call
   k = SqExponentialKernel()
   x1 = rand(3)
   x2 = rand(3)
-  k(x1,x2)
+  k(x1, x2)
 ```
 
 ## Creating a kernel matrix
@@ -46,9 +47,8 @@ For example:
 ```julia
   k = SqExponentialKernel()
   A = rand(10,5)
-  kernelmatrix(k,A,obsdim=1) # Return a 10x10 matrix
-  kernelmatrix(k,A,obsdim=2) # Return a 5x5 matrix
-  k(A,obsdim=1) # Syntactic sugar
+  kernelmatrix(k, A, obsdim = 1) # Return a 10x10 matrix
+  kernelmatrix(k, A, obsdim = 2) # Return a 5x5 matrix
 ```
 
 We also support specific kernel matrices outputs:
