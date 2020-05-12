@@ -9,9 +9,10 @@ struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
     transform::Tr
 end
 
-function TransformedKernel(k::TransformedKernel,t::Transform)
-    TransformedKernel(kernel(k),t∘k.transform)
+function TransformedKernel(k::TransformedKernel, t::Transform)
+    TransformedKernel(kernel(k), t ∘ k.transform)
 end
+
 (k::TransformedKernel)(x, y) = k.kernel(k.transform(x), k.transform(y))
 
 # Optimizations for scale transforms of simple kernels to save allocations:
@@ -48,7 +49,9 @@ transform(k::Kernel, t::Transform) = TransformedKernel(k, t)
 
 transform(k::Kernel, ρ::Real) = TransformedKernel(k, ScaleTransform(ρ))
 
-transform(k::Kernel,ρ::AbstractVector) = TransformedKernel(k, ARDTransform(ρ))
+transform(k::Kernel, ρ::AbstractVector) = TransformedKernel(k, ARDTransform(ρ))
+
+transform(k::Kernel, ρ::AbstractMatrix) = TransformedKernel(k, LinearTransform(ρ))
 
 transform(k::Kernel, ::Nothing) = k
 

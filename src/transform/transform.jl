@@ -22,10 +22,6 @@ struct IdentityTransform <: Transform end
 (t::IdentityTransform)(x) = x
 Base.map(::IdentityTransform, x::AbstractVector) = x
 
-Transform(ρ::Real) = ScaleTransform(ρ)
-Transform(ρ::AbstractVector) = ARDTransform(ρ)
-Transform(t::Transform) = t
-
 ### TODO Maybe defining adjoints could help but so far it's not working
 
 

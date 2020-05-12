@@ -7,14 +7,20 @@
     s = rand(rng)
     v = rand(rng, 3)
     k = SqExponentialKernel()
-    kt = TransformedKernel(k,ScaleTransform(s))
-    ktard = TransformedKernel(k,ARDTransform(v))
+    kt = TransformedKernel(k, ScaleTransform(s))
+    ktard = TransformedKernel(k, ARDTransform(v))
     @test kt(v1, v2) == transform(k, ScaleTransform(s))(v1, v2)
     @test kt(v1, v2) == transform(k, s)(v1,v2)
     @test kt(v1, v2) ≈ k(s * v1, s * v2) atol=1e-5
     @test ktard(v1, v2) ≈ transform(k, ARDTransform(v))(v1, v2) atol=1e-5
     @test ktard(v1, v2) == transform(k,v)(v1, v2)
     @test ktard(v1, v2) == k(v .* v1, v .* v2)
+
+    @test transform(kt, s) isa TransformedKernel{SqExponentialKernel,ChainTransform{Array{ScaleTransform{Float64},1}}}
+
+    @test transform(k, s) isa TransformedKernel{SqExponentialKernel,ScaleTransform{Float64}}
+    @test transform(k, v) isa TransformedKernel{SqExponentialKernel,ARDTransform{Array{Float64,1}}}
+    @test transform(k, rand(3, 2)) isa TransformedKernel{SqExponentialKernel,LinearTransform{Array{Float64,2}}}
 
     @testset "kernelmatrix" begin
         rng = MersenneTwister(123456)
