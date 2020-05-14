@@ -8,6 +8,8 @@ struct DotProduct <: Distances.PreMetric end
     return dot(a,b)
 end
 
+Distances.result_type(::DotProduct, Ta::Type, Tb::Type) = promote_type(Ta, Tb)
+
 @inline Distances.eval_op(::DotProduct, a::Real, b::Real) = a * b
 @inline (dist::DotProduct)(a::AbstractArray,b::AbstractArray) = Distances._evaluate(dist, a, b)
 @inline (dist::DotProduct)(a::Number,b::Number) = a * b
