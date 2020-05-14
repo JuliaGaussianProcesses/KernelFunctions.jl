@@ -25,8 +25,8 @@ dim(t::ARDTransform) = length(t.v)
 (t::ARDTransform)(x) = t.v .* x
 
 Base.map(t::ARDTransform, x::AbstractVector{<:Real}) = t.v' .* x
-Base.map(t::ARDTransform, x::ColVecs) = ColVecs(t.v .* x.X)
-Base.map(t::ARDTransform, x::RowVecs) = RowVecs(t.v' .* x.X)
+_map(t::ARDTransform, x::ColVecs) = ColVecs(t.v .* x.X)
+_map(t::ARDTransform, x::RowVecs) = RowVecs(t.v' .* x.X)
 
 Base.isequal(t::ARDTransform, t2::ARDTransform) = isequal(t.v, t2.v)
 

@@ -5,12 +5,8 @@ include("functiontransform.jl")
 include("selecttransform.jl")
 include("chaintransform.jl")
 
-"""
-    apply(t::Transform, x; obsdim::Int=defaultobs)
 
-Apply the transform `t` vector-wise on the array `x`
-"""
-apply
+Base.map(t::Transform, x::Union{ColVecs, RowVecs}) = _map(t, x)
 
 """
     IdentityTransform()
