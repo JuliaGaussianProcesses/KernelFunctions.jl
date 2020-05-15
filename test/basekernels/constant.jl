@@ -5,6 +5,7 @@
         @test kappa(k,2.0) == 0.0
         @test KernelFunctions.metric(ZeroKernel()) == KernelFunctions.Delta()
         @test repr(k) == "Zero Kernel"
+        test_AD("Zero", ZeroKernel)
     end
     @testset "WhiteKernel" begin
         k = WhiteKernel()
@@ -14,6 +15,7 @@
         @test EyeKernel == WhiteKernel
         @test metric(WhiteKernel()) == KernelFunctions.Delta()
         @test repr(k) == "White Kernel"
+        test_AD("WhiteKernel", WhiteKernel)
     end
     @testset "ConstantKernel" begin
         c = 2.0
@@ -24,5 +26,6 @@
         @test metric(ConstantKernel()) == KernelFunctions.Delta()
         @test metric(ConstantKernel(c=2.0)) == KernelFunctions.Delta()
         @test repr(k) == "Constant Kernel (c = $(c))"
+        test_AD("ConstantKernel", c->ConstantKernel(c=first(c)), [c])
     end
 end

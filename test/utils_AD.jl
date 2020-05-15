@@ -1,11 +1,13 @@
+
 FDM = FiniteDifferences.central_fdm(5, 1)
 
 function gradient(::Val{:Zygote}, f::Function, args)
-    first(Zygote.gradient(f, args))
-end
-
-function gradient(::Val{:Zygote}, f::Function, args::Zygote.Params)
-    Zygote.gradient(f, args)
+    g = first(Zygote.gradient(f, args))
+    if isnothing(g)
+        return zeros(size(args)) # To respect the same output as other ADs
+    else
+        return g
+    end
 end
 
 function gradient(::Val{:ForwardDiff}, f::Function, args)
@@ -24,14 +26,22 @@ end
 testfunction(k, A, B, dim) = sum(kernelmatrix(k, A, B, obsdim = dim))
 testfunction(k, A, dim) = sum(kernelmatrix(k, A, obsdim = dim))
 
-function test_FiniteDiff(kernelname, kernelfunction, args = nothing)
+function test_AD(kernelname::String, kernelfunction, args = nothing; ADs = [:Zygote, :ForwardDiff, :ReverseDiff], dims = [3, 3])
+    test_fd = test_FiniteDiff(kernelname, kernelfunction, args, dims)
+    if !test_fd.anynonpass
+        for AD in ADs
+            test_AD(AD, kernelname, kernelfunction, args, dims)
+        end
+    end
+end
+
+function test_FiniteDiff(kernelname, kernelfunction, args = nothing, dims = [3, 3])
     # Init arguments :
     k = if args === nothing
         kernelfunction()
     else
         kernelfunction(args)
     end
-    dims = [3, 3]
     rng = MersenneTwister(42)
     @testset "FiniteDifferences with $(kernelname)" begin
         if k isa SimpleKernel
@@ -60,10 +70,9 @@ function test_FiniteDiff(kernelname, kernelfunction, args = nothing)
     end
 end
 
-function test_AD(AD, kernelname, kernelfunction, args = nothing)
+function test_AD(AD, kernelname, kernelfunction, args = nothing, dims = [3, 3])
     @testset "Testing $(kernelname) with AD : $(AD)" begin
         # Test kappa function
-        dims = [3, 3]
         k = if args === nothing
             kernelfunction()
         else
