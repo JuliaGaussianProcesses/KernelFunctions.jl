@@ -15,7 +15,7 @@ end
 
 (t::FunctionTransform)(x) = t.f(x)
 
-Base.map(t::FunctionTransform, x::AbstractVector{<:Real}) = map(t.f, x)
+_map(t::FunctionTransform, x::AbstractVector{<:Real}) = map(t.f, x)
 _map(t::FunctionTransform, x::ColVecs) = ColVecs(mapslices(t.f, x.X; dims=1))
 _map(t::FunctionTransform, x::RowVecs) = RowVecs(mapslices(t.f, x.X; dims=2))
 

@@ -6,7 +6,7 @@ include("selecttransform.jl")
 include("chaintransform.jl")
 
 
-Base.map(t::Transform, x::Union{ColVecs, RowVecs}) = _map(t, x)
+Base.map(t::Transform, x::AbstractVector) = _map(t, x)
 
 """
     IdentityTransform()
@@ -16,7 +16,6 @@ Return exactly the input
 struct IdentityTransform <: Transform end
 
 (t::IdentityTransform)(x) = x
-Base.map(::IdentityTransform, x::AbstractVector) = x
 _map(::IdentityTransform, x::AbstractVector) = x
 
 ### TODO Maybe defining adjoints could help but so far it's not working

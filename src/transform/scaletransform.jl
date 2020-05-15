@@ -19,7 +19,7 @@ set!(t::ScaleTransform,ρ::Real) = t.s .= [ρ]
 
 (t::ScaleTransform)(x) = first(t.s) .* x
 
-Base.map(t::ScaleTransform, x::AbstractVector{<:Real}) = first(t.s) .* x
+_map(t::ScaleTransform, x::AbstractVector{<:Real}) = first(t.s) .* x
 _map(t::ScaleTransform, x::ColVecs) = ColVecs(first(t.s) .* x.X)
 _map(t::ScaleTransform, x::RowVecs) = RowVecs(first(t.s) .* x.X)
 
