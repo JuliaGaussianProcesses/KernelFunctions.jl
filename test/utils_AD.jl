@@ -4,7 +4,11 @@ FDM = FiniteDifferences.central_fdm(5, 1)
 function gradient(::Val{:Zygote}, f::Function, args)
     g = first(Zygote.gradient(f, args))
     if isnothing(g)
-        return zeros(size(args)) # To respect the same output as other ADs
+        if args isa AbstractArray{<:Real}
+            return zeros(size(args)) # To respect the same output as other ADs
+        else
+            return zeros.(size.(args))
+        end
     else
         return g
     end
