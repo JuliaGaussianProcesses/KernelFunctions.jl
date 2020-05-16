@@ -18,4 +18,5 @@
     @test t.select == select2
 
     @test repr(t) == "Select Transform (dims: $(select2))"
+    test_ADs(()->transform(SEKernel(), SelectTransform([1,2])))
 end
