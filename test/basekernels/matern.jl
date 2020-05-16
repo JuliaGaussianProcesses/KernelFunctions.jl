@@ -14,6 +14,8 @@
         @test metric(MaternKernel()) == Euclidean()
         @test metric(MaternKernel(ν=2.0)) == Euclidean()
         @test repr(k) == "Matern Kernel (ν = $(ν))"
+        test_ADs(x->MaternKernel(nu=first(x)),[ν])
+        @test_broken "All fails (because of logabsgamma for ForwardDiff and ReverseDiff and because of nu for Zygote)"
     end
     @testset "Matern32Kernel" begin
         k = Matern32Kernel()
@@ -22,6 +24,7 @@
         @test kappa(Matern32Kernel(),x) == kappa(k,x)
         @test metric(Matern32Kernel()) == Euclidean()
         @test repr(k) == "Matern 3/2 Kernel"
+        test_ADs(Matern32Kernel)
     end
     @testset "Matern52Kernel" begin
         k = Matern52Kernel()
@@ -30,6 +33,7 @@
         @test kappa(Matern52Kernel(),x) == kappa(k,x)
         @test metric(Matern52Kernel()) == Euclidean()
         @test repr(k) == "Matern 5/2 Kernel"
+        test_ADs(Matern52Kernel)
     end
     @testset "Coherence Materns" begin
         @test kappa(MaternKernel(ν=0.5),x) ≈ kappa(ExponentialKernel(),x)
