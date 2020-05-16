@@ -26,16 +26,16 @@ end
 testfunction(k, A, B, dim) = sum(kernelmatrix(k, A, B, obsdim = dim))
 testfunction(k, A, dim) = sum(kernelmatrix(k, A, obsdim = dim))
 
-function test_AD(kernelname::String, kernelfunction, args = nothing; ADs = [:Zygote, :ForwardDiff, :ReverseDiff], dims = [3, 3])
-    test_fd = test_FiniteDiff(kernelname, kernelfunction, args, dims)
+function test_ADs(kernelfunction, args = nothing; ADs = [:Zygote, :ForwardDiff, :ReverseDiff], dims = [3, 3])
+    test_fd = test_FiniteDiff(kernelfunction, args, dims)
     if !test_fd.anynonpass
         for AD in ADs
-            test_AD(AD, kernelname, kernelfunction, args, dims)
+            test_AD(AD, kernelfunction, args, dims)
         end
     end
 end
 
-function test_FiniteDiff(kernelname, kernelfunction, args = nothing, dims = [3, 3])
+function test_FiniteDiff(kernelfunction, args = nothing, dims = [3, 3])
     # Init arguments :
     k = if args === nothing
         kernelfunction()
@@ -43,7 +43,7 @@ function test_FiniteDiff(kernelname, kernelfunction, args = nothing, dims = [3, 
         kernelfunction(args)
     end
     rng = MersenneTwister(42)
-    @testset "FiniteDifferences with $(kernelname)" begin
+    @testset "FiniteDifferences" begin
         if k isa SimpleKernel
             for d in log.([eps(), rand(rng)])
                 @test_nowarn gradient(Val(:FiniteDiff), x -> kappa(k, exp(first(x))), [d])
@@ -70,8 +70,8 @@ function test_FiniteDiff(kernelname, kernelfunction, args = nothing, dims = [3, 
     end
 end
 
-function test_AD(AD, kernelname, kernelfunction, args = nothing, dims = [3, 3])
-    @testset "Testing $(kernelname) with AD : $(AD)" begin
+function test_AD(AD::Symbol, kernelfunction, args = nothing, dims = [3, 3])
+    @testset "$(AD)" begin
         # Test kappa function
         k = if args === nothing
             kernelfunction()
