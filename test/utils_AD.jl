@@ -91,20 +91,20 @@ function test_AD(AD::Symbol, kernelfunction, args = nothing, dims = [3, 3])
         # Testing kernel evaluations
         x = rand(rng, dims[1])
         y = rand(rng, dims[1])
-        @test gradient(Val(AD), x -> k(x, y), x) ≈ gradient(Val(:FiniteDiff), x -> k(x, y), x) atol=1e-8
-        @test gradient(Val(AD), y -> k(x, y), y) ≈ gradient(Val(:FiniteDiff), y -> k(x, y), y) atol=1e-8
+        @test gradient(Val(AD), x -> k(x, y), x) ≈ gradient(Val(:FiniteDiff), x -> k(x, y), x) rtol=1e-5
+        @test gradient(Val(AD), y -> k(x, y), y) ≈ gradient(Val(:FiniteDiff), y -> k(x, y), y) rtol=1e-5
         if !(args === nothing)
-            @test gradient(Val(AD), p -> kernelfunction(p)(x,y), args) ≈ gradient(Val(:FiniteDiff), p -> kernelfunction(p)(x, y), args) atol=1e-8
+            @test gradient(Val(AD), p -> kernelfunction(p)(x,y), args) ≈ gradient(Val(:FiniteDiff), p -> kernelfunction(p)(x, y), args) rtol=1e-5
         end
         # Testing kernel matrices
         A = rand(rng, dims...)
         B = rand(rng, dims...)
         for dim in 1:2
-            @test gradient(Val(AD), x -> testfunction(k, x, dim), A) ≈ gradient(Val(:FiniteDiff), x -> testfunction(k, x, dim), A) atol=1e-8
-            @test gradient(Val(AD), a -> testfunction(k, a, B, dim), A) ≈ gradient(Val(:FiniteDiff), a -> testfunction(k, a, B, dim), A) atol=1e-8
-            @test gradient(Val(AD), b -> testfunction(k, A, b, dim), B) ≈ gradient(Val(:FiniteDiff), b -> testfunction(k, A, b, dim), B) atol=1e-8
+            @test gradient(Val(AD), x -> testfunction(k, x, dim), A) ≈ gradient(Val(:FiniteDiff), x -> testfunction(k, x, dim), A) rtol=1e-5
+            @test gradient(Val(AD), a -> testfunction(k, a, B, dim), A) ≈ gradient(Val(:FiniteDiff), a -> testfunction(k, a, B, dim), A) rtol=1e-5
+            @test gradient(Val(AD), b -> testfunction(k, A, b, dim), B) ≈ gradient(Val(:FiniteDiff), b -> testfunction(k, A, b, dim), B) rtol=1e-5
             if !(args === nothing)
-                @test gradient(Val(AD), p -> testfunction(kernelfunction(p), A, dim), args) ≈ gradient(Val(:FiniteDiff), p -> testfunction(kernelfunction(p), A, dim), args) atol=1e-8
+                @test gradient(Val(AD), p -> testfunction(kernelfunction(p), A, dim), args) ≈ gradient(Val(:FiniteDiff), p -> testfunction(kernelfunction(p), A, dim), args) rtol=1e-5
             end
         end
     end
