@@ -7,6 +7,6 @@
     @test k(v1, v2) == k(v2, v1)
     @test PeriodicKernel(3)(v1, v2) == PeriodicKernel(r = ones(3))(v1, v2)
     @test repr(k) == "Periodic Kernel, length(r) = $(length(r)))"
-    test_ADs(r->PeriodicKernel(r =r), r, ADs = [:ForwardDiff, :ReverseDiff])
+    test_ADs(r->PeriodicKernel(r =exp.(r)), log.(r), ADs = [:ForwardDiff, :ReverseDiff])
     @test_broken "Undefined adjoint for Sinus metric"
 end

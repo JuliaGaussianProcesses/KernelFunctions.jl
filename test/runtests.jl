@@ -6,7 +6,7 @@ using PDMats
 using Random
 using SpecialFunctions
 using Test
-using Flux: params
+using Flux: params, Chain, Dense
 import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
 
 using KernelFunctions: metric, kappa, ColVecs, RowVecs
@@ -40,16 +40,19 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
 #   disable tests by simply commenting them out, and makes it very clear which tests are not
 #   currently being run.
 # 10. If utility files are required.
+@info "Packages Loaded"
 
 @testset "KernelFunctions" begin
 
     include("utils.jl")
     include("utils_AD.jl")
+
     @testset "distances" begin
         include(joinpath("distances", "dotproduct.jl"))
         include(joinpath("distances", "delta.jl"))
         include(joinpath("distances", "sinus.jl"))
     end
+    @info "Ran tests on Distances"
 
     @testset "transform" begin
         include(joinpath("transform", "transform.jl"))
@@ -60,6 +63,7 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
         include(joinpath("transform", "selecttransform.jl"))
         include(joinpath("transform", "chaintransform.jl"))
     end
+    @info "Ran tests on Transform"
 
     @testset "basekernels" begin
         include(joinpath("basekernels", "constant.jl"))
@@ -78,6 +82,7 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
         include(joinpath("basekernels", "sm.jl"))
         include(joinpath("basekernels", "wiener.jl"))
     end
+    @info "Ran tests on BaseKernel"
 
     @testset "kernels" begin
         include(joinpath("kernels", "kernelproduct.jl"))
@@ -90,12 +95,14 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
         # helpful these are.
         include(joinpath("kernels", "custom.jl"))
     end
+    @info "Ran tests on Kernel"
 
     @testset "matrix" begin
         include(joinpath("matrix", "kernelmatrix.jl"))
         include(joinpath("matrix", "kernelkroneckermat.jl"))
         include(joinpath("matrix", "kernelpdmat.jl"))
     end
+    @info "Ran tests on matrix"
 
     @testset "approximations" begin
         include(joinpath("approximations", "nystrom.jl"))
