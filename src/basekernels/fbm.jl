@@ -20,7 +20,7 @@ end
 function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modX = sum(abs2, x)
     modY = sum(abs2, y)
-    modXY = evaluate(SqEuclidean(sqroundoff), x, y)
+    modXY = sqeuclidean(x, y)
     h = first(κ.h)
     return (modX^h + modY^h - modXY^h)/2
 end
@@ -28,8 +28,6 @@ end
 (κ::FBMKernel)(x::Real, y::Real) = (abs2(x)^first(κ.h) + abs2(y)^first(κ.h) - abs2(x - y)^first(κ.h)) / 2
 
 Base.show(io::IO, κ::FBMKernel) = print(io, "Fractional Brownian Motion Kernel (h = ", first(κ.h), ")")
-
-const sqroundoff = 1e-15
 
 _fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h)/2
 
@@ -39,19 +37,19 @@ _mod(x::RowVecs) = vec(sum(abs2, x.X; dims=2))
 
 function kernelmatrix(κ::FBMKernel, x::AbstractVector)
     modx = _mod(x)
-    modxx = pairwise(SqEuclidean(sqroundoff), x)
+    modxx = pairwise(SqEuclidean(), x)
     return _fbm.(modx, modx', modxx, κ.h)
 end
 
 function kernelmatrix!(K::AbstractMatrix, κ::FBMKernel, x::AbstractVector)
     modx = _mod(x)
-    pairwise!(K, SqEuclidean(sqroundoff), x)
+    pairwise!(K, SqEuclidean(), x)
     K .= _fbm.(modx, modx', K, κ.h)
     return K
 end
 
 function kernelmatrix(κ::FBMKernel, x::AbstractVector, y::AbstractVector)
-    modxy = pairwise(SqEuclidean(sqroundoff), x, y)
+    modxy = pairwise(SqEuclidean(), x, y)
     return _fbm.(_mod(x), _mod(y)', modxy, κ.h)
 end
 
@@ -61,7 +59,7 @@ function kernelmatrix!(
     x::AbstractVector,
     y::AbstractVector,
 )
-    pairwise!(K, SqEuclidean(sqroundoff), x, y)
+    pairwise!(K, SqEuclidean(), x, y)
     K .= _fbm.(_mod(x), _mod(y)', K, κ.h)
     return K
 end
