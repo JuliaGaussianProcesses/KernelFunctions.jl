@@ -59,16 +59,6 @@ end
   end
 end
 
-@adjoint function pairwise(s::Sinus, X::AbstractMatrix, Y::AbstractMatrix; dims=2)
-    D = pairwise(d, X, Y; dims = dims)
-    throw(error("Sinus metric has no defined adjoint for now... PR welcome!"))
-end
-
-@adjoint function pairwise(s::Sinus, X::AbstractMatrix; dims=2)
-  D = pairwise(d, X; dims = dims)
-  throw(error("Sinus metric has no defined adjoint for now... PR welcome!"))
-end
-
 @adjoint function loggamma(x)
     first(logabsgamma(x)) , Δ -> (Δ .* polygamma(0, x), )
 end
