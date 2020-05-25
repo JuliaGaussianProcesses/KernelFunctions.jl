@@ -29,7 +29,9 @@ function gradient(f, ::Val{:FiniteDiff}, args)
 end
 
 function compare_gradient(f, AD::Symbol, args)
-    isapprox(gradient(f, AD, args), gradient(f, :FiniteDiff, args), atol=1e-8, rtol=1e-5)
+    grad_AD = gradient(f, AD, args)
+    grad_FD = gradient(f, :FiniteDiff, args)
+    @test grad_AD ≈ grad_FD atol=1e-8 rtol=1e-5
 end
 
 testfunction(k, A, B, dim) = sum(kernelmatrix(k, A, B, obsdim = dim))
@@ -104,7 +106,7 @@ function test_AD(AD::Symbol, kernelfunction, args = nothing, dims = [3, 3])
         rng = MersenneTwister(42)
         if k isa SimpleKernel
             for d in log.([eps(), rand(rng)])
-                @test compare_gradient(AD, [d]) do x
+                compare_gradient(AD, [d]) do x
                     kappa(k, exp(x[1]))
                 end
             end
@@ -112,14 +114,14 @@ function test_AD(AD::Symbol, kernelfunction, args = nothing, dims = [3, 3])
         # Testing kernel evaluations
         x = rand(rng, dims[1])
         y = rand(rng, dims[1])
-        @test compare_gradient(AD, x) do x
+        compare_gradient(AD, x) do x
             k(x, y)
         end
-        @test compare_gradient(AD, y) do y
+        compare_gradient(AD, y) do y
             k(x, y)
         end
         if !(args === nothing)
-            @test compare_gradient(AD, args) do p
+            compare_gradient(AD, args) do p
                 kernelfunction(p)(x,y)
             end
         end
@@ -127,17 +129,17 @@ function test_AD(AD::Symbol, kernelfunction, args = nothing, dims = [3, 3])
         A = rand(rng, dims...)
         B = rand(rng, dims...)
         for dim in 1:2
-            @test compare_gradient(AD, A) do a
+            compare_gradient(AD, A) do a
                 testfunction(k, a, dim)
             end
-            @test compare_gradient(AD, A) do a
+            compare_gradient(AD, A) do a
                 testfunction(k, a, B, dim)
             end
-            @test compare_gradient(AD, B) do b
+            compare_gradient(AD, B) do b
                 testfunction(k, A, b, dim)
             end
             if !(args === nothing)
-                @test compare_gradient(AD, args) do p
+                compare_gradient(AD, args) do p
                     testfunction(kernelfunction(p), A, dim)
                 end
             end
