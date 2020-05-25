@@ -105,7 +105,7 @@ function test_AD(AD::Symbol, kernelfunction, args = nothing, dims = [3, 3])
         if k isa SimpleKernel
             for d in log.([eps(), rand(rng)])
                 @test compare_gradient(AD, [d]) do x
-                    kappa(k, exp(x[1])
+                    kappa(k, exp(x[1]))
                 end
             end
         end
