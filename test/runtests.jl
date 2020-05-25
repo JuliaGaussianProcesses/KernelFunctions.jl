@@ -6,7 +6,7 @@ using PDMats
 using Random
 using SpecialFunctions
 using Test
-using Flux: params, Chain, Dense
+using Flux
 import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
 
 using KernelFunctions: metric, kappa, ColVecs, RowVecs
