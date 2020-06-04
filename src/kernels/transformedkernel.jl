@@ -41,11 +41,11 @@ _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, t(x), t(y))
 """
 transform
 
-transform(k::BaseKernel, t::Transform) = TransformedKernel(k, t)
+transform(k::Kernel, t::Transform) = TransformedKernel(k, t)
 
-transform(k::BaseKernel, ρ::Real) = TransformedKernel(k, ScaleTransform(ρ))
+transform(k::Kernel, ρ::Real) = TransformedKernel(k, ScaleTransform(ρ))
 
-transform(k::BaseKernel,ρ::AbstractVector) = TransformedKernel(k, ARDTransform(ρ))
+transform(k::Kernel,ρ::AbstractVector) = TransformedKernel(k, ARDTransform(ρ))
 
 kernel(κ) = κ.kernel
 
