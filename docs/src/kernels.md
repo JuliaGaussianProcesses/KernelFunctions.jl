@@ -6,6 +6,45 @@
 
 These are the basic kernels without any transformation of the data. They are the building blocks of KernelFunctions
 
+
+## Constant Kernels
+
+### Constant Kernel
+
+The [`ConstantKernel`](@ref) is defined as
+
+```math
+  k(x,x';c) = c,
+```
+
+where $c \in \mathbb{R}$.
+
+### White Kernel
+
+The [`WhiteKernel`](@ref) is defined as
+
+```math
+  k(x,x') = \delta(x-x').
+```
+
+### Zero Kernel
+
+The [`ZeroKernel`](@ref) is defined as
+
+```math
+  k(x,x') = 0.
+```
+
+## Cosine Kernel
+
+The [`CosineKernel`](@ref) is defined as
+
+```math
+  k(x, x') = \cos(\pi |x-x'|),
+```
+
+where $x\in\mathbb{R}$.
+
 ## Exponential Kernels
 
 ### Exponential Kernel
@@ -25,10 +64,39 @@ The [`SqExponentialKernel`](@ref) is defined as
 ### Gamma Exponential Kernel
 
 The [`GammaExponentialKernel`](@ref) is defined as
+
 ```math
   k(x,x';\gamma) = \exp\left(-\|x-x'\|^{2\gamma}\right),
 ```
 where $\gamma > 0$.
+
+## Exponentiated Kernel
+
+The [`ExponentiatedKernel`](@ref) is defined as
+
+```math
+  k(x,x') = \exp\left(\langle x,x'\rangle).
+```
+
+## Fractional Brownian Motion
+
+The [`FBMKernel`](@ref) is defined as
+
+```math
+  k(x,x';h) =  \frac{|x|^{2h} + |x'|^{2h} - |x-x'|^{2h}}{2},
+```
+
+where $h$ is the [Hurst index](https://en.wikipedia.org/wiki/Hurst_exponent#Generalized_exponent) and $0<h<1$.
+
+## Gabor Kernel
+
+The [`GaborKernel`](@ref) is defined as
+
+```math
+  k(x,x'; l,p) =& h(x-x';l,p)\\
+  h(u;l,p) =& \exp\left(-\cos\left(\pi \sum_i \frac{u_i}{p_i}\right)\sum_i \frac{u_i^2}{l_i^2}\right),
+```
+where $l_i >0 $ is the lengthscale and $p_i>0$ is the period.
 
 ## Matern Kernels
 
@@ -58,27 +126,35 @@ The [`Matern52Kernel`](@ref) is defined as
   k(x,x') = \left(1+\sqrt{5}|x-x'|+\frac{5}{2}\|x-x'\|^2\right)\exp\left(\sqrt{5}|x-x'|\right).
 ```
 
-## Rational Quadratic
+## Neural Network Kernel
 
-### Rational Quadratic Kernel
-
-The [`RationalQuadraticKernel`](@ref) is defined as
+The [`NeuralNetworkKernel`](@ref) (as in the kernel for an infinitely wide neural network interpretated as a Gaussian process) is defined as
 
 ```math
-  k(x,x';\alpha) = \left(1+\frac{\|x-x'\|^2}{\alpha}\right)^{-\alpha},
+  k(x, x') = \arcsin\left(\frac{\langle x, x'\rangle}{\sqrt{(1+\langle x, x\rangle)(1+\langle x',x'\rangle)}}\right).
 ```
 
-where $\alpha > 0$.
+## Periodic Kernel
 
-### Gamma Rational Quadratic Kernel
-
-The [`GammaRationalQuadraticKernel`](@ref) is defined as
+The [`PeriodicKernel`](@ref) is defined as
 
 ```math
-  k(x,x';\alpha,\gamma) = \left(1+\frac{\|x-x'\|^{2\gamma}}{\alpha}\right)^{-\alpha},
+  k(x,x';r) = \exp\left(-0.5 \sum_i (sin (π(x_i - x'_i))/r_i)^2\right),
 ```
 
-where $\alpha > 0$ and $\gamma > 0$.
+where $r$ has the same dimension as $x$ and $r_i >0$.
+
+## Piecewise Polynomial Kernel
+
+The [`PiecewisePolynomialKernel`](@ref) is defined as
+
+```math
+  k(x,x'; P, V) =& \max(1 - r, 0)^{j + V} f(r, j),\\
+  r =& x^\top P x',\\
+  j =& \lfloor \frac{D}{2}\rfloor + V + 1,
+```
+where $x\in \mathbb{R}^D$, $V \in \{0,1,2,3\} and $P$ is a positive definite matrix.
+$f$ is a piecewise polynomial (see source code).
 
 ## Polynomial Kernels
 
@@ -102,45 +178,46 @@ The [`PolynomialKernel`](@ref) is defined as
 
 where $c \in \mathbb{R}$ and $d>0$
 
-## Periodic Kernels
 
-### Periodic Kernel
+## Rational Quadratic
 
-The [`PeriodicKernel`](@ref) is defined as
+### Rational Quadratic Kernel
 
-```math
-  k(x,x';r) = \exp\left(-0.5 \sum_i (sin (π(x_i - x'_i))/r_i)^2\right),
-```
-
-where $r$ has the same dimension as $x$ and $r_i >0$.
-
-## Constant Kernels
-
-### Constant Kernel
-
-The [`ConstantKernel`](@ref) is defined as
+The [`RationalQuadraticKernel`](@ref) is defined as
 
 ```math
-  k(x,x';c) = c,
+  k(x,x';\alpha) = \left(1+\frac{\|x-x'\|^2}{\alpha}\right)^{-\alpha},
 ```
 
-where $c \in \mathbb{R}$.
+where $\alpha > 0$.
 
-### White Kernel
+### Gamma Rational Quadratic Kernel
 
-The [`WhiteKernel`](@ref) is defined as
+The [`GammaRationalQuadraticKernel`](@ref) is defined as
 
 ```math
-  k(x,x') = \delta(x-x').
+  k(x,x';\alpha,\gamma) = \left(1+\frac{\|x-x'\|^{2\gamma}}{\alpha}\right)^{-\alpha},
 ```
 
-### Zero Kernel
+where $\alpha > 0$ and $\gamma > 0$.
 
-The [`ZeroKernel`](@ref) is defined as
+## Spectral Mixture Kernel
+
+The spectral mixture kernel is called by [`spectral_mixture_kernel`](@ref).
+
+
+## Wiener Kernel
+
+The [`WienerKernel`](@ref) is defined as
 
 ```math
-  k(x,x') = 0.
+k(x,x';i) = \left\{\begin{array}{cc}
+  \delta(x, x') & i = -1\\
+  \min(x,x') & i = 0\\
+  \frac{\min(x,x')^{2i+1}}{a_i} + b_i \min(x,x')^{i+1}|x-x'|r_i(x,x') & i\geq 1
+\end{array}\right.,
 ```
+where $i\in\{-1,0,1,2,3\}$ and coefficients $a_i$, $b_i$ are fixed and residuals $r_i$ are defined in the code.
 
 # Composite Kernels
 
