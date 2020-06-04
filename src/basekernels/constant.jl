@@ -29,7 +29,7 @@ struct WhiteKernel <: SimpleKernel end
 """
     EyeKernel()
 
-See [WhiteKernel](@ref)
+See [`WhiteKernel`](@ref)
 """
 const EyeKernel = WhiteKernel
 

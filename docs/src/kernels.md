@@ -256,3 +256,11 @@ The [`KernelProduct`](@ref) is defined as a product of kernels
 ```math
   k(x,x';\{k_i\}) = \prod_i k_i(x,x').
 ```
+
+### Tensor Product
+
+The [`TensorProduct`](@ref) is defined as :
+
+```math
+  k(x,x';\{k_i\}) = \prod_i k_i(x_i,x'_i)
+```
