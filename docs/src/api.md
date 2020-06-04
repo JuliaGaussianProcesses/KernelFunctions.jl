@@ -24,13 +24,21 @@ ExponentiatedKernel
 MaternKernel
 Matern32Kernel
 Matern52Kernel
+NeuralNetworkKernel
+GaborKernel
+EyeKernel
+FBMKernel
+CosineKernel
 LinearKernel
 PolynomialKernel
+PiecewisePolynomialKernel
+MahalanobisKernel
 RationalQuadraticKernel
 GammaRationalQuadraticKernel
 PeriodicKernel
 ZeroKernel
 ConstantKernel
+WienerKernel
 WhiteKernel
 ```
 
@@ -49,8 +57,10 @@ KernelProduct
 Transform
 IdentityTransform
 ScaleTransform
-LowRankTransform
+ARDTransform
+LinearTransform
 FunctionTransform
+SelectTransform
 ChainTransform
 ```
 
@@ -63,9 +73,16 @@ kerneldiagmatrix
 kerneldiagmatrix!
 kernelpdmat
 kernelkronmat
+nystrom
 transform
 ```
 
+## Utilities
+
+```@docs
+ColVecs
+RowVecs
+```
 
 ## Index
 

@@ -10,153 +10,172 @@ These are the basic kernels without any transformation of the data. They are the
 
 ### Exponential Kernel
 
-The [Exponential Kernel](@ref ExponentialKernel) is defined as
+The [`ExponentialKernel`](@ref) is defined as
 ```math
-  k(x,x') = \exp\left(-|x-x'|\right)
+  k(x,x') = \exp\left(-|x-x'|\right).
 ```
 
 ### Square Exponential Kernel
 
-The [Square Exponential Kernel](@ref KernelFunctions.SqExponentialKernel) is defined as
+The [`SqExponentialKernel`](@ref) is defined as
 ```math
-  k(x,x') = \exp\left(-\|x-x'\|^2\right)
+  k(x,x') = \exp\left(-\|x-x'\|^2\right).
 ```
 
 ### Gamma Exponential Kernel
 
-The [Gamma Exponential Kernel](@ref KernelFunctions.GammaExponentialKernel) is defined as
+The [`GammaExponentialKernel`](@ref) is defined as
 ```math
-  k(x,x';\gamma) = \exp\left(-\|x-x'\|^{2\gamma}\right)
+  k(x,x';\gamma) = \exp\left(-\|x-x'\|^{2\gamma}\right),
 ```
+where $\gamma > 0$.
 
 ## Matern Kernels
 
 ### Matern Kernel
 
-The [Matern Kernel](@ref KernelFunctions.MaternKernel) is defined as
+The [`MaternKernel`](@ref) is defined as
 
 ```math
-  k(x,x';\nu) = \frac{2^{1-\nu}}{\Gamma(\nu)}\left(\sqrt{2\nu}|x-x'|\right)K_\nu\left(\sqrt{2\nu}|x-x'|\right)
+  k(x,x';\nu) = \frac{2^{1-\nu}}{\Gamma(\nu)}\left(\sqrt{2\nu}|x-x'|\right)K_\nu\left(\sqrt{2\nu}|x-x'|\right),
 ```
+
+where $\nu > 0$.
 
 ### Matern 3/2 Kernel
 
-The [Matern 3/2 Kernel](@ref KernelFunctions.Matern32Kernel) is defined as
+The [`Matern32Kernel`](@ref) is defined as
 
 ```math
-  k(x,x') = \left(1+\sqrt{3}|x-x'|\right)\exp\left(\sqrt{3}|x-x'|\right)
+  k(x,x') = \left(1+\sqrt{3}|x-x'|\right)\exp\left(\sqrt{3}|x-x'|\right).
 ```
 
 ### Matern 5/2 Kernel
 
-The [Matern 5/2 Kernel](@ref KernelFunctions.Matern52Kernel) is defined as
+The [`Matern52Kernel`](@ref) is defined as
 
 ```math
-  k(x,x') = \left(1+\sqrt{5}|x-x'|+\frac{5}{2}\|x-x'\|^2\right)\exp\left(\sqrt{5}|x-x'|\right)
+  k(x,x') = \left(1+\sqrt{5}|x-x'|+\frac{5}{2}\|x-x'\|^2\right)\exp\left(\sqrt{5}|x-x'|\right).
 ```
 
 ## Rational Quadratic
 
 ### Rational Quadratic Kernel
 
-The [Rational Quadratic Kernel](@ref KernelFunctions.RationalQuadraticKernel) is defined as
+The [`RationalQuadraticKernel`](@ref) is defined as
 
 ```math
-  k(x,x';\alpha) = \left(1+\frac{\|x-x'\|^2}{\alpha}\right)^{-\alpha}
+  k(x,x';\alpha) = \left(1+\frac{\|x-x'\|^2}{\alpha}\right)^{-\alpha},
 ```
+
+where $\alpha > 0$.
 
 ### Gamma Rational Quadratic Kernel
 
-The [Gamma Rational Quadratic Kernel](@ref KernelFunctions.GammaRationalQuadraticKernel) is defined as
+The [`GammaRationalQuadraticKernel`](@ref) is defined as
 
 ```math
-  k(x,x';\alpha,\gamma) = \left(1+\frac{\|x-x'\|^{2\gamma}}{\alpha}\right)^{-\alpha}
+  k(x,x';\alpha,\gamma) = \left(1+\frac{\|x-x'\|^{2\gamma}}{\alpha}\right)^{-\alpha},
 ```
+
+where $\alpha > 0$ and $\gamma > 0$.
 
 ## Polynomial Kernels
 
-### LinearKernel
+### Linear Kernel
 
-The [Linear Kernel](@ref KernelFunctions.LinearKernel) is defined as
-
-```math
-  k(x,x';c) = \langle x,x'\rangle + c
-```
-
-### PolynomialKernel
-
-The [Polynomial Kernel](@ref KernelFunctions.PolynomialKernel) is defined as
+The [`LinearKernel`](@ref) is defined as
 
 ```math
-  k(x,x';c,d) = \left(\langle x,x'\rangle + c\right)^d
+  k(x,x';c) = \langle x,x'\rangle + c,
 ```
+
+where $c \in \mathbb{R}$
+
+### Polynomial Kernel
+
+The [`PolynomialKernel`](@ref) is defined as
+
+```math
+  k(x,x';c,d) = \left(\langle x,x'\rangle + c\right)^d,
+```
+
+where $c \in \mathbb{R}$ and $d>0$
 
 ## Periodic Kernels
 
-### PeriodicKernel
+### Periodic Kernel
+
+The [`PeriodicKernel`](@ref) is defined as
 
 ```math
-  k(x,x';r) = \exp\left(-0.5 \sum_i (sin (π(x_i - x'_i))/r_i)^2\right)
+  k(x,x';r) = \exp\left(-0.5 \sum_i (sin (π(x_i - x'_i))/r_i)^2\right),
 ```
+
+where $r$ has the same dimension as $x$ and $r_i >0$.
 
 ## Constant Kernels
 
-### ConstantKernel
+### Constant Kernel
 
-The [Constant Kernel](@ref KernelFunctions.ConstantKernel) is defined as
+The [`ConstantKernel`](@ref) is defined as
 
 ```math
-  k(x,x';c) = c
+  k(x,x';c) = c,
 ```
 
-### WhiteKernel
+where $c \in \mathbb{R}$.
 
-The [White Kernel](@ref KernelFunctions.WhiteKernel) is defined as
+### White Kernel
+
+The [`WhiteKernel`](@ref) is defined as
 
 ```math
-  k(x,x') = \delta(x-x')
+  k(x,x') = \delta(x-x').
 ```
 
-### ZeroKernel
+### Zero Kernel
 
-The [Zero Kernel](@ref KernelFunctions.ZeroKernel) is defined as
+The [`ZeroKernel`](@ref) is defined as
 
 ```math
-  k(x,x') = 0
+  k(x,x') = 0.
 ```
 
 # Composite Kernels
 
-### TransformedKernel
+### Transformed Kernel
 
-The [Transformed Kernel](@ref KernelFunctions.TransformedKernel) is a kernel where input are transformed via a function `f`
+The [`TransformedKernel`](@ref) is a kernel where input are transformed via a function `f`
 
 ```math
-  k(x,x';f,\widetile{k}) = \widetilde{k}(f(x),f(x'))
+  k(x,x';f,\widetile{k}) = \widetilde{k}(f(x),f(x')),
 ```
 
-Where `k̃` is another kernel
+Where $\widetilde{k}$ is another kernel and $f$ is an arbitrary mapping.
 
-### ScaledKernel
+### Scaled Kernel
 
-The [Scalar Kernel](@ref KernelFunctions.ScaledKernel) is defined as
+The [`ScaledKernel`](@ref) is defined as
 
 ```math
   k(x,x';\sigma^2,\widetilde{k}) = \sigma^2\widetilde{k}(x,x')
 ```
 
-### KernelSum
+Where $\widetilde{k}$ is another kernel and $\sigma^2 > 0$.
 
-The [Kernel Sum](@ref KernelFunctions.KernelSum) is defined as a sum of kernel
+### Kernel Sum
+
+The [`KernelSum`](@ref) is defined as a sum of kernels
 
 ```math
-  k(x,x';\{w_i\},\{k_i\}) = \sum_i w_i k_i(x,x')
+  k(x,x';\{w_i\},\{k_i\}) = \sum_i w_i k_i(x,x'),
 ```
-
+Where $w_i > 0$.
 ### KernelProduct
 
-The [Kernel Product](@ref KernelFunctions.KernelProduct) is defined as a product of kernel
+The [`KernelProduct`](@ref) is defined as a product of kernels
 
 ```math
-  k(x,x';\{k_i\}) = \prod_i k_i(x,x')
+  k(x,x';\{k_i\}) = \prod_i k_i(x,x').
 ```
