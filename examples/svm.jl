@@ -1,14 +1,16 @@
 using KernelFunctions
-using MLDataUtils
 using Zygote
 using Flux
 using Distributions, LinearAlgebra
 using Plots
 
+# #
+
 N = 100 # Number of samples
 N_test = 200 # Size of the grid
 xmin = -3; xmax = 3
-μ = rand(Uniform(xmin, xmax), 2, 2) # Random Centers
+
+μ = rand(Uniform(xmin, xmax), 2, 2) # Sample 2 Random Centers
 xgrid = range(-xmin, xmax, length=N_test) # Create a grid
 Xgrid = hcat(collect.(Iterators.product(xgrid, xgrid))...) #Combine into a 2D grid
 y = rand((-1, 1), N) # Select randomly between the two classes
