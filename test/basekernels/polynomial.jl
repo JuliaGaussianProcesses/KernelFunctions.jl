@@ -12,6 +12,7 @@
         @test metric(LinearKernel()) == KernelFunctions.DotProduct()
         @test metric(LinearKernel(c=2.0)) == KernelFunctions.DotProduct()
         @test repr(k) == "Linear Kernel (c = 0.0)"
+        test_ADs(x->LinearKernel(c=x[1]), [c])
     end
     @testset "PolynomialKernel" begin
         k = PolynomialKernel()
@@ -24,5 +25,7 @@
         @test metric(PolynomialKernel()) == KernelFunctions.DotProduct()
         @test metric(PolynomialKernel(d=3.0)) == KernelFunctions.DotProduct()
         @test metric(PolynomialKernel(d=3.0,c=2.0)) == KernelFunctions.DotProduct()
+        # test_ADs(x->PolynomialKernel(d=x[1], c=x[2]),[2.0,  c])
+        @test_broken "All, because of the power"
     end
 end

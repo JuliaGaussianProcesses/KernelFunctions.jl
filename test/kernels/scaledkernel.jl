@@ -40,4 +40,5 @@
             @test_broken kerneldiagmatrix!(tmp_diag, ks, x) ≈ kerneldiagmatrix(ks, x)
         end
     end
+    test_ADs(x->x[1] * SqExponentialKernel(), rand(1))
 end

@@ -18,4 +18,5 @@
     @test t.s == [s2]
     @test isequal(ScaleTransform(s), ScaleTransform(s))
     @test repr(t) == "Scale Transform (s = $(s2))"
+    test_ADs(x->transform(SEKernel(), exp(x[1])), randn(rng, 1))
 end

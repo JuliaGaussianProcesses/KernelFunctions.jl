@@ -12,4 +12,5 @@
     @test kappa(k,x) ≈ cospi(x) atol=1e-5
     @test k(v1, v2) ≈ cospi(sqrt(sum(abs2.(v1-v2)))) atol=1e-5
     @test repr(k) == "Cosine Kernel"
+    test_ADs(CosineKernel)
 end
