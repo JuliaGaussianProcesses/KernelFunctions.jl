@@ -5,6 +5,8 @@ Base.iterate(k::Kernel, ::Any) = nothing
 
 printshifted(io::IO, o, shift::Int) = print(io, o)
 
+dims_are_compatible(::Kernel, x) = true
+
 ### Syntactic sugar for creating matrices and using kernel functions
 function concretetypes(k, ktypes::Vector)
     isempty(subtypes(k)) ? push!(ktypes, k) : concretetypes.(subtypes(k), Ref(ktypes))
