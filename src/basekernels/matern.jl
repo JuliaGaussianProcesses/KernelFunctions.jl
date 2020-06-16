@@ -17,7 +17,7 @@ end
 
 @inline function kappa(κ::MaternKernel, d::Real)
     ν = first(κ.ν)
-    iszero(d) ? one(d) : _matern(ν, d)
+    return ifelse(iszero(d), one(d), _matern(ν, d))
 end
 
 function _matern(ν::Real, d::Real)

@@ -59,16 +59,6 @@ end
   end
 end
 
-@adjoint function kappa(κ::MaternKernel, d::Real)
-    ν = first(κ.ν)
-    val, grad = pullback(_matern, ν, d)
-    return ((iszero(d) ? one(d) : val),
-    Δ -> begin
-        ∇ = grad(Δ)
-        return ((ν = [∇[1]],), iszero(d) ? zero(d) : ∇[2])
-    end)
-end
-
 @adjoint function ColVecs(X::AbstractMatrix)
     back(Δ::NamedTuple) = (Δ.X,)
     back(Δ::AbstractMatrix) = (Δ,)
