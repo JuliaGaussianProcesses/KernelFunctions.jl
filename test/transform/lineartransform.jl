@@ -41,4 +41,5 @@
     @test_throws DimensionMismatch map(t, ColVecs(randn(rng, Din + 1, Dout)))
 
     @test repr(t) == "Linear transform (size(A) = ($Dout, $Din))"
+    test_ADs(x->transform(SEKernel(), LinearTransform(x)), randn(rng, 3, 3))
 end

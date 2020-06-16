@@ -124,4 +124,3 @@ function validate_dims(x::AbstractVector, y::AbstractVector)
         ))
     end
 end
-
