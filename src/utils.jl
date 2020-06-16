@@ -1,7 +1,5 @@
 hadamard(x, y) = x .* y
 
-loggamma(x) = first(logabsgamma(x))
-
 # Macro for checking arguments
 macro check_args(K, param, cond, desc=string(cond))
     quote
