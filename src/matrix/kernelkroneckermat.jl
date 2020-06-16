@@ -7,7 +7,7 @@ function kernelkronmat(
     X::AbstractVector,
     dims::Int
     )
-    @assert iskroncompatible(κ) "The chosen kernel is not compatible for kroenecker matrices (see `iskroncompatible()`)"
+    @assert iskroncompatible(κ) "The chosen kernel is not compatible for kroenecker matrices (see [`iskroncompatible`](@ref))"
     k = kernelmatrix(κ, X)
     kronecker(k, dims)
 end
