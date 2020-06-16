@@ -16,12 +16,13 @@ struct MaternKernel{Tν<:Real} <: SimpleKernel
 end
 
 @inline function kappa(κ::MaternKernel, d::Real)
-    ν = first(κ.ν)
-    iszero(d) ? one(d) : _matern(ν, d)
+    result = _matern(first(κ.ν), d)
+    return ifelse(iszero(d), one(result), result)
 end
 
 function _matern(ν::Real, d::Real)
-    exp((one(d) - ν) * logtwo - loggamma(ν) + ν * log(sqrt(2ν) * d) + log(besselk(ν, sqrt(2ν) * d)))
+    y = sqrt(2ν) * d
+    return exp((one(d) - ν) * logtwo - loggamma(ν) + ν * log(y) + log(besselk(ν, y)))
 end
 
 metric(::MaternKernel) = Euclidean()

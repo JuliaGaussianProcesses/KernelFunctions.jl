@@ -34,7 +34,7 @@ export spectral_mixture_kernel, spectral_mixture_product_kernel
 using Compat
 using Requires
 using Distances, LinearAlgebra
-using SpecialFunctions: logabsgamma, besselk, polygamma
+using SpecialFunctions: loggamma, besselk, polygamma
 using ZygoteRules: @adjoint, pullback
 using StatsFuns: logtwo
 using InteractiveUtils: subtypes
