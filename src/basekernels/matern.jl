@@ -16,8 +16,8 @@ struct MaternKernel{Tν<:Real} <: SimpleKernel
 end
 
 @inline function kappa(κ::MaternKernel, d::Real)
-    ν = first(κ.ν)
-    return ifelse(iszero(d), one(d), _matern(ν, d))
+    result = _matern(first(κ.ν), d)
+    return ifelse(iszero(d), one(result), result)
 end
 
 function _matern(ν::Real, d::Real)
