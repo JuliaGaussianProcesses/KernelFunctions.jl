@@ -51,9 +51,6 @@ transform(k::Kernel, ρ::Real) = transform(k, ScaleTransform(ρ))
 
 transform(k::Kernel, ρ::AbstractVector) = transform(k, ARDTransform(ρ))
 
-transform(k::Kernel, ::Nothing) = k
-
-
 kernel(κ) = κ.kernel
 
 Base.show(io::IO, κ::TransformedKernel) = printshifted(io, κ, 0)
