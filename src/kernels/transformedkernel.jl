@@ -43,8 +43,9 @@ transform
 
 transform(k::Kernel, t::Transform) = TransformedKernel(k, t)
 
-transform(k::TransformedKernel, t::Transform) =
-    TransformedKernel(k.kernel, t ∘ k.transform)
+function transform(k::TransformedKernel, t::Transform)
+    return TransformedKernel(k.kernel, t ∘ k.transform)
+end
 
 transform(k::Kernel, ρ::Real) = transform(k, ScaleTransform(ρ))
 
