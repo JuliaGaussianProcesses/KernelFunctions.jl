@@ -37,7 +37,6 @@ using Distances, LinearAlgebra
 using SpecialFunctions: loggamma, besselk, polygamma
 using ZygoteRules: @adjoint, pullback
 using StatsFuns: logtwo
-using SliceMap
 using InteractiveUtils: subtypes
 using StatsBase
 
