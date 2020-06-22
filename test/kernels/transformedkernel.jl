@@ -53,4 +53,5 @@
             @test kerneldiagmatrix!(tmp_diag, kt, x) ≈ kerneldiagmatrix(kt, x)
         end
     end
+    test_ADs(x->transform(SqExponentialKernel(), x[1]), rand(1))# ADs = [:ForwardDiff, :ReverseDiff])
 end

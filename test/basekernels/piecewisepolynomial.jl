@@ -29,7 +29,9 @@
     kerneldiagmatrix!(A3, k, m1)
     @test A3 == kerneldiagmatrix(k, m1)
 
-    @test repr(k) == "Piecewise Polynomial Kernel (v = $(v), size(maha) = $(size(maha)))"
-
     @test_throws ErrorException PiecewisePolynomialKernel{4}(maha)
+
+    @test repr(k) == "Piecewise Polynomial Kernel (v = $(v), size(maha) = $(size(maha)))"
+    # test_ADs(maha-> PiecewisePolynomialKernel(v=2, maha = maha), maha)
+    @test_broken "Nothing passes (problem with Mahalanobis distance in Distances)"
 end
