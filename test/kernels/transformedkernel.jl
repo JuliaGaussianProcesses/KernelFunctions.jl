@@ -5,6 +5,7 @@
     v2 = rand(rng, 3)
 
     s = rand(rng)
+    s2 = rand(rng)
     v = rand(rng, 3)
     k = SqExponentialKernel()
     kt = TransformedKernel(k,ScaleTransform(s))
@@ -15,6 +16,9 @@
     @test ktard(v1, v2) ≈ transform(k, ARDTransform(v))(v1, v2) atol=1e-5
     @test ktard(v1, v2) == transform(k,v)(v1, v2)
     @test ktard(v1, v2) == k(v .* v1, v .* v2)
+    @test transform(kt, s2)(v1, v2) ≈ kt(s2 * v1, s2 * v2)
+    @test KernelFunctions.kernel(kt) == k
+    @test repr(kt) == repr(k) * "\n\t- " * repr(ScaleTransform(s))
 
     @testset "kernelmatrix" begin
         rng = MersenneTwister(123456)

@@ -31,9 +31,9 @@ _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, t(x), t(y))
 
 """
 ```julia
-    transform(k::BaseKernel, t::Transform) (1)
-    transform(k::BaseKernel, ρ::Real) (2)
-    transform(k::BaseKernel, ρ::AbstractVector) (3)
+    transform(k::Kernel, t::Transform) (1)
+    transform(k::Kernel, ρ::Real) (2)
+    transform(k::Kernel, ρ::AbstractVector) (3)
 ```
 (1) Create a TransformedKernel with transform `t` and kernel `k`
 (2) Same as (1) with a `ScaleTransform` with scale `ρ`
@@ -41,11 +41,15 @@ _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, t(x), t(y))
 """
 transform
 
-transform(k::BaseKernel, t::Transform) = TransformedKernel(k, t)
+transform(k::Kernel, t::Transform) = TransformedKernel(k, t)
 
-transform(k::BaseKernel, ρ::Real) = TransformedKernel(k, ScaleTransform(ρ))
+function transform(k::TransformedKernel, t::Transform)
+    return TransformedKernel(k.kernel, t ∘ k.transform)
+end
 
-transform(k::BaseKernel,ρ::AbstractVector) = TransformedKernel(k, ARDTransform(ρ))
+transform(k::Kernel, ρ::Real) = transform(k, ScaleTransform(ρ))
+
+transform(k::Kernel, ρ::AbstractVector) = transform(k, ARDTransform(ρ))
 
 kernel(κ) = κ.kernel
 
