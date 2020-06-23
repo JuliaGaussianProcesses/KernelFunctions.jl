@@ -13,6 +13,9 @@
     @test KernelFunctions.pairwise(d, x) ≈ pairwise(d, X, dims=2)
     KernelFunctions.pairwise!(K, d, x, y)
     @test K ≈ pairwise(d, X, Y, dims=2)
+    K = zeros(Ns[1], Ns[1])
+    KernelFunctions.pairwise!(K, d, x)
+    @test K ≈ pairwise(d, X, dims=2)
 
     x = randn(rng, 10)
     X = reshape(x, :, 1)
