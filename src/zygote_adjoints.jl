@@ -5,8 +5,8 @@
   end
 end
 
-@adjoint function pairwise(d::Delta, X::AbstractMatrix, Y::AbstractMatrix; dims=2)
-  D = pairwise(d, X, Y; dims = dims)
+@adjoint function Distances.pairwise(d::Delta, X::AbstractMatrix, Y::AbstractMatrix; dims=2)
+  D = Distances.pairwise(d, X, Y; dims = dims)
   if dims == 1
       return D, Δ -> (nothing, nothing, nothing)
   else
@@ -14,8 +14,8 @@ end
   end
 end
 
-@adjoint function pairwise(d::Delta, X::AbstractMatrix; dims=2)
-  D = pairwise(d, X; dims = dims)
+@adjoint function Distances.pairwise(d::Delta, X::AbstractMatrix; dims=2)
+  D = Distances.pairwise(d, X; dims = dims)
   if dims == 1
       return D, Δ -> (nothing, nothing)
   else
@@ -30,8 +30,8 @@ end
   end
 end
 
-@adjoint function pairwise(d::DotProduct, X::AbstractMatrix, Y::AbstractMatrix; dims=2)
-  D = pairwise(d, X, Y; dims = dims)
+@adjoint function Distances.pairwise(d::DotProduct, X::AbstractMatrix, Y::AbstractMatrix; dims=2)
+  D = Distances.pairwise(d, X, Y; dims = dims)
   if dims == 1
       return D, Δ -> (nothing, Δ * Y, (X' * Δ)')
   else
@@ -39,8 +39,8 @@ end
   end
 end
 
-@adjoint function pairwise(d::DotProduct, X::AbstractMatrix; dims=2)
-  D = pairwise(d, X; dims = dims)
+@adjoint function Distances.pairwise(d::DotProduct, X::AbstractMatrix; dims=2)
+  D = Distances.pairwise(d, X; dims = dims)
   if dims == 1
       return D, Δ -> (nothing, 2 * Δ * X)
   else

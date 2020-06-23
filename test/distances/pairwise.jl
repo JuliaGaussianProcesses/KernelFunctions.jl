@@ -1,12 +1,13 @@
 @testset "pairwise" begin
     rng = MersenneTwister(123456)
     d = SqEuclidean()
-
-    x = [randn(rng, 3) for _ in 1:4]
-    y = [randn(rng, 3) for _ in 1:5]
+    Ns = (4, 5)
+    D = 3
+    x = [randn(rng, D) for _ in 1:Ns[1]]
+    y = [randn(rng, D) for _ in 1:Ns[2]]
     X = hcat(x...)
     Y = hcat(y...)
-    K = zeros(4, 5)
+    K = zeros(Ns)
 
     @test KernelFunctions.pairwise(d, x, y) ≈ pairwise(d, X, Y, dims=2)
     @test KernelFunctions.pairwise(d, x) ≈ pairwise(d, X, dims=2)
@@ -22,6 +23,4 @@
     @test KernelFunctions.pairwise(d, x) ≈ pairwise(d, X; dims=1)
     KernelFunctions.pairwise!(K, d, x, y)
     @test K ≈ pairwise(d, X, Y, dims=1)
-
-
 end
