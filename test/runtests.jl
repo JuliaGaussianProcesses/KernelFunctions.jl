@@ -48,6 +48,7 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
     include("utils_AD.jl")
 
     @testset "distances" begin
+        include(joinpath("distances", "pairwise.jl"))
         include(joinpath("distances", "dotproduct.jl"))
         include(joinpath("distances", "delta.jl"))
         include(joinpath("distances", "sinus.jl"))
