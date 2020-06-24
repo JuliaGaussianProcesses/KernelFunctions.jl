@@ -15,8 +15,7 @@ function pairwise!(
     broadcast!(d, out, X, Y')
 end
 
-pairwise!(out::AbstractMatrix, d::PreMetric, X::AbstractVector) =
-    pairwise!(out, d, X, X)
+pairwise!(out::AbstractMatrix, d::PreMetric, X::AbstractVector) = pairwise!(out, d, X, X)
 
 function pairwise(d::PreMetric, x::AbstractVector{<:Real})
     return Distances.pairwise(d, reshape(x, :, 1); dims = 1)
