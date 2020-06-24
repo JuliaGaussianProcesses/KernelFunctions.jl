@@ -1,8 +1,6 @@
 # Add our own pairwise function to be able to apply it on vectors
 
-function pairwise(d::PreMetric, X::AbstractVector, Y::AbstractVector)
-    broadcast(d, X, Y')
-end
+pairwise(d::PreMetric, X::AbstractVector, Y::AbstractVector) = broadcast(d, X, Y')
 
 pairwise(d::PreMetric, X::AbstractVector) = pairwise(d, X, X)
 
