@@ -50,6 +50,7 @@ abstract type BaseKernel <: Kernel end
 abstract type SimpleKernel <: BaseKernel end
 
 include("utils.jl")
+include("distances/pairwise.jl")
 include("distances/dotproduct.jl")
 include("distances/delta.jl")
 include("distances/sinus.jl")
