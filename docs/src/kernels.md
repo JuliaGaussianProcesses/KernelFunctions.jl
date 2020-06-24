@@ -4,7 +4,20 @@
 
 # Base Kernels
 
-These are the basic kernels without any transformation of the data. They are the building blocks of KernelFunctions
+These are the basic kernels without any transformation of the data. They are the building blocks of `KernelFunctions.jl`
+We show for all examples some samples of a GP from [AbstractGPs.jl](https://github.com/JuliaGaussianProcesses/AbstractGPs.jl).
+To run any of these examples, start with
+
+```@example plots
+using AbstractGPs, Plots, KernelFunctions
+x = range(-5, 5, length = 100)
+default(legend = false,
+        linewidth = 3.0,
+        background_color = :transparent,
+        foreground_color = :black,
+)
+```
+
 
 ## Exponential Kernels
 
@@ -15,12 +28,30 @@ The [Exponential Kernel](@ref ExponentialKernel) is defined as
   k(x,x') = \exp\left(-|x-x'|\right)
 ```
 
+```@example plots
+k = ExponentialKernel()
+gp = GP(k)(x, 1e-5)
+plot(x, rand(gp, 4))
+savefig("exponential.png"); nothing #hide
+```
+
+[]!(exponential.png)
+
 ### Square Exponential Kernel
 
 The [Square Exponential Kernel](@ref KernelFunctions.SqExponentialKernel) is defined as
 ```math
   k(x,x') = \exp\left(-\|x-x'\|^2\right)
 ```
+
+```@example plots
+k = SqExponentialKernel()
+gp = GP(k)(x, 1e-5)
+plot(x, rand(gp, 4))
+savefig("sqexponential.png"); nothing #hide
+```
+
+[]!(sqexponential.png)
 
 ### Gamma Exponential Kernel
 
