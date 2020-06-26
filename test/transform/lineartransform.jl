@@ -18,10 +18,11 @@
         P = randn(rng, Dout, Din)
         t = LinearTransform(P)
 
+        x_vecs = [randn(rng, Din) for _ in 1:6]
         x_cols = ColVecs(randn(rng, Din, 8))
         x_rows = RowVecs(randn(rng, 9, Din))
 
-        @testset "$(typeof(x))" for x in [x_cols, x_rows]
+        @testset "$(typeof(x))" for x in [x_vecs, x_cols, x_rows]
             x′ = map(t, x)
             @test all([t(x[n]) ≈ P * x[n] for n in eachindex(x)])
             @test all([t(x[n]) ≈ x′[n] for n in eachindex(x)])
