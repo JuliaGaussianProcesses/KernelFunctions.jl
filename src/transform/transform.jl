@@ -7,6 +7,7 @@ include("chaintransform.jl")
 
 
 Base.map(t::Transform, x::AbstractVector) = _map(t, x)
+_map(t::Transform, x::AbstractVector) = t.(x)
 
 """
     IdentityTransform()
