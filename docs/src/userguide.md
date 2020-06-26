@@ -2,7 +2,7 @@
 
 ## Kernel creation
 
-To create a kernel chose one of the kernels proposed, see [Kernels](@ref), or create your own, see [Creating Kernels](@ref)
+To create a kernel chose one of the kernels proposed, see [Base Kernels](@ref), or create your own, see [Creating your own kernel](@ref)
 For example to create a square exponential kernel
 ```julia
   k = SqExponentialKernel()

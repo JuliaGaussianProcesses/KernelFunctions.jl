@@ -14,24 +14,34 @@ CurrentModule = KernelFunctions
 KernelFunctions
 ```
 
-## Base Kernels
+## Base Kernels API
 
 ```@docs
+ConstantKernel
+WhiteKernel
+EyeKernel
+ZeroKernel
+CosineKernel
 SqExponentialKernel
 ExponentialKernel
 GammaExponentialKernel
 ExponentiatedKernel
+FBMKernel
+GaborKernel
 MaternKernel
 Matern32Kernel
 Matern52Kernel
+NeuralNetworkKernel
 LinearKernel
 PolynomialKernel
+PiecewisePolynomialKernel
+MahalanobisKernel
 RationalQuadraticKernel
 GammaRationalQuadraticKernel
+spectral_mixture_kernel
+spectral_mixture_product_kernel
 PeriodicKernel
-ZeroKernel
-ConstantKernel
-WhiteKernel
+WienerKernel
 ```
 
 ## Composite Kernels
@@ -41,6 +51,7 @@ TransformedKernel
 ScaledKernel
 KernelSum
 KernelProduct
+TensorProduct
 ```
 
 ## Transforms
@@ -49,8 +60,10 @@ KernelProduct
 Transform
 IdentityTransform
 ScaleTransform
-LowRankTransform
+ARDTransform
+LinearTransform
 FunctionTransform
+SelectTransform
 ChainTransform
 ```
 
@@ -63,9 +76,17 @@ kerneldiagmatrix
 kerneldiagmatrix!
 kernelpdmat
 kernelkronmat
+nystrom
 transform
 ```
 
+## Utilities
+
+```@docs
+ColVecs
+RowVecs
+NystromFact
+```
 
 ## Index
 

@@ -2,7 +2,7 @@
     TransformedKernel(k::Kernel,t::Transform)
 
 Return a kernel where inputs are pretransformed by `t` : `k(t(x),t(x'))`
-Can also be called via [transform](@ref) : `transform(k, t)`
+Can also be called via [`transform`](@ref) : `transform(k, t)`
 """
 struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
     kernel::Tk
