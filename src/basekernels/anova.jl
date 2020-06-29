@@ -17,7 +17,7 @@ Base.show(io::IO, κ::ANOVAKernel) = print(io, "ANOVA Kernel d = ", first(κ.d),
 function kernelmatrix(κ::ANOVAKernel, x::AbstractVector)
     k = zeros(eltype(x), dim(x), dim(x))
     for d ∈ size(x)
-        col = reshape(x[d], dim(x), 1)
+        col = reshape(x[d:d], dim(x), 1)
         k += exp( - (col .- col').^2 ) .^ first(κ.d)
     end
     return k
@@ -25,7 +25,7 @@ end
 
 function kernelmatrix!(K::AbstractMatrix, κ::ANOVAKernel, x::AbstractVector)
     for d ∈ size(x)
-        col = reshape(x[d], dim(x), 1)
+        col = reshape(x[d:d], dim(x), 1)
         K += exp( - (col .- col').^2 ) .^ first(κ.d)
     end
     return K
@@ -34,8 +34,8 @@ end
 function kernelmatrix(κ::ANOVAKernel, x::AbstractVector, y::AbstractVector)
     k = zeros(eltype(x), dim(x), dim(y))
     for d ∈ size(x)
-        colx = reshape(x[d], dim(x), 1)
-        coly = reshape(y[d], dim(y), 1)
+        colx = reshape(x[d:d], dim(x), 1)
+        coly = reshape(y[d:d], dim(y), 1)
         k += exp( - (colx .- coly').^2 ) .^ first(κ.d)
     end
     return k
@@ -48,8 +48,8 @@ function kernelmatrix!(
     y::AbstractVector,
 )
     for d ∈ size(x)
-        colx = reshape(x[d], dim(x), 1)
-        coly = reshape(y[d], dim(y), 1)
+        colx = reshape(x[d:d], dim(x), 1)
+        coly = reshape(y[d:d], dim(y), 1)
         K += exp( - (colx .- coly').^2 ) .^ first(κ.d)
     end
     return K
