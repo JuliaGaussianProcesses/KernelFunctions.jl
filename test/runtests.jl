@@ -82,6 +82,7 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
         include(joinpath("basekernels", "rationalquad.jl"))
         include(joinpath("basekernels", "sm.jl"))
         include(joinpath("basekernels", "wiener.jl"))
+        include(joinpath("basekernels", "anova.jl"))
     end
     @info "Ran tests on BaseKernel"
 

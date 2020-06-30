@@ -24,6 +24,8 @@ trainable(k::MahalanobisKernel) = (k.P,)
 
 trainable(k::GaborKernel) = (k.kernel,)
 
+trainable(k::ANOVAKernel) = (k.d,)
+
 #### Composite kernels
 
 trainable(κ::KernelProduct) = κ.kernels
