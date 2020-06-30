@@ -1,3 +1,11 @@
+"""
+    ANOVAKernel(; d::Real=1.0)
+
+The anova kernel is a stationary kernel given by
+```
+    κ(x,y) = ∑ᵢ exp( -(xᵢ - yᵢ)^2 )^d
+```
+"""
 struct ANOVAKernel{T<:Real} <: BaseKernel
     d::Vector{T}
     function ANOVAKernel(; d::T=1.0) where {T<:Real}
