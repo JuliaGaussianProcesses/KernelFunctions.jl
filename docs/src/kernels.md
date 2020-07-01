@@ -434,6 +434,18 @@ The [`TransformedKernel`](@ref) is a kernel where input are transformed via a fu
 
 Where $\widetilde{k}$ is another kernel and $f$ is an arbitrary mapping.
 
+```@example plots
+k1 = transform(SqExponentialKernel(), 2)
+k2 = transform(SqExponentialKernel(), FunctionTransform(x->sin.(2 * x)))
+gp1 = GP(k1)(x, 1e-5)
+gp2 = GP(k2)(x, 1e-5)
+plot(x, [rand(gp1, 1) rand(gp2, 1)], label = ["x->2x" "x->sin(2x)"], legend = true)
+savefig("ktrans.png"); nothing #hide
+```
+
+![](ktrans.png)
+
+
 ### Scaled Kernel
 
 The [`ScaledKernel`](@ref) is defined as
