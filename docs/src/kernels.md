@@ -58,6 +58,15 @@ The [`CosineKernel`](@ref) is defined as
 
 where $x\in\mathbb{R}$.
 
+```@example plots
+k = CosineKernel()
+gp = GP(k)(x, 1e-5)
+plot(x, rand(gp, 4))
+savefig("cosine.png"); nothing #hide
+```
+
+[]!(cosine.png)
+
 ## Exponential Kernels
 
 ### Exponential Kernel
