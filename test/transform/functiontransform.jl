@@ -15,10 +15,11 @@
         f = x -> sin.(x)
         t = FunctionTransform(f)
 
+        x_vecs = [randn(rng, 5) for _ in 1:6]
         x_cols = ColVecs(randn(rng, 4, 7))
         x_rows = RowVecs(randn(rng, 6, 3))
 
-        @testset "$(typeof(x))" for x in [x_cols, x_rows]
+        @testset "$(typeof(x))" for x in [x_vecs, x_cols, x_rows]
             x′ = map(t, x)
             @test all([t(x[n]) ≈ f(x[n]) for n in eachindex(x)])
             @test all([t(x[n]) ≈ x′[n] for n in eachindex(x)])
@@ -26,4 +27,7 @@
     end
 
     @test repr(FunctionTransform(sin)) == "Function Transform: $(sin)"
+    f(a, x) = sin.(a .* x)
+    test_ADs(x->transform(SEKernel(), FunctionTransform(y->f(x, y))), randn(rng, 3), ADs = [:ForwardDiff, :ReverseDiff])
+    @test_broken "Zygote is failing"
 end

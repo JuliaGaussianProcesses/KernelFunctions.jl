@@ -34,8 +34,8 @@ export spectral_mixture_kernel, spectral_mixture_product_kernel
 using Compat
 using Requires
 using Distances, LinearAlgebra
-using SpecialFunctions: logabsgamma, besselk
-using ZygoteRules: @adjoint
+using SpecialFunctions: loggamma, besselk, polygamma
+using ZygoteRules: @adjoint, pullback
 using StatsFuns: logtwo
 using InteractiveUtils: subtypes
 using StatsBase
@@ -50,6 +50,7 @@ abstract type BaseKernel <: Kernel end
 abstract type SimpleKernel <: BaseKernel end
 
 include("utils.jl")
+include("distances/pairwise.jl")
 include("distances/dotproduct.jl")
 include("distances/delta.jl")
 include("distances/sinus.jl")

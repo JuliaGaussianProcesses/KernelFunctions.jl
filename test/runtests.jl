@@ -1,16 +1,15 @@
 using KernelFunctions
 using Distances
-using FiniteDifferences
-using Flux
 using Kronecker
 using LinearAlgebra
 using PDMats
 using Random
 using SpecialFunctions
 using Test
-using Zygote
+using Flux
+import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
 
-using KernelFunctions: metric, kappa
+using KernelFunctions: metric, kappa, ColVecs, RowVecs
 
 # Writing tests:
 # 1. The file structure of the test should match precisely the file structure of src.
@@ -41,16 +40,20 @@ using KernelFunctions: metric, kappa
 #   disable tests by simply commenting them out, and makes it very clear which tests are not
 #   currently being run.
 # 10. If utility files are required.
+@info "Packages Loaded"
 
 @testset "KernelFunctions" begin
 
     include("utils.jl")
+    include("utils_AD.jl")
 
     @testset "distances" begin
+        include(joinpath("distances", "pairwise.jl"))
         include(joinpath("distances", "dotproduct.jl"))
         include(joinpath("distances", "delta.jl"))
         include(joinpath("distances", "sinus.jl"))
     end
+    @info "Ran tests on Distances"
 
     @testset "transform" begin
         include(joinpath("transform", "transform.jl"))
@@ -61,6 +64,7 @@ using KernelFunctions: metric, kappa
         include(joinpath("transform", "selecttransform.jl"))
         include(joinpath("transform", "chaintransform.jl"))
     end
+    @info "Ran tests on Transform"
 
     @testset "basekernels" begin
         include(joinpath("basekernels", "constant.jl"))
@@ -79,6 +83,7 @@ using KernelFunctions: metric, kappa
         include(joinpath("basekernels", "sm.jl"))
         include(joinpath("basekernels", "wiener.jl"))
     end
+    @info "Ran tests on BaseKernel"
 
     @testset "kernels" begin
         include(joinpath("kernels", "kernelproduct.jl"))
@@ -91,12 +96,14 @@ using KernelFunctions: metric, kappa
         # helpful these are.
         include(joinpath("kernels", "custom.jl"))
     end
+    @info "Ran tests on Kernel"
 
     @testset "matrix" begin
         include(joinpath("matrix", "kernelmatrix.jl"))
         include(joinpath("matrix", "kernelkroneckermat.jl"))
         include(joinpath("matrix", "kernelpdmat.jl"))
     end
+    @info "Ran tests on matrix"
 
     @testset "approximations" begin
         include(joinpath("approximations", "nystrom.jl"))
@@ -106,9 +113,3 @@ using KernelFunctions: metric, kappa
     include("zygote_adjoints.jl")
     include("trainable.jl")
 end
-
-# These are legacy tests that I'm not getting rid of, as they appear to be useful, but
-# weren't enabled on master at the time of refactoring the tests. They will need to be
-# restored at some point.
-# include("utils_AD.jl")
-# include("test_AD.jl")

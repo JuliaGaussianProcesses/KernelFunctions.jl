@@ -13,6 +13,7 @@
         @test metric(RationalQuadraticKernel()) == SqEuclidean()
         @test metric(RationalQuadraticKernel(α=2.0)) == SqEuclidean()
         @test repr(k) == "Rational Quadratic Kernel (α = $(α))"
+        test_ADs(x->RationalQuadraticKernel(alpha=x[1]),[α])
     end
     @testset "GammaRationalQuadraticKernel" begin
         k = GammaRationalQuadraticKernel()
@@ -23,9 +24,11 @@
         @test GammaRationalQuadraticKernel(alpha=a).α == [a]
         @test repr(k) == "Gamma Rational Quadratic Kernel (α = 2.0, γ = 2.0)"
         #Coherence test
-        @test kappa(GammaRationalQuadraticKernel(α=a,γ=1.0),x) ≈ kappa(RationalQuadraticKernel(α=a),x)
+        @test kappa(GammaRationalQuadraticKernel(α=a, γ=1.0), x) ≈ kappa(RationalQuadraticKernel(α=a), x)
         @test metric(GammaRationalQuadraticKernel()) == SqEuclidean()
         @test metric(GammaRationalQuadraticKernel(γ=2.0)) == SqEuclidean()
-        @test metric(GammaRationalQuadraticKernel(γ=2.0,α=3.0)) == SqEuclidean()
+        @test metric(GammaRationalQuadraticKernel(γ=2.0, α=3.0)) == SqEuclidean()
+        # test_ADs(x->GammaRationalQuadraticKernel(α=x[1], γ=x[2]), [a, 2.0])
+        @test_broken "All (problem with power operation)"
     end
 end

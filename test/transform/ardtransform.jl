@@ -17,10 +17,11 @@
         v = randn(rng, D)
         t = ARDTransform(v)
 
+        XV = [randn(rng, D) for _ in 1:5]
         XC = ColVecs(randn(rng, D, 7))
         XR = RowVecs(randn(rng, 2, D))
 
-        @testset "$(typeof(x))" for x in [XC, XR]
+        @testset "$(typeof(x))" for x in [XV, XC, XR]
             x′ = map(t, x)
             @test all([t(x[n]) == v .* x[n] for n in eachindex(x)])
             @test all([t(x[n]) ≈ x′[n] for n in eachindex(x)])
@@ -41,4 +42,5 @@
     @test_throws DimensionMismatch map(t, ColVecs(randn(rng, D + 1, 3)))
 
     @test repr(t) == "ARD Transform (dims: $D)"
+    test_ADs(x->transform(SEKernel(), exp.(x)), randn(rng, 3))
 end

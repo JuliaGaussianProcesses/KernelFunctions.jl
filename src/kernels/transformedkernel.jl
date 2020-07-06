@@ -2,7 +2,7 @@
     TransformedKernel(k::Kernel,t::Transform)
 
 Return a kernel where inputs are pretransformed by `t` : `k(t(x),t(x'))`
-Can also be called via [transform](@ref) : `transform(k, t)`
+Can also be called via [`transform`](@ref) : `transform(k, t)`
 """
 struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
     kernel::Tk
@@ -31,9 +31,9 @@ _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, t(x), t(y))
 
 """
 ```julia
-    transform(k::BaseKernel, t::Transform) (1)
-    transform(k::BaseKernel, ρ::Real) (2)
-    transform(k::BaseKernel, ρ::AbstractVector) (3)
+    transform(k::Kernel, t::Transform) (1)
+    transform(k::Kernel, ρ::Real) (2)
+    transform(k::Kernel, ρ::AbstractVector) (3)
 ```
 (1) Create a TransformedKernel with transform `t` and kernel `k`
 (2) Same as (1) with a `ScaleTransform` with scale `ρ`
@@ -44,8 +44,13 @@ transform
 transform(k::Kernel, t::Transform) = TransformedKernel(k, t)
 
 transform(k::Kernel, ρ::Real) = TransformedKernel(k, ScaleTransform(ρ))
+function transform(k::TransformedKernel, t::Transform)
+    return TransformedKernel(k.kernel, t ∘ k.transform)
+end
 
 transform(k::Kernel,ρ::AbstractVector) = TransformedKernel(k, ARDTransform(ρ))
+
+transform(k::Kernel, ρ::AbstractVector) = transform(k, ARDTransform(ρ))
 
 kernel(κ) = κ.kernel
 

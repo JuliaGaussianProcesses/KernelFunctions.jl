@@ -14,6 +14,7 @@
         @test SEKernel == SqExponentialKernel
         @test repr(k) == "Squared Exponential Kernel"
         @test KernelFunctions.iskroncompatible(k) == true
+        test_ADs(SEKernel)
     end
     @testset "ExponentialKernel" begin
         k = ExponentialKernel()
@@ -24,6 +25,7 @@
         @test repr(k) == "Exponential Kernel"
         @test LaplacianKernel == ExponentialKernel
         @test KernelFunctions.iskroncompatible(k) == true
+        test_ADs(ExponentialKernel)
     end
     @testset "GammaExponentialKernel" begin
         γ = 2.0
@@ -36,7 +38,8 @@
         @test metric(GammaExponentialKernel(γ=2.0)) == SqEuclidean()
         @test repr(k) == "Gamma Exponential Kernel (γ = $(γ))"
         @test KernelFunctions.iskroncompatible(k) == true
-
+        test_ADs(γ -> GammaExponentialKernel(gamma=first(γ)), [γ], ADs = [:ForwardDiff, :ReverseDiff])
+        @test_broken "Zygote gradient given γ"
         #Coherence :
         @test GammaExponentialKernel(γ=1.0)(v1,v2) ≈ SqExponentialKernel()(v1,v2)
         @test GammaExponentialKernel(γ=0.5)(v1,v2) ≈ ExponentialKernel()(v1,v2)
