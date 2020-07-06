@@ -89,7 +89,7 @@ function kernelmatrix(κ::SimpleKernel, x::AbstractVector)
 end
 
 function kernelmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
-    validate_dims(x, y)
+    # validate_dims(x, y)
     return map(d -> kappa(κ, d), pairwise(metric(κ), x, y))
 end
 
