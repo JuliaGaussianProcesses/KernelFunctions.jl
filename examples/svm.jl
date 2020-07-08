@@ -1,5 +1,5 @@
 # # Support Vector Machines
-# ## We first load some needed packages
+# ## Package loading
 using KernelFunctions
 using Distributions, LinearAlgebra
 using Plots; default(legendfontsize = 15.0, ms = 5.0)
