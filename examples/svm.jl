@@ -20,7 +20,7 @@ scatter!(getindex.(x[y .== -1], 1), getindex.(x[y .== -1], 2), label = "y = 2")
 # ## Model Definition
 # TODO Write theory here
 # ### We create a kernel k
-k = SqExponentialKernel() # SqExponentialKernel or RBFKernel
+k = SqExponentialKernel() # SqExponentialKernel/RBFKernel
 λ = 1.0 # Regularization parameter
 
 # ### We create a function to return the optimal prediction for a
@@ -36,11 +36,13 @@ function reg_hingeloss(k, x, y, λ)
     return sum(hingeloss.(y, ŷ)) - λ * norm(ŷ) # Total svm loss with regularisation
 end
 # ### We create a 2D grid based on the maximum values of the data
-N_test = 200 # Size of the grid
+N_test = 100 # Size of the grid
 xgrid = range(extrema(vcat(x...)).*1.1..., length=N_test) # Create a 1D grid
-xgrid = vec(collect.(Iterators.product(xgrid, xgrid))) #Combine into a 2D grid
+xgrid_v = vec(collect.(Iterators.product(xgrid, xgrid))) #Combine into a 2D grid
 # ### We predict the value of y on this grid on plot it against the data
-y_grid = f(xgrid, x, y, k, λ) #Compute prediction on a grid
+y_grid = f(xgrid_v, x, y, k, λ) #Compute prediction on a grid
 contourf(xgrid, xgrid, reshape(y_grid, N_test, N_test)', label =  "Predictions", title="Trained model")
 scatter!(getindex.(x[y .== 1], 1), getindex.(x[y .== 1], 2), label = "y = 1")
 scatter!(getindex.(x[y .== -1], 1), getindex.(x[y .== -1], 2), label = "y = 2")
+xlims!(extrema(xgrid))
+ylims!(extrema(xgrid))

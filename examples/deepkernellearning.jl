@@ -67,13 +67,13 @@ for i = 1:nmax
         loss(y_train)
     end
     Flux.Optimise.update!(opt, ps, grads)
-    # if i % 100 == 0
+    if i % 100 == 0
         @info "$i/$nmax"
         p = Plots.plot(vcat(x_test...), target_f, lab = "true f", title = "Loss = $(loss(y_train))")
         p = Plots.scatter!(vcat(x_train...), y_train, lab = "data")
         pred = marginals(fp(x_test))
         Plots.plot!(vcat(x_test...), mean.(pred), ribbon = std.(pred), lab = "Prediction")
         frame(anim)
-    # end
+    end
 end
 gif(anim, fps = 5)
