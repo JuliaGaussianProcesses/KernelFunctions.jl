@@ -30,6 +30,7 @@ export NystromFact, nystrom
 
 export spectral_mixture_kernel, spectral_mixture_product_kernel
 
+export MultiGPInput, length, size, lastindex, firstindex, getindex, iterate 
 
 using Compat
 using Requires
@@ -68,6 +69,8 @@ include("kernels/kernelproduct.jl")
 include("kernels/tensorproduct.jl")
 include("approximations/nystrom.jl")
 include("generic.jl")
+
+include("multi_output/multi_gp.jl")
 
 include("zygote_adjoints.jl")
 

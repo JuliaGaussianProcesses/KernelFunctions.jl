@@ -105,6 +105,9 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
     end
     @info "Ran tests on matrix"
 
+    @testset "multi_output" begin
+        include(joinpath("multi_output", "multi_gp.jl"))
+    end
     @testset "approximations" begin
         include(joinpath("approximations", "nystrom.jl"))
     end
