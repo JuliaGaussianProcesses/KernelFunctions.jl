@@ -30,7 +30,8 @@ export NystromFact, nystrom
 
 export spectral_mixture_kernel, spectral_mixture_product_kernel
 
-export MultiGPInput, length, size, lastindex, firstindex, getindex, iterate 
+export MOInput, length, size, lastindex, firstindex, getindex, iterate 
+export IndependentKernel
 
 using Compat
 using Requires
@@ -49,6 +50,14 @@ abstract type Transform end
 abstract type Kernel end
 abstract type BaseKernel <: Kernel end
 abstract type SimpleKernel <: BaseKernel end
+
+"""
+    MOKernel
+
+An abstract kernel type for kernels which can model Multi-Output data. 
+"""
+abstract type MOKernel <: Kernel end
+
 
 include("utils.jl")
 include("distances/pairwise.jl")
@@ -70,7 +79,9 @@ include("kernels/tensorproduct.jl")
 include("approximations/nystrom.jl")
 include("generic.jl")
 
-include("multi_output/multi_gp.jl")
+include("mokernels/moinput.jl")
+include("mokernels/ind.jl")
+
 
 include("zygote_adjoints.jl")
 
