@@ -2,18 +2,17 @@
     IndependentMOKernel(k...) <: MOKernel
 
 A Multi-Output kernel which assumes each output is independent of the other.
+
 """
 struct IndependentMOKernel{Tkernels<:AbstractVector} <: MOKernel
     kernels::Tkernels
 end
 
 function IndependentMOKernel(k...)
-    k = collect(k)
-    return IndependentMOKernel(k)
+    return IndependentMOKernel(collect(k))
 end
 
 Base.length(κ::IndependentMOKernel) = length(κ.kernels)
-
 
 function (κ::IndependentMOKernel)(x::MOInput, y::MOInput)
     @assert length(κ) == x.out_dim == y.out_dim

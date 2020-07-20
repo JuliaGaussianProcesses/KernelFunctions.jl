@@ -1,8 +1,9 @@
-@testset "ind" begin
+@testset "independent" begin
     x = MOInput(rand(5), 3)
     y = MOInput(rand(5), 3)
 
     k = IndependentMOKernel(GaussianKernel(), Matern52Kernel(), GaborKernel())
+    @test length(k) == 3
     @test k isa IndependentMOKernel
     @test k isa KernelFunctions.MOKernel
     @test k.kernels isa Vector{KernelFunctions.BaseKernel}

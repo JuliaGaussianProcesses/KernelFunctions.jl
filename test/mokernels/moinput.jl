@@ -7,6 +7,8 @@
     @test size(mgpi) == (15,)
     @test size(mgpi, 1) == 15
     @test size(mgpi, 2) == 1
+    @test lastindex(mgpi) == 15
+    @test firstindex(mgpi) == 1
     @test mgpi[2] == (x[2], 1)
     @test mgpi[5] == (x[5], 1)
     @test mgpi[7] == (x[2], 2)
