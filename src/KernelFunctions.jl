@@ -30,7 +30,7 @@ export NystromFact, nystrom
 
 export spectral_mixture_kernel, spectral_mixture_product_kernel
 
-export MOInput, length, size, lastindex, firstindex, getindex, iterate 
+export MOInput 
 export IndependentMOKernel
 
 using Compat
