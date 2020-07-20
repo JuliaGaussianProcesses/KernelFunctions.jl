@@ -2,8 +2,8 @@
     x = MOInput(rand(5), 3)
     y = MOInput(rand(5), 3)
 
-    k = IndependentKernel(GaussianKernel(), Matern52Kernel(), GaborKernel())
-    @test k isa IndependentKernel
+    k = IndependentMOKernel(GaussianKernel(), Matern52Kernel(), GaborKernel())
+    @test k isa IndependentMOKernel
     @test k isa KernelFunctions.MOKernel
     @test k.kernels isa Vector{KernelFunctions.BaseKernel}
     @test size(k(x, y)) == (3, 3)

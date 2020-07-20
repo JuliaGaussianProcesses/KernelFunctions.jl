@@ -107,7 +107,7 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
 
     @testset "multi_output" begin
         include(joinpath("mokernels", "moinput.jl"))
-        include(joinpath("mokernels", "ind.jl"))
+        include(joinpath("mokernels", "independent.jl"))
     end
     @testset "approximations" begin
         include(joinpath("approximations", "nystrom.jl"))

@@ -31,7 +31,7 @@ export NystromFact, nystrom
 export spectral_mixture_kernel, spectral_mixture_product_kernel
 
 export MOInput, length, size, lastindex, firstindex, getindex, iterate 
-export IndependentKernel
+export IndependentMOKernel
 
 using Compat
 using Requires
@@ -80,7 +80,7 @@ include("approximations/nystrom.jl")
 include("generic.jl")
 
 include("mokernels/moinput.jl")
-include("mokernels/ind.jl")
+include("mokernels/independent.jl")
 
 
 include("zygote_adjoints.jl")
