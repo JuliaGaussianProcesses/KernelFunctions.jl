@@ -1,15 +1,12 @@
 @testset "independent" begin
-    x = MOInput(rand(5), 3)
-    y = MOInput(rand(5), 3)
+    x = MOInput([rand(5) for _ in 1:4], 3)
+    y = MOInput([rand(5) for _ in 1:4], 3)
 
-    k = IndependentMOKernel(GaussianKernel(), Matern52Kernel(), GaborKernel())
-    @test length(k) == 3
+    k = IndependentMOKernel(GaussianKernel())
     @test k isa IndependentMOKernel
     @test k isa KernelFunctions.MOKernel
-    @test k.kernels isa Vector{KernelFunctions.BaseKernel}
-    @test size(k(x, y)) == (3, 3)
+    @test k.kernel isa KernelFunctions.BaseKernel
+    @test k(x[2], y[2]) isa Real
 
-    v1 = [MOInput(rand(5), 3) for _ in 1:5]
-    v2 = [MOInput(rand(5), 3) for _ in 1:5]
-    # @info kernelmatrix(k, v1, v2)
+    @test kernelmatrix(k, x, y) == kernelmatrix(k, collect(x), collect(y))
 end

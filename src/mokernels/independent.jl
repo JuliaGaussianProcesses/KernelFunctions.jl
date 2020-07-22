@@ -1,23 +1,22 @@
 """
-    IndependentMOKernel(k...) <: MOKernel
+    IndependentMOKernel(k::Kernel) <: MOKernel
 
 A Multi-Output kernel which assumes each output is independent of the other.
 
 """
-struct IndependentMOKernel{Tkernels<:AbstractVector} <: MOKernel
-    kernels::Tkernels
+struct IndependentMOKernel{Tkernel<:Kernel} <: MOKernel
+    kernel::Tkernel
 end
 
-function IndependentMOKernel(k...)
-    return IndependentMOKernel(collect(k))
+function (κ::IndependentMOKernel)(x::Tuple{Vector, Int}, y::Tuple{Vector, Int})
+    return κ.kernel(x[1], y[1])
 end
 
-Base.length(κ::IndependentMOKernel) = length(κ.kernels)
-
-function (κ::IndependentMOKernel)(x::MOInput, y::MOInput)
-    @assert length(κ) == x.out_dim == y.out_dim
-    temp = vcat((κ.kernels[i](x.x, y.x) for i in 1:length(κ))...)
-    return hcat((temp for _ in 1:length(κ))...)
+function kernelmatrix(k::IndependentMOKernel, x::MOInput, y::MOInput)
+    @assert x.out_dim == y.out_dim
+    temp = k.kernel.(x.x, permutedims(y.x))
+    return repeat(temp, outer=[y.out_dim, y.out_dim])
 end
 
-Base.show(io::IO, ::IndependentMOKernel) = print(io, "Independent Multi-Output Kernel")
+Base.show(io::IO, k::IndependentMOKernel) = 
+print(io, string("Independent Multi-Output Kernel\n\t", string(k.kernel)))

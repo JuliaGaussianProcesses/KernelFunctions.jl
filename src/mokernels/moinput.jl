@@ -22,7 +22,7 @@ function Base.getindex(inp::MOInput, ind::Integer)
         out_dim = ind ÷ length(inp.x) + 1
         ind = ind % length(inp.x)
         if ind==0 ind = length(inp.x); out_dim-=1 end
-        return (inp.x[ind], out_dim)
+        return (inp.x[ind]::Vector, out_dim::Int)
     else
         return BoundsError(string("Trying to access at ", ind))
     end

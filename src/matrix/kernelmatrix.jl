@@ -144,3 +144,13 @@ end
 function kerneldiagmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int = defaultobs)
     return kerneldiagmatrix(κ, vec_of_vecs(X; obsdim=obsdim))
 end
+
+function kernelmatrix(
+    k::MOKernel, 
+    x::AbstractVector, 
+    y::AbstractVector
+    )
+    return k.(x, permutedims(collect(y)))
+end
+
+kernelmatrix(k::MOKernel, x::AbstractVector) = kernelmatrix(k, x, x)
