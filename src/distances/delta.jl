@@ -5,8 +5,7 @@ end
     @boundscheck if length(a) != length(b)
         throw(DimensionMismatch("first array has length $(length(a)) which does not match the length of the second, $(length(b))."))
     end
-    T = promote_type(Ta, Tb)
-    return T(a == b)
+    return convert(promote_type(Ta, Tb), a == b)
 end
 
 Distances.result_type(::Delta, Ta::Type, Tb::Type) = promote_type(Ta, Tb)
