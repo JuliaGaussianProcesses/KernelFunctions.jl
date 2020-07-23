@@ -105,6 +105,12 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
     end
     @info "Ran tests on matrix"
 
+    @testset "multi_output" begin
+        include(joinpath("mokernels", "moinput.jl"))
+        include(joinpath("mokernels", "independent.jl"))
+    end
+    @info "Ran tests on Multi-Output Kernels"
+
     @testset "approximations" begin
         include(joinpath("approximations", "nystrom.jl"))
     end
