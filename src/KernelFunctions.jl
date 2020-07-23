@@ -51,14 +51,6 @@ abstract type Kernel end
 abstract type BaseKernel <: Kernel end
 abstract type SimpleKernel <: BaseKernel end
 
-"""
-    MOKernel
-
-An abstract kernel type for kernels which can model Multi-Output data. 
-"""
-abstract type MOKernel <: Kernel end
-
-
 include("utils.jl")
 include("distances/pairwise.jl")
 include("distances/dotproduct.jl")

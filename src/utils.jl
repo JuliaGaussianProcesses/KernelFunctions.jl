@@ -21,6 +21,7 @@ function vec_of_vecs(X::AbstractMatrix; obsdim::Int = 2)
 end
 
 dim(x::AbstractVector{<:Real}) = 1
+dim(x::AbstractVector{Tuple{Any,Int}}) = 1
 
 """
     ColVecs(X::AbstractMatrix)

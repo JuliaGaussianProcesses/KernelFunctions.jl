@@ -1,9 +1,9 @@
 """
-    IndependentMOKernel(k::Kernel) <: MOKernel
+    IndependentMOKernel(k::Kernel) <: Kernel
 
 A Multi-Output kernel which assumes each output is independent of the other.
 """
-struct IndependentMOKernel{Tkernel<:Kernel} <: MOKernel
+struct IndependentMOKernel{Tkernel<:Kernel} <: Kernel
     kernel::Tkernel
 end
 
