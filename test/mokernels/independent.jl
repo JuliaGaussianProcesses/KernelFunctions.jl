@@ -9,4 +9,5 @@
     @test k(x[2], y[2]) isa Real
 
     @test kernelmatrix(k, x, y) == kernelmatrix(k, collect(x), collect(y))
+    @test kernelmatrix(k, x, x) == kernelmatrix(k, x)
 end

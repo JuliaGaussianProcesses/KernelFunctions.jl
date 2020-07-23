@@ -153,4 +153,4 @@ function kernelmatrix(
     return k.(x, permutedims(collect(y)))
 end
 
-kernelmatrix(k::MOKernel, x::AbstractVector) = kernelmatrix(k, x, x)
+kernelmatrix(k::MOKernel, x) = kernelmatrix(k, x, x)

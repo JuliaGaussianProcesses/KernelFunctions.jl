@@ -1,12 +1,11 @@
 """
-MOInput(x::AbstractVector, out_dim::Integer)
+    MOInput(x::AbstractVector, out_dim::Integer)
 
 A data type to accomodate modelling multi-dimensional output data.
-
 """
 struct MOInput{T<:AbstractVector}
-x::T
-out_dim::Integer
+    x::T
+    out_dim::Integer
 end
 
 Base.length(inp::MOInput) = inp.out_dim * length(inp.x)
