@@ -23,7 +23,7 @@ function Base.getindex(inp::MOInput, ind::Integer)
         if ind==0 ind = length(inp.x); out_dim-=1 end
         return (inp.x[ind], out_dim::Int)
     else
-        return BoundsError(string("Trying to access at ", ind))
+        throw(BoundsError(string("Trying to access at ", ind)))
     end
 end
 

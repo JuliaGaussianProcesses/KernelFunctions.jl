@@ -130,4 +130,13 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
             @test kerneldiagmatrix(k, x) ≈ kerneldiagmatrix!(tmp_diag, k, X; obsdim=obsdim)
         end
     end
+
+    @testset "Multi Output Kernels" begin
+        x = MOInput([rand(5) for _ in 1:4], 3)
+        y = MOInput([rand(5) for _ in 1:4], 3)
+
+        k = IndependentMOKernel(GaussianKernel())
+        @test kernelmatrix(k, x, y) == k.(collect(x), permutedims(collect(y)))
+        @test kernelmatrix(k, x, x) == kernelmatrix(k, x)
+    end
 end

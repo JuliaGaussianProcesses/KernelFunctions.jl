@@ -10,4 +10,5 @@
 
     @test kernelmatrix(k, x, y) == kernelmatrix(k, collect(x), collect(y))
     @test kernelmatrix(k, x, x) == kernelmatrix(k, x)
+    @test string(k) == "Independent Multi-Output Kernel\n\tSquared Exponential Kernel"
 end

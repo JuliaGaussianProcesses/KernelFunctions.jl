@@ -9,6 +9,10 @@
     @test size(mgpi, 2) == 1
     @test lastindex(mgpi) == 12
     @test firstindex(mgpi) == 1
+    @test iterate(mgpi) == (mgpi[1], 1)
+    @test iterate(mgpi, 2) == (mgpi[3], 3)
+    @test_throws BoundsError mgpi[0]
+
     @test mgpi[2] == (x[2], 1)
     @test mgpi[5] == (x[1], 2)
     @test mgpi[7] == (x[3], 2)
