@@ -19,9 +19,9 @@ set!(t::ScaleTransform,ρ::Real) = t.s .= [ρ]
 
 (t::ScaleTransform)(x) = first(t.s) * x
 
-_map(t::ScaleTransform, x::AbstractVector{<:Real}) = t(x)
-_map(t::ScaleTransform, x::ColVecs) = ColVecs(t(x.X))
-_map(t::ScaleTransform, x::RowVecs) = RowVecs(t(x.X))
+_map(t::ScaleTransform, x::AbstractVector{<:Real}) = first(t.s) .* x
+_map(t::ScaleTransform, x::ColVecs) = ColVecs(first(t.s) .* x.X)
+_map(t::ScaleTransform, x::RowVecs) = RowVecs(first(t.s) .* x.X)
 
 Base.isequal(t::ScaleTransform,t2::ScaleTransform) = isequal(first(t.s),first(t2.s))
 
