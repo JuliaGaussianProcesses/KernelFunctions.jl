@@ -9,7 +9,6 @@
     )
     @test k isa LatentFactorMOKernel
     @test k isa Kernel
-    @info k.g[2]
     @test k(x1[2], x2[2]) isa Real
 
     @test kernelmatrix(k, x1, x2) == kernelmatrix(k, collect(x1), collect(x2))
