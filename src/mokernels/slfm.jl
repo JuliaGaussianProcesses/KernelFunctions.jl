@@ -24,8 +24,8 @@ struct LatentFactorMOKernel{Tg, Te, TA <: AbstractMatrix} <: Kernel
     e::Te
     A::TA
     function LatentFactorMOKernel(g, e, A::AbstractMatrix)
-        all(isa.(g, Kernel)) || error("`g` should be an collection of kernels")
-        all(isa.(e, Kernel)) || error("`e` should be an collection of kernels")
+        all(gi isa Kernel for gi in g) || error("`g` should be an collection of kernels")
+        all(ei isa Kernel for ei in e) || error("`e` should be an collection of kernels")
         (length(e), length(g)) == size(A) || 
             error("Size of A not compatible to the given array of kernels")
         return new{typeof(g), typeof(e), typeof(A)}(g, e, A)
@@ -53,11 +53,8 @@ function Base.show(io::IO, k::LatentFactorMOKernel)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", k::LatentFactorMOKernel)
-    print(
-        io, 
-        "Semi-parametric Latent Factor Multi-Output Kernel\n\tgᵢ: ", 
-        [string(gi, "\n\t\t") for gi in k.g]...,
-        "\n\teᵢ: ",
-        [string(ei, "\n\t\t") for ei in k.e]...,
-    )    
+    print(io, "Semi-parametric Latent Factor Multi-Output Kernel\n\tgᵢ: ")
+    join(io, k.g, "\n\t\t")
+    print(io, "\n\teᵢ: ")
+    join(io, k.e, "\n\t\t")
 end
