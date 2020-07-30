@@ -31,7 +31,7 @@ export NystromFact, nystrom
 export spectral_mixture_kernel, spectral_mixture_product_kernel
 
 export MOInput
-export IndependentMOKernel
+export IndependentMOKernel, LatentFactorMOKernel
 
 using Compat
 using Requires
@@ -73,6 +73,7 @@ include("generic.jl")
 
 include("mokernels/moinput.jl")
 include("mokernels/independent.jl")
+include("mokernels/slfm.jl")
 
 include("zygote_adjoints.jl")
 
