@@ -1,6 +1,22 @@
-"""
-    LatentFactorMOKernel
+@doc raw"""
+    LatentFactorMOKernel(
+        g::AbstractVector{<:Kernel}, 
+        e::AbstractVector{<:Kernel}, 
+        A::AbstractMatrix
+        )
 
+A semiparametric kernel for problems involving multiple response variables.
+
+``k((x, p), (y, p)) = k_p(x, y) = \Sum^{Q}_{q=1} A_{pq}g_q(x, y) + e_p(x, y)``
+
+# Arguments
+- `g::AbstractVector{<:Kernel}`: an array of kernels
+- `e::AbstractVector{<:Kernel}`: an array of kernels
+- `A::AbstractMatrix`: an matrix of weights for the kernels of shape (length(e), length(g))
+
+
+# Reference:
+- [Seeger, Teh, and Jordan (2005)](https://infoscience.epfl.ch/record/161465/files/slfm-long.pdf)
 
 """
 struct LatentFactorMOKernel{
