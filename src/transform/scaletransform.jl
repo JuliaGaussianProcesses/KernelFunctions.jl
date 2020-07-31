@@ -17,7 +17,7 @@ end
 
 set!(t::ScaleTransform,ρ::Real) = t.s .= [ρ]
 
-(t::ScaleTransform)(x) = first(t.s) .* x
+(t::ScaleTransform)(x) = first(t.s) * x
 
 _map(t::ScaleTransform, x::AbstractVector{<:Real}) = first(t.s) .* x
 _map(t::ScaleTransform, x::ColVecs) = ColVecs(first(t.s) .* x.X)
