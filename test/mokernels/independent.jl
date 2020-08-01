@@ -12,8 +12,8 @@
     @test kernelmatrix(k, x, x) == kernelmatrix(k, x)
 
     x1 = MOInput(rand(5), 3) # Single dim input
-    @test_nothrow k(x1[1], x1[1])
-    @test_nothrow kernelmatrix(k, x1)
+    @test k(x1[1], x1[1]) isa Real
+    @test kernelmatrix(k, x1) isa Matrix
 
     @test string(k) == "Independent Multi-Output Kernel\n\tSquared Exponential Kernel"
 end
