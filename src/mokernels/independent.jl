@@ -7,9 +7,11 @@ struct IndependentMOKernel{Tkernel<:Kernel} <: Kernel
     kernel::Tkernel
 end
 
-function (κ::IndependentMOKernel)(x::Tuple{Vector, Int}, y::Tuple{Vector, Int})
-    if last(x) == last(y)
-        return κ.kernel(first(x), first(y))
+function (κ::IndependentMOKernel)((x, px)::Tuple{Real, Int}, (y, py)::Tuple{Real, Int}) = κ(([x], px), ([y], py))
+
+function (κ::IndependentMOKernel)((x, px)::Tuple{Vector, Int}, (y, py)::Tuple{Vector, Int})
+    if px == py
+        return κ.kernel(x, y)
     else
         return 0.0
     end
