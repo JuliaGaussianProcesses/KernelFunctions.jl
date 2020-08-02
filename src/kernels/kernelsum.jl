@@ -2,12 +2,20 @@
     KernelSum(kernel, kernels..)
 
 Create a sum of kernels. One can also use the operator `+`
-```
-    k1 = SqExponentialKernel()
-    k2 = LinearKernel()
-    k = KernelSum([k1, k2]) == k1 + k2
-    kernelmatrix(k, X) == kernelmatrix(k1, X) .+ kernelmatrix(k2, X)
-    kernelmatrix(k, X) == kernelmatrix(k1 + k2, X)
+
+```jldoctest
+julia> k1 = SqExponentialKernel();
+
+julia> k2 = LinearKernel();
+
+julia> k = KernelSum(k1, k2) == k1 + k2
+true
+
+julia> kernelmatrix(k, X) == kernelmatrix(k1, X) .+ kernelmatrix(k2, X)
+true
+
+julia> kernelmatrix(k, X) == kernelmatrix(k1 + k2, X)
+true
 ```
 """
 struct KernelSum{Tk} <: Kernel
@@ -19,21 +27,10 @@ function KernelSum(kernel::Kernel, kernels::Kernel...)
 end
 
 Base.:+(k1::Kernel, k2::Kernel) = KernelSum(k1, k2)
-Base.:+(k1::ScaledKernel, k2::ScaledKernel) = KernelSum(k1, k2)
 Base.:+(k1::KernelSum, k2::KernelSum) =
     KernelSum(k1.kernels..., k2.kernels...)
 Base.:+(k::Kernel, ks::KernelSum) =
     KernelSum(k, ks.kernels...)
-Base.:+(k::ScaledKernel, ks::KernelSum) =
-        KernelSum(k, ks.kernels...)
-Base.:+(k::ScaledKernel, ks::Kernel) =
-        KernelSum(k, ks)
-Base.:+(ks::KernelSum, k::Kernel) =
-    KernelSum(ks.kernels..., k)
-Base.:+(ks::KernelSum, k::ScaledKernel) =
-        KernelSum(ks.kernels..., k)
-Base.:+(ks::Kernel, k::ScaledKernel) =
-        KernelSum(ks, k)
 
 Base.length(k::KernelSum) = length(k.kernels)
 
@@ -48,7 +45,7 @@ function kernelmatrix(κ::KernelSum, x::AbstractVector, y::AbstractVector)
 end
 
 function kerneldiagmatrix(κ::KernelSum, x::AbstractVector)
-    return sum( kerneldiagmatrix(κ.kernels[i], x) for i in 1:length(κ))
+    return sum(kerneldiagmatrix(κ.kernels[i], x) for i in 1:length(κ))
 end
 
 function Base.show(io::IO, κ::KernelSum)
