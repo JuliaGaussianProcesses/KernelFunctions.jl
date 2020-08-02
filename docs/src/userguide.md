@@ -71,7 +71,7 @@ For example :
 ```julia
   k1 = SqExponentialKernel()
   k2 = Matern32Kernel()
-  k = 0.5*k1 + 0.2*k2 # KernelSum
+  k = k1 + k2 # KernelSum
   k = k1*k2 # KernelProduct
 ```
 

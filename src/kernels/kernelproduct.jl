@@ -11,8 +11,8 @@ One can also use the operator `*` :
     kernelmatrix(k, X) == kernelmatrix(k1 * k2, X)
 ```
 """
-struct KernelProduct{K} <: Kernel
-    kernels::K
+struct KernelProduct{Tk} <: Kernel
+    kernels::Tk
 end
 
 function KernelProduct(kernel::Kernel, kernels::Kernel...)

@@ -1,63 +1,54 @@
 """
-    KernelSum(kernel, kernels..; weights=ones(length(kernels)))
+    KernelSum(kernel, kernels..)
 
-Create a positive weighted sum of kernels. All weights should be positive.
-One can also use the operator `+`
+Create a sum of kernels. One can also use the operator `+`
 ```
     k1 = SqExponentialKernel()
     k2 = LinearKernel()
     k = KernelSum([k1, k2]) == k1 + k2
     kernelmatrix(k, X) == kernelmatrix(k1, X) .+ kernelmatrix(k2, X)
     kernelmatrix(k, X) == kernelmatrix(k1 + k2, X)
-    kweighted = 0.5* k1 + 2.0*k2 == KernelSum([k1, k2], weights = [0.5, 2.0])
 ```
 """
-struct KernelSum{Tk, Tw} <: Kernel
+struct KernelSum{Tk} <: Kernel
     kernels::Tk
-    weights::Tw
 end
 
-function KernelSum(
-    kernel::Kernel, kernels::Kernel...;
-    weights = (ones(Float64, length(kernels)+1)...,),
-)
-    @assert length(kernels) + 1 == length(weights) "Weights and kernel vector should be of the same length"
-    @assert all(weights .>= 0) "All weights should be positive"
-    return KernelSum((kernel, kernels...), weights)
+function KernelSum(kernel::Kernel, kernels::Kernel...)
+    return KernelSum((kernel, kernels...))
 end
 
-Base.:+(k1::Kernel, k2::Kernel) = KernelSum(k1, k2, weights = (1.0, 1.0))
-Base.:+(k1::ScaledKernel, k2::ScaledKernel) = KernelSum(kernel(k1), kernel(k2), weights = (first(k1.σ²), first(k2.σ²)))
+Base.:+(k1::Kernel, k2::Kernel) = KernelSum(k1, k2)
+Base.:+(k1::ScaledKernel, k2::ScaledKernel) = KernelSum(k1, k2)
 Base.:+(k1::KernelSum, k2::KernelSum) =
-    KernelSum(k1.kernels..., k2.kernels..., weights = (k1.weights..., k2.weights...))
+    KernelSum(k1.kernels..., k2.kernels...)
 Base.:+(k::Kernel, ks::KernelSum) =
-    KernelSum(k, ks.kernels..., weights = (1.0, ks.weights...))
+    KernelSum(k, ks.kernels...)
 Base.:+(k::ScaledKernel, ks::KernelSum) =
-        KernelSum(kernel(k), ks.kernels..., weights = (first(k.σ²), ks.weights...))
+        KernelSum(k, ks.kernels...)
 Base.:+(k::ScaledKernel, ks::Kernel) =
-        KernelSum(kernel(k), ks, weights = (first(k.σ²), 1.0))
+        KernelSum(k, ks)
 Base.:+(ks::KernelSum, k::Kernel) =
-    KernelSum(ks.kernels..., k, weights = (ks.weights..., 1.0))
+    KernelSum(ks.kernels..., k)
 Base.:+(ks::KernelSum, k::ScaledKernel) =
-        KernelSum(ks.kernels..., kernel(k), weights = (ks.weights..., first(k.σ²)))
+        KernelSum(ks.kernels..., k)
 Base.:+(ks::Kernel, k::ScaledKernel) =
-        KernelSum(ks, kernel(k), weights = (1.0, first(k.σ²)))
-Base.:*(w::Real, k::KernelSum) = KernelSum(k.kernels..., weights = w .* k.weights) #TODO add tests
+        KernelSum(ks, k)
 
 Base.length(k::KernelSum) = length(k.kernels)
 
-(κ::KernelSum)(x, y) = sum(κ.weights[i] * κ.kernels[i](x, y) for i in 1:length(κ))
+(κ::KernelSum)(x, y) = sum(κ.kernels[i](x, y) for i in 1:length(κ))
 
 function kernelmatrix(κ::KernelSum, x::AbstractVector)
-    return sum(κ.weights[i] * kernelmatrix(κ.kernels[i], x) for i in 1:length(κ))
+    return sum(kernelmatrix(κ.kernels[i], x) for i in 1:length(κ))
 end
 
 function kernelmatrix(κ::KernelSum, x::AbstractVector, y::AbstractVector)
-    return sum(κ.weights[i] * kernelmatrix(κ.kernels[i], x, y) for i in 1:length(κ))
+    return sum(kernelmatrix(κ.kernels[i], x, y) for i in 1:length(κ))
 end
 
 function kerneldiagmatrix(κ::KernelSum, x::AbstractVector)
-    return sum(κ.weights[i] * kerneldiagmatrix(κ.kernels[i], x) for i in 1:length(κ))
+    return sum( kerneldiagmatrix(κ.kernels[i], x) for i in 1:length(κ))
 end
 
 function Base.show(io::IO, κ::KernelSum)
@@ -67,7 +58,7 @@ end
 function printshifted(io::IO,κ::KernelSum, shift::Int)
     print(io,"Sum of $(length(κ)) kernels:")
     for i in 1:length(κ)
-        print(io, "\n" * ("\t" ^ (shift + 1)) * "- (w = $(κ.weights[i])) ")
+        print(io, "\n" * ("\t" ^ (shift + 1)))
         printshifted(io, κ.kernels[i], shift + 2)
     end
 end
