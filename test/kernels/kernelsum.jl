@@ -16,7 +16,7 @@
     @test length(k) == 2
     @test k(v1, v2) == (2.0 * k1 + 0.5 * k2)(v1, v2)
     @test (k + k3)(v1,v2) ≈ (k3 + k)(v1, v2)
-    @test (k1 + k2)(v1, v2) == KernelSum([k1, k2])(v1, v2)
+    @test (k1 + k2)(v1, v2) == KernelSum(k1, k2)(v1, v2)
     @test (k + ks1)(v1, v2) ≈ (ks1 + k)(v1, v2)
     @test (k + k)(v1, v2) == KernelSum([k1, k2, k1, k2], vcat(w, w))(v1, v2)
 

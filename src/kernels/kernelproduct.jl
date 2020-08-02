@@ -1,5 +1,5 @@
 """
-    KernelProduct(kernels::Array{Kernel})
+    KernelProduct(kernels)
 
 Create a product of kernels.
 One can also use the operator `*` :
@@ -11,14 +11,18 @@ One can also use the operator `*` :
     kernelmatrix(k, X) == kernelmatrix(k1 * k2, X)
 ```
 """
-struct KernelProduct <: Kernel
-    kernels::Vector{Kernel}
+struct KernelProduct{K} <: Kernel
+    kernels::K
 end
 
-Base.:*(k1::Kernel,k2::Kernel) = KernelProduct([k1,k2])
-Base.:*(k1::KernelProduct,k2::KernelProduct) = KernelProduct(vcat(k1.kernels,k2.kernels)) #TODO Add test
-Base.:*(k::Kernel,kp::KernelProduct) = KernelProduct(vcat(k,kp.kernels))
-Base.:*(kp::KernelProduct,k::Kernel) = KernelProduct(vcat(kp.kernels,k))
+function KernelProduct(kernel::Kernel, kernels::Kernel...)
+    return KernelProduct((kernel, kernels...))
+end
+
+Base.:*(k1::Kernel,k2::Kernel) = KernelProduct(k1, k2)
+Base.:*(k1::KernelProduct,k2::KernelProduct) = KernelProduct(k1.kernels..., k2.kernels...) #TODO Add test
+Base.:*(k::Kernel,kp::KernelProduct) = KernelProduct(k, kp.kernels...)
+Base.:*(kp::KernelProduct,k::Kernel) = KernelProduct(kp.kernels..., k)
 
 Base.length(k::KernelProduct) = length(k.kernels)
 
