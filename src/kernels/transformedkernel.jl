@@ -63,11 +63,11 @@ end
 # Kernel matrix operations
 
 function kerneldiagmatrix!(K::AbstractVector, κ::TransformedKernel, x::AbstractVector)
-    return kerneldiagmatrix!(K, κ.kernel, map(κ.transform, x))
+    return kerneldiagmatrix!(K, κ.kernel, _map(κ.transform, x))
 end
 
 function kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector)
-    return kernelmatrix!(K, kernel(κ), map(κ.transform, x))
+    return kernelmatrix!(K, kernel(κ), _map(κ.transform, x))
 end
 
 function kernelmatrix!(
@@ -76,17 +76,17 @@ function kernelmatrix!(
     x::AbstractVector,
     y::AbstractVector,
 )
-    return kernelmatrix!(K, kernel(κ), map(κ.transform, x), map(κ.transform, y))
+    return kernelmatrix!(K, kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
 end
 
 function kerneldiagmatrix(κ::TransformedKernel, x::AbstractVector)
-    return kerneldiagmatrix(κ.kernel, map(κ.transform, x))
+    return kerneldiagmatrix(κ.kernel, _map(κ.transform, x))
 end
 
 function kernelmatrix(κ::TransformedKernel, x::AbstractVector)
-    return kernelmatrix(kernel(κ), map(κ.transform, x))
+    return kernelmatrix(kernel(κ), _map(κ.transform, x))
 end
 
 function kernelmatrix(κ::TransformedKernel, x::AbstractVector, y::AbstractVector)
-    return kernelmatrix(kernel(κ), map(κ.transform, x), map(κ.transform, y))
+    return kernelmatrix(kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
 end

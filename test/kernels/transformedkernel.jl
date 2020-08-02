@@ -52,4 +52,27 @@
         end
     end
     test_ADs(x->transform(SqExponentialKernel(), x[1]), rand(1))# ADs = [:ForwardDiff, :ReverseDiff])
+    # Test implicit gradients
+    @testset "Implicit gradients" begin
+        k = transform(SqExponentialKernel(), 2.0)
+        ps = Flux.params(k)
+        X = rand(10, 1); x = vec(X)
+        A = rand(10, 10)
+        # Implicit
+        g1 = Flux.gradient(ps) do
+            tr(kernelmatrix(k, X, obsdim = 1) * A)
+        end
+        # Explicit
+        g2 = Flux.gradient(k) do k
+          tr(kernelmatrix(k, X, obsdim = 1) * A)
+        end
+
+        # Implicit for a vector
+        g3 = Flux.gradient(ps) do
+          tr(kernelmatrix(k, x) * A)
+        end
+        @test g1[first(ps)] ≈ first(g2).transform.s
+        @test g1[first(ps)] ≈ g3[first(ps)]
+    end
+
 end
