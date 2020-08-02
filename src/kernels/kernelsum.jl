@@ -8,7 +8,7 @@ julia> k1 = SqExponentialKernel();
 
 julia> k2 = LinearKernel();
 
-julia> k = KernelSum(k1, k2) == k1 + k2
+julia> KernelSum(k1, k2) == k1 + k2
 true
 
 julia> kernelmatrix(k, X) == kernelmatrix(k1, X) .+ kernelmatrix(k2, X)
@@ -16,6 +16,15 @@ true
 
 julia> kernelmatrix(k, X) == kernelmatrix(k1 + k2, X)
 true
+
+julia> KernelSum((k1, k2)) == k1 + k2
+true
+
+julia> KernelSum([k1, k2)]) == k1 + k2
+false
+
+julia> KernelSum([k1, k2)]) == KernelSum((k1, k2)) 
+false
 ```
 """
 struct KernelSum{Tk} <: Kernel
