@@ -12,8 +12,8 @@ Seeger, Teh and Jordan (2005).
 
 # Arguments
 - `g`: a collection of kernels, one for each latent process
-- `e`: a collection of kernels, one for each output.
-- `A::AbstractMatrix`: an matrix of weights for the kernels of size (length(e), length(g))
+- `e`: a collection of kernels, one for each output
+- `A::AbstractMatrix`: an matrix of weights for the kernels of size `(length(e), length(g))`
 
 
 # Reference:
