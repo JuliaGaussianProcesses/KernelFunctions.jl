@@ -118,7 +118,9 @@ function validate_inplace_dims(K::AbstractVector, x::AbstractVector)
     end
 end
 
-function validate_dims(x::AbstractVector, y::AbstractVector)
+validate_inputs(x, y) = nothing
+
+function validate_inputs(x::V, y::V) where {V<:Union{RowVecs, ColVecs}}
     if dim(x) != dim(y)
         throw(DimensionMismatch(
             "Dimensionality of x ($(dim(x))) not equality to that of y ($(dim(y)))",
