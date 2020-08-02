@@ -33,7 +33,7 @@ struct LatentFactorMOKernel{Tg, Te, TA <: AbstractMatrix} <: Kernel
     end
 end
 
-function (κ::LatentFactorMOKernel)((x, px)::Tuple{Vector, Int}, (y, py)::Tuple{Vector, Int})
+function (κ::LatentFactorMOKernel)((x, px)::Tuple{Any, Int}, (y, py)::Tuple{Any, Int})
     if px == py
         return sum(κ.g[i](x, y) * κ.A[px, i] for i in 1:length(κ.g)) + 
             κ.e[px](x, y)
