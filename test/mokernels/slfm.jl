@@ -14,4 +14,10 @@
     @test kernelmatrix(k, x1, x2) == kernelmatrix(k, collect(x1), collect(x2))
     @test kernelmatrix(k, x1, x1) == kernelmatrix(k, x1)
 
+    @test string(k) == "Semi-parametric Latent Factor Multi-Output Kernel"
+    @test repr("text/plain", k) == 
+    ("Semi-parametric Latent Factor Multi-Output Kernel\n\tgᵢ: Matern Kernel" *
+" (ν = 1.5)\n\t\tSquared Exponential Kernel\n\t\tFractional Brownian Motion" *
+" Kernel (h = 0.5)\n\teᵢ: Exponential Kernel\n\t\tPeriodic Kernel (length(r) = 5)")
+
 end
