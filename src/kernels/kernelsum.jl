@@ -27,10 +27,8 @@ function KernelSum(kernel::Kernel, kernels::Kernel...)
 end
 
 Base.:+(k1::Kernel, k2::Kernel) = KernelSum(k1, k2)
-Base.:+(k1::KernelSum, k2::KernelSum) =
-    KernelSum(k1.kernels..., k2.kernels...)
-Base.:+(k::Kernel, ks::KernelSum) =
-    KernelSum(k, ks.kernels...)
+Base.:+(k1::KernelSum, k2::KernelSum) = KernelSum(k1.kernels..., k2.kernels...)
+Base.:+(k::Kernel, ks::KernelSum) = KernelSum(k, ks.kernels...)
 
 Base.length(k::KernelSum) = length(k.kernels)
 
