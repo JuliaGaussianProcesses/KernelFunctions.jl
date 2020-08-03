@@ -90,7 +90,7 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
 
             tmp_diag = Vector{Float64}(undef, length(x))
             @test kerneldiagmatrix!(tmp_diag, k, x) ≈ kerneldiagmatrix(k, x)
-            @test_throws DimensionMismatch kerneldiagmatrix!(tmp_diag, k, y)            
+            @test_throws DimensionMismatch kerneldiagmatrix!(tmp_diag, k, y)
         end
     end
 
