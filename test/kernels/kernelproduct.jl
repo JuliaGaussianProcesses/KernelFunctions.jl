@@ -1,19 +1,34 @@
 @testset "kernelproduct" begin
     rng = MersenneTwister(123456)
+    x = rand(rng)*2
     v1 = rand(rng, 3)
     v2 = rand(rng, 3)
 
     k1 = LinearKernel()
     k2 = SqExponentialKernel()
     k3 = RationalQuadraticKernel()
+    X = rand(rng, 2,2)
 
-    k = KernelProduct([k1, k2])
+    k = KernelProduct(k1,k2)
+    ks1 = 2.0*k1
+    ks2 = 0.5*k2
     @test length(k) == 2
     @test k(v1, v2) == (k1 * k2)(v1, v2)
-    @test (k * k)(v1, v2) ≈ k(v1, v2)^2
-    @test (k * k3)(v1, v2) ≈ (k3 * k)(v1, v2)
+    @test (k * k3)(v1,v2) ≈ (k3 * k)(v1, v2)
+    @test (k1 * k2)(v1, v2) == KernelProduct(k1, k2)(v1, v2)
+    @test (k * ks1)(v1, v2) ≈ (ks1 * k)(v1, v2)
+    @test (k * k)(v1, v2) == KernelProduct([k1, k2, k1, k2])(v1, v2)
+    @test KernelProduct([k1, k2]) == KernelProduct((k1, k2)) == k1 * k2
 
-    @testset "kernelmatrix" begin
+    @test (KernelProduct([k1, k2]) * KernelProduct([k2, k1])).kernels == [k1, k2, k2, k1]
+    @test (KernelProduct([k1, k2]) * k3).kernels == [k1, k2, k3]
+    @test (k3 * KernelProduct([k1, k2])).kernels == [k3, k1, k2]
+
+    @test (KernelProduct((k1, k2)) * KernelProduct((k2, k1))).kernels == (k1, k2, k2, k1)
+    @test (KernelProduct((k1, k2)) * k3).kernels == (k1, k2, k3)
+    @test (k3 * KernelProduct((k1, k2))).kernels == (k3, k1, k2)
+
+    @testset "kernelmatrix" begin            
         rng = MersenneTwister(123456)
 
         Nx = 5
@@ -22,8 +37,8 @@
 
         w1 = rand(rng) + 1e-3
         w2 = rand(rng) + 1e-3
-        k1 = SqExponentialKernel()
-        k2 = LinearKernel()
+        k1 = w1 * SqExponentialKernel()
+        k2 = w2 * LinearKernel()
         k = k1 * k2
 
         @testset "$(typeof(x))" for (x, y) in [

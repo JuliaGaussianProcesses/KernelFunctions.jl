@@ -20,6 +20,14 @@
     @test (k + k)(v1, v2) == KernelSum([k1, k2, k1, k2])(v1, v2)
     @test KernelSum([k1, k2]) == KernelSum((k1, k2)) == k1 + k2
 
+    @test (KernelSum([k1, k2]) + KernelSum([k2, k1])).kernels == [k1, k2, k2, k1]
+    @test (KernelSum([k1, k2]) + k3).kernels == [k1, k2, k3]
+    @test (k3 + KernelSum([k1, k2])).kernels == [k3, k1, k2]
+
+    @test (KernelSum((k1, k2)) + KernelSum((k2, k1))).kernels == (k1, k2, k2, k1)
+    @test (KernelSum((k1, k2)) + k3).kernels == (k1, k2, k3)
+    @test (k3 + KernelSum((k1, k2))).kernels == (k3, k1, k2)
+
     @testset "kernelmatrix" begin
         rng = MersenneTwister(123456)
 
