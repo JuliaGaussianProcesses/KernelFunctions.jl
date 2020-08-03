@@ -1,5 +1,5 @@
 """
-    KernelSum
+    KernelSum <: Kernel
 
 Create a sum of kernels. One can also use the operator `+`.
 
@@ -85,7 +85,10 @@ Base.:(==)(x::KernelSum, y::KernelSum) = all(x.kernels .== y.kernels)
 function printshifted(io::IO,κ::KernelSum, shift::Int)
     print(io,"Sum of $(length(κ)) kernels:")
     for k in κ.kernels
-        print(io, "\n" * ("\t" ^ (shift + 1)))
+        print(io, "\n" )
+        for _ in 1:(shift + 1)
+            print(io, "\t")
+        end
         printshifted(io, k, shift + 2)
     end
 end

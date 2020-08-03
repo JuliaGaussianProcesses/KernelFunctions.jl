@@ -1,5 +1,5 @@
 """
-    KernelProduct(kernels)
+    KernelProduct <: Kernel
 
 Create a product of kernels. One can also use the overloaded operator `*`.
 
@@ -65,15 +65,15 @@ Base.length(k::KernelProduct) = length(k.kernels)
 (κ::KernelProduct)(x, y) = prod(k(x, y) for k in κ.kernels)
 
 function kernelmatrix(κ::KernelProduct, x::AbstractVector)
-    return reduce(hadamard, kernelmatrix(κ.kernels[i], x) for i in 1:length(κ))
+    return reduce(hadamard, kernelmatrix(k, x) for k in κ.kernels)
 end
 
 function kernelmatrix(κ::KernelProduct, x::AbstractVector, y::AbstractVector)
-    return reduce(hadamard, kernelmatrix(κ.kernels[i], x, y) for i in 1:length(κ))
+    return reduce(hadamard, kernelmatrix(k, x, y) for k in κ.kernels)
 end
 
 function kerneldiagmatrix(κ::KernelProduct, x::AbstractVector)
-    return reduce(hadamard, kerneldiagmatrix(κ.kernels[i], x) for i in 1:length(κ))
+    return reduce(hadamard, kerneldiagmatrix(k, x) for k in κ.kernels)
 end
 
 function Base.show(io::IO, κ::KernelProduct)
@@ -84,8 +84,11 @@ Base.:(==)(x::KernelProduct, y::KernelProduct) = all(x.kernels .== y.kernels)
 
 function printshifted(io::IO, κ::KernelProduct, shift::Int)
     print(io, "Product of $(length(κ)) kernels:")
-    for i in 1:length(κ)
-        print(io, "\n" * ("\t" ^ (shift + 1))* "- ")
-        printshifted(io, κ.kernels[i], shift + 2)
+    for k in κ.kernels
+        print(io, "\n" )
+        for _ in 1:(shift + 1)
+            print(io, "\t")
+        end
+        printshifted(io, k, shift + 2)
     end
 end
