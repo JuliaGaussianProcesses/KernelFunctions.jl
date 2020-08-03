@@ -37,7 +37,7 @@
     test_params(kr, ([α],))
 
     k = km + kc
-    test_params(k, (k.weights, km, kc))
+    test_params(k, (km, kc))
 
     k = km * kc
     test_params(k, (km, kc))
