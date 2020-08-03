@@ -61,6 +61,6 @@
             @test kerneldiagmatrix!(tmp_diag, k, x) ≈ kerneldiagmatrix(k, x)
         end
     end
-    test_ADs(x->KernelSum(SqExponentialKernel(),LinearKernel(c= x[1])), rand(3), ADs = [:ForwardDiff, :ReverseDiff])
+    test_ADs(x->KernelSum(SqExponentialKernel(),LinearKernel(c= x[1])), rand(1), ADs = [:ForwardDiff, :ReverseDiff])
     @test_broken "Zygote failing because of mutating array"
 end
