@@ -45,18 +45,18 @@ Base.:+(k::Kernel, ks::KernelSum) = KernelSum(k, ks.kernels...)
 
 Base.length(k::KernelSum) = length(k.kernels)
 
-(κ::KernelSum)(x, y) = sum(κ.kernels[i](x, y) for i in 1:length(κ))
+(κ::KernelSum)(x, y) = sum(k(x, y) for i in κ.kernels)
 
 function kernelmatrix(κ::KernelSum, x::AbstractVector)
-    return sum(kernelmatrix(κ.kernels[i], x) for i in 1:length(κ))
+    return sum(kernelmatrix(k, x) for k in κ.kernels)
 end
 
 function kernelmatrix(κ::KernelSum, x::AbstractVector, y::AbstractVector)
-    return sum(kernelmatrix(κ.kernels[i], x, y) for i in 1:length(κ))
+    return sum(kernelmatrix(k, x, y) for k in κ.kernels)
 end
 
 function kerneldiagmatrix(κ::KernelSum, x::AbstractVector)
-    return sum(kerneldiagmatrix(κ.kernels[i], x) for i in 1:length(κ))
+    return sum(kerneldiagmatrix(k, x) for k in κ.kernels)
 end
 
 function Base.show(io::IO, κ::KernelSum)
@@ -67,8 +67,8 @@ Base.:(==)(x::KernelSum, y::KernelSum) = all(x.kernels .== y.kernels)
 
 function printshifted(io::IO,κ::KernelSum, shift::Int)
     print(io,"Sum of $(length(κ)) kernels:")
-    for i in 1:length(κ)
+    for k in κ.kernels
         print(io, "\n" * ("\t" ^ (shift + 1)))
-        printshifted(io, κ.kernels[i], shift + 2)
+        printshifted(io, k, shift + 2)
     end
 end
