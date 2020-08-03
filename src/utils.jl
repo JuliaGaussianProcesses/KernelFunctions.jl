@@ -20,7 +20,7 @@ function vec_of_vecs(X::AbstractMatrix; obsdim::Int = 2)
     end
 end
 
-dim(x::AbstractVector{<:Real}) = 1
+dim(x::AbstractVector{<:AbstractVector{<:Real}}) = length(first(x))
 dim(x::AbstractVector{Tuple{Any,Int}}) = 1
 
 """
@@ -96,7 +96,7 @@ For a transform return its parameters, for a `ChainTransform` return a vector of
 
 
 function validate_inplace_dims(K::AbstractMatrix, x::AbstractVector, y::AbstractVector)
-    validate_dims(x, y)
+    validate_inputs(x, y)
     if size(K) != (length(x), length(y))
         throw(DimensionMismatch(
             "Size of the target matrix K ($(size(K))) not consistent with lengths of " *
@@ -120,7 +120,7 @@ end
 
 validate_inputs(x, y) = nothing
 
-function validate_inputs(x::V, y::V) where {V<:Union{RowVecs, ColVecs}}
+function validate_inputs(x::V, y::V) where {V<:Union{RowVecs, ColVecs, AbstractVector{<:AbstractVector{<:Real}}}}
     if dim(x) != dim(y)
         throw(DimensionMismatch(
             "Dimensionality of x ($(dim(x))) not equality to that of y ($(dim(y)))",
