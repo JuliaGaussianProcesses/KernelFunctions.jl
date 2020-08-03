@@ -50,7 +50,7 @@ end
 kernelmatrix(κ::Kernel, x::AbstractVector) = kernelmatrix(κ, x, x)
 
 function kernelmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector)
-    validate_dims(x, y)
+    validate_inputs(x, y)
     return κ.(x, permutedims(y))
 end
 
