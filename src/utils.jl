@@ -91,7 +91,7 @@ For a transform return its parameters, for a `ChainTransform` return a vector of
 """
 #params
 
-dim(x) = 0
+dim(x) = 0 # This is the passes-by-default choice. For a proper check, implement `KernelFunctions.dim` for your datatype.
 dim(x::AbstractVector{<:AbstractVector{<:Real}}) = length(first(x))
 dim(x::AbstractVector{<:Real}) = 1
 dim(x::AbstractVector{Tuple{Any,Int}}) = 1
