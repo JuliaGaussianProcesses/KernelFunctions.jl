@@ -248,7 +248,7 @@ The [`KernelSum`](@ref) is defined as a sum of kernels
 ```math
   k(x,x';\{k_i\}) = \sum_i k_i(x,x'),
 ```
-Where $w_i > 0$.
+
 ### KernelProduct
 
 The [`KernelProduct`](@ref) is defined as a product of kernels

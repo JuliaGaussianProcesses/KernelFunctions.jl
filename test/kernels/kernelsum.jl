@@ -18,6 +18,7 @@
     @test (k1 + k2)(v1, v2) == KernelSum(k1, k2)(v1, v2)
     @test (k + ks1)(v1, v2) ≈ (ks1 + k)(v1, v2)
     @test (k + k)(v1, v2) == KernelSum([k1, k2, k1, k2])(v1, v2)
+    @test KernelSum([k1, k2]) == KernelSum((k1, k2)) == k1 + k2
 
     @testset "kernelmatrix" begin
         rng = MersenneTwister(123456)
