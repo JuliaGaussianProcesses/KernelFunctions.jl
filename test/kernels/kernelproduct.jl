@@ -13,6 +13,10 @@
     ks1 = 2.0*k1
     ks2 = 0.5*k2
     @test length(k) == 2
+    @test string(k) == (
+        "Product of 2 kernels:\n\tLinear Kernel (c = 0.0)\n\tSquared " *
+        "Exponential Kernel"
+    )
     @test k(v1, v2) == (k1 * k2)(v1, v2)
     @test (k * k3)(v1,v2) ≈ (k3 * k)(v1, v2)
     @test (k1 * k2)(v1, v2) == KernelProduct(k1, k2)(v1, v2)
