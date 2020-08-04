@@ -84,6 +84,12 @@
         xx = [rand(rng, D, D) for _ in 1:N1]
         xx⁻ = [rand(rng, D, D⁻) for _ in 1:N1]
         yy = [rand(rng, D, D) for _ in 1:N2]
+
+        @test KernelFunctions.dim("string") == 0
+        @test KernelFunctions.dim(["string", "string2"]) == 0
+        @test KernelFunctions.dim(rand(rng, 4)) == 1
+        @test KernelFunctions.dim(x) == D
+
         @test_nowarn KernelFunctions.validate_inplace_dims(zeros(N1, N2), x, y)
         @test_throws DimensionMismatch KernelFunctions.validate_inplace_dims(zeros(N1, N1), x, y)
         @test_throws DimensionMismatch KernelFunctions.validate_inplace_dims(zeros(N1, N2), x⁻, y)
