@@ -5,7 +5,7 @@
     k = IndependentMOKernel(GaussianKernel())
     @test k isa IndependentMOKernel
     @test k isa Kernel
-    @test k.kernel isa KernelFunctions.BaseKernel
+    @test k.kernel isa KernelFunctions.Kernel
     @test k(x[2], y[2]) isa Real
 
     @test kernelmatrix(k, x, y) == kernelmatrix(k, collect(x), collect(y))

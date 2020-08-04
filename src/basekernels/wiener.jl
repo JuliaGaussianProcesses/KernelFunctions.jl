@@ -32,7 +32,7 @@ See the paper *Probabilistic ODE Solvers with Runge-Kutta Means* by Schober, Duv
 Hennig, NIPS, 2014, for more details.
 
 """
-struct WienerKernel{I} <: BaseKernel
+struct WienerKernel{I} <: Kernel
     function WienerKernel{I}() where I
         @assert I ∈ (-1, 0, 1, 2, 3) "Invalid parameter i=$(I). Should be -1, 0, 1, 2 or 3."
         if I == -1
