@@ -41,20 +41,24 @@ end
 
 Base.:*(k1::Kernel,k2::Kernel) = KernelProduct(k1, k2)
 
-function Base.:*(k1::KernelProduct{T1}, k2::KernelProduct{T2}) where 
-    {T1 <: AbstractVector{<:Kernel}, T2 <: AbstractVector{<:Kernel}}
+function Base.:*(
+    k1::KernelProduct{<:AbstractVector{<:Kernel}}, 
+    k2::KernelProduct{<:AbstractVector{<:Kernel}}
+    )
     KernelProduct(vcat(k1.kernels, k2.kernels))
 end
 
-Base.:*(k1::KernelProduct,k2::KernelProduct) = KernelProduct(k1.kernels..., k2.kernels...) #TODO Add test
+function Base.:*(k1::KernelProduct,k2::KernelProduct)
+    return KernelProduct(k1.kernels..., k2.kernels...) #TODO Add test
+end
 
-function Base.:*(k::Kernel, ks::KernelProduct{T}) where {T <: AbstractVector{<:Kernel}}
+function Base.:*(k::Kernel, ks::KernelProduct{<:AbstractVector{<:Kernel}})
     KernelProduct(vcat(k, ks.kernels))
 end
 
 Base.:*(k::Kernel,kp::KernelProduct) = KernelProduct(k, kp.kernels...)
 
-function Base.:*(ks::KernelProduct{T}, k::Kernel) where {T <: AbstractVector{<:Kernel}}
+function Base.:*(ks::KernelProduct{<:AbstractVector{<:Kernel}}, k::Kernel)
     KernelProduct(vcat(ks.kernels, k))
 end
 

@@ -41,20 +41,22 @@ end
 
 Base.:+(k1::Kernel, k2::Kernel) = KernelSum(k1, k2)
 
-function Base.:+(k1::KernelSum{T1}, k2::KernelSum{T2}) where 
-    {T1 <: AbstractVector{<:Kernel}, T2 <: AbstractVector{<:Kernel}}
+function Base.:+(
+    k1::KernelSum{<:AbstractVector{<:Kernel}}, 
+    k2::KernelSum{<:AbstractVector{<:Kernel}}
+    )
     KernelSum(vcat(k1.kernels, k2.kernels))
 end
 
 Base.:+(k1::KernelSum, k2::KernelSum) = KernelSum(k1.kernels..., k2.kernels...)
 
-function Base.:+(k::Kernel, ks::KernelSum{T}) where {T <: AbstractVector{<:Kernel}}
+function Base.:+(k::Kernel, ks::KernelSum{<:AbstractVector{<:Kernel}})
     KernelSum(vcat(k, ks.kernels))
 end
 
 Base.:+(k::Kernel, ks::KernelSum) = KernelSum(k, ks.kernels...)
 
-function Base.:+(ks::KernelSum{T}, k::Kernel) where {T <: AbstractVector{<:Kernel}}
+function Base.:+(ks::KernelSum{<:AbstractVector{<:Kernel}}, k::Kernel)
     KernelSum(vcat(ks.kernels, k))
 end
 
