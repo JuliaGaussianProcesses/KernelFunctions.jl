@@ -11,12 +11,5 @@ function concretetypes(k, ktypes::Vector)
     return ktypes
 end
 
-for k in nameof.(subtypes(BaseKernel))
-    @eval begin
-        @deprecate($k(ρ::Real;args...),transform($k(args...),ρ))
-        @deprecate($k(ρ::AbstractVector{<:Real};args...),transform($k(args...),ρ))
-    end
-end
-
 # Fallback implementation of evaluate for `SimpleKernel`s.
 (k::SimpleKernel)(x, y) = kappa(k, evaluate(metric(k), x, y))
