@@ -20,9 +20,6 @@ function vec_of_vecs(X::AbstractMatrix; obsdim::Int = 2)
     end
 end
 
-dim(x::AbstractVector{<:Real}) = 1
-dim(x::AbstractVector{Tuple{Any,Int}}) = 1
-
 """
     ColVecs(X::AbstractMatrix)
 
@@ -94,9 +91,24 @@ For a transform return its parameters, for a `ChainTransform` return a vector of
 """
 #params
 
+dim(x) = 0 # This is the passes-by-default choice. For a proper check, implement `KernelFunctions.dim` for your datatype.
+dim(x::AbstractVector) = dim(first(x))
+dim(x::AbstractVector{<:AbstractVector{<:Real}}) = length(first(x))
+dim(x::AbstractVector{<:Real}) = 1
+
+
+function validate_inputs(x, y)
+    if dim(x) != dim(y) # Passes by default if `dim` is not defined
+        throw(DimensionMismatch(
+            "Dimensionality of x ($(dim(x))) not equality to that of y ($(dim(y)))",
+        ))
+    end
+    return nothing
+end
+
 
 function validate_inplace_dims(K::AbstractMatrix, x::AbstractVector, y::AbstractVector)
-    validate_dims(x, y)
+    validate_inputs(x, y)
     if size(K) != (length(x), length(y))
         throw(DimensionMismatch(
             "Size of the target matrix K ($(size(K))) not consistent with lengths of " *
@@ -114,14 +126,6 @@ function validate_inplace_dims(K::AbstractVector, x::AbstractVector)
         throw(DimensionMismatch(
             "Length of target vector K ($(length(K))) not consistent with length of input" *
             "vector x ($(length(x))",
-        ))
-    end
-end
-
-function validate_dims(x::AbstractVector, y::AbstractVector)
-    if dim(x) != dim(y)
-        throw(DimensionMismatch(
-            "Dimensionality of x ($(dim(x))) not equality to that of y ($(dim(y)))",
         ))
     end
 end
