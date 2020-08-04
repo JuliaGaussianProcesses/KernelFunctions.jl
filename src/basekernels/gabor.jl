@@ -7,7 +7,7 @@ Gabor kernel with lengthscale `ell` and period `p`. Given by
 ```
 
 """
-struct GaborKernel{K<:Kernel} <: BaseKernel
+struct GaborKernel{K<:Kernel} <: Kernel
     kernel::K
     function GaborKernel(;ell=nothing, p=nothing)
         k = _gabor(ell=ell, p=p)
