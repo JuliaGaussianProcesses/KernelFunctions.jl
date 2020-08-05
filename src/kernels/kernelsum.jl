@@ -82,7 +82,12 @@ function Base.show(io::IO, κ::KernelSum)
     printshifted(io, κ, 0)
 end
 
-Base.:(==)(x::KernelSum, y::KernelSum) = all(x.kernels .== y.kernels)
+function Base.:(==)(x::KernelSum, y::KernelSum)
+    return (
+        length(x.kernels) == length(y.kernels) && 
+        all(kx == ky for (kx, ky) in zip(x.kernels, y.kernels))
+    )
+end
 
 function printshifted(io::IO,κ::KernelSum, shift::Int)
     print(io,"Sum of $(length(κ)) kernels:")

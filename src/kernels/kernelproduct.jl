@@ -84,7 +84,12 @@ function Base.show(io::IO, κ::KernelProduct)
     printshifted(io, κ, 0)
 end
 
-Base.:(==)(x::KernelProduct, y::KernelProduct) = all(x.kernels .== y.kernels)
+function Base.:(==)(x::KernelProduct, y::KernelProduct)
+    return (
+        length(x.kernels) == length(y.kernels) && 
+        all(kx == ky for (kx, ky) in zip(x.kernels, y.kernels))
+    )
+end
 
 function printshifted(io::IO, κ::KernelProduct, shift::Int)
     print(io, "Product of $(length(κ)) kernels:")

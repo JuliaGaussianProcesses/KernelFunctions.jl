@@ -101,6 +101,13 @@ end
 
 Base.show(io::IO, kernel::TensorProduct) = printshifted(io, kernel, 0)
 
+function Base.:(==)(x::TensorProduct, y::TensorProduct)
+    return (
+        length(x.kernels) == length(y.kernels) && 
+        all(kx == ky for (kx, ky) in zip(x.kernels, y.kernels))
+    )
+end
+
 function printshifted(io::IO, kernel::TensorProduct, shift::Int)
     print(io, "Tensor product of ", length(kernel), " kernels:")
     for k in kernel.kernels
