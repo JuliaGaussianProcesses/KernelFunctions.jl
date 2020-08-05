@@ -5,7 +5,7 @@ Create a product of kernels. One can also use the overloaded operator `*`.
 
 There are various ways in which you create a `KernelProduct`:
 
-The simplest way to sepcify a `KernelProduct` would be to use the overloaded `*` operator. This is 
+The simplest way to specify a `KernelProduct` would be to use the overloaded `*` operator. This is 
 equivalent to creating a `KernelProduct` by specifying the kernels as the arguments to the constructor.  
 ```jldoctest kernelprod
 julia> k1 = SqExponentialKernel(); k2 = LinearKernel(); X = rand(5);
@@ -20,9 +20,9 @@ julia> kernelmatrix(k, X) == kernelmatrix(k1 * k2, X)
 true
 ```
 
-You could also use specify a `KernelProduct` by providing a `Tuple` or a `Vector` of the 
-kernels to be summed. We suggest you to use a `Tuple` when you have fewer components  
-and a `Vector` when dealing with large number of components.
+You could also specify a `KernelProduct` by providing a `Tuple` or a `Vector` of the 
+kernels to be multiplied. We suggest you to use a `Tuple` when you have fewer components  
+and a `Vector` when dealing with a large number of components.
 ```jldoctest kernelprod
 julia> KernelProduct((k1, k2)) == k1 * k2
 true
@@ -44,22 +44,22 @@ Base.:*(k1::Kernel,k2::Kernel) = KernelProduct(k1, k2)
 function Base.:*(
     k1::KernelProduct{<:AbstractVector{<:Kernel}}, 
     k2::KernelProduct{<:AbstractVector{<:Kernel}}
-    )
-    KernelProduct(vcat(k1.kernels, k2.kernels))
+)
+    return KernelProduct(vcat(k1.kernels, k2.kernels))
 end
 
 function Base.:*(k1::KernelProduct,k2::KernelProduct)
-    return KernelProduct(k1.kernels..., k2.kernels...) #TODO Add test
+    return KernelProduct(k1.kernels..., k2.kernels...)
 end
 
 function Base.:*(k::Kernel, ks::KernelProduct{<:AbstractVector{<:Kernel}})
-    KernelProduct(vcat(k, ks.kernels))
+    return KernelProduct(vcat(k, ks.kernels))
 end
 
 Base.:*(k::Kernel,kp::KernelProduct) = KernelProduct(k, kp.kernels...)
 
 function Base.:*(ks::KernelProduct{<:AbstractVector{<:Kernel}}, k::Kernel)
-    KernelProduct(vcat(ks.kernels, k))
+    return KernelProduct(vcat(ks.kernels, k))
 end
 
 Base.:*(kp::KernelProduct,k::Kernel) = KernelProduct(kp.kernels..., k)
