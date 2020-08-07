@@ -17,7 +17,7 @@ Bayesian neural network with erf (Error Function) as activation function.
 - [Neal(1996)](https://www.cs.toronto.edu/~radford/bnn.book.html)
 - [Andrew Gordon's Thesis Pg 45](http://www.cs.cmu.edu/~andrewgw/andrewgwthesis.pdf)
 """
-struct NeuralNetworkKernel <: BaseKernel end
+struct NeuralNetworkKernel <: Kernel end
 
 function (κ::NeuralNetworkKernel)(x, y)
     return asin(dot(x, y) / sqrt((1 + sum(abs2, x)) * (1 + sum(abs2, y))))
