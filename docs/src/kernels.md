@@ -246,7 +246,7 @@ Where $\widetilde{k}$ is another kernel and $\sigma^2 > 0$.
 The [`KernelSum`](@ref) is defined as a sum of kernels
 
 ```math
-  k(x,x';\{k_i\}) = \sum_i k_i(x,x'),
+  k(x, x'; \{k_i\}) = \sum_i k_i(x, x').
 ```
 
 ### KernelProduct
