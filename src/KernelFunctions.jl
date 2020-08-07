@@ -8,7 +8,7 @@ export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!
 export transform
 export duplicate, set! # Helpers
 
-export Kernel
+export Kernel, MOKernel
 export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel, WienerKernel
 export CosineKernel
 export SqExponentialKernel, RBFKernel, GaussianKernel, SEKernel

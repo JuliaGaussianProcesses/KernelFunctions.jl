@@ -6,7 +6,7 @@
     @test k isa IndependentMOKernel
     @test k isa MOKernel
     @test k isa Kernel
-    @test k.kernel isa KernelFunctions.Kernel
+    @test k.kernel isa Kernel
     @test k(x[2], y[2]) isa Real
 
     @test kernelmatrix(k, x, y) == kernelmatrix(k, collect(x), collect(y))
