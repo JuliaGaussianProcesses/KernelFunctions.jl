@@ -1,6 +1,13 @@
 using Documenter
 using KernelFunctions
 
+DocMeta.setdocmeta!(
+    KernelFunctions,
+    :DocTestSetup,
+    :(using KernelFunctions, LinearAlgebra, Random);
+    recursive=true,
+)
+
 makedocs(
     sitename = "KernelFunctions",
     format = Documenter.HTML(),
