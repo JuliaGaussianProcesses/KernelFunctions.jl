@@ -1,6 +1,6 @@
 # Custom Kernel implementation that only defines how to evaluate itself. This is used to
 # test that fallback kernelmatrix / kerneldiagmatrix methods work properly.
-struct BaseSE <: KernelFunctions.BaseKernel end
+struct BaseSE <: KernelFunctions.Kernel end
 (k::BaseSE)(x, y) = exp(-evaluate(SqEuclidean(), x, y))
 
 # Custom kernel to test `SimpleKernel` interface on, independently the `SimpleKernel`s that
@@ -90,7 +90,7 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
 
             tmp_diag = Vector{Float64}(undef, length(x))
             @test kerneldiagmatrix!(tmp_diag, k, x) ≈ kerneldiagmatrix(k, x)
-            @test_throws DimensionMismatch kerneldiagmatrix!(tmp_diag, k, y)            
+            @test_throws DimensionMismatch kerneldiagmatrix!(tmp_diag, k, y)
         end
     end
 

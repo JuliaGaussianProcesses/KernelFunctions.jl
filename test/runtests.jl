@@ -9,7 +9,7 @@ using Test
 using Flux
 import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
 
-using KernelFunctions: metric, kappa, ColVecs, RowVecs
+using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs
 
 # Writing tests:
 # 1. The file structure of the test should match precisely the file structure of src.

@@ -14,6 +14,7 @@ export CosineKernel
 export SqExponentialKernel, RBFKernel, GaussianKernel, SEKernel
 export LaplacianKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
+export FBMKernel
 export MaternKernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
@@ -48,14 +49,13 @@ Abstract type defining a slice-wise transformation on an input matrix
 abstract type Transform end
 
 abstract type Kernel end
-abstract type BaseKernel <: Kernel end
-abstract type SimpleKernel <: BaseKernel end
+abstract type SimpleKernel <: Kernel end
 """
     MOKernel
 
 An abstract type for multi-output kernels.
 """
-abstract type MOKernel <: BaseKernel end
+abstract type MOKernel <: Kernel end
 
 include("utils.jl")
 include("distances/pairwise.jl")
