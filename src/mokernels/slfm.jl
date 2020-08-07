@@ -1,45 +1,36 @@
 @doc raw"""
-    LatentFactorMOKernel(
-        g,
-        e,
-        A::AbstractMatrix
-        )
+    LatentFactorMOKernel(g, e::MOKernel, A::AbstractMatrix)
 
 The kernel associated with the Semiparametric Latent Factor Model, introduced by 
 Seeger, Teh and Jordan (2005).
 
-``k((x, p), (y, p)) = k_p(x, y) = \Sum^{Q}_{q=1} A_{pq}g_q(x, y) + e_p(x, y)``
+``k((x, p_x), (y, p_y)) = \Sum^{Q}_{q=1} A_{p_xq}g_q(x, y)A_{p_yq} + e((x, p_x), (y, p_y))``
 
 # Arguments
 - `g`: a collection of kernels, one for each latent process
-- `e`: a collection of kernels, one for each output
-- `A::AbstractMatrix`: a matrix of weights for the kernels of size `(length(e), length(g))`
+- `e`: a [`MOKernel`](@ref) - multi-output kernel
+- `A::AbstractMatrix`: a matrix of weights for the kernels of size `(out_dim, length(g))`
 
 
 # Reference:
 - [Seeger, Teh, and Jordan (2005)](https://infoscience.epfl.ch/record/161465/files/slfm-long.pdf)
 
 """
-struct LatentFactorMOKernel{Tg, Te, TA <: AbstractMatrix} <: Kernel
+struct LatentFactorMOKernel{Tg, Te <: MOKernel, TA <: AbstractMatrix} <: MOKernel
     g::Tg
     e::Te
     A::TA
-    function LatentFactorMOKernel(g, e, A::AbstractMatrix)
+    function LatentFactorMOKernel(g, e::MOKernel, A::AbstractMatrix)
         all(gi isa Kernel for gi in g) || error("`g` should be an collection of kernels")
-        all(ei isa Kernel for ei in e) || error("`e` should be an collection of kernels")
-        (length(e), length(g)) == size(A) || 
-            error("Size of A not compatible to the given array of kernels")
+        length(g) == size(A, 2) || 
+            error("Size of `A` not compatible to the given array of kernels `g`")
         return new{typeof(g), typeof(e), typeof(A)}(g, e, A)
     end
 end
 
 function (κ::LatentFactorMOKernel)((x, px)::Tuple{Any, Int}, (y, py)::Tuple{Any, Int})
-    if px == py
-        return sum(κ.g[i](x, y) * κ.A[px, i] for i in 1:length(κ.g)) + 
-            κ.e[px](x, y)
-    else
-        return 0.0
-    end
+        return sum(κ.A[px, q] * κ.g[q](x, y) * κ.A[py, q] for q in 1:length(κ.g)) + 
+            κ.e((x, px), (y, py))
 end
 
 function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)

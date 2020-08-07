@@ -3,7 +3,7 @@
 
 A Multi-Output kernel which assumes each output is independent of the other.
 """
-struct IndependentMOKernel{Tkernel<:Kernel} <: Kernel
+struct IndependentMOKernel{Tkernel<:Kernel} <: MOKernel
     kernel::Tkernel
 end
 

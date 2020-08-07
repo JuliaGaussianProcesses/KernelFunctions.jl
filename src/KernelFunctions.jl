@@ -50,6 +50,12 @@ abstract type Transform end
 abstract type Kernel end
 abstract type BaseKernel <: Kernel end
 abstract type SimpleKernel <: BaseKernel end
+"""
+    MOKernel
+
+An abstract type for multi-output kernels.
+"""
+abstract type MOKernel <: BaseKernel end
 
 include("utils.jl")
 include("distances/pairwise.jl")
