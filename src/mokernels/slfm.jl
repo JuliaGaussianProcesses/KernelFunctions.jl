@@ -37,7 +37,17 @@ function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)
     x.out_dim == y.out_dim || error("`x` and `y` should have the same output dimension")
     x.out_dim == size(k.A, 1) ||
         error("Kernel not compatible with the given multi-output inputs")
-    return k.(x, permutedims(collect(y)))
+
+    # Weights matrix (out_dim x out_dim x length(k.g))
+    W = cat((col * col' for col in eachcol(k.A))..., dims=3)
+    
+    # Latent kernel matrix (N x N x length(k.g))
+    H = cat((gi.(x.x, permutedims(y.x)) for gi in k.g)..., dims=3)
+    
+    # Weighted latent kernel matrix ((N*out_dim) x (N*out_dim))
+    W_H = sum(kron(W[:,:,i], H[:,:,i]) for i in 1:size(W, 3))
+    
+    return W_H .+ kernelmatrix(k.e, x, y) 
 end
 
 function Base.show(io::IO, k::LatentFactorMOKernel)
