@@ -29,5 +29,4 @@
     @test repr(FunctionTransform(sin)) == "Function Transform: $(sin)"
     f(a, x) = sin.(a .* x)
     test_ADs(x->transform(SEKernel(), FunctionTransform(y->f(x, y))), randn(rng, 3))
-    @test_broken "Zygote is failing"
 end
