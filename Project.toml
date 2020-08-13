@@ -3,6 +3,7 @@ uuid = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
 version = "0.6.0"
 
 [deps]
+ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
 Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
@@ -14,6 +15,7 @@ StatsFuns = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
 ZygoteRules = "700de1a5-db45-46bc-99cf-38207098b444"
 
 [compat]
+ChainRulesCore = "0.9"
 Compat = "2.2, 3"
 Distances = "0.9"
 Requires = "1.0.1"

@@ -34,14 +34,18 @@ export spectral_mixture_kernel, spectral_mixture_product_kernel
 export MOInput
 export IndependentMOKernel
 
+export rrule
+
 using Compat
 using Requires
 using Distances, LinearAlgebra
 using SpecialFunctions: loggamma, besselk, polygamma
-using ZygoteRules: @adjoint, pullback
+# using ZygoteRules: @adjoint, pullback
+using ChainRulesCore
 using StatsFuns: logtwo
 using InteractiveUtils: subtypes
 using StatsBase
+
 
 """
 Abstract type defining a slice-wise transformation on an input matrix
@@ -74,7 +78,7 @@ include("generic.jl")
 include("mokernels/moinput.jl")
 include("mokernels/independent.jl")
 
-include("zygote_adjoints.jl")
+include("chainrules.jl")
 
 function __init__()
     @require Kronecker="2c470bb0-bcc8-11e8-3dad-c9649493f05e" include("matrix/kernelkroneckermat.jl")

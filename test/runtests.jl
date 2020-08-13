@@ -7,6 +7,7 @@ using Random
 using SpecialFunctions
 using Test
 using Flux
+using ChainRulesTestUtils
 import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs
