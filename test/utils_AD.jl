@@ -4,7 +4,6 @@ const FDM = FiniteDifferences.central_fdm(5, 1)
 gradient(f, s::Symbol, args) = gradient(f, Val(s), args)
 
 function gradient(f, ::Val{:Zygote}, args)
-    display(args)
     g = first(Zygote.gradient(f, args))
     if isnothing(g)
         if args isa AbstractArray{<:Real}
