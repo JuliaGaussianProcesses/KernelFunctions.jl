@@ -38,6 +38,7 @@ using Compat
 using Requires
 using Distances, LinearAlgebra
 using SpecialFunctions: loggamma, besselk, polygamma
+using ZygoteRules: @adjoint, pullback
 using ChainRulesCore
 using StatsFuns: logtwo
 using InteractiveUtils: subtypes
