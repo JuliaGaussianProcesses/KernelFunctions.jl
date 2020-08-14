@@ -71,11 +71,12 @@ vecs_pullback(Δ::AbstractMatrix) = (NO_FIELDS, Δ,)
 function vecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
     throw(error("In slow method"))
 end
-function ChainRulesCore.rrule(::typeof(ColVecs), X::AbstractMatrix)
+
+function ChainRulesCore.rrule(::Type{ColVecs}, X::AbstractMatrix)
     return ColVecs(X), vecs_pullback
 end
 
-function ChainRulesCore.rrule(::typeof(RowVecs), X::AbstractMatrix)
+function ChainRulesCore.rrule(::Type{RowVecs}, X::AbstractMatrix)
     return RowVecs(X), vecs_pullback
 end
 
