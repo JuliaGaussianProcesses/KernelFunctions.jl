@@ -77,24 +77,6 @@ end
     return RowVecs(X), back
 end
 
-@adjoint function reduce(::typeof(hcat), xs)
-    function back(Δ)
-        start = 0
-        Δs = [begin
-            d = if ndims(xsi) == 1
-            Δ[:, start+1]
-            else
-            i = map(_ -> :, size(xsi)) |> Base.tail |> Base.tail
-            Δ[:, start+1:start+size(xsi,2), i...]
-            end
-            start += size(xsi, 2)
-            d
-        end for xsi in xs]
-        return (nothing, Δs)
-    end
-    return reduce(hcat, xs), back
-end
-
 @adjoint function Base.map(t::Transform, X::ColVecs)
     pullback(_map, t, X)
 end
