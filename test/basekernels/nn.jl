@@ -43,6 +43,5 @@
     @test_throws DimensionMismatch kernelmatrix!(A5, k, ones(4,3), ones(3,4))
 
     @test k([x1], [x2]) ≈ k(x1, x2) atol=1e-5
-    test_ADs(NeuralNetworkKernel, ADs = [:ForwardDiff, :ReverseDiff])
-    @test_broken "Zygote uncompatible with BaseKernel"
+    test_ADs(NeuralNetworkKernel)
 end
