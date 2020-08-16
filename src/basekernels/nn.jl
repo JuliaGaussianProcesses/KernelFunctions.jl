@@ -20,7 +20,7 @@ Bayesian neural network with erf (Error Function) as activation function.
 struct NeuralNetworkKernel <: Kernel end
 
 function (κ::NeuralNetworkKernel)(x, y)
-    return asin(dot(x, y) / sqrt((1 + sum(abs2.(x))) * (1 + sum(abs2.(y)))))
+    return asin(dot(x, y) / sqrt((1 + sum(abs2, x)) * (1 + sum(abs2, y))))
 end
 
 function kernelmatrix(::NeuralNetworkKernel, x::ColVecs, y::ColVecs)
@@ -28,11 +28,11 @@ function kernelmatrix(::NeuralNetworkKernel, x::ColVecs, y::ColVecs)
     X_2 = sum(x.X .* x.X, dims=1)
     Y_2 = sum(y.X .* y.X, dims=1)
     XY = x.X' * y.X
-    return asin.(XY ./ sqrt.((X_2 .+ 1.0)' * (Y_2 .+ 1.0)))
+    return asin.(XY ./ sqrt.((X_2 .+ 1)' * (Y_2 .+ 1)))
 end
 
 function kernelmatrix(::NeuralNetworkKernel, x::ColVecs)
-    X_2_1 = sum(x.X .* x.X, dims=1) .+ 1.0
+    X_2_1 = sum(x.X .* x.X, dims=1) .+ 1
     XX = x.X' * x.X
     return asin.(XX ./ sqrt.(X_2_1' * X_2_1))
 end
@@ -42,11 +42,11 @@ function kernelmatrix(::NeuralNetworkKernel, x::RowVecs, y::RowVecs)
     X_2 = sum(x.X .* x.X, dims=2)
     Y_2 = sum(y.X .* y.X, dims=2)
     XY = x.X * y.X'
-    return asin.(XY ./ sqrt.((X_2 .+ 1.0)' * (Y_2 .+ 1.0)))
+    return asin.(XY ./ sqrt.((X_2 .+ 1)' * (Y_2 .+ 1)))
 end
 
 function kernelmatrix(::NeuralNetworkKernel, x::RowVecs)
-    X_2_1 = sum(x.X .* x.X, dims=2) .+ 1.0
+    X_2_1 = sum(x.X .* x.X, dims=2) .+ 1
     XX = x.X * x.X'
     return asin.(XX ./ sqrt.(X_2_1' * X_2_1))
 end
