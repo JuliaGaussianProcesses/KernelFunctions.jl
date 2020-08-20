@@ -14,8 +14,7 @@ struct SelectTransform{T} <: Transform
     select::T
 end
 
-set!(t::SelectTransform{<:AbstractVector{T}}, dims::AbstractVector{T}) where {T<:Int} = t.select .= dims
-set!(t::SelectTransform{<:AbstractVector{T}}, dims::AbstractVector{T}) where {T<:Symbol} = t.select .= dims
+set!(t::SelectTransform, dims) = t.select .= dims
 
 duplicate(t::SelectTransform,θ) = t
 
