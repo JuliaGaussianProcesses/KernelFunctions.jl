@@ -1,4 +1,5 @@
 using KernelFunctions
+using AxisArrays
 using Distances
 using Kronecker
 using LinearAlgebra
