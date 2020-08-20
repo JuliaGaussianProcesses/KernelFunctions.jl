@@ -112,4 +112,6 @@
         end
     end
     test_ADs(()->TensorProduct(SqExponentialKernel(), LinearKernel()), dims = [2, 2]) # ADs = [:ForwardDiff, :ReverseDiff])
+
+    test_params(TensorProduct(k1, k2), (k1, k2))
 end
