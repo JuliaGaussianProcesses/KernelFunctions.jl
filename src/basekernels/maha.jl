@@ -3,7 +3,7 @@
 
 Mahalanobis distance-based kernel given by
 ```math
-    κ(x,y) =  exp(-r^2), r^2 = maha(x,P,y) = (x-y)'*inv(P)*(x-y)
+    κ(x,y) =  exp(-r^2), r^2 = maha(x,P,y) = (x-y)'* P *(x-y)
 ```
 where the matrix P is the metric.
 
@@ -19,5 +19,41 @@ end
 kappa(κ::MahalanobisKernel, d::T) where {T<:Real} = exp(-d)
 
 metric(κ::MahalanobisKernel) = SqMahalanobis(κ.P)
+
+function dot_perslice(A::AbstractMatrix, B::AbstractMatrix; dims=2)
+    return reshape(sum(A .* B, dims=3-dims), :)
+end
+
+function Distances.pairwise(
+    metric::SqMahalanobis, 
+    a::AbstractMatrix, 
+    b::AbstractMatrix;
+    dims::Union{Nothing,Integer}=nothing
+    )
+    dims = Distances.deprecated_dims(dims)
+    Q = metric.qmat
+    Qa = Q * a
+    Qb = Q * b
+    sa2 = dot_perslice(a, Qa; dims=dims)
+    sb2 = dot_perslice(b, Qb; dims=dims)
+    r = a' * Qb
+    r = sa2 .+ sb2' - 2 * r
+    return r
+end
+
+function Distances.pairwise(
+    metric::SqMahalanobis, 
+    a::AbstractMatrix, 
+    dims::Union{Nothing,Integer}=nothing
+    )
+    dims = Distances.deprecated_dims(dims)
+    Q = metric.qmat
+    Qa = Q * a
+    sa2 = dot_perslice(a, Qa; dims=dims)
+    r = a' * Qa
+    r = sa2 .+ sa2' - 2 * r
+    r = Symmetric(r')
+    return r
+  end
 
 Base.show(io::IO, κ::MahalanobisKernel) = print(io, "Mahalanobis Kernel (size(P) = ", size(κ.P), ")")

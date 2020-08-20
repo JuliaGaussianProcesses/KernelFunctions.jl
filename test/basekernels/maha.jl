@@ -11,6 +11,6 @@
     @test k(v1, v2) ≈ exp(-sqmahalanobis(v1, v2, P))
     @test kappa(ExponentialKernel(), x) == kappa(k, x)
     @test repr(k) == "Mahalanobis Kernel (size(P) = $(size(P)))"
-    # test_ADs(P -> MahalanobisKernel(P), P)
+    test_ADs(P -> MahalanobisKernel(P), P, ADs=[:Zygote])
     @test_broken "Nothing passes (problem with Mahalanobis distance in Distances)"
 end
