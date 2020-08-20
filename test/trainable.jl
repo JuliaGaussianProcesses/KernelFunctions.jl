@@ -44,20 +44,20 @@
 
     s = 2.0
     k = transform(km, s)
-    test_params(k, ([s], km))
+    test_params(k, (km, [s]))
 
     v = [2.0]
     k = transform(kc, v)
-    test_params(k, (v, kc))
+    test_params(k, (kc, v))
 
     P = rand(3, 2)
     k = transform(km, LinearTransform(P))
-    test_params(k, (P, km))
+    test_params(k, (km, P))
 
     k = transform(km, LinearTransform(P) ∘ ScaleTransform(s))
-    test_params(k, ([s], P, km))
+    test_params(k, (km, [s], P))
 
     c = Chain(Dense(3, 2))
     k = transform(km, FunctionTransform(c))
-    test_params(k, (c, km))
+    test_params(k, (km, c))
 end

@@ -39,6 +39,8 @@ function KernelSum(kernel::Kernel, kernels::Kernel...)
     return KernelSum((kernel, kernels...))
 end
 
+@functor KernelSum
+
 Base.:+(k1::Kernel, k2::Kernel) = KernelSum(k1, k2)
 
 function Base.:+(

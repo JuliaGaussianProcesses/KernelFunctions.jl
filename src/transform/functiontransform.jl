@@ -13,6 +13,8 @@ struct FunctionTransform{F} <: Transform
     f::F
 end
 
+@functor FunctionTransform
+
 (t::FunctionTransform)(x) = t.f(x)
 
 _map(t::FunctionTransform, x::AbstractVector{<:Real}) = map(t.f, x)

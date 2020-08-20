@@ -39,6 +39,8 @@ function KernelProduct(kernel::Kernel, kernels::Kernel...)
     return KernelProduct((kernel, kernels...))
 end
 
+@functor KernelProduct
+
 Base.:*(k1::Kernel,k2::Kernel) = KernelProduct(k1, k2)
 
 function Base.:*(
