@@ -1,5 +1,5 @@
 """
-    SelectTransform(dims::Union{AbstractVector{Int}, AbstractVector{Symbol}})
+    SelectTransform(dims)
 
 Select the dimensions `dims` that the kernel is applied to. `dims` can be either all
 integers or symbols.
