@@ -46,10 +46,52 @@
 
     test_ADs(()->transform(SEKernel(), SelectTransform([1,2])))
 
-    x = randn(rng, (4, 3))
-    a = AxisArray(x, row=[:a, :b, :c, :d], col=[:x, :y, :z])
-    @test kernelmatrix(transform(SEKernel(), SelectTransform([1,2,4])), x, obsdim=2) ==
-        kernelmatrix(transform(SEKernel(), SelectTransform([:a,:b,:d])), a, obsdim=2)
-    @test kernelmatrix(transform(SEKernel(), SelectTransform([1,3])), x, obsdim=1) ==
-        kernelmatrix(transform(SEKernel(), SelectTransform([:x,:z])), a, obsdim=1)
+    X = randn(rng, (4, 3))
+    A = AxisArray(X, row=[:a, :b, :c, :d], col=[:x, :y, :z])
+    Y = randn(rng, (4, 2))
+    B = AxisArray(Y, row=[:a, :b, :c, :d], col=[:v, :w])
+    Z = randn(rng, (2, 3))
+    C = AxisArray(Z, row=[:e, :f], col=[:x, :y, :z])
+
+    tx_row = transform(SEKernel(), SelectTransform([1,2,4]))
+    ta_row = transform(SEKernel(), SelectTransform([:a,:b,:d]))
+    tx_col = transform(SEKernel(), SelectTransform([1,3]))
+    ta_col = transform(SEKernel(), SelectTransform([:x,:z]))
+
+    @test kernelmatrix(tx_row, X, obsdim=2) == kernelmatrix(ta_row, A, obsdim=2)
+    @test kernelmatrix(tx_col, X, obsdim=1) == kernelmatrix(ta_col, A, obsdim=1)
+
+    @test kernelmatrix(tx_row, X, Y, obsdim=2) == kernelmatrix(ta_row, A, B, obsdim=2)
+    @test kernelmatrix(tx_col, X, Z, obsdim=1) == kernelmatrix(ta_col, A, C, obsdim=1)
+
+    @testset "$(AD)" for AD in [:Zygote, :ForwardDiff]
+        gx = gradient(AD, X) do x
+            testfunction(tx_row, x, 2)
+        end
+        ga = gradient(AD, A) do a
+            testfunction(ta_row, a, 2)
+        end
+        @test gx == ga
+        gx = gradient(AD, X) do x
+            testfunction(tx_col, x, 1)
+        end
+        ga = gradient(AD, A) do a
+            testfunction(ta_col, a, 1)
+        end
+        @test gx == ga
+        gx = gradient(AD, X) do x
+            testfunction(tx_row, x, Y, 2)
+        end
+        ga = gradient(AD, A) do a
+            testfunction(ta_row, a, B, 2)
+        end
+        @test gx == ga
+        gx = gradient(AD, X) do x
+            testfunction(tx_col, x, Z, 1)
+        end
+        ga = gradient(AD, A) do a
+            testfunction(ta_col, a, C, 1)
+        end
+        @test gx == ga
+    end
 end
