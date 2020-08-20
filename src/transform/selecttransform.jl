@@ -10,7 +10,7 @@ integers or symbols.
     transform(tr,X,obsdim=2) == X[dims,:]
 ```
 """
-struct SelectTransform{T<:Union{AbstractVector{Int}, AbstractVector{Symbol}}} <: Transform
+struct SelectTransform{T} <: Transform
     select::T
 end
 
