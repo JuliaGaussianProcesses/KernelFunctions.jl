@@ -14,11 +14,6 @@ struct SelectTransform{T} <: Transform
     select::T
 end
 
-function SelectTransform(dims::T) where {T<:AbstractVector{Int}}
-    @assert all(dims .> 0) "Selective dimensions should all be positive integers"
-    return SelectTransform{T}(dims)
-end
-
 set!(t::SelectTransform{<:AbstractVector{T}}, dims::AbstractVector{T}) where {T<:Int} = t.select .= dims
 set!(t::SelectTransform{<:AbstractVector{T}}, dims::AbstractVector{T}) where {T<:Symbol} = t.select .= dims
 
