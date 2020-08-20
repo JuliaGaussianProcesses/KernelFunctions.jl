@@ -94,4 +94,19 @@
         end
         @test gx == ga
     end
+
+    @testset "$(AD)" for AD in [:ReverseDiff]
+        @test_broken ga = gradient(AD, A) do a
+            testfunction(ta_row, a, 2)
+        end
+        @test_broken ga = gradient(AD, A) do a
+            testfunction(ta_col, a, 1)
+        end
+        @test_broken ga = gradient(AD, A) do a
+            testfunction(ta_row, a, B, 2)
+        end
+        @test_broken ga = gradient(AD, A) do a
+            testfunction(ta_col, a, C, 1)
+        end
+    end
 end
