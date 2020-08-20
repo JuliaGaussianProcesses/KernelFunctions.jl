@@ -118,5 +118,4 @@ include("test_utils.jl")
 
     include("generic.jl")
     include("zygote_adjoints.jl")
-    include("trainable.jl")
 end

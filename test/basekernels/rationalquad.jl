@@ -31,6 +31,6 @@
         @test metric(GammaRationalQuadraticKernel(γ=2.0, α=3.0)) == SqEuclidean()
         # test_ADs(x->GammaRationalQuadraticKernel(α=x[1], γ=x[2]), [a, 2.0])
         @test_broken "All (problem with power operation)"
-        test_params(GammaRationalQuadraticKernel(; α=x[1], γ=x[2]), ([x[1]], [x[2]]))
+        test_params(GammaRationalQuadraticKernel(; α=a, γ=x), ([a], [x]))
     end
 end
