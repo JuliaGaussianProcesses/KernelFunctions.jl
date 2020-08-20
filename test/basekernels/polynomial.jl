@@ -28,6 +28,6 @@
         @test metric(PolynomialKernel(d=3.0,c=2.0)) == KernelFunctions.DotProduct()
         # test_ADs(x->PolynomialKernel(d=x[1], c=x[2]),[2.0,  c])
         @test_broken "All, because of the power"
-        test_params(PolynomialKernel(; d=x[1], c=x[2]), ([x[1]], [x[2]]))
+        test_params(PolynomialKernel(; d=x, c=c), ([x], [c]))
     end
 end
