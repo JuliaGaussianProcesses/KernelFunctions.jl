@@ -36,10 +36,20 @@
     kr = RationalQuadraticKernel(α=α)
     test_params(kr, ([α],))
 
+    A = rand(3, 3)
+    km = PiecewisePolynomialKernel(v=1, maha=A)
+    test_params(km, (A,))
+
+    km = MahalanobisKernel(A)
+    test_params(km, (A,))
+
     k = km + kc
     test_params(k, (km, kc))
 
     k = km * kc
+    test_params(k, (km, kc))
+
+    k = TensorProduct(km, kc)
     test_params(k, (km, kc))
 
     s = 2.0
