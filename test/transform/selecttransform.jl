@@ -45,4 +45,11 @@
     @test repr(ts) == "Select Transform (dims: $(select_symbols2))"
 
     test_ADs(()->transform(SEKernel(), SelectTransform([1,2])))
+
+    x = randn(rng, (4, 3))
+    a = AxisArray(x, row=[:a, :b, :c, :d], col=[:x, :y, :z])
+    @test kernelmatrix(transform(SEKernel(), SelectTransform([1,2,4])), x, obsdim=2) ==
+        kernelmatrix(transform(SEKernel(), SelectTransform([:a,:b,:d])), a, obsdim=2)
+    @test kernelmatrix(transform(SEKernel(), SelectTransform([1,3])), x, obsdim=1) ==
+        kernelmatrix(transform(SEKernel(), SelectTransform([:x,:z])), a, obsdim=1)
 end
