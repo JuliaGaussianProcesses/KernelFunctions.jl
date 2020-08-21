@@ -87,10 +87,10 @@ end
 
 @adjoint function (dist::Distances.SqMahalanobis)(a, b)
     function back(Δ::Real)
-        B_B_inv = dist.qmat + transpose(dist.qmat)
+        B_Bᵀ = dist.qmat + transpose(dist.qmat)
         a_b = a - b
-        δa = B_B_inv * a_b
+        δa = B_Bᵀ * a_b
         return (qmat = a_b * a_b',), δa, -δa 
     end
-  return evaluate(dist::SqMahalanobis, a, b), back
+  return evaluate(dist, a, b), back
 end
