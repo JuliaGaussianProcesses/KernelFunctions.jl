@@ -85,7 +85,7 @@ end
     pullback(_map, t, X)
 end
 
-@adjoint function Distances.evaluate(dist::SqMahalanobis, a, b)
+@adjoint function (dist::Distances.SqMahalanobis)(a, b)
     function back(Δ::Real)
         B_B_inv = dist.qmat + transpose(dist.qmat)
         a_b = a - b
