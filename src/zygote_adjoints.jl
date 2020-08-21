@@ -104,7 +104,7 @@ function Distances.pairwise(
     dims::Union{Nothing,Integer}=nothing
     )
     function back(Δ::AbstractMatrix)
-        B_B_t = dist.qmat + transpose(dist.qmat)
+        B_Bᵀ = dist.qmat + transpose(dist.qmat)
         a_b = map(
             x -> (first(last(x)) - last(last(x)))*first(x), 
             zip(
@@ -112,7 +112,7 @@ function Distances.pairwise(
                 Iterators.product(eachslice(a, dims=dims), eachslice(b, dims=dims))
             )
         )
-        δa = reduce(hcat, sum(map(x -> B_B_t*x, a_b), dims=1))
+        δa = reduce(hcat, sum(map(x -> B_Bᵀ*x, a_b), dims=1))
         δB = sum(map(x -> x*transpose(x), a_b))
         return (qmat=δB,), δa, -δa
     end
