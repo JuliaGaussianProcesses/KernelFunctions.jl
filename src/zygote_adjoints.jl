@@ -84,3 +84,13 @@ end
 @adjoint function Base.map(t::Transform, X::RowVecs)
     pullback(_map, t, X)
 end
+
+@adjoint function Distances.evaluate(dist::SqMahalanobis, a, b)
+    function back(Δ::Real)
+        B_B_inv = dist.qmat + transpose(dist.qmat)
+        a_b = a - b
+        δa = B_B_inv * a_b
+        return (qmat = a_b * a_b',), δa, -δa 
+    end
+  return evaluate(dist::SqMahalanobis, a, b), back
+end
