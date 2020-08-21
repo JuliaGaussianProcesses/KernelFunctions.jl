@@ -97,7 +97,7 @@ end
 
 
 # FIXME
-function Distances.pairwise(
+@adjoint function Distances.pairwise(
     dist::SqMahalanobis, 
     a::AbstractMatrix, 
     b::AbstractMatrix;
