@@ -94,3 +94,27 @@ end
     end
   return evaluate(dist, a, b), back
 end
+
+
+# FIXME
+function Distances.pairwise(
+    dist::SqMahalanobis, 
+    a::AbstractMatrix, 
+    b::AbstractMatrix;
+    dims::Union{Nothing,Integer}=nothing
+    )
+    function back(Δ::AbstractMatrix)
+        B_B_t = dist.qmat + transpose(dist.qmat)
+        a_b = map(
+            x -> (first(last(x)) - last(last(x)))*first(x), 
+            zip(
+                Δ,
+                Iterators.product(eachslice(a, dims=dims), eachslice(b, dims=dims))
+            )
+        )
+        δa = reduce(hcat, sum(map(x -> B_B_t*x, a_b), dims=1))
+        δB = sum(map(x -> x*transpose(x), a_b))
+        return (qmat=δB,), δa, -δa
+    end
+    return Distances.pairwise(dist, a, b, dims=dims), back
+end
