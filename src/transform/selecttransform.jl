@@ -1,5 +1,5 @@
 """
-    SelectTransform(dims::AbstractVector{Int})
+    SelectTransform(dims)
 
 Select the dimensions `dims` that the kernel is applied to.
 ```
@@ -9,17 +9,11 @@ Select the dimensions `dims` that the kernel is applied to.
     transform(tr,X,obsdim=2) == X[dims,:]
 ```
 """
-struct SelectTransform{T<:AbstractVector{Int}} <: Transform
+struct SelectTransform{T} <: Transform
     select::T
-    function SelectTransform{V}(dims::V) where {V<:AbstractVector{Int}}
-        @assert all(dims .> 0) "Selective dimensions should all be positive integers"
-        return new{V}(dims)
-    end
 end
 
-SelectTransform(x::T) where {T<:AbstractVector{Int}} = SelectTransform{T}(x)
-
-set!(t::SelectTransform{<:AbstractVector{T}}, dims::AbstractVector{T}) where {T<:Int} = t.select .= dims
+set!(t::SelectTransform, dims) = t.select .= dims
 
 duplicate(t::SelectTransform,θ) = t
 
