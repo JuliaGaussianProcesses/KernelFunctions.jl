@@ -96,7 +96,6 @@ end
 end
 
 
-# FIXME
 @adjoint function Distances.pairwise(
     dist::SqMahalanobis, 
     a::AbstractMatrix, 
@@ -112,7 +111,7 @@ end
                 Iterators.product(eachslice(a, dims=dims), eachslice(b, dims=dims))
             )
         )
-        δa = reduce(hcat, sum(map(x -> B_Bᵀ*x, a_b), dims=1))
+        δa = reduce(hcat, sum(map(x -> B_Bᵀ*x, a_b), dims=2))
         δB = sum(map(x -> x*transpose(x), a_b))
         return (qmat=δB,), δa, -δa
     end
