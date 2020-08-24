@@ -37,6 +37,7 @@ export IndependentMOKernel
 using Compat
 using Requires
 using Distances, LinearAlgebra
+using Functors
 using SpecialFunctions: loggamma, besselk, polygamma
 using ZygoteRules: @adjoint, pullback
 using StatsFuns: logtwo
@@ -79,7 +80,6 @@ include("zygote_adjoints.jl")
 function __init__()
     @require Kronecker="2c470bb0-bcc8-11e8-3dad-c9649493f05e" include("matrix/kernelkroneckermat.jl")
     @require PDMats="90014a1f-27ba-587c-ab20-58faa44d9150" include("matrix/kernelpdmat.jl")
-    @require Flux="587475ba-b771-5e3f-ad9e-33799f191a9c" include("trainable.jl")
 end
 
 end

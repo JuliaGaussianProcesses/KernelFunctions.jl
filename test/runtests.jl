@@ -43,10 +43,11 @@ using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs
 # 10. If utility files are required.
 @info "Packages Loaded"
 
+include("test_utils.jl")
+
 @testset "KernelFunctions" begin
 
     include("utils.jl")
-    include("utils_AD.jl")
 
     @testset "distances" begin
         include(joinpath("distances", "pairwise.jl"))
@@ -125,5 +126,4 @@ using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs
 
     include("generic.jl")
     include("zygote_adjoints.jl")
-    include("trainable.jl")
 end

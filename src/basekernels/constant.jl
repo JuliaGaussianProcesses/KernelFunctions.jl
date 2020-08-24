@@ -15,7 +15,6 @@ metric(::ZeroKernel) = Delta()
 
 Base.show(io::IO, ::ZeroKernel) = print(io, "Zero Kernel")
 
-
 """
     WhiteKernel()
 
@@ -54,6 +53,8 @@ struct ConstantKernel{Tc<:Real} <: SimpleKernel
         new{T}([c])
     end
 end
+
+@functor ConstantKernel
 
 kappa(κ::ConstantKernel,x::Real) = first(κ.c)*one(x)
 

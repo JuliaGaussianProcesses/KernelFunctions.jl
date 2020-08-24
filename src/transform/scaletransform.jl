@@ -15,6 +15,8 @@ function ScaleTransform(s::T=1.0) where {T<:Real}
     ScaleTransform{T}([s])
 end
 
+@functor ScaleTransform
+
 set!(t::ScaleTransform,ρ::Real) = t.s .= [ρ]
 
 (t::ScaleTransform)(x) = first(t.s) * x

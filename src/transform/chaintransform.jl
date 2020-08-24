@@ -13,6 +13,8 @@ struct ChainTransform{V<:AbstractVector{<:Transform}} <: Transform
     transforms::V
 end
 
+@functor ChainTransform
+
 Base.length(t::ChainTransform) = length(t.transforms)
 
 # Constructor to create a chain transform with an array of parameters

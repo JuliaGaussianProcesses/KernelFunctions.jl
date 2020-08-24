@@ -25,6 +25,15 @@ function PiecewisePolynomialKernel(;v::Integer=0, maha::AbstractMatrix{<:Real})
     return PiecewisePolynomialKernel{v}(maha)
 end
 
+# Have to reconstruct the type parameter
+# See also https://github.com/FluxML/Functors.jl/issues/3#issuecomment-626747663
+function Functors.functor(::Type{<:PiecewisePolynomialKernel{V}}, x) where V
+    function reconstruct_kernel(xs)
+        return PiecewisePolynomialKernel{V}(xs.maha)
+    end
+    return (maha = x.maha,), reconstruct_kernel
+end
+
 _f(κ::PiecewisePolynomialKernel{0}, r, j) = 1
 _f(κ::PiecewisePolynomialKernel{1}, r, j) = 1 + (j + 1) * r
 _f(κ::PiecewisePolynomialKernel{2}, r, j) = 1 + (j + 2) * r + (j^2 + 4 * j + 3) / 3 * r.^2

@@ -67,4 +67,6 @@
         end
     end
     test_ADs(x->SqExponentialKernel() * LinearKernel(c= x[1]), rand(1), ADs = [:ForwardDiff, :ReverseDiff, :Zygote])
+
+    test_params(k1 * k2, (k1, k2))
 end

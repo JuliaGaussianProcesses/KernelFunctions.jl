@@ -34,4 +34,6 @@
     @test repr(k) == "Piecewise Polynomial Kernel (v = $(v), size(maha) = $(size(maha)))"
     # test_ADs(maha-> PiecewisePolynomialKernel(v=2, maha = maha), maha)
     @test_broken "Nothing passes (problem with Mahalanobis distance in Distances)"
+
+    test_params(k, (maha,))
 end

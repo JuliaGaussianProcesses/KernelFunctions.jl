@@ -20,6 +20,8 @@ PeriodicKernel(dims::Int) = PeriodicKernel(Float64, dims)
 
 PeriodicKernel(T::DataType, dims::Int = 1) = PeriodicKernel(r = ones(T, dims))
 
+@functor PeriodicKernel
+
 metric(κ::PeriodicKernel) = Sinus(κ.r)
 
 kappa(κ::PeriodicKernel, d::Real) = exp(- 0.5d)

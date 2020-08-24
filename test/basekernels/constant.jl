@@ -26,6 +26,7 @@
         @test metric(ConstantKernel()) == KernelFunctions.Delta()
         @test metric(ConstantKernel(c=2.0)) == KernelFunctions.Delta()
         @test repr(k) == "Constant Kernel (c = $(c))"
+        test_params(k, ([c],))
         test_ADs(c->ConstantKernel(c=first(c)), [c])
     end
 end

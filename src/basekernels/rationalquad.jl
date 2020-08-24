@@ -15,6 +15,8 @@ struct RationalQuadraticKernel{Tα<:Real} <: SimpleKernel
     end
 end
 
+@functor RationalQuadraticKernel
+
 kappa(κ::RationalQuadraticKernel, d²::T) where {T<:Real} = (one(T)+d²/first(κ.α))^(-first(κ.α))
 metric(::RationalQuadraticKernel) = SqEuclidean()
 
@@ -37,6 +39,8 @@ struct GammaRationalQuadraticKernel{Tα<:Real, Tγ<:Real} <: SimpleKernel
         return new{Tα, Tγ}([α], [γ])
     end
 end
+
+@functor GammaRationalQuadraticKernel
 
 kappa(κ::GammaRationalQuadraticKernel, d²::T) where {T<:Real} = (one(T)+d²^first(κ.γ)/first(κ.α))^(-first(κ.α))
 metric(::GammaRationalQuadraticKernel) = SqEuclidean()

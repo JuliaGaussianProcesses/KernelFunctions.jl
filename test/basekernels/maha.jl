@@ -13,4 +13,6 @@
     @test repr(k) == "Mahalanobis Kernel (size(P) = $(size(P)))"
     # test_ADs(P -> MahalanobisKernel(P=P), P)
     @test_broken "Nothing passes (problem with Mahalanobis distance in Distances)"
+
+    test_params(k, (P,))
 end
