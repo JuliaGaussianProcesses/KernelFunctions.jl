@@ -1,4 +1,5 @@
 using KernelFunctions
+using AxisArrays
 using Distances
 using Kronecker
 using LinearAlgebra
@@ -58,12 +59,19 @@ include("test_utils.jl")
 
     @testset "transform" begin
         include(joinpath("transform", "transform.jl"))
+        print(" ")
         include(joinpath("transform", "scaletransform.jl"))
+        print(" ")
         include(joinpath("transform", "ardtransform.jl"))
+        print(" ")
         include(joinpath("transform", "lineartransform.jl"))
+        print(" ")
         include(joinpath("transform", "functiontransform.jl"))
+        print(" ")
         include(joinpath("transform", "selecttransform.jl"))
+        print(" ")
         include(joinpath("transform", "chaintransform.jl"))
+        print(" ")
     end
     @info "Ran tests on Transform"
 
