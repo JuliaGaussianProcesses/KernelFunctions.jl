@@ -20,8 +20,4 @@ kappa(κ::MahalanobisKernel, d::T) where {T<:Real} = exp(-d)
 
 metric(κ::MahalanobisKernel) = SqMahalanobis(κ.P)
 
-function dot_perslice(A::AbstractMatrix, B::AbstractMatrix; dims=2)
-    return reshape(sum(A .* B, dims=3-dims), :)
-end
-
 Base.show(io::IO, κ::MahalanobisKernel) = print(io, "Mahalanobis Kernel (size(P) = ", size(κ.P), ")")
