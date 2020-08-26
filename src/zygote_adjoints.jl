@@ -89,8 +89,8 @@ end
     function back(Δ::Real)
         B_Bᵀ = dist.qmat + transpose(dist.qmat)
         a_b = a - b
-        δa = B_Bᵀ * a_b
-        return (qmat = a_b * a_b',), δa, -δa 
+        δa = (B_Bᵀ * a_b) * Δ
+        return (qmat = (a_b * a_b') * Δ,), δa, -δa 
     end
   return evaluate(dist, a, b), back
 end
@@ -117,3 +117,25 @@ end
     end
     return Distances.pairwise(dist, a, b, dims=dims), back
 end
+
+@adjoint function Distances.pairwise(
+  dist::SqMahalanobis, 
+  a::AbstractMatrix;
+  dims::Union{Nothing,Integer}=nothing
+  )
+  function back(Δ::AbstractMatrix)
+      B_Bᵀ = dist.qmat + transpose(dist.qmat)
+      a_a = map(
+          x -> (first(last(x)) - last(last(x)))*first(x), 
+          zip(
+              Δ,
+              Iterators.product(eachslice(a, dims=dims), eachslice(a, dims=dims))
+          )
+      )
+      δa = reduce(hcat, sum(map(x -> B_Bᵀ*x, a_a), dims=2))
+      δB = sum(map(x -> x*transpose(x), a_a))
+      return (qmat=δB,), δa
+  end
+  return Distances.pairwise(dist, a, b, dims=dims), back
+end
+
