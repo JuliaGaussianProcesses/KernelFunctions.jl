@@ -75,4 +75,12 @@
         @test g1[first(ps)] ≈ g3[first(ps)]
     end
 
+    P = rand(3, 2)
+    c = Chain(Dense(3, 2))
+
+    test_params(transform(k, s), (k, [s]))
+    test_params(transform(k, v), (k, v))
+    test_params(transform(k, LinearTransform(P)), (k, P))
+    test_params(transform(k, LinearTransform(P) ∘ ScaleTransform(s)), (k, [s], P))
+    test_params(transform(k, FunctionTransform(c)), (k, c))
 end

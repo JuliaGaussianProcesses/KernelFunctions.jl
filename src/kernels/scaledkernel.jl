@@ -13,6 +13,8 @@ function ScaledKernel(kernel::Tk, σ²::Tσ²=1.0) where {Tk<:Kernel,Tσ²<:Real
     return ScaledKernel{Tk, Tσ²}(kernel, [σ²])
 end
 
+@functor ScaledKernel
+
 (k::ScaledKernel)(x, y) = first(k.σ²) * k.kernel(x, y)
 
 function kernelmatrix(κ::ScaledKernel, x::AbstractVector, y::AbstractVector)

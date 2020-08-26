@@ -15,6 +15,8 @@ struct GaborKernel{K<:Kernel} <: Kernel
     end
 end
 
+@functor GaborKernel
+
 (κ::GaborKernel)(x, y) = κ.kernel(x ,y)
 
 function _gabor(; ell = nothing, p = nothing)

@@ -33,10 +33,43 @@ Note that `BaseKernel` do not use `Distances.jl` and can therefore be a bit slow
 ### Additional Options
 
 Finally there are additional functions you can define to bring in more features:
- - `KernelFunctions.trainable(k::MyKernel)`: it defines the trainable parameters of your kernel, it should return a `Tuple` of your parameters.
-These parameters will be passed to the `Flux.params` function. For some examples see the `trainable.jl` file in `src/`
  - `KernelFunctions.iskroncompatible(k::MyKernel)`: if your kernel factorizes in dimensions, you can declare your kernel as `iskroncompatible(k) = true` to use Kronecker methods.
  - `KernelFunctions.dim(x::MyDataType)`: by default the dimension of the inputs will only be checked for vectors of type `AbstractVector{<:Real}`. If you want to check the dimensionality of your inputs, dispatch the `dim` function on your datatype. Note that `0` is the default.
  - `dim` is called within `KernelFunctions.validate_inputs(x::MyDataType, y::MyDataType)`, which can instead be directly overloaded if you want to run special checks for your input types.
  - `kernelmatrix(k::MyKernel, ...)`: you can redefine the diverse `kernelmatrix` functions to eventually optimize the computations.
  - `Base.print(io::IO, k::MyKernel)`: if you want to specialize the printing of your kernel
+
+KernelFunctions uses [Functors.jl](https://github.com/FluxML/Functors.jl) for specifying trainable kernel parameters
+in a way that is compatible with the [Flux ML framework](https://github.com/FluxML/Flux.jl).
+You can use `Functors.@functor` if all fields of your kernel struct are trainable. Note that optimization algorithms
+in Flux are not compatible with scalar parameters (yet), and hence vector-valued parameters should be preferred.
+
+```julia
+import Functors
+
+struct MyKernel{T} <: KernelFunctions.Kernel
+    a::Vector{T}
+end
+
+Functors.@functor MyKernel
+```
+
+If only a subset of the fields are trainable, you have to specify explicitly how to (re)construct the kernel with
+modified parameter values by [implementing `Functors.functor(::Type{<:MyKernel}, x)` for your kernel struct](https://github.com/FluxML/Functors.jl/issues/3):
+
+```julia
+import Functors
+
+struct MyKernel{T} <: KernelFunctions.Kernel
+    n::Int
+    a::Vector{T}
+end
+
+function Functors.functor(::Type{<:MyKernel}, x::MyKernel)
+    function reconstruct_mykernel(xs)
+        # keep field `n` of the original kernel and set `a` to (possibly different) `xs.a`
+        return MyKernel(x.n, xs.a)
+    end
+    return (a = x.a,), reconstruct_mykernel
+end
+```

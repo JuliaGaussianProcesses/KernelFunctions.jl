@@ -9,6 +9,8 @@ struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
     transform::Tr
 end
 
+@functor TransformedKernel
+
 (k::TransformedKernel)(x, y) = k.kernel(k.transform(x), k.transform(y))
 
 # Optimizations for scale transforms of simple kernels to save allocations:

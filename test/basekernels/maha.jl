@@ -8,7 +8,7 @@
     P = Matrix(Cholesky(U, 'U', 0))
     @assert isposdef(P)
     k = MahalanobisKernel(P)
-
+  
     @test kappa(k, x) == exp(-x)
     @test k(v1, v2) ≈ exp(-sqmahalanobis(v1, v2, P))
     @test kappa(ExponentialKernel(), x) == kappa(k, x)
@@ -27,4 +27,6 @@
     
     # test_ADs(U -> MahalanobisKernel(Array(U' * U)), U, ADs=[:Zygote])
     @test_broken "Nothing passes (problem with Mahalanobis distance in Distances)"
+
+    test_params(k, (P,))
 end

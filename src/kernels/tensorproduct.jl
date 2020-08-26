@@ -20,6 +20,8 @@ function TensorProduct(kernel::Kernel, kernels::Kernel...)
     return TensorProduct((kernel, kernels...))
 end
 
+@functor TensorProduct
+
 Base.length(kernel::TensorProduct) = length(kernel.kernels)
 
 function (kernel::TensorProduct)(x, y)

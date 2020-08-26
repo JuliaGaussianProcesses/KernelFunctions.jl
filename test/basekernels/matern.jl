@@ -16,6 +16,7 @@
         @test repr(k) == "Matern Kernel (ν = $(ν))"
         # test_ADs(x->MaternKernel(nu=first(x)),[ν])
         @test_broken "All fails (because of logabsgamma for ForwardDiff and ReverseDiff and because of nu for Zygote)"
+        test_params(k, ([ν],))
     end
     @testset "Matern32Kernel" begin
         k = Matern32Kernel()

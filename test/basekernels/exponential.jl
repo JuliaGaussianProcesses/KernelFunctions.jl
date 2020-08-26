@@ -39,6 +39,7 @@
         @test repr(k) == "Gamma Exponential Kernel (γ = $(γ))"
         @test KernelFunctions.iskroncompatible(k) == true
         test_ADs(γ -> GammaExponentialKernel(gamma=first(γ)), [γ])
+        test_params(k, ([γ],))
         #Coherence :
         @test GammaExponentialKernel(γ=1.0)(v1,v2) ≈ SqExponentialKernel()(v1,v2)
         @test GammaExponentialKernel(γ=0.5)(v1,v2) ≈ ExponentialKernel()(v1,v2)
