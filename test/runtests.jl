@@ -12,6 +12,8 @@ import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 
+using TestUtils: test_params, test_AD
+
 # Writing tests:
 # 1. The file structure of the test should match precisely the file structure of src.
 #   Amongst other things, this means that there should be exactly 1 test file per src file.
@@ -42,8 +44,6 @@ using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 #   currently being run.
 # 10. If utility files are required.
 @info "Packages Loaded"
-
-include("test_utils.jl")
 
 @testset "KernelFunctions" begin
 
