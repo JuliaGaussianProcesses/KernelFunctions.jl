@@ -74,10 +74,7 @@ function kernelmatrix!(K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector)
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::SimpleKernel,
-    x::AbstractVector,
-    y::AbstractVector,
+    K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector, y::AbstractVector,
 )
     validate_inplace_dims(K, x, y)
     pairwise!(K, metric(κ), x, y)
@@ -102,19 +99,13 @@ end
 const defaultobs = 2
 
 function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::Kernel,
-    X::AbstractMatrix;
-    obsdim::Int = defaultobs
+    K::AbstractMatrix, κ::Kernel, X::AbstractMatrix; obsdim::Int = defaultobs
 )
     return kernelmatrix!(K, κ, vec_of_vecs(X; obsdim=obsdim))
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::Kernel,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
+    K::AbstractMatrix, κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix;
     obsdim::Int = defaultobs
 )
     x = vec_of_vecs(X; obsdim=obsdim)
@@ -133,10 +124,7 @@ function kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim=d
 end
 
 function kerneldiagmatrix!(
-    K::AbstractVector,
-    κ::Kernel,
-    X::AbstractMatrix;
-    obsdim::Int = defaultobs
+    K::AbstractVector, κ::Kernel, X::AbstractMatrix; obsdim::Int = defaultobs
 )
     return kerneldiagmatrix!(K, κ, vec_of_vecs(X; obsdim=obsdim))
 end
