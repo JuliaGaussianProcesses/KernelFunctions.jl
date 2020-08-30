@@ -21,6 +21,7 @@ manually.
 function test_interface(k::Kernel, x0::AV, x1::AV, x2::AV; atol=__ATOL)
 
     # TODO: uncomment the tests of ternary kerneldiagmatrix.
+    # TODO: add in-place tests.
 
     # Ensure that we have the required inputs.
     @assert length(x0) == length(x1)
@@ -63,6 +64,7 @@ function test_interface(k::Kernel, x0::AV, x1::AV, x2::AV; atol=__ATOL)
     @test kernelmatrix(k, x0) ≈ kernelmatrix(k, x0, x0) atol=atol
 
     # Check that basic kernel evaluation succeeds and is consistent with `kernelmatrix`.
+    @test k(first(x0), first(x1)) isa Real
     @test kernelmatrix(k, x0, x2) ≈ [k(xl, xr) for xl in x0, xr in x2]
 end
 

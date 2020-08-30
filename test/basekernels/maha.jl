@@ -14,5 +14,6 @@
     # test_ADs(P -> MahalanobisKernel(P=P), P)
     @test_broken "Nothing passes (problem with Mahalanobis distance in Distances)"
 
+    TestUtils.test_interface(k, Float64)
     test_params(k, (P,))
 end

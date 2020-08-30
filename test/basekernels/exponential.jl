@@ -14,6 +14,9 @@
         @test SEKernel == SqExponentialKernel
         @test repr(k) == "Squared Exponential Kernel"
         @test KernelFunctions.iskroncompatible(k) == true
+
+        # Standardised tests.
+        TestUtils.test_interface(k, Float64)
         test_ADs(SEKernel)
     end
     @testset "ExponentialKernel" begin
@@ -25,6 +28,9 @@
         @test repr(k) == "Exponential Kernel"
         @test LaplacianKernel == ExponentialKernel
         @test KernelFunctions.iskroncompatible(k) == true
+
+        # Standardised tests.
+        TestUtils.test_interface(k, Float64)
         test_ADs(ExponentialKernel)
     end
     @testset "GammaExponentialKernel" begin
@@ -37,6 +43,8 @@
         @test metric(GammaExponentialKernel(γ=2.0)) == Euclidean()
         @test repr(k) == "Gamma Exponential Kernel (γ = $(γ))"
         @test KernelFunctions.iskroncompatible(k) == true
+
+        TestUtils.test_interface(k, Float64)
         test_ADs(
             γ -> GammaExponentialKernel(gamma=first(γ)), [1.0];
             ADs = [:ForwardDiff, :ReverseDiff],

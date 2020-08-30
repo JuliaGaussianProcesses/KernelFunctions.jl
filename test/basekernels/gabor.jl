@@ -1,5 +1,6 @@
 @testset "Gabor" begin
-    v1 = rand(3); v2 = rand(3)
+    v1 = rand(3)
+    v2 = rand(3)
     ell = abs(rand())
     p = abs(rand())
     k = GaborKernel(ell=ell, p=p)
@@ -17,6 +18,9 @@
     @test k.ell ≈ 1.0 atol=1e-5
     @test k.p ≈ 1.0 atol=1e-5
     @test repr(k) == "Gabor Kernel (ell = 1.0, p = 1.0)"
+
+    # Standardised tests.
+    TestUtils.test_interface(k, Float64)
     #test_ADs(x -> GaborKernel(ell = x[1], p = x[2]), [ell, p])#, ADs = [:ForwardDiff, :ReverseDiff])
     @test_broken "Tests failing for Zygote on differentiating through ell and p"
     # Tests are also failing randomly for ForwardDiff and ReverseDiff but randomly
