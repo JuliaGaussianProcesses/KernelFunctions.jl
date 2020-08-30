@@ -1,14 +1,16 @@
 @testset "slfm" begin
+    rng = MersenneTwister(123)
+    FDM = FiniteDifferences.central_fdm(5, 1)
     N = 10
     in_dim = 5
     out_dim = 4
-    x1 = MOInput([rand(in_dim) for _ in 1:N], out_dim)
-    x2 = MOInput([rand(in_dim) for _ in 1:N], out_dim)
+    x1 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
+    x2 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
 
     k = LatentFactorMOKernel(
         [MaternKernel(), SqExponentialKernel(), FBMKernel()],
         IndependentMOKernel(GaussianKernel()),
-        rand(4, 3)
+        rand(rng, out_dim, 3)
     )
     @test k isa LatentFactorMOKernel
     @test k isa MOKernel
@@ -26,4 +28,19 @@
         "Independent Multi-Output Kernel\n\tSquared Exponential Kernel"
     )
 
+    # AD test
+    function test_slfm(A::AbstractMatrix, x1, x2)
+        k = LatentFactorMOKernel(
+            [MaternKernel(), SqExponentialKernel(), FBMKernel()],
+            IndependentMOKernel(GaussianKernel()),
+            A
+        )
+        return k((x1, 1), (x2, 1))
+    end
+
+    @test all(
+        FiniteDifferences.j′vp(FDM, test_slfm, 1, k.A, x1[1][1], x2[1][1]) .≈ 
+        Zygote.pullback(test_slfm, k.A, x1[1][1], x2[1][1])[2](1)
+        )
+    
 end
