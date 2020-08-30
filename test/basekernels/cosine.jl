@@ -14,6 +14,6 @@
     @test repr(k) == "Cosine Kernel"
 
     # Standardised tests.
-    TestUtils.test_interface(k, Float64)
+    TestUtils.test_interface(k, Vector{Float64})
     test_ADs(CosineKernel)
 end

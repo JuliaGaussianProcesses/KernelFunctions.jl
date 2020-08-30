@@ -2,10 +2,19 @@ module TestUtils
 
 const __ATOL = 1e-9
 
+using LinearAlgebra
 using KernelFunctions
+using Random
+using Test
 
 """
-    test_interface(k::Kernel, x0::AV, x1::AV, x2::AV; atol=__ATOL)
+    test_interface(
+        k::Kernel,
+        x0::AbstractVector,
+        x1::AbstractVector,
+        x2::AbstractVector;
+        atol=__ATOL,
+    )
 
 Run various consistency checks on `k` at the inputs `x0`, `x1`, and `x2`.
 `x0` and `x1` should be of the same length with different values, while `x0` and `x2` should
@@ -18,8 +27,13 @@ require less code for common input types. For example, `Vector{<:Real}`, `ColVec
 and `RowVecs{<:Real}` are supported. For other input vector types, please provide the data
 manually. 
 """
-function test_interface(k::Kernel, x0::AV, x1::AV, x2::AV; atol=__ATOL)
-
+function test_interface(
+    k::Kernel,
+    x0::AbstractVector,
+    x1::AbstractVector,
+    x2::AbstractVector;
+    atol=__ATOL,
+)
     # TODO: uncomment the tests of ternary kerneldiagmatrix.
     # TODO: add in-place tests.
 
@@ -66,50 +80,59 @@ function test_interface(k::Kernel, x0::AV, x1::AV, x2::AV; atol=__ATOL)
     # Check that basic kernel evaluation succeeds and is consistent with `kernelmatrix`.
     @test k(first(x0), first(x1)) isa Real
     @test kernelmatrix(k, x0, x2) ≈ [k(xl, xr) for xl in x0, xr in x2]
+
+    tmp = Matrix{Float64}(undef, length(x0), length(x2))
+    @test kernelmatrix!(tmp, k, x0, x2) ≈ kernelmatrix(k, x0, x2)
+
+    tmp_square = Matrix{Float64}(undef, length(x0), length(x0))
+    @test kernelmatrix!(tmp_square, k, x0) ≈ kernelmatrix(k, x0)
+
+    tmp_diag = Vector{Float64}(undef, length(x0))
+    @test kerneldiagmatrix!(tmp_diag, k, x0) ≈ kerneldiagmatrix(k, x0)
 end
 
 function test_interface(
-    rng::AbstractRNG, k::Kernel, ::Type{Vector{T}}; atol=__ATOL,
+    rng::AbstractRNG, k::Kernel, ::Type{Vector{T}}; kwargs...
 ) where {T<:Real}
-    test_interface(k, randn(rng, T, 3), randn(rng, T, 3), randn(rng, T, 2);  atol=atol)
+    test_interface(k, randn(rng, T, 3), randn(rng, T, 3), randn(rng, T, 2); kwargs...)
 end
 
 function test_interface(
-    rng::AbstractRNG, k::Kernel, ::Type{<:ColVecs{T}}; atol=__ATOL,
+    rng::AbstractRNG, k::Kernel, ::Type{<:ColVecs{T}}; dim_in=2, kwargs...,
 ) where {T<:Real}
     test_interface(
         k,
-        ColVecs(randn(rng, T, 2, 3)),
-        ColVecs(randn(rng, T, 2, 3)),
-        ColVecs(randn(rng, T, 2, 2));
-        atol=atol,
+        ColVecs(randn(rng, T, dim_in, 3)),
+        ColVecs(randn(rng, T, dim_in, 3)),
+        ColVecs(randn(rng, T, dim_in, 2));
+        kwargs...,
     )
 end
 
 function test_interface(
-    rng::AbstractRNG, k::Kernel, ::Type{<:RowVecs{T}}; atol=__ATOL,
+    rng::AbstractRNG, k::Kernel, ::Type{<:RowVecs{T}}; dim_in=2, kwargs...,
 ) where {T<:Real}
     test_interface(
         k,
-        RowVecs(randn(rng, T, 3, 2)),
-        RowVecs(randn(rng, T, 3, 2)),
-        RowVecs(randn(rng, T, 2, 2));
-        atol=atol,
+        RowVecs(randn(rng, T, 3, dim_in)),
+        RowVecs(randn(rng, T, 3, dim_in)),
+        RowVecs(randn(rng, T, 2, dim_in));
+        kwargs...,
     )
 end
 
-function test_interface(k::Kernel, T::Type{<:AbstractVector}; atol=__ATOL)
-    test_interface(Random.GLOBAL_RNG, k, T)
+function test_interface(k::Kernel, T::Type{<:AbstractVector}; kwargs...)
+    test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
 end
 
-function test_interface(rng::AbstractRNG, k::Kernel, T::Type{<:Real}; atol=__ATOL)
-    test_interface(rng, k, Vector{T}; atol=atol)
-    test_interface(rng, k, ColVecs{T} atol=atol)
-    test_interface(rng, k, RowVecs{T} atol=atol)
+function test_interface(rng::AbstractRNG, k::Kernel, T::Type{<:Real}; kwargs...)
+    test_interface(rng, k, Vector{T}; kwargs...)
+    test_interface(rng, k, ColVecs{T}; kwargs...)
+    test_interface(rng, k, RowVecs{T}; kwargs...)
 end
 
-function test_interface(k::Kernel, T::Type{<:Real}; atol=__ATOL)
-    test_interface(Random.GLOBAL_RNG, k, T; atol=atol)
+function test_interface(k::Kernel, T::Type{<:Real}; kwargs...)
+    test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
 end
 
 end # module

@@ -3,7 +3,7 @@
     v2 = rand(3)
     m1 = rand(3, 4)
     m2 = rand(3, 4)
-    maha = ones(3, 3)
+    maha = Matrix{Float64}(I, 3, 3)
     v = 3
     k = PiecewisePolynomialKernel{v}(maha)
 
@@ -16,7 +16,8 @@
     @test repr(k) == "Piecewise Polynomial Kernel (v = $(v), size(maha) = $(size(maha)))"
 
     # Standardised tests.
-    TestUtils.test_interface(k, Float64)
+    TestUtils.test_interface(k, ColVecs{Float64}; dim_in=3)
+    TestUtils.test_interface(k, RowVecs{Float64}; dim_in=3)
     # test_ADs(maha-> PiecewisePolynomialKernel(v=2, maha = maha), maha)
     @test_broken "Nothing passes (problem with Mahalanobis distance in Distances)"
 

@@ -11,7 +11,9 @@
     @test repr(k) == "Periodic Kernel, length(r) = $(length(r)))"
 
     # Standardised tests.
-    TestUtils.test_interface(k, Vector{Float64})
+    TestUtils.test_interface(PeriodicKernel(r=[0.9]), Vector{Float64})
+    TestUtils.test_interface(PeriodicKernel(r=[0.9, 0.9]), ColVecs{Float64})
+    TestUtils.test_interface(PeriodicKernel(r=[0.8, 0.7]), RowVecs{Float64})
     # test_ADs(r->PeriodicKernel(r =exp.(r)), log.(r), ADs = [:ForwardDiff, :ReverseDiff])
     @test_broken "Undefined adjoint for Sinus metric, and failing randomly for ForwardDiff and ReverseDiff"
     test_params(k, (r,))

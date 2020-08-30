@@ -31,8 +31,14 @@
     @test k3(v1, v2) ≈ 1 / 252 * minXY^7 + 1 / 720 * minXY^4 * euclidean(v1, v2) *
         ( 5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2 )
 
-    # Standardised tests.
-    TestUtils.test_interface(k, Float64)
+    # Standardised tests. Requires careful input choice.
+    x0 = rand(3)
+    x1 = rand(3)
+    x2 = rand(2)
+    TestUtils.test_interface(k0, x0, x1, x2)
+    TestUtils.test_interface(k1, x0, x1, x2)
+    TestUtils.test_interface(k2, x0, x1, x2)
+    TestUtils.test_interface(k3, x0, x1, x2)
     # test_ADs(()->WienerKernel(i=1))
     @test_broken "No tests passing"
 end
