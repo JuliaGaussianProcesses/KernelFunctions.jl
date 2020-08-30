@@ -24,39 +24,13 @@
         end
     end
 
-    @testset "kernelmatrix and kerneldiagmatrix" begin
-        X = rand(rng, 2, 10)
-        x_cols = ColVecs(X)
-        x_rows = RowVecs(X')
-        Y = rand(rng, 2, 10)
-        y_cols = ColVecs(Y)
-        y_rows = RowVecs(Y')
-
-        trueX = kernelmatrix(k1, X[1, :]) .* kernelmatrix(k2, X[2, :])
-        trueXY = kernelmatrix(k1, X[1, :], Y[1, :]) .* kernelmatrix(k2, X[2, :], Y[2, :])
-        tmp = Matrix{Float64}(undef, 10, 10)
-        tmp_diag = Vector{Float64}(undef, 10)
-
-        for kernel in (kernel1, kernel2), (x, y) in ((x_cols, y_cols), (x_rows, y_rows))
-            @test kernelmatrix(kernel, x) ≈ trueX
-
-            @test kernelmatrix(kernel, x, y) ≈ trueXY
-
-            fill!(tmp, 0)
-            kernelmatrix!(tmp, kernel, x)
-            @test tmp ≈ trueX
-
-            fill!(tmp, 0)
-            kernelmatrix!(tmp, kernel, x, y)
-            @test tmp ≈ trueXY
-
-            @test kerneldiagmatrix(kernel, x) ≈ diag(kernelmatrix(kernel, x))
-
-            fill!(tmp_diag, 0)
-            kerneldiagmatrix!(tmp_diag, kernel, x)
-            @test tmp_diag ≈ diag(kernelmatrix(kernel, x))
-        end
-    end
+    # Standardised tests.
+    TestUtils.test_interface(k, Float64)
+    test_ADs(
+        ()->TensorProduct(SqExponentialKernel(), LinearKernel());
+        dims = [2, 2],
+    ) # ADs = [:ForwardDiff, :ReverseDiff])
+    test_params(TensorProduct(k1, k2), (k1, k2))
 
     @testset "single kernel" begin
         kernel = TensorProduct(k1)
@@ -70,48 +44,8 @@
             end
         end
 
-        @testset "kernelmatrix" begin
-            N = 10
-
-            x = randn(rng, N)
-            y = randn(rng, N)
-            vectors = (x, y)
-
-            X = reshape(x, 1, :)
-            x_cols = ColVecs(X)
-            x_rows = RowVecs(X')
-            Y = reshape(y, 1, :)
-            y_cols = ColVecs(Y)
-            y_rows = RowVecs(Y')
-
-            trueX = kernelmatrix(k1, x)
-            trueXY = kernelmatrix(k1, x, y)
-            tmp = Matrix{Float64}(undef, N, N)
-            tmp_diag = Vector{Float64}(undef, N)
-
-            for (x, y) in ((x, y), (x_cols, y_cols), (x_rows, y_rows))
-
-                @test kernelmatrix(kernel, x) ≈ trueX
-
-                @test kernelmatrix(kernel, x, y) ≈ trueXY
-
-                fill!(tmp, 0)
-                kernelmatrix!(tmp, kernel, x)
-                @test tmp ≈ trueX
-
-                fill!(tmp, 0)
-                kernelmatrix!(tmp, kernel, x, y)
-                @test tmp ≈ trueXY
-
-                @test kerneldiagmatrix(kernel, x) ≈ diag(kernelmatrix(kernel, x))
-
-                fill!(tmp_diag, 0)
-                kerneldiagmatrix!(tmp_diag, kernel, x)
-                @test tmp_diag ≈ diag(kernelmatrix(kernel, x))
-            end
+        # Standardised tests.
+        TestUtils.test_interface(k, Float64)
         end
     end
-    test_ADs(()->TensorProduct(SqExponentialKernel(), LinearKernel()), dims = [2, 2]) # ADs = [:ForwardDiff, :ReverseDiff])
-
-    test_params(TensorProduct(k1, k2), (k1, k2))
 end
