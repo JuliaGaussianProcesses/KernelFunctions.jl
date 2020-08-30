@@ -25,7 +25,8 @@
     end
 
     # Standardised tests.
-    TestUtils.test_interface(k, Float64)
+    TestUtils.test_interface(kernel1, ColVecs{Float64})
+    TestUtils.test_interface(kernel1, RowVecs{Float64})
     test_ADs(
         ()->TensorProduct(SqExponentialKernel(), LinearKernel());
         dims = [2, 2],
@@ -42,10 +43,6 @@
 
                 @test kernel(x, y) == val
             end
-        end
-
-        # Standardised tests.
-        TestUtils.test_interface(k, Float64)
         end
     end
 end

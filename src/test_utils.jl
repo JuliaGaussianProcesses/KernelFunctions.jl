@@ -35,7 +35,6 @@ function test_interface(
     atol=__ATOL,
 )
     # TODO: uncomment the tests of ternary kerneldiagmatrix.
-    # TODO: add in-place tests.
 
     # Ensure that we have the required inputs.
     @assert length(x0) == length(x1)

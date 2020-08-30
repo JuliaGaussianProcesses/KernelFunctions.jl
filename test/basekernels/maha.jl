@@ -5,7 +5,7 @@
     v1 = rand(rng, D_in)
     v2 = rand(rng, D_in)
 
-    P_ = randn(3, 3)
+    P_ = randn(D_in, D_in)
     P = collect(Symmetric(P_ * P_' + I))
     k = MahalanobisKernel(P=P)
 
@@ -21,13 +21,13 @@
         x0 = ColVecs(randn(D_in, 3))
         x1 = ColVecs(randn(D_in, 3))
         x2 = ColVecs(randn(D_in, 2))
-        TestUtils.test_interface(k, Float64)
+        TestUtils.test_interface(k, x0, x1, x2)
     end
     @testset "RowVecs" begin
-        x0 = ColVecs(randn(3, D_in))
-        x1 = ColVecs(randn(3, D_in))
-        x2 = ColVecs(randn(2, D_in))
-        TestUtils.test_interface(k, Float64)
+        x0 = RowVecs(randn(3, D_in))
+        x1 = RowVecs(randn(3, D_in))
+        x2 = RowVecs(randn(2, D_in))
+        TestUtils.test_interface(k, x0, x1, x2)
     end
     test_params(k, (P,))
 end
