@@ -1,11 +1,13 @@
 @testset "sm" begin
-    v1 = rand(5)
-    v2 = rand(5)
+
+    D_in = 5
+    v1 = rand(D_in)
+    v2 = rand(D_in)
 
     αs₁ = rand(3)
-    αs₂ = rand(5, 3)
-    γs = rand(5, 3)
-    ωs = rand(5, 3)
+    αs₂ = rand(D_in, 3)
+    γs = rand(D_in, 3)
+    ωs = rand(D_in, 3)
 
     k1 = spectral_mixture_kernel(αs₁, γs, ωs)
     k2 = spectral_mixture_product_kernel(αs₂, γs, ωs)
@@ -27,8 +29,21 @@
     @test_throws DimensionMismatch spectral_mixture_kernel(rand(3) ,rand(4,3), rand(5,3))
     @test_throws DimensionMismatch spectral_mixture_product_kernel(rand(5,3) ,rand(4,3), rand(5,3))
 
-    # Standardised tests.
-    TestUtils.test_interface(k, Float64)
+    # Standardised tests. Choose input dims carefully.
+    @testset "ColVecs" begin
+        x0 = ColVecs(randn(D_in, 3))
+        x1 = ColVecs(randn(D_in, 3))
+        x2 = ColVecs(randn(D_in, 2))
+        TestUtils.test_interface(k1, x0, x1, x2)
+        TestUtils.test_interface(k2, x0, x1, x2)
+    end
+    @testset "RowVecs" begin
+        x0 = RowVecs(randn(3, D_in))
+        x1 = RowVecs(randn(3, D_in))
+        x2 = RowVecs(randn(2, D_in))
+        TestUtils.test_interface(k1, x0, x1, x2)
+        TestUtils.test_interface(k2, x0, x1, x2)
+    end
     # test_ADs(x->spectral_mixture_kernel(exp.(x[1:3]), reshape(x[4:18], 5, 3), reshape(x[19:end], 5, 3)), vcat(log.(αs₁), γs[:], ωs[:]), dims = [5,5])
     @test_broken "No tests passing (BaseKernel)"
 end
