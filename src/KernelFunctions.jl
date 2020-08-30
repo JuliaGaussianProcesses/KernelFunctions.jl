@@ -58,6 +58,7 @@ include("utils.jl")
 include(joinpath("distances", "pairwise.jl"))
 include(joinpath("distances", "dotproduct.jl"))
 include(joinpath("distances", "delta.jl"))
+include(joinpath("distances", "mahalanobis"))
 include(joinpath("distances", "sinus.jl"))
 include(joinpath("transform", "transform.jl"))
 
