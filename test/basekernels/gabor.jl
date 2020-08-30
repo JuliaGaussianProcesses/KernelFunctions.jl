@@ -6,7 +6,7 @@
     @test k.ell ≈ ell atol=1e-5
     @test k.p ≈ p atol=1e-5
 
-    k_manual = exp(-sqeuclidean(v1, v2) / (k.ell^2)) * cospi(euclidean(v1, v2) / k.p)
+    k_manual = exp(-sqeuclidean(v1, v2) / (2 * k.ell^2)) * cospi(euclidean(v1, v2) / k.p)
     @test k(v1,v2) ≈ k_manual atol=1e-5
 
     lhs_manual = transform(SqExponentialKernel(), 1/k.ell)(v1,v2)
