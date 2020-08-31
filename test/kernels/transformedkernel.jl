@@ -50,6 +50,18 @@
             tmp_diag = Vector{Float64}(undef, length(x))
             @test kerneldiagmatrix!(tmp_diag, kt, x) ≈ kerneldiagmatrix(kt, x)
         end
+
+        @testset "mixed inputs" begin
+            k = transform(SqExponentialKernel(), 10.0)
+            x = rand(rng, 5, 3)
+            X = collect(eachcol(x))
+            Y = KernelFunctions.ColVecs(x)
+            kernelmatrix(k, X, Y) # Works!
+            @test_nowarn Zygote.gradient(k) do 
+                sum(kernelmatrix(k, X, Y))
+            end
+            @test kernelmatrix(k, X, Y) ≈ kernelmatrix(k, X, X) ≈ kernelmatrix(k, Y, Y)
+        end
     end
     test_ADs(x->transform(SqExponentialKernel(), x[1]), rand(1))# ADs = [:ForwardDiff, :ReverseDiff])
     # Test implicit gradients
