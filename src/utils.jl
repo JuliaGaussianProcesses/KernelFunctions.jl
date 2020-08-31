@@ -80,10 +80,10 @@ dim(x::RowVecs) = size(x.X, 2)
 pairwise(d::PreMetric, x::RowVecs) = Distances.pairwise(d, x.X; dims=1)
 pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = Distances.pairwise(d, x.X, y.X; dims=1)
 function pairwise(d::PreMetric, x::AbstractVector, y::RowVecs)
-    return Distances.pairwise(d, transpose(reduce(hcat, x)), y.X; dims=1)
+    return Distances.pairwise(d, permutedims(reduce(hcat, x)), y.X; dims=1)
 end
 function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector)
-    return Distances.pairwise(d, x.X, transpose(reduce(hcat, y)); dims=1)
+    return Distances.pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
 end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs)
     return Distances.pairwise!(out, d, x.X; dims=1)
