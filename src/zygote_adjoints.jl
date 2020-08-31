@@ -62,19 +62,19 @@ end
 @adjoint function ColVecs(X::AbstractMatrix)
     back(Δ::NamedTuple) = (Δ.X,)
     back(Δ::AbstractMatrix) = (Δ,)
-    function back(Δ::AbstractVector{<:AbstractVector{<:Real}})
+    function ColVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
         throw(error("In slow method"))
     end
-    return ColVecs(X), back
+    return ColVecs(X), ColVecs_pullback
 end
 
 @adjoint function RowVecs(X::AbstractMatrix)
     back(Δ::NamedTuple) = (Δ.X,)
     back(Δ::AbstractMatrix) = (Δ,)
-    function back(Δ::AbstractVector{<:AbstractVector{<:Real}})
+    function RowVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
         throw(error("In slow method"))
     end
-    return RowVecs(X), back
+    return RowVecs(X), RowVecs_pullback
 end
 
 @adjoint function Base.map(t::Transform, X::ColVecs)
@@ -86,13 +86,13 @@ end
 end
 
 @adjoint function (dist::Distances.SqMahalanobis)(a, b)
-    function back(Δ::Real)
+    function SqMahalanobis_pullback(Δ::Real)
         B_Bᵀ = dist.qmat + transpose(dist.qmat)
         a_b = a - b
         δa = (B_Bᵀ * a_b) * Δ
         return (qmat = (a_b * a_b') * Δ,), δa, -δa 
     end
-  return evaluate(dist, a, b), back
+  return evaluate(dist, a, b), SqMahalanobis_pullback
 end
 
 
@@ -101,8 +101,8 @@ end
     a::AbstractMatrix, 
     b::AbstractMatrix;
     dims::Union{Nothing,Integer}=nothing
-    )
-    function back(Δ::AbstractMatrix)
+)
+    function pairwise_pullback(Δ::AbstractMatrix)
         B_Bᵀ = dist.qmat + transpose(dist.qmat)
         a_b = map(
             x -> (first(last(x)) - last(last(x)))*first(x), 
@@ -115,15 +115,15 @@ end
         δB = sum(map(x -> x*transpose(x), a_b))
         return (qmat=δB,), δa, -δa
     end
-    return Distances.pairwise(dist, a, b, dims=dims), back
+    return Distances.pairwise(dist, a, b, dims=dims), pairwise_pullback
 end
 
 @adjoint function Distances.pairwise(
-  dist::SqMahalanobis, 
-  a::AbstractMatrix;
-  dims::Union{Nothing,Integer}=nothing
-  )
-  function back(Δ::AbstractMatrix)
+    dist::SqMahalanobis, 
+    a::AbstractMatrix;
+    dims::Union{Nothing,Integer}=nothing
+)
+  function pairwise_pullback(Δ::AbstractMatrix)
       B_Bᵀ = dist.qmat + transpose(dist.qmat)
       a_a = map(
           x -> (first(last(x)) - last(last(x)))*first(x), 
@@ -136,6 +136,6 @@ end
       δB = sum(map(x -> x*transpose(x), a_a))
       return (qmat=δB,), δa
   end
-  return Distances.pairwise(dist, a, b, dims=dims), back
+  return Distances.pairwise(dist, a, b, dims=dims), pairwise_pullback
 end
 
