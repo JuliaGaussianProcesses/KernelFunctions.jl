@@ -54,13 +54,17 @@
         @testset "mixed inputs" begin
             k = transform(SqExponentialKernel(), 10.0)
             x = rand(rng, 5, 3)
-            X = collect(eachcol(x))
-            Y = KernelFunctions.ColVecs(x)
-            kernelmatrix(k, X, Y) # Works!
-            @test_nowarn Zygote.gradient(k) do 
-                sum(kernelmatrix(k, X, Y))
-            end
-            @test kernelmatrix(k, X, Y) ≈ kernelmatrix(k, X, X) ≈ kernelmatrix(k, Y, Y)
+            X1 = collect(eachcol(x))
+            Y1 = KernelFunctions.ColVecs(x)
+            @test_nowarn Zygote.gradient(k-> sum(kernelmatrix(k, X1, Y1)), k)
+            @test_nowarn Zygote.gradient(k-> sum(kernelmatrix(k, Y1, X1)), k)
+            @test kernelmatrix(k, X1, Y1) ≈ kernelmatrix(k, X1, X1) ≈ kernelmatrix(k, Y1, Y1)
+
+            X2 = collect(eachrow(x))
+            Y2 = KernelFunctions.RowVecs(x)
+            @test_nowarn Zygote.gradient(k-> sum(kernelmatrix(k, X2, Y2)), k)
+            @test_nowarn Zygote.gradient(k-> sum(kernelmatrix(k, Y2, X2)), k)
+            @test kernelmatrix(k, X2, Y2) ≈ kernelmatrix(k, X2, X2) ≈ kernelmatrix(k, Y2, Y2)
         end
     end
     test_ADs(x->transform(SqExponentialKernel(), x[1]), rand(1))# ADs = [:ForwardDiff, :ReverseDiff])

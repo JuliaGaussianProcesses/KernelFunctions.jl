@@ -89,7 +89,7 @@ function kernelmatrix(κ::TransformedKernel, x::AbstractVector)
     return kernelmatrix(kernel(κ), _map(κ.transform, x))
 end
 
-function kernelmatrix(κ::TransformedKernel, x::AbstractVector, y::AbstractVector)
+function kernelmatrix(κ::TransformedKernel, x::T, y::T) where {T <: AbstractVector}
     return kernelmatrix(kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
 end
 
@@ -99,4 +99,8 @@ end
 
 function kernelmatrix(κ::TransformedKernel, x::Union{RowVecs,ColVecs}, y::AbstractVector)
     return kernelmatrix(kernel(κ), _map(κ.transform, collect(x)), _map(κ.transform, y))
+end
+
+function kernelmatrix(κ::TransformedKernel, x::Union{RowVecs,ColVecs}, y::Union{RowVecs,ColVecs})
+    return kernelmatrix(kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
 end
