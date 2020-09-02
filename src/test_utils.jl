@@ -39,8 +39,6 @@ function test_interface(
     # Ensure that we have the required inputs.
     @assert length(x0) == length(x1)
     @assert length(x0) ≠ length(x2)
-    @assert length(x0) == length(x1)
-    @assert length(x0) ≠ length(x2)
 
     # Check that kerneldiagmatrix basically works.
     # @test kerneldiagmatrix(k, x0, x1) isa AbstractVector
