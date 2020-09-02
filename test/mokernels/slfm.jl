@@ -10,7 +10,7 @@
     k = LatentFactorMOKernel(
         [MaternKernel(), SqExponentialKernel(), FBMKernel()],
         IndependentMOKernel(GaussianKernel()),
-        rand(rng, out_dim, 3)
+        rand(rng, out_dim, 3),
     )
     @test k isa LatentFactorMOKernel
     @test k isa MOKernel
@@ -33,14 +33,15 @@
         k = LatentFactorMOKernel(
             [MaternKernel(), SqExponentialKernel(), FBMKernel()],
             IndependentMOKernel(GaussianKernel()),
-            A
+            A,
         )
         return k((x1, 1), (x2, 1))
     end
 
+    a = rand()
     @test all(
-        FiniteDifferences.j′vp(FDM, test_slfm, 1, k.A, x1[1][1], x2[1][1]) .≈ 
-        Zygote.pullback(test_slfm, k.A, x1[1][1], x2[1][1])[2](1)
+        FiniteDifferences.j′vp(FDM, test_slfm, a, k.A, x1[1][1], x2[1][1]) .≈ 
+        Zygote.pullback(test_slfm, k.A, x1[1][1], x2[1][1])[2](a)
         )
     
 end

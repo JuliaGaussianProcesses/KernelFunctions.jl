@@ -23,14 +23,14 @@ struct LatentFactorMOKernel{Tg, Te <: MOKernel, TA <: AbstractMatrix} <: MOKerne
     function LatentFactorMOKernel(g, e::MOKernel, A::AbstractMatrix)
         all(gi isa Kernel for gi in g) || error("`g` should be an collection of kernels")
         length(g) == size(A, 2) || 
-            error("Size of `A` not compatible to the given array of kernels `g`")
+            error("Size of `A` not compatible with the given array of kernels `g`")
         return new{typeof(g), typeof(e), typeof(A)}(g, e, A)
     end
 end
 
 function (κ::LatentFactorMOKernel)((x, px)::Tuple{Any, Int}, (y, py)::Tuple{Any, Int})
-        return sum(κ.A[px, q] * κ.g[q](x, y) * κ.A[py, q] for q in 1:length(κ.g)) + 
-            κ.e((x, px), (y, py))
+    cov_f = sum(κ.A[px, q] * κ.g[q](x, y) * κ.A[py, q] for q in 1:length(κ.g))    
+    return cov_f + κ.e((x, px), (y, py))
 end
 
 function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)

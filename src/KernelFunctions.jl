@@ -50,12 +50,6 @@ abstract type Transform end
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
-"""
-    MOKernel
-
-An abstract type for multi-output kernels.
-"""
-abstract type MOKernel <: Kernel end
 
 include("utils.jl")
 include("distances/pairwise.jl")
@@ -77,6 +71,7 @@ include("kernels/tensorproduct.jl")
 include("approximations/nystrom.jl")
 include("generic.jl")
 
+include("mokernels/mokernel.jl")
 include("mokernels/moinput.jl")
 include("mokernels/independent.jl")
 include("mokernels/slfm.jl")
