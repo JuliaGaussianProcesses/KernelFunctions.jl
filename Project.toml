@@ -1,6 +1,6 @@
 name = "KernelFunctions"
 uuid = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
-version = "0.7.1"
+version = "0.7.2"
 
 [deps]
 Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
