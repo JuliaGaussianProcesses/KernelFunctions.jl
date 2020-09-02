@@ -10,11 +10,13 @@ where the matrix P is the metric.
 """
 struct MahalanobisKernel{T<:Real, A<:AbstractMatrix{T}} <: SimpleKernel
     P::A
-    function MahalanobisKernel(P::AbstractMatrix{T}) where {T<:Real}
+    function MahalanobisKernel(; P::AbstractMatrix{T}) where {T<:Real}
         LinearAlgebra.checksquare(P)
         new{T,typeof(P)}(P)
     end
 end
+
+@functor MahalanobisKernel
 
 kappa(κ::MahalanobisKernel, d::T) where {T<:Real} = exp(-d)
 

@@ -17,6 +17,8 @@ struct FBMKernel{T<:Real} <: Kernel
     end
 end
 
+@functor FBMKernel
+
 function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modX = sum(abs2, x)
     modY = sum(abs2, y)

@@ -63,6 +63,8 @@ struct GammaExponentialKernel{Tγ<:Real} <: SimpleKernel
     end
 end
 
+@functor GammaExponentialKernel
+
 kappa(κ::GammaExponentialKernel, d²::Real) = exp(-d²^first(κ.γ))
 
 metric(::GammaExponentialKernel) = SqEuclidean()

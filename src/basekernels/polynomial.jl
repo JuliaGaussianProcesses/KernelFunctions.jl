@@ -14,6 +14,8 @@ struct LinearKernel{Tc<:Real} <: SimpleKernel
     end
 end
 
+@functor LinearKernel
+
 kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + first(κ.c)
 
 metric(::LinearKernel) = DotProduct()
@@ -37,6 +39,8 @@ struct PolynomialKernel{Td<:Real, Tc<:Real} <: SimpleKernel
         return new{Td, Tc}([d], [c])
     end
 end
+
+@functor PolynomialKernel
 
 kappa(κ::PolynomialKernel, xᵀy::Real) = (xᵀy + first(κ.c))^(first(κ.d))
 

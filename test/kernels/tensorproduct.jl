@@ -11,6 +11,7 @@
     kernel1 = TensorProduct(k1, k2)
     kernel2 = TensorProduct([k1, k2])
 
+    @test kernel1 == kernel2
     @test kernel1.kernels === (k1, k2) === TensorProduct((k1, k2)).kernels
     @test length(kernel1) == length(kernel2) == 2
     @test_throws DimensionMismatch kernel1(rand(3), rand(3))
@@ -111,4 +112,6 @@
         end
     end
     test_ADs(()->TensorProduct(SqExponentialKernel(), LinearKernel()), dims = [2, 2]) # ADs = [:ForwardDiff, :ReverseDiff])
+
+    test_params(TensorProduct(k1, k2), (k1, k2))
 end

@@ -9,16 +9,28 @@
     k3 = RationalQuadraticKernel()
     X = rand(rng, 2,2)
 
-    w = [2.0,0.5]
-    k = KernelSum([k1,k2],w)
+    k = KernelSum(k1,k2)
     ks1 = 2.0*k1
     ks2 = 0.5*k2
     @test length(k) == 2
-    @test k(v1, v2) == (2.0 * k1 + 0.5 * k2)(v1, v2)
+    @test string(k) == (
+        "Sum of 2 kernels:\n\tLinear Kernel (c = 0.0)\n\tSquared " *
+        "Exponential Kernel"
+    )
+    @test k(v1, v2) == (k1 + k2)(v1, v2)
     @test (k + k3)(v1,v2) ≈ (k3 + k)(v1, v2)
-    @test (k1 + k2)(v1, v2) == KernelSum([k1, k2])(v1, v2)
+    @test (k1 + k2)(v1, v2) == KernelSum(k1, k2)(v1, v2)
     @test (k + ks1)(v1, v2) ≈ (ks1 + k)(v1, v2)
-    @test (k + k)(v1, v2) == KernelSum([k1, k2, k1, k2], vcat(w, w))(v1, v2)
+    @test (k + k)(v1, v2) == KernelSum([k1, k2, k1, k2])(v1, v2)
+    @test KernelSum([k1, k2]) == KernelSum((k1, k2)) == k1 + k2
+
+    @test (KernelSum([k1, k2]) + KernelSum([k2, k1])).kernels == [k1, k2, k2, k1]
+    @test (KernelSum([k1, k2]) + k3).kernels == [k1, k2, k3]
+    @test (k3 + KernelSum([k1, k2])).kernels == [k3, k1, k2]
+
+    @test (KernelSum((k1, k2)) + KernelSum((k2, k1))).kernels == (k1, k2, k2, k1)
+    @test (KernelSum((k1, k2)) + k3).kernels == (k1, k2, k3)
+    @test (k3 + KernelSum((k1, k2))).kernels == (k3, k1, k2)
 
     @testset "kernelmatrix" begin
         rng = MersenneTwister(123456)
@@ -53,6 +65,7 @@
             @test kerneldiagmatrix!(tmp_diag, k, x) ≈ kerneldiagmatrix(k, x)
         end
     end
-    test_ADs(x->KernelSum([SqExponentialKernel(),LinearKernel(c= x[1])], x[2:3]), rand(3), ADs = [:ForwardDiff, :ReverseDiff])
-    @test_broken "Zygote failing because of mutating array"
+    test_ADs(x->KernelSum(SqExponentialKernel(),LinearKernel(c= x[1])), rand(1), ADs = [:ForwardDiff, :ReverseDiff, :Zygote])
+
+    test_params(k1 + k2, (k1, k2))
 end

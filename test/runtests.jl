@@ -1,4 +1,5 @@
 using KernelFunctions
+using AxisArrays
 using Distances
 using Kronecker
 using LinearAlgebra
@@ -42,10 +43,11 @@ using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs
 # 10. If utility files are required.
 @info "Packages Loaded"
 
+include("test_utils.jl")
+
 @testset "KernelFunctions" begin
 
     include("utils.jl")
-    include("utils_AD.jl")
 
     @testset "distances" begin
         include(joinpath("distances", "pairwise.jl"))
@@ -57,12 +59,19 @@ using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs
 
     @testset "transform" begin
         include(joinpath("transform", "transform.jl"))
+        print(" ")
         include(joinpath("transform", "scaletransform.jl"))
+        print(" ")
         include(joinpath("transform", "ardtransform.jl"))
+        print(" ")
         include(joinpath("transform", "lineartransform.jl"))
+        print(" ")
         include(joinpath("transform", "functiontransform.jl"))
+        print(" ")
         include(joinpath("transform", "selecttransform.jl"))
+        print(" ")
         include(joinpath("transform", "chaintransform.jl"))
+        print(" ")
     end
     @info "Ran tests on Transform"
 
@@ -118,5 +127,4 @@ using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs
 
     include("generic.jl")
     include("zygote_adjoints.jl")
-    include("trainable.jl")
 end

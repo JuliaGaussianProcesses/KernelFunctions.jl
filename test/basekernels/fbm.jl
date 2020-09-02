@@ -24,4 +24,6 @@
     @test repr(k) == "Fractional Brownian Motion Kernel (h = $(h))"
     test_ADs(FBMKernel, ADs = [:ReverseDiff])
     @test_broken "Tests failing for kernelmatrix(k, x) for ForwardDiff and Zygote"
+
+    test_params(k, ([h],))
 end
