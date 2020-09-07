@@ -12,7 +12,7 @@ export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!
 export transform
 export duplicate, set! # Helpers
 
-export Kernel
+export Kernel, MOKernel
 export ConstantKernel, WhiteKernel, EyeKernel, ZeroKernel, WienerKernel
 export CosineKernel
 export SqExponentialKernel, RBFKernel, GaussianKernel, SEKernel
@@ -36,7 +36,7 @@ export NystromFact, nystrom
 export spectral_mixture_kernel, spectral_mixture_product_kernel
 
 export MOInput
-export IndependentMOKernel
+export IndependentMOKernel, LatentFactorMOKernel
 
 using Compat
 using Requires
@@ -88,8 +88,10 @@ include(joinpath("kernels", "tensorproduct.jl"))
 include(joinpath("approximations", "nystrom.jl"))
 include("generic.jl")
 
+include(joinpath("mokernels", "mokernel.jl"))
 include(joinpath("mokernels", "moinput.jl"))
 include(joinpath("mokernels", "independent.jl"))
+include(joinpath("mokernels", "slfm.jl"))
 
 include("zygote_adjoints.jl")
 
