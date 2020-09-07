@@ -8,7 +8,7 @@
     P = Matrix(Cholesky(U, 'U', 0))
     @assert isposdef(P)
     k = MahalanobisKernel(P=P)
-  
+ 
     @test kappa(k, x) == exp(-x)
     @test k(v1, v2) ≈ exp(-sqmahalanobis(v1, v2, P))
     @test kappa(ExponentialKernel(), x) == kappa(k, x)

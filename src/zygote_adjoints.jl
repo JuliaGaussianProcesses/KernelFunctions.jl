@@ -92,5 +92,5 @@ end
         δa = (B_Bᵀ * a_b) * Δ
         return (qmat = (a_b * a_b') * Δ,), δa, -δa 
     end
-  return evaluate(dist, a, b), SqMahalanobis_pullback
+    return evaluate(dist, a, b), SqMahalanobis_pullback
 end
