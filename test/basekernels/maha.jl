@@ -33,7 +33,7 @@
     function test_sqmaha(U::UpperTriangular, v1::AbstractVector, v2::AbstractVector)
         return SqMahalanobis(Array(U'*U))(v1, v2)
     end
-    
+
     @test all(FiniteDifferences.j′vp(fdm, test_sqmaha, a, U, v1, v2)[1] .≈ 
     UpperTriangular(Zygote.pullback(test_sqmaha, U, v1, v2)[2](a)[1]))
     
