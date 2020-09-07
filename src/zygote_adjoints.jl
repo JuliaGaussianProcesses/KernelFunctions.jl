@@ -60,8 +60,8 @@ end
 end
 
 @adjoint function ColVecs(X::AbstractMatrix)
-    back(Δ::NamedTuple) = (Δ.X,)
-    back(Δ::AbstractMatrix) = (Δ,)
+    ColVecs_pullback(Δ::NamedTuple) = (Δ.X,)
+    ColVecs_pullback(Δ::AbstractMatrix) = (Δ,)
     function ColVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
         throw(error("In slow method"))
     end
@@ -69,8 +69,8 @@ end
 end
 
 @adjoint function RowVecs(X::AbstractMatrix)
-    back(Δ::NamedTuple) = (Δ.X,)
-    back(Δ::AbstractMatrix) = (Δ,)
+    RowVecs_pullback(Δ::NamedTuple) = (Δ.X,)
+    RowVecs_pullback(Δ::AbstractMatrix) = (Δ,)
     function RowVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
         throw(error("In slow method"))
     end

@@ -7,7 +7,7 @@
     U = UpperTriangular(rand(rng, 3,3))
     P = Matrix(Cholesky(U, 'U', 0))
     @assert isposdef(P)
-    k = MahalanobisKernel(P)
+    k = MahalanobisKernel(P=P)
   
     @test kappa(k, x) == exp(-x)
     @test k(v1, v2) ≈ exp(-sqmahalanobis(v1, v2, P))
@@ -23,7 +23,7 @@
     end
     
     function test_mahakernel(U::UpperTriangular, v1::AbstractVector, v2::AbstractVector)
-        return MahalanobisKernel(Array(U'*U))(v1, v2)
+        return MahalanobisKernel(P=Array(U'*U))(v1, v2)
     end
     
     @test_broken all(j′vp(fdm, test_mahakernel, 1, U, v1, v2) .≈
@@ -36,7 +36,7 @@
     @test_broken all(j′vp(fdm, test_sqmaha, 1, U, v1, v2) .≈ 
     Zygote.pullback(test_sqmaha, U, v1, v2)[2](1))
     
-    # test_ADs(U -> MahalanobisKernel(Array(U' * U)), U, ADs=[:Zygote])
+    # test_ADs(U -> MahalanobisKernel(P=Array(U' * U)), U, ADs=[:Zygote])
     @test_broken "Nothing passes (problem with Mahalanobis distance in Distances)"
 
     test_params(k, (P,))
