@@ -4,6 +4,10 @@ KernelFunctions. [Github](https://github.com/JuliaGaussianProcesses/KernelFuncti
 """
 module KernelFunctions
 
+@warn "SqExponentialKernel changed convention in version 0.8.0. This kernel now divides the
+	squared distance by 2 to better align itself with standard practice. This warning will
+	be removed in 0.9.0."
+
 export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!
 export transform
 export duplicate, set! # Helpers
