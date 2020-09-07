@@ -48,12 +48,15 @@ const LaplacianKernel = ExponentialKernel
 """
     GammaExponentialKernel(; γ = 2.0)
 
-The γ-exponential kernel is an isotropic Mercer kernel given by the formula:
+The γ-exponential kernel [1] is an isotropic Mercer kernel given by the formula:
 ```
     κ(x,y) = exp(-‖x-y‖^γ)
 ```
 Where `γ > 0`, (the keyword `γ` can be replaced by `gamma`)
-For `γ = 2`, see `SqExponentialKernel` and `γ = 1`, see `ExponentialKernel`
+For `γ = 2`, see `SqExponentialKernel` and `γ = 1`, see `ExponentialKernel`.
+
+[1] - Gaussian Processes for Machine Learning, Carl Edward Rasmussen and Christopher K. I.
+    Williams, MIT Press, 2006.
 """
 struct GammaExponentialKernel{Tγ<:Real} <: SimpleKernel
     γ::Vector{Tγ}

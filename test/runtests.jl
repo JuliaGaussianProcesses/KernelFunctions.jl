@@ -113,6 +113,7 @@ using TestUtils: test_params, test_AD
     @testset "multi_output" begin
         include(joinpath("mokernels", "moinput.jl"))
         include(joinpath("mokernels", "independent.jl"))
+        include(joinpath("mokernels", "slfm.jl"))
     end
     @info "Ran tests on Multi-Output Kernels"
 
