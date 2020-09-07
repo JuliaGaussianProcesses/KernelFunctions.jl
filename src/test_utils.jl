@@ -2,6 +2,7 @@ module TestUtils
 
 const __ATOL = 1e-9
 
+using FiniteDifferences
 using LinearAlgebra
 using KernelFunctions
 using Random
