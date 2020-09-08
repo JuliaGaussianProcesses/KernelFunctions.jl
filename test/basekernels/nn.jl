@@ -38,11 +38,10 @@
     @test kerneldiagmatrix(k, m1) ≈ A4 atol=1e-5
 
     A5 = ones(4,4)
-    @test_throws AssertionError kernelmatrix!(A5, k, m1, m2, obsdim=3)
-    @test_throws AssertionError kernelmatrix!(A5, k, m1, obsdim=3)
+    @test_throws AssertionError kernelmatrix!(A5, k, m1, m2; obsdim=3)
+    @test_throws AssertionError kernelmatrix!(A5, k, m1; obsdim=3)
     @test_throws DimensionMismatch kernelmatrix!(A5, k, ones(4,3), ones(3,4))
 
     @test k([x1], [x2]) ≈ k(x1, x2) atol=1e-5
-    test_ADs(NeuralNetworkKernel, ADs = [:ForwardDiff, :ReverseDiff])
-    @test_broken "Zygote uncompatible with BaseKernel"
+    test_ADs(NeuralNetworkKernel)
 end

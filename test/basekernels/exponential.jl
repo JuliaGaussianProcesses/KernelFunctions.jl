@@ -37,11 +37,7 @@
         @test metric(GammaExponentialKernel(γ=2.0)) == Euclidean()
         @test repr(k) == "Gamma Exponential Kernel (γ = $(γ))"
         @test KernelFunctions.iskroncompatible(k) == true
-        test_ADs(
-            γ -> GammaExponentialKernel(gamma=first(γ)), [1.0];
-            ADs = [:ForwardDiff, :ReverseDiff],
-        )
-        @test_broken "Zygote gradient given γ"
+        test_ADs(γ -> GammaExponentialKernel(gamma=first(γ)), [γ])
         test_params(k, ([γ],))
         #Coherence :
         @test isapprox(
