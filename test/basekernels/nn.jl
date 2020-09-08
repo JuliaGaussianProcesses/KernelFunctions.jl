@@ -6,6 +6,6 @@
 
     # Standardised tests.
     TestUtils.test_interface(k, Float64)
-    test_ADs(NeuralNetworkKernel, ADs = [:ForwardDiff, :ReverseDiff])
+    test_ADs(NeuralNetworkKernel)
     @test_broken "Zygote uncompatible with BaseKernel"
 end

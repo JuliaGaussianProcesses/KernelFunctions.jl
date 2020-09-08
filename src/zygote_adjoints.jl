@@ -60,21 +60,21 @@ end
 end
 
 @adjoint function ColVecs(X::AbstractMatrix)
-    back(Δ::NamedTuple) = (Δ.X,)
-    back(Δ::AbstractMatrix) = (Δ,)
-    function back(Δ::AbstractVector{<:AbstractVector{<:Real}})
+    ColVecs_pullback(Δ::NamedTuple) = (Δ.X,)
+    ColVecs_pullback(Δ::AbstractMatrix) = (Δ,)
+    function ColVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
         throw(error("In slow method"))
     end
-    return ColVecs(X), back
+    return ColVecs(X), ColVecs_pullback
 end
 
 @adjoint function RowVecs(X::AbstractMatrix)
-    back(Δ::NamedTuple) = (Δ.X,)
-    back(Δ::AbstractMatrix) = (Δ,)
-    function back(Δ::AbstractVector{<:AbstractVector{<:Real}})
+    RowVecs_pullback(Δ::NamedTuple) = (Δ.X,)
+    RowVecs_pullback(Δ::AbstractMatrix) = (Δ,)
+    function RowVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
         throw(error("In slow method"))
     end
-    return RowVecs(X), back
+    return RowVecs(X), RowVecs_pullback
 end
 
 @adjoint function Base.map(t::Transform, X::ColVecs)
@@ -83,4 +83,14 @@ end
 
 @adjoint function Base.map(t::Transform, X::RowVecs)
     pullback(_map, t, X)
+end
+
+@adjoint function (dist::Distances.SqMahalanobis)(a, b)
+    function SqMahalanobis_pullback(Δ::Real)
+        B_Bᵀ = dist.qmat + transpose(dist.qmat)
+        a_b = a - b
+        δa = (B_Bᵀ * a_b) * Δ
+        return (qmat = (a_b * a_b') * Δ,), δa, -δa 
+    end
+    return evaluate(dist, a, b), SqMahalanobis_pullback
 end
