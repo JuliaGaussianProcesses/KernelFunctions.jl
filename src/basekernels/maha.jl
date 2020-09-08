@@ -3,7 +3,7 @@
 
 Mahalanobis distance-based kernel given by
 ```math
-    κ(x,y) =  exp(-r^2), r^2 = maha(x,P,y) = (x-y)'*inv(P)*(x-y)
+    κ(x,y) =  exp(-r^2), r^2 = maha(x,P,y) = (x-y)'* P *(x-y)
 ```
 where the matrix P is the metric.
 
