@@ -9,7 +9,7 @@ using SpecialFunctions
 using Test
 using Flux
 
-import Pkg; Pkg.add(url="https://github.com/JuliaDiff/ForwardDiff.jl", rev="nansafe")
+using Pkg; Pkg.add(url="https://github.com/JuliaDiff/ForwardDiff.jl", rev="nansafe")
 import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs
