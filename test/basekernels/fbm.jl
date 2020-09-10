@@ -22,7 +22,6 @@
     @test kernelmatrix(k, x1*ones(1,1), x2*ones(1,1))[1] ≈ k(x1, x2) atol=1e-5
 
     @test repr(k) == "Fractional Brownian Motion Kernel (h = $(h))"
-    test_ADs(FBMKernel, ADs = [:ReverseDiff, :Zygote])
-    @test_broken "Tests failing for kernelmatrix(k, x) for ForwardDiff"
+    test_ADs(FBMKernel)
     test_params(k, ([h],))
 end
