@@ -56,23 +56,23 @@ function (::WienerKernel{1})(x, y)
     X_2 = sum(abs2, x)
     Y_2 = sum(abs2, y)
     minX2Y2 = min(X_2, Y_2)
-    return 1 / 3 * minX2Y2^(3/2) + 1 / 2 * minX2Y2 * euclidean(x, y)
+    return sqrt(minX2Y2)^3 / 3 + minX2Y2 * euclidean(x, y) / 2
 end
 
 function (::WienerKernel{2})(x, y)
     X = sqrt(sum(abs2, x))
     Y = sqrt(sum(abs2, y))
     minXY = min(X, Y)
-    return 1 / 20 * minXY^5 + 1 / 12 * minXY^3 * euclidean(x, y) *
-        ( X + Y - 1 / 2 * minXY )
+    return minXY^5 / 20 + minXY^3 * euclidean(x, y) *
+        ( X + Y - minXY / 2 ) / 12
 end
 
 function (::WienerKernel{3})(x, y)
     X = sqrt(sum(abs2, x))
     Y = sqrt(sum(abs2, y))
     minXY = min(X, Y)
-    return 1 / 252 * minXY^7 + 1 / 720 * minXY^4 * euclidean(x, y) *
-        ( 5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2 )
+    return minXY^7 / 252 + minXY^4 * euclidean(x, y) *
+        ( 5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2 ) / 720
 end
 
 function kernelmatrix(::WienerKernel{I}, x::ColVecs, y::ColVecs) where I
@@ -83,13 +83,13 @@ function kernelmatrix(::WienerKernel{I}, x::ColVecs, y::ColVecs) where I
     if I == 0
         return minXY
     elseif I == 1
-        return (1 / 3) .* minXY.^3 .+ (1 / 2) .* minXY.^2 .* pairwise(Euclidean(), x, y)
+        return minXY.^3 ./ 3 .+ minXY.^2 .* pairwise(Euclidean(), x, y) ./ 2
     elseif I == 2
-        return (1 / 20) .* minXY.^5 .+ (1 / 12) .* minXY.^3 .* pairwise(Euclidean(), x, y) .*
-            ( X + Y .- (1 / 2) .* minXY )
+        return minXY.^5 ./ 20 .+ minXY.^3 .* pairwise(Euclidean(), x, y) .*
+            ( X + Y .- minXY ./ 2 ) ./ 12
     elseif I == 3
-        return (1 / 252) .* minXY.^7 .+ (1 / 720) .* minXY.^4 .* pairwise(Euclidean(), x, y) .*
-            ( 5 .* max.(permutedims(X), Y).^2 .+ 2 .* X .* Y .+ 3 .* minXY.^2 )
+        return minXY.^7 ./ 252 .+ minXY.^4 .* pairwise(Euclidean(), x, y) .*
+            ( 5 .* max.(permutedims(X), Y).^2 .+ 2 .* X .* Y .+ 3 .* minXY.^2 ) ./ 720
     end
     return error("Invalid I=$I")
 end
@@ -102,13 +102,13 @@ function kernelmatrix(::WienerKernel{I}, x::RowVecs, y::RowVecs) where I
     if I == 0
         return minXY
     elseif I == 1
-        return (1 / 3) .* minXY.^3 .+ (1 / 2) .* minXY.^2 .* pairwise(Euclidean(), x, y)
+        return minXY.^3 ./ 3 .+ minXY.^2 .* pairwise(Euclidean(), x, y) ./ 2
     elseif I == 2
-        return (1 / 20) .* minXY.^5 .+ (1 / 12) .* minXY.^3 .* pairwise(Euclidean(), x, y) .*
-            ( X .+ Y .- (1 / 2) .* minXY )
+        return minXY.^5 ./ 20 .+ minXY.^3 .* pairwise(Euclidean(), x, y) .*
+            ( X + Y .- minXY ./ 2 ) ./ 12
     elseif I == 3
-        return (1 / 252) .* minXY.^7 .+ (1 / 720) .* minXY.^4 .* pairwise(Euclidean(), x, y) .*
-            ( 5 .* max.(permutedims(X), Y).^2 .+ 2 .* X .* Y .+ 3 .* minXY.^2 )
+        return minXY.^7 ./ 252 .+ minXY.^4 .* pairwise(Euclidean(), x, y) .*
+            ( 5 .* max.(permutedims(X), Y).^2 .+ 2 .* X .* Y .+ 3 .* minXY.^2 ) ./ 720
     end
     return error("Invalid I=$I")
 end
