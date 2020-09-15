@@ -17,6 +17,6 @@
     @test k.ell ≈ 1.0 atol=1e-5
     @test k.p ≈ 1.0 atol=1e-5
     @test repr(k) == "Gabor Kernel (ell = 1.0, p = 1.0)"
-    test_ADs(x -> GaborKernel(ell = x[1], p = x[2]), [ell, p], ADs = [:Zygote])
-    # Tests are also failing randomly for ForwardDiff and ReverseDiff but randomly
+    test_ADs(x -> GaborKernel(ell = x[1], p = x[2]), [ell, p], ADs = [:Zygote, :ForwardDiff])
+    @test_broken "Tests are also failing randomly for ReverseDiff but randomly"
 end

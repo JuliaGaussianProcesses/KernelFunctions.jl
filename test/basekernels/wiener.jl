@@ -51,6 +51,6 @@
     @test kernelmatrix(k2, x1*ones(1,1), x2*ones(1,1))[1] ≈ k2(x1, x2) atol=1e-5
     @test kernelmatrix(k3, x1*ones(1,1), x2*ones(1,1))[1] ≈ k3(x1, x2) atol=1e-5
 
-    # test_ADs(()->WienerKernel(i=1))
-    @test_broken "No tests passing"
+    test_ADs(()->WienerKernel(i=1), ADs=[:ForwardDiff])
+    @test_broken "Zygote and ReverseDiff fail"
 end

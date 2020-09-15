@@ -8,6 +8,10 @@ using Random
 using SpecialFunctions
 using Test
 using Flux
+
+using Pkg
+Pkg.add(PackageSpec(; url="https://github.com/JuliaDiff/ForwardDiff.jl", rev="nansafe"))
+
 import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs
