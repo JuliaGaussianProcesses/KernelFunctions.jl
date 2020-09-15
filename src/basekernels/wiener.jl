@@ -75,4 +75,42 @@ function (::WienerKernel{3})(x, y)
         ( 5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2 )
 end
 
+function kernelmatrix(::WienerKernel{I}, x::ColVecs, y::ColVecs) where I
+    validate_inputs(x, y)
+    X = sqrt.(sum(x.X .* x.X; dims=1))
+    Y = sqrt.(sum(y.X .* y.X; dims=1))
+    minXY = min.(permutedims(X), Y)
+    if I == 0
+        return minXY
+    elseif I == 1
+        return (1 / 3) .* minXY.^3 .+ (1 / 2) .* minXY.^2 .* pairwise(Euclidean(), x, y)
+    elseif I == 2
+        return (1 / 20) .* minXY.^5 .+ (1 / 12) .* minXY.^3 .* pairwise(Euclidean(), x, y) .*
+            ( X + Y .- (1 / 2) .* minXY )
+    elseif I == 3
+        return (1 / 252) .* minXY.^7 .+ (1 / 720) .* minXY.^4 .* pairwise(Euclidean(), x, y) .*
+            ( 5 .* max.(permutedims(X), Y).^2 .+ 2 .* X .* Y .+ 3 .* minXY.^2 )
+    end
+    return error("Invalid I=$I")
+end
+
+function kernelmatrix(::WienerKernel{I}, x::RowVecs, y::RowVecs) where I
+    validate_inputs(x, y)
+    X = sqrt.(sum(x.X .* x.X; dims=2))
+    Y = sqrt.(sum(y.X .* y.X; dims=2))
+    minXY = min.(permutedims(X), Y)
+    if I == 0
+        return minXY
+    elseif I == 1
+        return (1 / 3) .* minXY.^3 .+ (1 / 2) .* minXY.^2 .* pairwise(Euclidean(), x, y)
+    elseif I == 2
+        return (1 / 20) .* minXY.^5 .+ (1 / 12) .* minXY.^3 .* pairwise(Euclidean(), x, y) .*
+            ( X .+ Y .- (1 / 2) .* minXY )
+    elseif I == 3
+        return (1 / 252) .* minXY.^7 .+ (1 / 720) .* minXY.^4 .* pairwise(Euclidean(), x, y) .*
+            ( 5 .* max.(permutedims(X), Y).^2 .+ 2 .* X .* Y .+ 3 .* minXY.^2 )
+    end
+    return error("Invalid I=$I")
+end
+
 Base.show(io::IO, ::WienerKernel{I}) where I = print(io, I, "-times integrated Wiener kernel")
