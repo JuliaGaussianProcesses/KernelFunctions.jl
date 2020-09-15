@@ -55,8 +55,8 @@ end
 function (::WienerKernel{1})(x, y)
     X_2 = sum(abs2, x)
     Y_2 = sum(abs2, y)
-    minXY = sqrt(min(X_2, Y_2))
-    return 1 / 3 * minXY^3 + 1 / 2 * minXY^2 * euclidean(x, y)
+    minX2Y2 = min(X_2, Y_2)
+    return 1 / 3 * minX2Y2^(3/2) + 1 / 2 * minX2Y2 * euclidean(x, y)
 end
 
 function (::WienerKernel{2})(x, y)
