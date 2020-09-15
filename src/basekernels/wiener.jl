@@ -102,7 +102,7 @@ function kernelmatrix(::WienerKernel{I}, x::RowVecs, y::RowVecs) where I
     if I == 0
         return minXY
     elseif I == 1
-        return (1 / 3) .* minXY.^3 .+ (1 / 2) .* minXY.^2 .* Distances.pairwise(Euclidean(), x, y)
+        return (1 / 3) .* minXY.^3 .+ (1 / 2) .* minXY.^2 .* pairwise(Euclidean(), x, y)
     elseif I == 2
         return (1 / 20) .* minXY.^5 .+ (1 / 12) .* minXY.^3 .* pairwise(Euclidean(), x, y) .*
             ( X .+ Y .- (1 / 2) .* minXY )
