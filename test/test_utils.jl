@@ -10,7 +10,7 @@ end
 
 # AD utilities
 
-const FDM = FiniteDifferences.central_fdm(5, 1)
+const FDM = FiniteDifferences.central_fdm(7, 1)
 
 gradient(f, s::Symbol, args) = gradient(f, Val(s), args)
 

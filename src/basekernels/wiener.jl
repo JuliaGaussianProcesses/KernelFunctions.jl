@@ -47,15 +47,15 @@ function WienerKernel(;i::Integer=0)
 end
 
 function (::WienerKernel{0})(x, y)
-    X = sqrt(sum(abs2, x))
-    Y = sqrt(sum(abs2, y))
-    return min(X, Y)
+    X_2 = sum(abs2, x)
+    Y_2 = sum(abs2, y)
+    return sqrt(min(X_2, Y_2))
 end
 
 function (::WienerKernel{1})(x, y)
-    X = sqrt(sum(abs2, x))
-    Y = sqrt(sum(abs2, y))
-    minXY = min(X, Y)
+    X_2 = sum(abs2, x)
+    Y_2 = sum(abs2, y)
+    minXY = sqrt(min(X_2, Y_2))
     return 1 / 3 * minXY^3 + 1 / 2 * minXY^2 * euclidean(x, y)
 end
 
@@ -102,7 +102,7 @@ function kernelmatrix(::WienerKernel{I}, x::RowVecs, y::RowVecs) where I
     if I == 0
         return minXY
     elseif I == 1
-        return (1 / 3) .* minXY.^3 .+ (1 / 2) .* minXY.^2 .* pairwise(Euclidean(), x, y)
+        return (1 / 3) .* minXY.^3 .+ (1 / 2) .* minXY.^2 .* Distances.pairwise(Euclidean(), x, y)
     elseif I == 2
         return (1 / 20) .* minXY.^5 .+ (1 / 12) .* minXY.^3 .* pairwise(Euclidean(), x, y) .*
             ( X .+ Y .- (1 / 2) .* minXY )
