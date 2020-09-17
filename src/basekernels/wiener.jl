@@ -91,7 +91,6 @@ function kernelmatrix(::WienerKernel{I}, x::ColVecs, y::ColVecs) where I
         return minXY.^7 ./ 252 .+ minXY.^4 .* pairwise(Euclidean(), x, y) .*
             ( 5 .* max.(permutedims(X), Y).^2 .+ 2 .* X .* Y .+ 3 .* minXY.^2 ) ./ 720
     end
-    return error("Invalid I=$I")
 end
 
 function kernelmatrix(::WienerKernel{I}, x::RowVecs, y::RowVecs) where I
@@ -110,7 +109,6 @@ function kernelmatrix(::WienerKernel{I}, x::RowVecs, y::RowVecs) where I
         return minXY.^7 ./ 252 .+ minXY.^4 .* pairwise(Euclidean(), x, y) .*
             ( 5 .* max.(permutedims(X), Y).^2 .+ 2 .* X .* Y .+ 3 .* minXY.^2 ) ./ 720
     end
-    return error("Invalid I=$I")
 end
 
 Base.show(io::IO, ::WienerKernel{I}) where I = print(io, I, "-times integrated Wiener kernel")
