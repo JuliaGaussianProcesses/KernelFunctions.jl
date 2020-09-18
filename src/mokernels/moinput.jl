@@ -10,7 +10,7 @@ end
 
 Base.size(inp::MOInput) = (inp.out_dim * size(inp.x, 1),)
 
-function Base.getindex(inp::MOInput, ind::Integer)
+@inline function Base.getindex(inp::MOInput, ind::Integer)
     @boundscheck checkbounds(inp, ind)
     out_dim = ind ÷ length(inp.x) + 1
     ind = ind % length(inp.x)
