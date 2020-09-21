@@ -12,7 +12,7 @@ import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 
-using TestUtils: test_params, test_AD
+using KernelFunctions.TestUtils: test_interface
 
 # Writing tests:
 # 1. The file structure of the test should match precisely the file structure of src.
@@ -42,8 +42,11 @@ using TestUtils: test_params, test_AD
 # 9. List out all test files explicitly (eg. don't loop over them). This makes it easy to
 #   disable tests by simply commenting them out, and makes it very clear which tests are not
 #   currently being run.
-# 10. If utility files are required.
+# 10. If utility functionality is required, it should be placed in `src/test_utils.jl` so
+#   that other packages can benefit from it when implementing new kernels.
 @info "Packages Loaded"
+
+include("test_utils.jl")
 
 @testset "KernelFunctions" begin
 
