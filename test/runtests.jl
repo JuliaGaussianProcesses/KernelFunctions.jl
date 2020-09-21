@@ -86,8 +86,8 @@ include("test_utils.jl")
         include(joinpath("basekernels", "matern.jl"))
         include(joinpath("basekernels", "nn.jl"))
         include(joinpath("basekernels", "periodic.jl"))
-        include(joinpath("basekernels", "polynomial.jl"))
         include(joinpath("basekernels", "piecewisepolynomial.jl"))
+        include(joinpath("basekernels", "polynomial.jl"))
         include(joinpath("basekernels", "rationalquad.jl"))
         include(joinpath("basekernels", "sm.jl"))
         include(joinpath("basekernels", "wiener.jl"))
@@ -100,10 +100,6 @@ include("test_utils.jl")
         include(joinpath("kernels", "scaledkernel.jl"))
         include(joinpath("kernels", "tensorproduct.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
-
-        # Legacy tests that don't correspond to anything meaningful in src. Unclear how
-        # helpful these are.
-        include(joinpath("kernels", "custom.jl"))
     end
     @info "Ran tests on Kernel"
 

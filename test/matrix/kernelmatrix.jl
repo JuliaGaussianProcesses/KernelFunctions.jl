@@ -1,7 +1,7 @@
 # Custom Kernel implementation that only defines how to evaluate itself. This is used to
 # test that fallback kernelmatrix / kerneldiagmatrix methods work properly.
 struct BaseSE <: KernelFunctions.Kernel end
-(k::BaseSE)(x, y) = exp(-evaluate(SqEuclidean(), x, y))
+(k::BaseSE)(x, y) = exp(-evaluate(SqEuclidean(), x, y) / 2)
 
 # Custom kernel to test `SimpleKernel` interface on, independently the `SimpleKernel`s that
 # are implemented in the package. That this happens to be an exponentiated quadratic kernel
