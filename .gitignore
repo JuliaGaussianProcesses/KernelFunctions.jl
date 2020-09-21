@@ -2,3 +2,4 @@
 *.cov
 Manifest.toml
 coverage/
+src/update_v0.8.0
