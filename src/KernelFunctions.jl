@@ -16,7 +16,7 @@ if !isfile(joinpath(@__DIR__, "update_v0.8.0"))
     )
     touch(joinpath(@__DIR__, "update_v0.8.0"))
 end
-    
+
 export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!
 export transform
 export duplicate, set! # Helpers
