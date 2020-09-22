@@ -19,7 +19,7 @@ end
 @functor RationalQuadraticKernel
 
 function kappa(κ::RationalQuadraticKernel, d²::T) where {T<:Real}
-    return (one(T) + d² / first(κ.α))^(-first(κ.α))
+    return (one(T) + d² / (2 * first(κ.α)))^(-first(κ.α))
 end
 
 metric(::RationalQuadraticKernel) = SqEuclidean()
