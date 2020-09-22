@@ -33,7 +33,7 @@ end
 
 The Gamma-rational-quadratic kernel is an isotropic Mercer kernel given by the formula:
 ```
-    κ(x, y) = (1 + ||x−y||^(2γ) / α)^(-α)
+    κ(x, y) = (1 + ||x−y||^γ / α)^(-α)
 ```
 where `α` is a shape parameter of the Euclidean distance and `γ` is another shape parameter.
 """
@@ -44,7 +44,8 @@ struct GammaRationalQuadraticKernel{Tα<:Real, Tγ<:Real} <: SimpleKernel
         ;alpha::Tα=2.0, gamma::Tγ=2.0, α::Tα=alpha, γ::Tγ=gamma,
     ) where {Tα<:Real, Tγ<:Real}
         @check_args(GammaRationalQuadraticKernel, α, α > one(Tα), "α > 1")
-        @check_args(GammaRationalQuadraticKernel, γ, γ >= one(Tγ), "γ >= 1")
+        @check_args(GammaRationalQuadraticKernel, γ, γ <= 2, "γ <= 2")
+        @check_args(GammaRationalQuadraticKernel, γ, γ > zero(Tγ), "γ > 0")
         return new{Tα, Tγ}([α], [γ])
     end
 end
@@ -52,7 +53,7 @@ end
 @functor GammaRationalQuadraticKernel
 
 function kappa(κ::GammaRationalQuadraticKernel, d²::Real)
-    return (one(d²) + d²^first(κ.γ) / first(κ.α))^(-first(κ.α))
+    return (one(d²) + d²^(first(κ.γ) / 2) / first(κ.α))^(-first(κ.α))
 end
 
 metric(::GammaRationalQuadraticKernel) = SqEuclidean()
