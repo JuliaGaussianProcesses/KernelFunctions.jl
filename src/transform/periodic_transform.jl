@@ -14,10 +14,10 @@ PeriodicTransform(f::Real) = PeriodicTransform(Ref(f))
 
 dim(t::PeriodicTransform) = 2
 
-(t::PeriodicTransform)(x::Real) = [cospi((2 * t.f[]) * x), sinpi((2 * t.f[]) * x)]
+(t::PeriodicTransform)(x::Real) = [sinpi((2 * t.f[]) * x), cospi((2 * t.f[]) * x)]
 
 function _map(t::PeriodicTransform, x::AbstractVector{<:Real})
-    return RowVecs(hcat(cospi.((2 * t.f[]) .* x), sinpi.((2 * t.f[]) .* x)))
+    return RowVecs(hcat(sinpi.((2 * t.f[]) .* x), cospi.((2 * t.f[]) .* x)))
 end
 
 Base.isequal(t1::PeriodicTransform, t2::PeriodicTransform) = isequal(t1.f[], t2.f[])
