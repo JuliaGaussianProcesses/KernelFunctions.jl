@@ -2,7 +2,7 @@
     PeriodicTransform(f)
 
 Makes a kernel periodic by mapping a scalar input onto the unit circle. Samples from a GP
-with a kernel with this transformation applied will produce samples with frequenct `f`.
+with a kernel with this transformation applied will produce samples with frequency `f`.
 """
 struct PeriodicTransform{Tf<:AbstractVector{<:Real}} <: Transform
     f::Tf
