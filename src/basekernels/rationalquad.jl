@@ -44,7 +44,7 @@ struct GammaRationalQuadraticKernel{Tα<:Real, Tγ<:Real} <: SimpleKernel
         ;alpha::Tα=2.0, gamma::Tγ=2.0, α::Tα=alpha, γ::Tγ=gamma,
     ) where {Tα<:Real, Tγ<:Real}
         @check_args(GammaRationalQuadraticKernel, α, α > one(Tα), "α > 1")
-        @check_args(GammaRationalQuadraticKernel, γ, zero(γ) < γ <= 2 * one(γ), "0 < γ <= 2")
+        @check_args(GammaRationalQuadraticKernel, γ, zero(γ) < γ <= 2, "0 < γ <= 2")
         return new{Tα, Tγ}([α], [γ])
     end
 end
