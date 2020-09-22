@@ -42,13 +42,13 @@ function kernelmatrix(::NeuralNetworkKernel, x::RowVecs, y::RowVecs)
     X_2 = sum(x.X .* x.X; dims=2)
     Y_2 = sum(y.X .* y.X; dims=2)
     XY = x.X * y.X'
-    return asin.(XY ./ sqrt.((X_2 .+ 1)' * (Y_2 .+ 1)))
+    return asin.(XY ./ sqrt.((X_2 .+ 1) * (Y_2 .+ 1)'))
 end
 
 function kernelmatrix(::NeuralNetworkKernel, x::RowVecs)
     X_2_1 = sum(x.X .* x.X; dims=2) .+ 1
     XX = x.X * x.X'
-    return asin.(XX ./ sqrt.(X_2_1' * X_2_1))
+    return asin.(XX ./ sqrt.(X_2_1 * X_2_1'))
 end
 
 Base.show(io::IO, κ::NeuralNetworkKernel) = print(io, "Neural Network Kernel")
