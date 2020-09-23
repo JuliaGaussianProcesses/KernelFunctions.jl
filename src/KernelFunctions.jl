@@ -38,7 +38,7 @@ export TransformedKernel, ScaledKernel
 export TensorProduct
 
 export Transform, SelectTransform, ChainTransform, ScaleTransform, LinearTransform,
-    ARDTransform, IdentityTransform, FunctionTransform
+    ARDTransform, IdentityTransform, FunctionTransform, PeriodicTransform
 
 export NystromFact, nystrom
 
@@ -59,10 +59,6 @@ using StatsFuns: logtwo
 using InteractiveUtils: subtypes
 using StatsBase
 
-"""
-Abstract type defining a slice-wise transformation on an input matrix
-"""
-abstract type Transform end
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
@@ -72,7 +68,15 @@ include(joinpath("distances", "pairwise.jl"))
 include(joinpath("distances", "dotproduct.jl"))
 include(joinpath("distances", "delta.jl"))
 include(joinpath("distances", "sinus.jl"))
+
 include(joinpath("transform", "transform.jl"))
+include(joinpath("transform", "scaletransform.jl"))
+include(joinpath("transform", "ardtransform.jl"))
+include(joinpath("transform", "lineartransform.jl"))
+include(joinpath("transform", "functiontransform.jl"))
+include(joinpath("transform", "selecttransform.jl"))
+include(joinpath("transform", "chaintransform.jl"))
+include(joinpath("transform", "periodic_transform.jl"))
 
 include(joinpath("basekernels", "constant.jl"))
 include(joinpath("basekernels", "cosine.jl"))
