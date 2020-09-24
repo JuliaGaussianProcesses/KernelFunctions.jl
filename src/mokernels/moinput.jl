@@ -13,7 +13,7 @@ Base.size(inp::MOInput) = (inp.out_dim * size(inp.x, 1),)
 function Base.getindex(inp::MOInput, ind::Integer)
     @boundscheck checkbounds(inp, ind)
     out_dim, ind = fldmod1(ind, length(inp.x))
-    return (inp.x[ind], out_dim::Int)
+    return inp.x[ind], out_dim
 end
 
 Base.iterate(inp::MOInput) = (inp[1], 1)
