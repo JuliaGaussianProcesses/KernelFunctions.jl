@@ -128,7 +128,7 @@ function test_interface(rng::AbstractRNG, k::Kernel, T::Type{<:Real}; kwargs...)
     test_interface(rng, k, RowVecs{T}; kwargs...)
 end
 
-function test_interface(k::Kernel, T::Type{<:Real}; kwargs...)
+function test_interface(k::Kernel, T::Type{<:Real}=Float64; kwargs...)
     test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
 end
 
