@@ -68,7 +68,7 @@ function test_interface(
     @test kerneldiagmatrix(k, x0) ≈ diag(kernelmatrix(k, x0)) atol=atol
 
     # Check that unary pairwise produces a positive definite matrix (approximately).
-    @test all(eigvals(Matrix(kernelmatrix(k, x0))) .> -atol)
+    @test eigmin(Matrix(kernelmatrix(k, x0))) > -atol
 
     # Check that unary elementwise / pairwise are consistent with the binary versions.
     # @test kerneldiagmatrix(k, x0) ≈ kerneldiagmatrix(k, x0, x0) atol=atol
