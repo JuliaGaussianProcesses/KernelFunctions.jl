@@ -29,7 +29,7 @@ end
 (t::LinearTransform)(x::Real) = vec(t.A * x)
 (t::LinearTransform)(x::AbstractVector{<:Real}) = t.A * x
 
-_map(t::LinearTransform, x::AbstractVector{<:Real}) = ColVecs(t.A * x')
+_map(t::LinearTransform, x::AbstractVector{<:Real}) = ColVecs(t.A * collect(x'))
 _map(t::LinearTransform, x::ColVecs) = ColVecs(t.A * x.X)
 _map(t::LinearTransform, x::RowVecs) = RowVecs(x.X * t.A')
 

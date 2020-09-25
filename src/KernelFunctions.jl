@@ -44,6 +44,8 @@ export NystromFact, nystrom
 
 export spectral_mixture_kernel, spectral_mixture_product_kernel
 
+export ColVecs, RowVecs
+
 export MOInput
 export IndependentMOKernel, LatentFactorMOKernel
 
@@ -107,6 +109,8 @@ include(joinpath("mokernels", "independent.jl"))
 include(joinpath("mokernels", "slfm.jl"))
 
 include("zygote_adjoints.jl")
+
+include("test_utils.jl")
 
 function __init__()
     @require Kronecker="2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin
