@@ -1,9 +1,8 @@
 @testset "piecewisepolynomial" begin
-    v1 = rand(3)
-    v2 = rand(3)
-    m1 = rand(3, 4)
-    m2 = rand(3, 4)
-    maha = Matrix{Float64}(I, 3, 3)
+    D = 2
+    v1 = rand(D)
+    v2 = rand(D)
+    maha = Matrix{Float64}(I, D, D)
     v = 3
     k = PiecewisePolynomialKernel{v}(maha)
 
@@ -16,8 +15,8 @@
     @test repr(k) == "Piecewise Polynomial Kernel (v = $(v), size(maha) = $(size(maha)))"
 
     # Standardised tests.
-    TestUtils.test_interface(k, ColVecs{Float64}; dim_in=3)
-    TestUtils.test_interface(k, RowVecs{Float64}; dim_in=3)
+    TestUtils.test_interface(k, ColVecs{Float64}; dim_in=2)
+    TestUtils.test_interface(k, RowVecs{Float64}; dim_in=2)
     # test_ADs(maha-> PiecewisePolynomialKernel(v=2, maha = maha), maha)
     @test_broken "Nothing passes (problem with Mahalanobis distance in Distances)"
 
