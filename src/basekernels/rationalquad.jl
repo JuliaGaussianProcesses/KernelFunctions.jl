@@ -3,7 +3,7 @@
 
 The rational-quadratic kernel is a Mercer kernel given by the formula:
 ```
-    κ(x, y) = (1 + ||x − y||² / α)^(-α)
+    κ(x, y) = (1 + ||x − y||² / (2α))^(-α)
 ```
 where `α` is a shape parameter of the Euclidean distance. Check
 [`GammaRationalQuadraticKernel`](@ref) for a generalization.
@@ -11,7 +11,7 @@ where `α` is a shape parameter of the Euclidean distance. Check
 struct RationalQuadraticKernel{Tα<:Real} <: SimpleKernel
     α::Vector{Tα}
     function RationalQuadraticKernel(;alpha::T=2.0, α::T=alpha) where {T}
-        @check_args(RationalQuadraticKernel, α, α > one(T), "α > 1")
+        @check_args(RationalQuadraticKernel, α, α > zero(T), "α > 0")
         return new{T}([α])
     end
 end
@@ -43,7 +43,7 @@ struct GammaRationalQuadraticKernel{Tα<:Real, Tγ<:Real} <: SimpleKernel
     function GammaRationalQuadraticKernel(
         ;alpha::Tα=2.0, gamma::Tγ=2.0, α::Tα=alpha, γ::Tγ=gamma,
     ) where {Tα<:Real, Tγ<:Real}
-        @check_args(GammaRationalQuadraticKernel, α, α > one(Tα), "α > 1")
+        @check_args(GammaRationalQuadraticKernel, α, α > zero(Tα), "α > 0")
         @check_args(GammaRationalQuadraticKernel, γ, zero(γ) < γ <= 2, "0 < γ <= 2")
         return new{Tα, Tγ}([α], [γ])
     end
