@@ -34,25 +34,23 @@ function test_interface(
     x2::AbstractVector;
     atol=__ATOL,
 )
-    # TODO: uncomment the tests of ternary kerneldiagmatrix.
-
     # Ensure that we have the required inputs.
     @assert length(x0) == length(x1)
     @assert length(x0) ≠ length(x2)
 
     # Check that kerneldiagmatrix basically works.
-    # @test kerneldiagmatrix(k, x0, x1) isa AbstractVector
-    # @test length(kerneldiagmatrix(k, x0, x1)) == length(x0)
+    @test kerneldiagmatrix(k, x0, x1) isa AbstractVector
+    @test length(kerneldiagmatrix(k, x0, x1)) == length(x0)
 
     # Check that pairwise basically works.
     @test kernelmatrix(k, x0, x2) isa AbstractMatrix
     @test size(kernelmatrix(k, x0, x2)) == (length(x0), length(x2))
 
     # Check that elementwise is consistent with pairwise.
-    # @test kerneldiagmatrix(k, x0, x1) ≈ diag(kernelmatrix(k, x0, x1)) atol=atol
+    @test kerneldiagmatrix(k, x0, x1) ≈ diag(kernelmatrix(k, x0, x1)) atol=atol
 
     # Check additional binary elementwise properties for kernels.
-    # @test kerneldiagmatrix(k, x0, x1) ≈ kerneldiagmatrix(k, x1, x0)
+    @test kerneldiagmatrix(k, x0, x1) ≈ kerneldiagmatrix(k, x1, x0)
     @test kernelmatrix(k, x0, x2) ≈ kernelmatrix(k, x2, x0)' atol=atol
 
     # Check that unary elementwise basically works.
@@ -71,7 +69,7 @@ function test_interface(
     @test eigmin(Matrix(kernelmatrix(k, x0))) > -atol
 
     # Check that unary elementwise / pairwise are consistent with the binary versions.
-    # @test kerneldiagmatrix(k, x0) ≈ kerneldiagmatrix(k, x0, x0) atol=atol
+    @test kerneldiagmatrix(k, x0) ≈ kerneldiagmatrix(k, x0, x0) atol=atol
     @test kernelmatrix(k, x0) ≈ kernelmatrix(k, x0, x0) atol=atol
 
     # Check that basic kernel evaluation succeeds and is consistent with `kernelmatrix`.
