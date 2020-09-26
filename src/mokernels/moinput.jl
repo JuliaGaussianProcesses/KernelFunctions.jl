@@ -8,7 +8,7 @@ struct MOInput{T<:AbstractVector} <: AbstractVector{Tuple{Any,Int}}
     out_dim::Integer
 end
 
-Base.size(inp::MOInput) = (inp.out_dim * size(inp.x, 1),)
+Base.size(inp::MOInput) = (inp.out_dim * length(inp.x),)
 
 function Base.getindex(inp::MOInput, ind::Integer)
     @boundscheck checkbounds(inp, ind)
