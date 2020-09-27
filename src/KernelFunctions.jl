@@ -31,7 +31,7 @@ export NystromFact, nystrom
 
 export spectral_mixture_kernel, spectral_mixture_product_kernel
 
-export MOInput
+export MOInput, moinput
 export IndependentMOKernel, LatentFactorMOKernel
 
 using Compat
