@@ -11,7 +11,7 @@ related form of the kernel or [`GammaExponentialKernel`](@ref) for a generalizat
 """
 struct SqExponentialKernel <: SimpleKernel end
 
-kappa(κ::SqExponentialKernel, d²::Real) = exp(-d²)
+kappa(κ::SqExponentialKernel, d²::Real) = exp(-d² / 2)
 
 metric(::SqExponentialKernel) = SqEuclidean()
 
@@ -48,12 +48,15 @@ const LaplacianKernel = ExponentialKernel
 """
     GammaExponentialKernel(; γ = 2.0)
 
-The γ-exponential kernel is an isotropic Mercer kernel given by the formula:
+The γ-exponential kernel [1] is an isotropic Mercer kernel given by the formula:
 ```
-    κ(x,y) = exp(-‖x-y‖^(2γ))
+    κ(x,y) = exp(-‖x-y‖^γ)
 ```
 Where `γ > 0`, (the keyword `γ` can be replaced by `gamma`)
-For `γ = 1`, see `SqExponentialKernel` and `γ = 0.5`, see `ExponentialKernel`
+For `γ = 2`, see `SqExponentialKernel` and `γ = 1`, see `ExponentialKernel`.
+
+[1] - Gaussian Processes for Machine Learning, Carl Edward Rasmussen and Christopher K. I.
+    Williams, MIT Press, 2006.
 """
 struct GammaExponentialKernel{Tγ<:Real} <: SimpleKernel
     γ::Vector{Tγ}
@@ -65,10 +68,12 @@ end
 
 @functor GammaExponentialKernel
 
-kappa(κ::GammaExponentialKernel, d²::Real) = exp(-d²^first(κ.γ))
+kappa(κ::GammaExponentialKernel, d::Real) = exp(-d^first(κ.γ))
 
-metric(::GammaExponentialKernel) = SqEuclidean()
+metric(::GammaExponentialKernel) = Euclidean()
 
 iskroncompatible(::GammaExponentialKernel) = true
 
-Base.show(io::IO, κ::GammaExponentialKernel) = print(io, "Gamma Exponential Kernel (γ = ", first(κ.γ), ")")
+function Base.show(io::IO, κ::GammaExponentialKernel)
+    print(io, "Gamma Exponential Kernel (γ = ", first(κ.γ), ")")
+end

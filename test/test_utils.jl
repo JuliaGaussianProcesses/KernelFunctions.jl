@@ -1,3 +1,6 @@
+# More test utilities. Can't be included in KernelFunctions because they introduce a number
+# of additional deps that we don't want to have in the main package.
+
 # Check parameters of kernels
 
 function test_params(kernel, reference)

@@ -2,22 +2,16 @@ using .Kronecker
 
 export kernelkronmat
 
-function kernelkronmat(
-    κ::Kernel,
-    X::AbstractVector,
-    dims::Int
-    )
+function kernelkronmat(κ::Kernel, X::AbstractVector, dims::Int)
     @assert iskroncompatible(κ) "The chosen kernel is not compatible for kroenecker matrices (see [`iskroncompatible`](@ref))"
     k = kernelmatrix(κ, X)
     kronecker(k, dims)
 end
 
 function kernelkronmat(
-    κ::Kernel,
-    X::AbstractVector{<:AbstractVector};
-    obsdim::Int=defaultobs
-    )
-    @assert iskroncompatible(κ) "The chosen kernel is not compatible for kroenecker matrices"
+    κ::Kernel, X::AbstractVector{<:AbstractVector}; obsdim::Int=defaultobs,
+)
+    @assert iskroncompatible(κ) "The chosen kernel is not compatible for Kronecker matrices"
     Ks = kernelmatrix.(κ, X)
     K = reduce(⊗, Ks)
 end

@@ -10,7 +10,9 @@ using Test
 using Flux
 import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
 
-using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs
+using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
+
+using KernelFunctions.TestUtils: test_interface
 
 # Writing tests:
 # 1. The file structure of the test should match precisely the file structure of src.
@@ -40,7 +42,8 @@ using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs
 # 9. List out all test files explicitly (eg. don't loop over them). This makes it easy to
 #   disable tests by simply commenting them out, and makes it very clear which tests are not
 #   currently being run.
-# 10. If utility files are required.
+# 10. If utility functionality is required, it should be placed in `src/test_utils.jl` so
+#   that other packages can benefit from it when implementing new kernels.
 @info "Packages Loaded"
 
 include("test_utils.jl")
@@ -72,6 +75,8 @@ include("test_utils.jl")
         print(" ")
         include(joinpath("transform", "chaintransform.jl"))
         print(" ")
+        include(joinpath("transform", "periodic_transform.jl"))
+        print(" ")
     end
     @info "Ran tests on Transform"
 
@@ -86,8 +91,8 @@ include("test_utils.jl")
         include(joinpath("basekernels", "matern.jl"))
         include(joinpath("basekernels", "nn.jl"))
         include(joinpath("basekernels", "periodic.jl"))
-        include(joinpath("basekernels", "polynomial.jl"))
         include(joinpath("basekernels", "piecewisepolynomial.jl"))
+        include(joinpath("basekernels", "polynomial.jl"))
         include(joinpath("basekernels", "rationalquad.jl"))
         include(joinpath("basekernels", "sm.jl"))
         include(joinpath("basekernels", "wiener.jl"))
@@ -100,10 +105,6 @@ include("test_utils.jl")
         include(joinpath("kernels", "scaledkernel.jl"))
         include(joinpath("kernels", "tensorproduct.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
-
-        # Legacy tests that don't correspond to anything meaningful in src. Unclear how
-        # helpful these are.
-        include(joinpath("kernels", "custom.jl"))
     end
     @info "Ran tests on Kernel"
 
