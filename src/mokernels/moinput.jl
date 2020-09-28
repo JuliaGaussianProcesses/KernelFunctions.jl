@@ -24,6 +24,3 @@ Base.size(inp::MOInput) = (inp.out_dim * length(inp.x),)
     out_dim, ind = fldmod1(ind, length(inp.x))
     return inp.x[ind], out_dim
 end
-
-Base.iterate(inp::MOInput) = (inp[1], 1)
-Base.iterate(inp::MOInput, state) = (state<length(inp)) ? (inp[state + 1], state + 1) : nothing

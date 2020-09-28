@@ -9,8 +9,8 @@
     @test size(mgpi, 2) == 1
     @test lastindex(mgpi) == 12
     @test firstindex(mgpi) == 1
-    @test iterate(mgpi) == (mgpi[1], 1)
-    @test iterate(mgpi, 2) == (mgpi[3], 3)
+    @test iterate(mgpi) == (mgpi[1], (Base.OneTo(12), 1))
+    @test iterate(mgpi, 2) == (mgpi[2], (2, nothing))
     @test_throws BoundsError mgpi[0]
 
     @test mgpi[2] == (x[2], 1)
