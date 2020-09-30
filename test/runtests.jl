@@ -116,7 +116,7 @@ include("test_utils.jl")
     @info "Ran tests on matrix"
 
     @testset "multi_output" begin
-        include(joinpath("mokernels", "moinput.jl"))
+        include(joinpath("mokernels", "mo_input.jl"))
         include(joinpath("mokernels", "independent.jl"))
         include(joinpath("mokernels", "slfm.jl"))
     end

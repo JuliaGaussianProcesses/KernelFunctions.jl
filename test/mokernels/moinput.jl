@@ -1,7 +1,7 @@
-@testset "moinput" begin
+@testset "mo_input" begin
     
     x =  [rand(5) for _ in 1:4]
-    mgpi = moinput(x, 3)
+    mgpi = mo_input(x, 3)
     
     @test length(mgpi) == 12
     @test size(mgpi) == (12,)

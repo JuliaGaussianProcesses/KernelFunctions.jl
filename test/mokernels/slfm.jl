@@ -4,8 +4,8 @@
     N = 10
     in_dim = 5
     out_dim = 4
-    x1 = moinput([rand(rng, in_dim) for _ in 1:N], out_dim)
-    x2 = moinput([rand(rng, in_dim) for _ in 1:N], out_dim)
+    x1 = mo_input([rand(rng, in_dim) for _ in 1:N], out_dim)
+    x2 = mo_input([rand(rng, in_dim) for _ in 1:N], out_dim)
 
     k = LatentFactorMOKernel(
         [MaternKernel(), SqExponentialKernel(), FBMKernel()],

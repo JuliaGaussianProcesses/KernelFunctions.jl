@@ -9,11 +9,11 @@ struct MOInput{T,X} <: AbstractVector{Tuple{T,Int}}
 end
 
 """
-    moinput(x::AbstractVector, out_dim::Int)
+    mo_input(x::AbstractVector, out_dim::Int)
 
 Return `MOInput` to accomodate modelling multi-dimensional output data.
 """
-function moinput(x::X, out_dim::Int) where {T,X<:AbstractVector{T}}
+function mo_input(x::X, out_dim::Int) where {T,X<:AbstractVector{T}}
     return MOInput{T,X}(x, out_dim)
 end
 

@@ -46,7 +46,7 @@ export spectral_mixture_kernel, spectral_mixture_product_kernel
 
 export ColVecs, RowVecs
 
-export MOInput, moinput
+export MOInput, mo_input
 export IndependentMOKernel, LatentFactorMOKernel
 
 using Compat
@@ -104,7 +104,7 @@ include(joinpath("approximations", "nystrom.jl"))
 include("generic.jl")
 
 include(joinpath("mokernels", "mokernel.jl"))
-include(joinpath("mokernels", "moinput.jl"))
+include(joinpath("mokernels", "mo_input.jl"))
 include(joinpath("mokernels", "independent.jl"))
 include(joinpath("mokernels", "slfm.jl"))
 
