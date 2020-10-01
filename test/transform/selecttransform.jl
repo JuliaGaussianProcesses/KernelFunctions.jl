@@ -113,6 +113,7 @@
     @testset "single-index" begin
         t = SelectTransform(4)
         @testset "$(name)" for (name, x) in [
+            ("Vector{<:Vector}", [randn(6) for _ in 1:3]),
             ("ColVecs", ColVecs(randn(5, 10))),
             ("RowVecs", RowVecs(randn(11, 4))),
         ]
