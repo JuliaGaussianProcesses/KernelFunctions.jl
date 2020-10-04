@@ -18,7 +18,7 @@ ZygoteRules = "700de1a5-db45-46bc-99cf-38207098b444"
 
 [compat]
 Compat = "2.2, 3"
-Distances = "0.9"
+Distances = "0.9.1"
 Functors = "0.1"
 Requires = "1.0.1"
 SpecialFunctions = "0.8, 0.9, 0.10"
