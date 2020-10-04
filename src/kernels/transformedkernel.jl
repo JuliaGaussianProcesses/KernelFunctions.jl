@@ -73,10 +73,7 @@ function kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, x::AbstractVect
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::TransformedKernel,
-    x::AbstractVector,
-    y::AbstractVector,
+    K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector, y::AbstractVector,
 )
     return kernelmatrix!(K, kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
 end
