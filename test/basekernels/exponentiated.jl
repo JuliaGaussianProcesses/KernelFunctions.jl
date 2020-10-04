@@ -12,6 +12,6 @@
     @test repr(k) == "Exponentiated Kernel"
 
     # Standardised tests.
-    TestUtils.test_interface(k, Float64)
+    TestUtils.test_interface(k; atol=1e-8)
     test_ADs(ExponentiatedKernel)
 end
