@@ -36,7 +36,7 @@ struct ExponentialKernel <: SimpleKernel end
 
 kappa(κ::ExponentialKernel, d::Real) = exp(-d)
 
-metric(::ExponentialKernel) = Euclidean()
+metric(::ExponentialKernel) = Euclidean(eps(Float64))
 
 iskroncompatible(::ExponentialKernel) = true
 
