@@ -30,10 +30,7 @@ function kerneldiagmatrix(κ::ScaledKernel, x::AbstractVector)
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::ScaledKernel,
-    x::AbstractVector,
-    y::AbstractVector,
+    K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector, y::AbstractVector,
 )
     kernelmatrix!(K, κ, x, y)
     K .*= κ.σ² 
