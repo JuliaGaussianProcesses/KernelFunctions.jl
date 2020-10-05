@@ -1,7 +1,9 @@
 module TestUtils
 
 const __ATOL = 1e-9
+const __RTOL = 1e-9
 
+using Distances
 using LinearAlgebra
 using KernelFunctions
 using Random
@@ -33,6 +35,7 @@ function test_interface(
     x1::AbstractVector,
     x2::AbstractVector;
     atol=__ATOL,
+    rtol=__RTOL,
 )
     # Ensure that we have the required inputs.
     @assert length(x0) == length(x1)
@@ -69,8 +72,8 @@ function test_interface(
     @test eigmin(Matrix(kernelmatrix(k, x0))) > -atol
 
     # Check that unary elementwise / pairwise are consistent with the binary versions.
-    @test kerneldiagmatrix(k, x0) ≈ kerneldiagmatrix(k, x0, x0) atol=atol
-    @test kernelmatrix(k, x0) ≈ kernelmatrix(k, x0, x0) atol=atol
+    @test kerneldiagmatrix(k, x0) ≈ kerneldiagmatrix(k, x0, x0) atol=atol rtol=rtol
+    @test kernelmatrix(k, x0) ≈ kernelmatrix(k, x0, x0) atol=atol rtol=rtol
 
     # Check that basic kernel evaluation succeeds and is consistent with `kernelmatrix`.
     @test k(first(x0), first(x1)) isa Real
@@ -89,7 +92,7 @@ end
 function test_interface(
     rng::AbstractRNG, k::Kernel, ::Type{Vector{T}}; kwargs...
 ) where {T<:Real}
-    test_interface(k, randn(rng, T, 3), randn(rng, T, 3), randn(rng, T, 2); kwargs...)
+    test_interface(k, randn(rng, T, 1001), randn(rng, T, 1001), randn(rng, T, 1000); kwargs...)
 end
 
 function test_interface(
@@ -97,9 +100,9 @@ function test_interface(
 ) where {T<:Real}
     test_interface(
         k,
-        ColVecs(randn(rng, T, dim_in, 3)),
-        ColVecs(randn(rng, T, dim_in, 3)),
-        ColVecs(randn(rng, T, dim_in, 2));
+        ColVecs(randn(rng, T, dim_in, 1001)),
+        ColVecs(randn(rng, T, dim_in, 1001)),
+        ColVecs(randn(rng, T, dim_in, 1000));
         kwargs...,
     )
 end
@@ -109,9 +112,9 @@ function test_interface(
 ) where {T<:Real}
     test_interface(
         k,
-        RowVecs(randn(rng, T, 3, dim_in)),
-        RowVecs(randn(rng, T, 3, dim_in)),
-        RowVecs(randn(rng, T, 2, dim_in));
+        RowVecs(randn(rng, T, 1001, dim_in)),
+        RowVecs(randn(rng, T, 1001, dim_in)),
+        RowVecs(randn(rng, T, 1000, dim_in));
         kwargs...,
     )
 end
@@ -121,9 +124,15 @@ function test_interface(k::Kernel, T::Type{<:AbstractVector}; kwargs...)
 end
 
 function test_interface(rng::AbstractRNG, k::Kernel, T::Type{<:Real}; kwargs...)
-    test_interface(rng, k, Vector{T}; kwargs...)
-    test_interface(rng, k, ColVecs{T}; kwargs...)
-    test_interface(rng, k, RowVecs{T}; kwargs...)
+    @testset "Vector{$T}" begin
+        test_interface(rng, k, Vector{T}; kwargs...)
+    end
+    @testset "ColVecs{$T}" begin
+        test_interface(rng, k, ColVecs{T}; kwargs...)
+    end
+    @testset "RowVecs{$T}" begin
+        test_interface(rng, k, RowVecs{T}; kwargs...)
+    end
 end
 
 function test_interface(k::Kernel, T::Type{<:Real}=Float64; kwargs...)

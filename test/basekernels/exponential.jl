@@ -16,7 +16,7 @@
         @test KernelFunctions.iskroncompatible(k) == true
 
         # Standardised tests.
-        TestUtils.test_interface(k, Float64)
+        TestUtils.test_interface(k)
         test_ADs(SEKernel)
     end
     @testset "ExponentialKernel" begin
@@ -30,7 +30,7 @@
         @test KernelFunctions.iskroncompatible(k) == true
 
         # Standardised tests.
-        TestUtils.test_interface(k, Float64)
+        TestUtils.test_interface(k)
         test_ADs(ExponentialKernel)
     end
     @testset "GammaExponentialKernel" begin
@@ -46,6 +46,8 @@
 
         test_ADs(γ -> GammaExponentialKernel(gamma=first(γ)), [γ])
         test_params(k, ([γ],))
+        TestUtils.test_interface(GammaExponentialKernel(γ=1.36))
+
         #Coherence :
         @test isapprox(
             GammaExponentialKernel(γ=2.0)(sqrt(0.5) * v1, sqrt(0.5) * v2),

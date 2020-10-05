@@ -19,7 +19,7 @@
     @test k.p ≈ 1.0 atol=1e-5
     @test repr(k) == "Gabor Kernel (ell = 1.0, p = 1.0)"
 
-    test_interface(k)
+    test_interface(k, Vector{Float64})
 
     test_ADs(x -> GaborKernel(ell = x[1], p = x[2]), [ell, p], ADs = [:Zygote])
 
