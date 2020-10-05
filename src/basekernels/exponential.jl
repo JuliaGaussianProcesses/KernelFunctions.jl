@@ -3,7 +3,7 @@
 
 The squared exponential kernel is a Mercer kernel given by the formula:
 ```
-    κ(x,y) = exp(-‖x-y‖²)
+    κ(x,y) = exp(-‖x-y‖²/2)
 ```
 Can also be called via `SEKernel`, `GaussianKernel` or `SEKernel`.
 See also [`ExponentialKernel`](@ref) for a
