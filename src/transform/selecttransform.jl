@@ -17,9 +17,15 @@ set!(t::SelectTransform, dims) = t.select .= dims
 
 duplicate(t::SelectTransform,θ) = t
 
-(t::SelectTransform)(x::AbstractVector) = view(x, t.select)
+(t::SelectTransform)(x::AbstractVector) = _maybe_unwrap(view(x, t.select))
 
-_map(t::SelectTransform, x::ColVecs) = ColVecs(view(x.X, t.select, :))
-_map(t::SelectTransform, x::RowVecs) = RowVecs(view(x.X, :, t.select))
+_maybe_unwrap(x) = x
+_maybe_unwrap(x::AbstractArray{<:Any, 0}) = x[]
+
+_map(t::SelectTransform, x::ColVecs) = _wrap(view(x.X, t.select, :), ColVecs)
+_map(t::SelectTransform, x::RowVecs) = _wrap(view(x.X, :, t.select), RowVecs)
+
+_wrap(x::AbstractVector{<:Real}, ::Any) = x
+_wrap(X::AbstractMatrix{<:Real}, ::Type{T}) where {T} = T(X)
 
 Base.show(io::IO, t::SelectTransform) = print(io, "Select Transform (dims: ", t.select, ")")

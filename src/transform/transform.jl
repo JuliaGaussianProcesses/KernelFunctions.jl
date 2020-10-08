@@ -1,10 +1,7 @@
-include("scaletransform.jl")
-include("ardtransform.jl")
-include("lineartransform.jl")
-include("functiontransform.jl")
-include("selecttransform.jl")
-include("chaintransform.jl")
-
+"""
+Abstract type defining a slice-wise transformation on an input matrix
+"""
+abstract type Transform end
 
 Base.map(t::Transform, x::AbstractVector) = _map(t, x)
 _map(t::Transform, x::AbstractVector) = t.(x)

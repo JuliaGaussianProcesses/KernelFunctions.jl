@@ -11,7 +11,7 @@ struct GaborKernel{K<:Kernel} <: Kernel
     kernel::K
     function GaborKernel(;ell=nothing, p=nothing)
         k = _gabor(ell=ell, p=p)
-        new{typeof(k)}(k)
+        return new{typeof(k)}(k)
     end
 end
 
@@ -57,24 +57,10 @@ end
 
 Base.show(io::IO, κ::GaborKernel) = print(io, "Gabor Kernel (ell = ", κ.ell, ", p = ", κ.p, ")")
 
-function kernelmatrix(
-    κ::GaborKernel,
-    X::AbstractMatrix;
-    obsdim::Int=defaultobs)
-    kernelmatrix(κ.kernel, X; obsdim=obsdim)
+kernelmatrix(κ::GaborKernel, x::AbstractVector) = kernelmatrix(κ.kernel, x)
+
+function kernelmatrix(κ::GaborKernel, x::AbstractVector, y::AbstractVector)
+    return kernelmatrix(κ.kernel, x, y)
 end
 
-function kernelmatrix(
-    κ::GaborKernel,
-    X::AbstractMatrix,
-    Y::AbstractMatrix;
-    obsdim::Int=defaultobs)
-    kernelmatrix(κ.kernel, X, Y; obsdim=obsdim)
-end
-
-function kerneldiagmatrix(
-    κ::GaborKernel,
-    X::AbstractMatrix;
-    obsdim::Int=defaultobs) #TODO Add test
-    kerneldiagmatrix(κ.kernel, X; obsdim=obsdim)
-end
+kerneldiagmatrix(κ::GaborKernel, x::AbstractVector) = kerneldiagmatrix(κ.kernel, x)

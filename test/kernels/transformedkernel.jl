@@ -20,53 +20,7 @@
     @test KernelFunctions.kernel(kt) == k
     @test repr(kt) == repr(k) * "\n\t- " * repr(ScaleTransform(s))
 
-    @testset "kernelmatrix" begin
-        rng = MersenneTwister(123456)
-
-        Nx = 5
-        Ny = 4
-        D = 3
-
-        k = SqExponentialKernel()
-        t = ScaleTransform(randn(rng))
-        kt = TransformedKernel(k, t)
-
-        @testset "$(typeof(x))" for (x, y) in [
-            (ColVecs(randn(rng, D, Nx)), ColVecs(randn(rng, D, Ny))),
-            (RowVecs(randn(rng, Nx, D)), RowVecs(randn(rng, Ny, D))),
-        ]
-            @test kernelmatrix(kt, x, y) ≈ kernelmatrix(k, map(t, x), map(t, y))
-
-            @test kernelmatrix(kt, x) ≈ kernelmatrix(k, map(t, x))
-
-            @test kerneldiagmatrix(kt, x) ≈ kerneldiagmatrix(k, map(t, x))
-
-            tmp = Matrix{Float64}(undef, length(x), length(y))
-            @test kernelmatrix!(tmp, kt, x, y) ≈ kernelmatrix(kt, x, y)
-
-            tmp_square = Matrix{Float64}(undef, length(x), length(x))
-            @test kernelmatrix!(tmp_square, kt, x) ≈ kernelmatrix(kt, x)
-
-            tmp_diag = Vector{Float64}(undef, length(x))
-            @test kerneldiagmatrix!(tmp_diag, kt, x) ≈ kerneldiagmatrix(kt, x)
-        end
-
-        @testset "mixed inputs" begin
-            k = transform(SqExponentialKernel(), 10.0)
-            x = rand(rng, 5, 3)
-            X1 = collect(eachcol(x))
-            Y1 = KernelFunctions.ColVecs(x)
-            @test_nowarn Zygote.gradient(k-> sum(kernelmatrix(k, X1, Y1)), k)
-            @test_nowarn Zygote.gradient(k-> sum(kernelmatrix(k, Y1, X1)), k)
-            @test kernelmatrix(k, X1, Y1) ≈ kernelmatrix(k, X1, X1) ≈ kernelmatrix(k, Y1, Y1)
-
-            X2 = collect(eachrow(x))
-            Y2 = KernelFunctions.RowVecs(x)
-            @test_nowarn Zygote.gradient(k-> sum(kernelmatrix(k, X2, Y2)), k)
-            @test_nowarn Zygote.gradient(k-> sum(kernelmatrix(k, Y2, X2)), k)
-            @test kernelmatrix(k, X2, Y2) ≈ kernelmatrix(k, X2, X2) ≈ kernelmatrix(k, Y2, Y2)
-        end
-    end
+    TestUtils.test_interface(k, Float64)
     test_ADs(x->transform(SqExponentialKernel(), x[1]), rand(1))# ADs = [:ForwardDiff, :ReverseDiff])
     # Test implicit gradients
     @testset "Implicit gradients" begin

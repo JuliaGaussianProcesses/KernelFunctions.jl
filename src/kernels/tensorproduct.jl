@@ -56,10 +56,7 @@ function kernelmatrix!(K::AbstractMatrix, k::TensorProduct, x::AbstractVector)
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix,
-    k::TensorProduct,
-    x::AbstractVector,
-    y::AbstractVector,
+    K::AbstractMatrix, k::TensorProduct, x::AbstractVector, y::AbstractVector,
 )
     validate_inplace_dims(K, x, y)
     validate_domain(k, x)

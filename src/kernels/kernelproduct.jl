@@ -44,8 +44,8 @@ end
 Base.:*(k1::Kernel,k2::Kernel) = KernelProduct(k1, k2)
 
 function Base.:*(
-    k1::KernelProduct{<:AbstractVector{<:Kernel}}, 
-    k2::KernelProduct{<:AbstractVector{<:Kernel}}
+    k1::KernelProduct{<:AbstractVector{<:Kernel}},
+    k2::KernelProduct{<:AbstractVector{<:Kernel}},
 )
     return KernelProduct(vcat(k1.kernels, k2.kernels))
 end
