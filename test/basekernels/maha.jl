@@ -19,7 +19,7 @@
 
     M1, M2 = rand(rng,3,2), rand(rng,3,2)
     
-    function FiniteDifferences.to_vec(dist::SqMahalanobis{Float64})
+    function FiniteDifferences.to_vec(dist::SqMahalanobis)
         return vec(dist.qmat), x -> SqMahalanobis(reshape(x, size(dist.qmat)...))
     end
     a = rand()
