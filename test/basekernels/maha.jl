@@ -21,7 +21,7 @@
     fdm = FiniteDifferences.Central(5, 1);
     
     
-    function FiniteDifferences.to_vec(dist::SqMahalanobis{Float64})
+    function FiniteDifferences.to_vec(dist::SqMahalanobis)
         return vec(dist.qmat), x -> SqMahalanobis(reshape(x, size(dist.qmat)...))
     end
     a = rand()
