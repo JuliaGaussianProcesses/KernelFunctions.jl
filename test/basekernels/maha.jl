@@ -18,8 +18,7 @@
     @test repr(k) == "Mahalanobis Kernel (size(P) = $(size(P)))"
 
     M1, M2 = rand(rng,3,2), rand(rng,3,2)
-    fdm = FiniteDifferences.Central(5, 1);
-    
+    fdm = central_fdm(5, 1)
     
     function FiniteDifferences.to_vec(dist::SqMahalanobis{Float64})
         return vec(dist.qmat), x -> SqMahalanobis(reshape(x, size(dist.qmat)...))
