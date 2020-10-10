@@ -46,7 +46,7 @@ export spectral_mixture_kernel, spectral_mixture_product_kernel
 
 export ColVecs, RowVecs
 
-export MOInput, mo_input
+export mo_input
 export IndependentMOKernel, LatentFactorMOKernel
 
 using Compat
