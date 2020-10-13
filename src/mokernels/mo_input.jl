@@ -18,7 +18,7 @@ each output dimension is simulated by a single Multi Output GP.
 
 For example,
 ```jldoctest
-julia> x = [collect(i * 4:i * 4 + 3) for i in 0:4]
+julia> x1 = [collect(i * 4:i * 4 + 3) for i in 0:4]
 5-element Array{Array{Int64,1},1}:
  [0, 1, 2, 3]
  [4, 5, 6, 7]
@@ -26,7 +26,7 @@ julia> x = [collect(i * 4:i * 4 + 3) for i in 0:4]
  [12, 13, 14, 15]
  [16, 17, 18, 19]
 
-julia> mo_input(x, 2)
+julia> mo_input(x1, 2)
 10-element KernelFunctions.MOInput{Array{Int64,1},Array{Array{Int64,1},1}}:
  ([0, 1, 2, 3], 1)
  ([4, 5, 6, 7], 1)
@@ -38,6 +38,19 @@ julia> mo_input(x, 2)
  ([8, 9, 10, 11], 2)
  ([12, 13, 14, 15], 2)
  ([16, 17, 18, 19], 2)
+
+ julia> x2 = reshape(0:19, 4, 5)
+ 4×5 reshape(::UnitRange{Int64}, 4, 5) with eltype Int64:
+  0  4   8  12  16
+  1  5   9  13  17
+  2  6  10  14  18
+  3  7  11  15  19 
+
+julia> x1 == ColVecs(x2)
+true
+
+julia> mo_input(x1, 2) == mo_input(ColVecs(x2), 2)
+true
 
 ```
 We can see that the same input is repeated for every output dimension. `MOInput` enables us to 
