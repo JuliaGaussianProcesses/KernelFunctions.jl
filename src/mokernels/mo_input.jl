@@ -1,7 +1,7 @@
 """
     MOInput
 
-A data type to accomodate modelling multi-dimensional output data.
+A data type to accomodate modelling multi-dimensional input data.
 """
 struct MOInput{T,X} <: AbstractVector{Tuple{T,Int}}
     x::X
