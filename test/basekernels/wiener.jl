@@ -1,4 +1,5 @@
 @testset "wiener" begin
+    rng = MersenneTwister(123)
     k_1 = WienerKernel(i=-1)
     @test typeof(k_1) <: WhiteKernel
 
@@ -17,8 +18,8 @@
     @test_throws AssertionError WienerKernel(i=4)
     @test_throws AssertionError WienerKernel(i=-2)
 
-    v1 = rand(4)
-    v2 = rand(4)
+    v1 = rand(rng,4)
+    v2 = rand(rng,4)
 
     X = sqrt(sum(abs2, v1))
     Y = sqrt(sum(abs2, v2))
@@ -39,6 +40,10 @@
     TestUtils.test_interface(k1, x0, x1, x2)
     TestUtils.test_interface(k2, x0, x1, x2)
     TestUtils.test_interface(k3, x0, x1, x2)
-    # test_ADs(()->WienerKernel(i=1))
-    @test_broken "No tests passing"
+    test_ADs(()->WienerKernel(i=0), ADs=[:Zygote])
+    test_ADs(()->WienerKernel(i=1), ADs=[:Zygote])
+    test_ADs(()->WienerKernel(i=2), ADs=[:Zygote])
+    test_ADs(()->WienerKernel(i=3), ADs=[:Zygote])
+    @test_broken "ReverseDiff and ForwardDiff tests not passing." *
+        "ForwardDiff requires NaN-safe branch."
 end
