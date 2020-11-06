@@ -13,11 +13,26 @@ struct FunctionTransform{F} <: Transform
     f::F
 end
 
+@functor FunctionTransform
+
 (t::FunctionTransform)(x) = t.f(x)
 
 _map(t::FunctionTransform, x::AbstractVector{<:Real}) = map(t.f, x)
-_map(t::FunctionTransform, x::ColVecs) = ColVecs(mapslices(t.f, x.X; dims=1))
-_map(t::FunctionTransform, x::RowVecs) = RowVecs(mapslices(t.f, x.X; dims=2))
+     
+
+function _map(t::FunctionTransform, x::ColVecs)
+    vals = map(axes(x.X, 2)) do i
+        t.f(view(x.X, :, i))
+    end
+    return ColVecs(reduce(hcat, vals))
+end
+
+function _map(t::FunctionTransform, x::RowVecs)
+    vals = map(axes(x.X, 1)) do i
+        t.f(view(x.X, i, :))
+    end
+    return RowVecs(reduce(hcat, vals)')
+end
 
 duplicate(t::FunctionTransform,f) = FunctionTransform(f)
 

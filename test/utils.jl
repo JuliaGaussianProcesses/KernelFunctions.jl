@@ -75,4 +75,32 @@
             @test back(ones(size(X)))[1].X == ones(size(X))
         end
     end
+    @testset "input checks" begin
+        D = 3; D⁻ = 2
+        N1 = 2; N2 = 3
+        x = [rand(rng, D) for _ in 1:N1]
+        x⁻ = [rand(rng, D⁻) for _ in 1:N1]
+        y = [rand(rng, D) for _ in 1:N2]
+        xx = [rand(rng, D, D) for _ in 1:N1]
+        xx⁻ = [rand(rng, D, D⁻) for _ in 1:N1]
+        yy = [rand(rng, D, D) for _ in 1:N2]
+
+        @test KernelFunctions.dim("string") == 0
+        @test KernelFunctions.dim(["string", "string2"]) == 0
+        @test KernelFunctions.dim(rand(rng, 4)) == 1
+        @test KernelFunctions.dim(x) == D
+
+        @test_nowarn KernelFunctions.validate_inplace_dims(zeros(N1, N2), x, y)
+        @test_throws DimensionMismatch KernelFunctions.validate_inplace_dims(zeros(N1, N1), x, y)
+        @test_throws DimensionMismatch KernelFunctions.validate_inplace_dims(zeros(N1, N2), x⁻, y)
+        @test_nowarn KernelFunctions.validate_inplace_dims(zeros(N1, N1), x)
+        @test_nowarn KernelFunctions.validate_inplace_dims(zeros(N1), x)
+        @test_throws DimensionMismatch KernelFunctions.validate_inplace_dims(zeros(N2), x)
+
+        @test_nowarn KernelFunctions.validate_inputs(x, y)
+        @test_throws DimensionMismatch KernelFunctions.validate_inputs(x⁻, y)
+
+        @test_nowarn KernelFunctions.validate_inputs(xx, yy)
+        @test_nowarn KernelFunctions.validate_inputs(xx⁻, yy)
+    end
 end

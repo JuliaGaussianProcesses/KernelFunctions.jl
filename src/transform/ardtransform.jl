@@ -14,6 +14,8 @@ end
 
 ARDTransform(s::Real, dims::Integer) = ARDTransform(fill(s, dims))
 
+@functor ARDTransform
+
 function set!(t::ARDTransform{<:AbstractVector{T}}, ρ::AbstractVector{T}) where {T<:Real}
     @assert length(ρ) == dim(t) "Trying to set a vector of size $(length(ρ)) to ARDTransform of dimension $(dim(t))"
     t.v .= ρ

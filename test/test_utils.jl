@@ -1,3 +1,17 @@
+# More test utilities. Can't be included in KernelFunctions because they introduce a number
+# of additional deps that we don't want to have in the main package.
+
+# Check parameters of kernels
+
+function test_params(kernel, reference)
+    params_kernel = params(kernel)
+    params_reference = params(reference)
+
+    @test length(params_kernel) == length(params_reference)
+    @test all(p == q for (p, q) in zip(params_kernel, params_reference))
+end
+
+# AD utilities
 
 const FDM = FiniteDifferences.central_fdm(5, 1)
 

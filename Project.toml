@@ -1,21 +1,25 @@
 name = "KernelFunctions"
 uuid = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
-version = "0.4.2"
+version = "0.8.7"
 
 [deps]
 Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
+Functors = "d9f16b24-f501-4c13-a1f2-28368ffc5196"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 StatsFuns = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 ZygoteRules = "700de1a5-db45-46bc-99cf-38207098b444"
 
 [compat]
 Compat = "2.2, 3"
-Distances = "0.9"
+Distances = "0.9.1, 0.10"
+Functors = "0.1"
 Requires = "1.0.1"
 SpecialFunctions = "0.8, 0.9, 0.10"
 StatsBase = "0.32, 0.33"

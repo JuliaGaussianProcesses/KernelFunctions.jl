@@ -5,7 +5,9 @@ The matern kernel is a Mercer kernel given by the formula:
 ```
     κ(x,y) = 2^{1-ν}/Γ(ν)*(√(2ν)‖x-y‖)^ν K_ν(√(2ν)‖x-y‖)
 ```
-For `ν=n+1/2, n=0,1,2,...` it can be simplified and you should instead use [`ExponentialKernel`](@ref) for `n=0`, [`Matern32Kernel`](@ref), for `n=1`, [`Matern52Kernel`](@ref) for `n=2` and [`SqExponentialKernel`](@ref) for `n=∞`.
+For `ν=n+1/2, n=0,1,2,...` it can be simplified and you should instead use 
+[`ExponentialKernel`](@ref) for `n=0`, [`Matern32Kernel`](@ref), for `n=1`, 
+[`Matern52Kernel`](@ref) for `n=2` and [`SqExponentialKernel`](@ref) for `n=∞`.
 """
 struct MaternKernel{Tν<:Real} <: SimpleKernel
     ν::Vector{Tν}
@@ -14,6 +16,8 @@ struct MaternKernel{Tν<:Real} <: SimpleKernel
         return new{T}([ν])
     end
 end
+
+@functor MaternKernel
 
 @inline function kappa(κ::MaternKernel, d::Real)
     result = _matern(first(κ.ν), d)

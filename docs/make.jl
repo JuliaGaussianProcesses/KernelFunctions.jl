@@ -17,6 +17,13 @@ for filename in readdir(joinpath(@__DIR__, "..", "examples"))
     )
 end
 
+DocMeta.setdocmeta!(
+    KernelFunctions,
+    :DocTestSetup,
+    :(using KernelFunctions, LinearAlgebra, Random);
+    recursive=true,
+)
+
 makedocs(
     sitename = "KernelFunctions",
     format = Documenter.HTML(),

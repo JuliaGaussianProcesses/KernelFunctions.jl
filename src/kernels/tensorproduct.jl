@@ -20,6 +20,8 @@ function TensorProduct(kernel::Kernel, kernels::Kernel...)
     return TensorProduct((kernel, kernels...))
 end
 
+@functor TensorProduct
+
 Base.length(kernel::TensorProduct) = length(kernel.kernels)
 
 function (kernel::TensorProduct)(x, y)
@@ -54,10 +56,7 @@ function kernelmatrix!(K::AbstractMatrix, k::TensorProduct, x::AbstractVector)
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix,
-    k::TensorProduct,
-    x::AbstractVector,
-    y::AbstractVector,
+    K::AbstractMatrix, k::TensorProduct, x::AbstractVector, y::AbstractVector,
 )
     validate_inplace_dims(K, x, y)
     validate_domain(k, x)
@@ -100,6 +99,13 @@ function kerneldiagmatrix(k::TensorProduct, x::AbstractVector)
 end
 
 Base.show(io::IO, kernel::TensorProduct) = printshifted(io, kernel, 0)
+
+function Base.:(==)(x::TensorProduct, y::TensorProduct)
+    return (
+        length(x.kernels) == length(y.kernels) && 
+        all(kx == ky for (kx, ky) in zip(x.kernels, y.kernels))
+    )
+end
 
 function printshifted(io::IO, kernel::TensorProduct, shift::Int)
     print(io, "Tensor product of ", length(kernel), " kernels:")

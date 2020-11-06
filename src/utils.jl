@@ -20,8 +20,6 @@ function vec_of_vecs(X::AbstractMatrix; obsdim::Int = 2)
     end
 end
 
-dim(x::AbstractVector{<:Real}) = 1
-
 """
     ColVecs(X::AbstractMatrix)
 
@@ -45,6 +43,12 @@ dim(x::ColVecs) = size(x.X, 1)
 
 pairwise(d::PreMetric, x::ColVecs) = Distances.pairwise(d, x.X; dims=2)
 pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances.pairwise(d, x.X, y.X; dims=2)
+function pairwise(d::PreMetric, x::AbstractVector, y::ColVecs)
+    return Distances.pairwise(d, reduce(hcat, x), y.X; dims=2)
+end
+function pairwise(d::PreMetric, x::ColVecs, y::AbstractVector)
+    return Distances.pairwise(d, x.X, reduce(hcat, y); dims=2)
+end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs)
     return Distances.pairwise!(out, d, x.X; dims=2)
 end
@@ -66,6 +70,8 @@ struct RowVecs{T, TX<:AbstractMatrix{T}, S} <: AbstractVector{S}
     end
 end
 
+RowVecs(x::AbstractVector) = RowVecs(reshape(x, :, 1))
+
 Base.size(D::RowVecs) = (size(D.X, 1),)
 Base.getindex(D::RowVecs, i::Int) = view(D.X, i, :)
 Base.getindex(D::RowVecs, i::CartesianIndex{1}) = view(D.X, i, :)
@@ -75,6 +81,12 @@ dim(x::RowVecs) = size(x.X, 2)
 
 pairwise(d::PreMetric, x::RowVecs) = Distances.pairwise(d, x.X; dims=1)
 pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = Distances.pairwise(d, x.X, y.X; dims=1)
+function pairwise(d::PreMetric, x::AbstractVector, y::RowVecs)
+    return Distances.pairwise(d, permutedims(reduce(hcat, x)), y.X; dims=1)
+end
+function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector)
+    return Distances.pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
+end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs)
     return Distances.pairwise!(out, d, x.X; dims=1)
 end
@@ -93,9 +105,24 @@ For a transform return its parameters, for a `ChainTransform` return a vector of
 """
 #params
 
+dim(x) = 0 # This is the passes-by-default choice. For a proper check, implement `KernelFunctions.dim` for your datatype.
+dim(x::AbstractVector) = dim(first(x))
+dim(x::AbstractVector{<:AbstractVector{<:Real}}) = length(first(x))
+dim(x::AbstractVector{<:Real}) = 1
+
+
+function validate_inputs(x, y)
+    if dim(x) != dim(y) # Passes by default if `dim` is not defined
+        throw(DimensionMismatch(
+            "Dimensionality of x ($(dim(x))) not equality to that of y ($(dim(y)))",
+        ))
+    end
+    return nothing
+end
+
 
 function validate_inplace_dims(K::AbstractMatrix, x::AbstractVector, y::AbstractVector)
-    validate_dims(x, y)
+    validate_inputs(x, y)
     if size(K) != (length(x), length(y))
         throw(DimensionMismatch(
             "Size of the target matrix K ($(size(K))) not consistent with lengths of " *
@@ -113,14 +140,6 @@ function validate_inplace_dims(K::AbstractVector, x::AbstractVector)
         throw(DimensionMismatch(
             "Length of target vector K ($(length(K))) not consistent with length of input" *
             "vector x ($(length(x))",
-        ))
-    end
-end
-
-function validate_dims(x::AbstractVector, y::AbstractVector)
-    if dim(x) != dim(y)
-        throw(DimensionMismatch(
-            "Dimensionality of x ($(dim(x))) not equality to that of y ($(dim(y)))",
         ))
     end
 end

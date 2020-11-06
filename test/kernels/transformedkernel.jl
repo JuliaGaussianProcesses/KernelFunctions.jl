@@ -20,36 +20,37 @@
     @test KernelFunctions.kernel(kt) == k
     @test repr(kt) == repr(k) * "\n\t- " * repr(ScaleTransform(s))
 
-    @testset "kernelmatrix" begin
-        rng = MersenneTwister(123456)
-
-        Nx = 5
-        Ny = 4
-        D = 3
-
-        k = SqExponentialKernel()
-        t = ScaleTransform(randn(rng))
-        kt = TransformedKernel(k, t)
-
-        @testset "$(typeof(x))" for (x, y) in [
-            (ColVecs(randn(rng, D, Nx)), ColVecs(randn(rng, D, Ny))),
-            (RowVecs(randn(rng, Nx, D)), RowVecs(randn(rng, Ny, D))),
-        ]
-            @test kernelmatrix(kt, x, y) ≈ kernelmatrix(k, map(t, x), map(t, y))
-
-            @test kernelmatrix(kt, x) ≈ kernelmatrix(k, map(t, x))
-
-            @test kerneldiagmatrix(kt, x) ≈ kerneldiagmatrix(k, map(t, x))
-
-            tmp = Matrix{Float64}(undef, length(x), length(y))
-            @test kernelmatrix!(tmp, kt, x, y) ≈ kernelmatrix(kt, x, y)
-
-            tmp_square = Matrix{Float64}(undef, length(x), length(x))
-            @test kernelmatrix!(tmp_square, kt, x) ≈ kernelmatrix(kt, x)
-
-            tmp_diag = Vector{Float64}(undef, length(x))
-            @test kerneldiagmatrix!(tmp_diag, kt, x) ≈ kerneldiagmatrix(kt, x)
-        end
-    end
+    TestUtils.test_interface(k, Float64)
     test_ADs(x->transform(SqExponentialKernel(), x[1]), rand(1))# ADs = [:ForwardDiff, :ReverseDiff])
+    # Test implicit gradients
+    @testset "Implicit gradients" begin
+        k = transform(SqExponentialKernel(), 2.0)
+        ps = Flux.params(k)
+        X = rand(10, 1); x = vec(X)
+        A = rand(10, 10)
+        # Implicit
+        g1 = Flux.gradient(ps) do
+            tr(kernelmatrix(k, X, obsdim = 1) * A)
+        end
+        # Explicit
+        g2 = Flux.gradient(k) do k
+          tr(kernelmatrix(k, X, obsdim = 1) * A)
+        end
+
+        # Implicit for a vector
+        g3 = Flux.gradient(ps) do
+          tr(kernelmatrix(k, x) * A)
+        end
+        @test g1[first(ps)] ≈ first(g2).transform.s
+        @test g1[first(ps)] ≈ g3[first(ps)]
+    end
+
+    P = rand(3, 2)
+    c = Chain(Dense(3, 2))
+
+    test_params(transform(k, s), (k, [s]))
+    test_params(transform(k, v), (k, v))
+    test_params(transform(k, LinearTransform(P)), (k, P))
+    test_params(transform(k, LinearTransform(P) ∘ ScaleTransform(s)), (k, [s], P))
+    test_params(transform(k, FunctionTransform(c)), (k, c))
 end

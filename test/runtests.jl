@@ -1,4 +1,5 @@
 using KernelFunctions
+using AxisArrays
 using Distances
 using Kronecker
 using LinearAlgebra
@@ -9,7 +10,9 @@ using Test
 using Flux
 import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
 
-using KernelFunctions: metric, kappa, ColVecs, RowVecs
+using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
+
+using KernelFunctions.TestUtils: test_interface
 
 # Writing tests:
 # 1. The file structure of the test should match precisely the file structure of src.
@@ -39,13 +42,15 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
 # 9. List out all test files explicitly (eg. don't loop over them). This makes it easy to
 #   disable tests by simply commenting them out, and makes it very clear which tests are not
 #   currently being run.
-# 10. If utility files are required.
+# 10. If utility functionality is required, it should be placed in `src/test_utils.jl` so
+#   that other packages can benefit from it when implementing new kernels.
 @info "Packages Loaded"
+
+include("test_utils.jl")
 
 @testset "KernelFunctions" begin
 
     include("utils.jl")
-    include("utils_AD.jl")
 
     @testset "distances" begin
         include(joinpath("distances", "pairwise.jl"))
@@ -57,31 +62,55 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
 
     @testset "transform" begin
         include(joinpath("transform", "transform.jl"))
+        print(" ")
         include(joinpath("transform", "scaletransform.jl"))
+        print(" ")
         include(joinpath("transform", "ardtransform.jl"))
+        print(" ")
         include(joinpath("transform", "lineartransform.jl"))
+        print(" ")
         include(joinpath("transform", "functiontransform.jl"))
+        print(" ")
         include(joinpath("transform", "selecttransform.jl"))
+        print(" ")
         include(joinpath("transform", "chaintransform.jl"))
+        print(" ")
+        include(joinpath("transform", "periodic_transform.jl"))
+        print(" ")
     end
     @info "Ran tests on Transform"
 
     @testset "basekernels" begin
         include(joinpath("basekernels", "constant.jl"))
+        print(" ")
         include(joinpath("basekernels", "cosine.jl"))
+        print(" ")
         include(joinpath("basekernels", "exponential.jl"))
+        print(" ")
         include(joinpath("basekernels", "exponentiated.jl"))
+        print(" ")
         include(joinpath("basekernels", "fbm.jl"))
+        print(" ")
         include(joinpath("basekernels", "gabor.jl"))
+        print(" ")
         include(joinpath("basekernels", "maha.jl"))
+        print(" ")
         include(joinpath("basekernels", "matern.jl"))
+        print(" ")
         include(joinpath("basekernels", "nn.jl"))
+        print(" ")
         include(joinpath("basekernels", "periodic.jl"))
-        include(joinpath("basekernels", "polynomial.jl"))
+        print(" ")
         include(joinpath("basekernels", "piecewisepolynomial.jl"))
+        print(" ")
+        include(joinpath("basekernels", "polynomial.jl"))
+        print(" ")
         include(joinpath("basekernels", "rationalquad.jl"))
+        print(" ")
         include(joinpath("basekernels", "sm.jl"))
+        print(" ")
         include(joinpath("basekernels", "wiener.jl"))
+        print(" ")
     end
     @info "Ran tests on BaseKernel"
 
@@ -91,10 +120,6 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
         include(joinpath("kernels", "scaledkernel.jl"))
         include(joinpath("kernels", "tensorproduct.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
-
-        # Legacy tests that don't correspond to anything meaningful in src. Unclear how
-        # helpful these are.
-        include(joinpath("kernels", "custom.jl"))
     end
     @info "Ran tests on Kernel"
 
@@ -105,11 +130,17 @@ using KernelFunctions: metric, kappa, ColVecs, RowVecs
     end
     @info "Ran tests on matrix"
 
+    @testset "multi_output" begin
+        include(joinpath("mokernels", "moinput.jl"))
+        include(joinpath("mokernels", "independent.jl"))
+        include(joinpath("mokernels", "slfm.jl"))
+    end
+    @info "Ran tests on Multi-Output Kernels"
+
     @testset "approximations" begin
         include(joinpath("approximations", "nystrom.jl"))
     end
 
     include("generic.jl")
     include("zygote_adjoints.jl")
-    include("trainable.jl")
 end

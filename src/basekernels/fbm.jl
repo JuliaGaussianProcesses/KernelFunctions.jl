@@ -9,13 +9,15 @@ Fractional Brownian motion kernel with Hurst index `h` from (0,1) given by
 For `h=1/2`, this is the Wiener Kernel, for `h>1/2`, the increments are
 positively correlated and for `h<1/2` the increments are negatively correlated.
 """
-struct FBMKernel{T<:Real} <: BaseKernel
+struct FBMKernel{T<:Real} <: Kernel
     h::Vector{T}
     function FBMKernel(; h::T=0.5) where {T<:Real}
         @assert 0.0 <= h <= 1.0 "FBMKernel: Given Hurst index h is invalid."
         return new{T}([h])
     end
 end
+
+@functor FBMKernel
 
 function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modX = sum(abs2, x)
