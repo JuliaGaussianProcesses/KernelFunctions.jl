@@ -8,7 +8,7 @@
         @test kappa(k,x) ≈ exp(-x / 2)
         @test k(v1,v2) ≈ exp(-norm(v1-v2)^2 / 2)
         @test kappa(SqExponentialKernel(),x) == kappa(k,x)
-        @test metric(SqExponentialKernel()) == SqEuclidean()
+        @test binary_op(SqExponentialKernel()) == SqEuclidean()
         @test RBFKernel == SqExponentialKernel
         @test GaussianKernel == SqExponentialKernel
         @test SEKernel == SqExponentialKernel
@@ -24,7 +24,7 @@
         @test kappa(k,x) ≈ exp(-x)
         @test k(v1,v2) ≈ exp(-norm(v1-v2))
         @test kappa(ExponentialKernel(),x) == kappa(k,x)
-        @test metric(ExponentialKernel()) == Euclidean()
+        @test binary_op(ExponentialKernel()) == Euclidean()
         @test repr(k) == "Exponential Kernel"
         @test LaplacianKernel == ExponentialKernel
         @test KernelFunctions.iskroncompatible(k) == true
@@ -39,8 +39,8 @@
         @test k(v1, v2) ≈ exp(-norm(v1 - v2)^γ)
         @test kappa(GammaExponentialKernel(), x) == kappa(k, x)
         @test GammaExponentialKernel(gamma=γ).γ == [γ]
-        @test metric(GammaExponentialKernel()) == Euclidean()
-        @test metric(GammaExponentialKernel(γ=2.0)) == Euclidean()
+        @test binary_op(GammaExponentialKernel()) == Euclidean()
+        @test binary_op(GammaExponentialKernel(γ=2.0)) == Euclidean()
         @test repr(k) == "Gamma Exponential Kernel (γ = $(γ))"
         @test KernelFunctions.iskroncompatible(k) == true
 

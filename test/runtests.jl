@@ -10,7 +10,7 @@ using Test
 using Flux
 import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
 
-using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
+using KernelFunctions: SimpleKernel, binary_op, kappa, ColVecs, RowVecs, TestUtils
 
 using KernelFunctions.TestUtils: test_interface
 

@@ -10,7 +10,7 @@ struct ExponentiatedKernel <: SimpleKernel end
 
 kappa(κ::ExponentiatedKernel, xᵀy::Real) = exp(xᵀy)
 
-metric(::ExponentiatedKernel) = DotProduct()
+binary_op(::ExponentiatedKernel) = DotProduct()
 
 iskroncompatible(::ExponentiatedKernel) = true
 

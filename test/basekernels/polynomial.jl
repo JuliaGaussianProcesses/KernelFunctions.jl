@@ -9,8 +9,8 @@
         @test kappa(k,x) ≈ x
         @test k(v1,v2) ≈ dot(v1,v2)
         @test kappa(LinearKernel(),x) == kappa(k,x)
-        @test metric(LinearKernel()) == KernelFunctions.DotProduct()
-        @test metric(LinearKernel(c=2.0)) == KernelFunctions.DotProduct()
+        @test binary_op(LinearKernel()) == KernelFunctions.DotProduct()
+        @test binary_op(LinearKernel(c=2.0)) == KernelFunctions.DotProduct()
         @test repr(k) == "Linear Kernel (c = 0.0)"
 
         # Standardised tests.
@@ -27,9 +27,9 @@
 
         # Coherence tests.
         @test kappa(PolynomialKernel(d=1.0,c=c),x) ≈ kappa(LinearKernel(c=c),x)
-        @test metric(PolynomialKernel()) == KernelFunctions.DotProduct()
-        @test metric(PolynomialKernel(d=3.0)) == KernelFunctions.DotProduct()
-        @test metric(PolynomialKernel(d=3.0,c=2.0)) == KernelFunctions.DotProduct()
+        @test binary_op(PolynomialKernel()) == KernelFunctions.DotProduct()
+        @test binary_op(PolynomialKernel(d=3.0)) == KernelFunctions.DotProduct()
+        @test binary_op(PolynomialKernel(d=3.0,c=2.0)) == KernelFunctions.DotProduct()
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)

@@ -13,7 +13,7 @@ struct SqExponentialKernel <: SimpleKernel end
 
 kappa(κ::SqExponentialKernel, d²::Real) = exp(-d² / 2)
 
-metric(::SqExponentialKernel) = SqEuclidean()
+binary_op(::SqExponentialKernel) = SqEuclidean()
 
 iskroncompatible(::SqExponentialKernel) = true
 
@@ -36,7 +36,7 @@ struct ExponentialKernel <: SimpleKernel end
 
 kappa(κ::ExponentialKernel, d::Real) = exp(-d)
 
-metric(::ExponentialKernel) = Euclidean()
+binary_op(::ExponentialKernel) = Euclidean()
 
 iskroncompatible(::ExponentialKernel) = true
 
@@ -70,7 +70,7 @@ end
 
 kappa(κ::GammaExponentialKernel, d::Real) = exp(-d^first(κ.γ))
 
-metric(::GammaExponentialKernel) = Euclidean()
+binary_op(::GammaExponentialKernel) = Euclidean()
 
 iskroncompatible(::GammaExponentialKernel) = true
 

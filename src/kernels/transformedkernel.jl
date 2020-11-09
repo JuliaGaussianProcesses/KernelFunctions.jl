@@ -14,22 +14,22 @@ end
 (k::TransformedKernel)(x, y) = k.kernel(k.transform(x), k.transform(y))
 
 # Optimizations for scale transforms of simple kernels to save allocations:
-# Instead of a multiplying every element of the inputs before evaluating the metric,
+# Instead of a multiplying every element of the inputs before evaluating the binary_op,
 # we perform a scalar multiplcation of the distance of the original inputs, if possible.
 function (k::TransformedKernel{<:SimpleKernel,<:ScaleTransform})(
     x::AbstractVector{<:Real},
     y::AbstractVector{<:Real},
 )
-    return kappa(k.kernel, _scale(k.transform, metric(k.kernel), x, y))
+    return kappa(k.kernel, _scale(k.transform, binary_op(k.kernel), x, y))
 end
 
-function _scale(t::ScaleTransform, metric::Euclidean, x, y)
-    return first(t.s) * evaluate(metric, x, y)
+function _scale(t::ScaleTransform, binary_op::Euclidean, x, y)
+    return first(t.s) * evaluate(binary_op, x, y)
 end
-function _scale(t::ScaleTransform, metric::Union{SqEuclidean,DotProduct}, x, y)
-    return first(t.s)^2 * evaluate(metric, x, y)
+function _scale(t::ScaleTransform, binary_op::Union{SqEuclidean,DotProduct}, x, y)
+    return first(t.s)^2 * evaluate(binary_op, x, y)
 end
-_scale(t::ScaleTransform, metric, x, y) = evaluate(metric, t(x), t(y))
+_scale(t::ScaleTransform, binary_op, x, y) = evaluate(binary_op, t(x), t(y))
 
 """
 ```julia

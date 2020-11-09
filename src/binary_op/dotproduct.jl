@@ -1,4 +1,4 @@
-struct DotProduct <: Distances.PreMetric end
+struct DotProduct end
 # struct DotProduct <: Distances.UnionSemiMetric end
 
 @inline function Distances._evaluate(::DotProduct, a::AbstractVector, b::AbstractVector)

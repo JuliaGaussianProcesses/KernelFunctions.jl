@@ -37,7 +37,7 @@ makedocs(
                      ],
              "Kernel Functions"=>"kernels.md",
              "Transform"=>"transform.md",
-             "Metrics"=>"metrics.md",
+             "Binary Operations"=>"metrics.md",
              "Theory"=>"theory.md",
              "Custom Kernels"=>"create_kernel.md",
              "API"=>"api.md"]

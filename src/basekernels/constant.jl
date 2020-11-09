@@ -11,7 +11,7 @@ struct ZeroKernel <: SimpleKernel end
 
 kappa(κ::ZeroKernel, d::T) where {T<:Real} = zero(T)
 
-metric(::ZeroKernel) = Delta()
+binary_op(::ZeroKernel) = Delta()
 
 Base.show(io::IO, ::ZeroKernel) = print(io, "Zero Kernel")
 
@@ -34,7 +34,7 @@ const EyeKernel = WhiteKernel
 
 kappa(κ::WhiteKernel, δₓₓ::Real) = δₓₓ
 
-metric(::WhiteKernel) = Delta()
+binary_op(::WhiteKernel) = Delta()
 
 Base.show(io::IO, ::WhiteKernel) = print(io, "White Kernel")
 
@@ -58,6 +58,6 @@ end
 
 kappa(κ::ConstantKernel,x::Real) = first(κ.c)*one(x)
 
-metric(::ConstantKernel) = Delta()
+binary_op(::ConstantKernel) = Delta()
 
 Base.show(io::IO, κ::ConstantKernel) = print(io, "Constant Kernel (c = ", first(κ.c), ")")

@@ -16,8 +16,8 @@
             )
         end
 
-        @test metric(RationalQuadraticKernel()) == SqEuclidean()
-        @test metric(RationalQuadraticKernel(α=2.0)) == SqEuclidean()
+        @test binary_op(RationalQuadraticKernel()) == SqEuclidean()
+        @test binary_op(RationalQuadraticKernel(α=2.0)) == SqEuclidean()
         @test repr(k) == "Rational Quadratic Kernel (α = $(α))"
 
         # Standardised tests.
@@ -74,9 +74,9 @@
             )
         end
 
-        @test metric(GammaRationalQuadraticKernel()) == SqEuclidean()
-        @test metric(GammaRationalQuadraticKernel(γ=2.0)) == SqEuclidean()
-        @test metric(GammaRationalQuadraticKernel(γ=2.0, α=3.0)) == SqEuclidean()
+        @test binary_op(GammaRationalQuadraticKernel()) == SqEuclidean()
+        @test binary_op(GammaRationalQuadraticKernel(γ=2.0)) == SqEuclidean()
+        @test binary_op(GammaRationalQuadraticKernel(γ=2.0, α=3.0)) == SqEuclidean()
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)

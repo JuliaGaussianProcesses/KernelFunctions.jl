@@ -42,7 +42,7 @@ _f(κ::PiecewisePolynomialKernel{3}, r, j) = 1 + (j + 3) * r +
 
 kappa(κ::PiecewisePolynomialKernel{V}, r) where V = max(1 - r, 0)^(κ.j + V) * _f(κ, r, κ.j)
 
-metric(κ::PiecewisePolynomialKernel) = Mahalanobis(κ.maha)
+binary_op(κ::PiecewisePolynomialKernel) = Mahalanobis(κ.maha)
 
 function Base.show(io::IO, κ::PiecewisePolynomialKernel{V}) where {V}
     print(io, "Piecewise Polynomial Kernel (v = ", V, ", size(maha) = ", size(κ.maha), ")")

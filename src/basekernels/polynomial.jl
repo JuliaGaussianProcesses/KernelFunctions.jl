@@ -18,7 +18,7 @@ end
 
 kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + first(κ.c)
 
-metric(::LinearKernel) = DotProduct()
+binary_op(::LinearKernel) = DotProduct()
 
 Base.show(io::IO, κ::LinearKernel) = print(io, "Linear Kernel (c = ", first(κ.c), ")")
 
@@ -44,6 +44,6 @@ end
 
 kappa(κ::PolynomialKernel, xᵀy::Real) = (xᵀy + first(κ.c))^(first(κ.d))
 
-metric(::PolynomialKernel) = DotProduct()
+binary_op(::PolynomialKernel) = DotProduct()
 
 Base.show(io::IO, κ::PolynomialKernel) = print(io, "Polynomial Kernel (c = ", first(κ.c), ", d = ", first(κ.d), ")")

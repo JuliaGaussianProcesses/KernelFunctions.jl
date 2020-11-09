@@ -83,7 +83,7 @@ kerneldiagmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector) = map(κ, x, 
 
 function kernelmatrix!(K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector)
     validate_inplace_dims(K, x)
-    pairwise!(K, metric(κ), x)
+    pairwise!(K, binary_op(κ), x)
     return map!(d -> kappa(κ, d), K, K)
 end
 
@@ -91,17 +91,17 @@ function kernelmatrix!(
     K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector, y::AbstractVector,
 )
     validate_inplace_dims(K, x, y)
-    pairwise!(K, metric(κ), x, y)
+    pairwise!(K, binary_op(κ), x, y)
     return map!(d -> kappa(κ, d), K, K)
 end
 
 function kernelmatrix(κ::SimpleKernel, x::AbstractVector)
-    return map(d -> kappa(κ, d), pairwise(metric(κ), x))
+    return map(d -> kappa(κ, d), pairwise(binary_op(κ), x))
 end
 
 function kernelmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
     validate_inputs(x, y)
-    return map(d -> kappa(κ, d), pairwise(metric(κ), x, y))
+    return map(d -> kappa(κ, d), pairwise(binary_op(κ), x, y))
 end
 
 

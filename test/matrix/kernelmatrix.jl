@@ -7,7 +7,7 @@ struct BaseSE <: KernelFunctions.Kernel end
 # are implemented in the package. That this happens to be an exponentiated quadratic kernel
 # is a complete coincidence.
 struct ToySimpleKernel <: SimpleKernel end
-KernelFunctions.metric(::ToySimpleKernel) = SqEuclidean()
+KernelFunctions.binary_op(::ToySimpleKernel) = SqEuclidean()
 KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
 
 @testset "kernelmatrix" begin

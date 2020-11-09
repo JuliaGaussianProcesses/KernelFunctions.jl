@@ -8,7 +8,7 @@
     @test kappa(k,x) ≈ exp(x)
     @test kappa(k,-x) ≈ exp(-x)
     @test k(v1,v2) ≈ exp(dot(v1,v2))
-    @test metric(ExponentiatedKernel()) == KernelFunctions.DotProduct()
+    @test binary_op(ExponentiatedKernel()) == KernelFunctions.DotProduct()
     @test repr(k) == "Exponentiated Kernel"
 
     # Standardised tests. This kernel appears to be fairly numerically unstable.

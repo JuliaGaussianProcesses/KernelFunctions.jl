@@ -5,7 +5,7 @@ To do so a distance measure is needed for each kernel. Two very common ones can 
 However all kernels do not rely on distances metrics respecting all the definitions. That's why  additional metrics come with the package such as `DotProduct` (`<x,y>`) and `Delta` (`δ(x,y)`).
 Note that every `SimpleKernel` must have a defined metric defined as :
 ```julia
-    KernelFunctions.metric(::CustomKernel) = SqEuclidean()
+    KernelFunctions.binary_op(::CustomKernel) = SqEuclidean()
 ```
 
 ## Adding a new metric

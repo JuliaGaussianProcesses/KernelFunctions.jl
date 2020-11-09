@@ -6,15 +6,15 @@ Here are a few ways depending on how complicated your kernel is :
 
 ### SimpleKernel for kernels function depending on a metric
 
-If your kernel function is of the form `k(x, y) = f(d(x, y))` where `d(x, y)` is a `PreMetric`,
-you can construct your custom kernel by defining `kappa` and `metric` for your kernel.
+If your kernel function is of the form `k(x, y) = f(binary_op(x, y))` where `binary_op(x, y)` is a `PreMetric` or another function/instance implementing `pairwise` and `evaluate` from `Distances.jl`,
+you can construct your custom kernel by defining `kappa` and `binary_op` for your kernel.
 Here is for example how one can define the `SqExponentialKernel` again :
 
 ```julia
 struct MyKernel <: KernelFunctions.SimpleKernel end
 
 KernelFunctions.kappa(::MyKernel, d2::Real) = exp(-d2)
-KernelFunctions.metric(::MyKernel) = SqEuclidean()
+KernelFunctions.binary_op(::MyKernel) = SqEuclidean()
 ```
 
 ### Kernel for more complex kernels

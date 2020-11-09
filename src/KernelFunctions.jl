@@ -64,10 +64,13 @@ abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
 
 include("utils.jl")
-include(joinpath("distances", "pairwise.jl"))
-include(joinpath("distances", "dotproduct.jl"))
-include(joinpath("distances", "delta.jl"))
-include(joinpath("distances", "sinus.jl"))
+
+abstract type AbstractBinaryOp end
+const BinaryOp = Union{Metric, AbstractBinaryOp}
+include(joinpath("binary_op", "pairwise.jl"))
+include(joinpath("binary_op", "dotproduct.jl"))
+include(joinpath("binary_op", "delta.jl"))
+include(joinpath("binary_op", "sinus.jl"))
 
 include(joinpath("transform", "transform.jl"))
 include(joinpath("transform", "scaletransform.jl"))

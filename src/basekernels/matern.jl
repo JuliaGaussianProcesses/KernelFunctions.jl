@@ -29,7 +29,7 @@ function _matern(ν::Real, d::Real)
     return exp((one(d) - ν) * logtwo - loggamma(ν) + ν * log(y) + log(besselk(ν, y)))
 end
 
-metric(::MaternKernel) = Euclidean()
+binary_op(::MaternKernel) = Euclidean()
 
 Base.show(io::IO, κ::MaternKernel) = print(io, "Matern Kernel (ν = ", first(κ.ν), ")")
 
@@ -45,7 +45,7 @@ struct Matern32Kernel <: SimpleKernel end
 
 kappa(κ::Matern32Kernel, d::Real) = (1 + sqrt(3) * d) * exp(-sqrt(3) * d)
 
-metric(::Matern32Kernel) = Euclidean()
+binary_op(::Matern32Kernel) = Euclidean()
 
 Base.show(io::IO, ::Matern32Kernel) = print(io, "Matern 3/2 Kernel")
 
@@ -61,6 +61,6 @@ struct Matern52Kernel <: SimpleKernel end
 
 kappa(κ::Matern52Kernel, d::Real) = (1 + sqrt(5) * d + 5 * d^2 / 3) * exp(-sqrt(5) * d)
 
-metric(::Matern52Kernel) = Euclidean()
+binary_op(::Matern52Kernel) = Euclidean()
 
 Base.show(io::IO, ::Matern52Kernel) = print(io, "Matern 5/2 Kernel")
