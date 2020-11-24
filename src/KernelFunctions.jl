@@ -63,10 +63,11 @@ using StatsBase
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
 
-include("utils.jl")
-
 abstract type AbstractBinaryOp end
 const BinaryOp = Union{Metric, AbstractBinaryOp}
+
+include("utils.jl")
+
 include(joinpath("binary_op", "pairwise.jl"))
 include(joinpath("binary_op", "dotproduct.jl"))
 include(joinpath("binary_op", "delta.jl"))
