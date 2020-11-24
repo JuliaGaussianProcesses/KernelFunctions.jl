@@ -1,6 +1,6 @@
 # KernelFunctions.jl
 
-[![Build Status](https://travis-ci.com/JuliaGaussianProcesses/KernelFunctions.jl.svg?branch=master)](https://travis-ci.com/JuliaGaussianProcesses/KernelFunctions.jl)
+![CI](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl/workflows/CI/badge.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/JuliaGaussianProcesses/KernelFunctions.jl/badge.svg?branch=master)](https://coveralls.io/github/JuliaGaussianProcesses/KernelFunctions.jl?branch=master)
 [![Documentation (stable)](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliagaussianprocesses.github.io/KernelFunctions.jl)
 [![Documentation (latest)](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliagaussianprocesses.github.io/KernelFunctions.jl/dev)
