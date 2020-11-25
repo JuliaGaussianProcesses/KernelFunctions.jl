@@ -1,41 +1,42 @@
 # Add our own pairwise function to be able to apply it on vectors
 
-pairwise(d::PreMetric, X::AbstractVector, Y::AbstractVector) = broadcast(d, X, permutedims(Y))
+pairwise(d::BinaryOp, X::AbstractVector, Y::AbstractVector) = broadcast(d, X, permutedims(Y))
 
-pairwise(d::PreMetric, X::AbstractVector) = pairwise(d, X, X)
+pairwise(d::BinaryOp, X::AbstractVector) = pairwise(d, X, X)
 
 function pairwise!(
     out::AbstractMatrix,
-    d::PreMetric,
+    d::BinaryOp,
     X::AbstractVector,
     Y::AbstractVector,
 )
     broadcast!(d, out, X, Y')
 end
 
-pairwise!(out::AbstractMatrix, d::PreMetric, X::AbstractVector) = pairwise!(out, d, X, X)
+pairwise!(out::AbstractMatrix, d::BinaryOp, X::AbstractVector) = pairwise!(out, d, X, X)
 
-function pairwise(d::PreMetric, x::AbstractVector{<:Real})
+function pairwise(d::BinaryOp, x::AbstractVector{<:Real})
     return Distances.pairwise(d, reshape(x, :, 1); dims = 1)
 end
 
 function pairwise(
-    d::PreMetric,
+    d::BinaryOp,
     x::AbstractVector{<:Real},
     y::AbstractVector{<:Real},
 )
     return Distances.pairwise(d, reshape(x, :, 1), reshape(y, :, 1); dims = 1)
 end
 
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::AbstractVector{<:Real})
+function pairwise!(out::AbstractMatrix, d::BinaryOp, x::AbstractVector{<:Real})
     return Distances.pairwise!(out, d, reshape(x, :, 1); dims = 1)
 end
 
 function pairwise!(
     out::AbstractMatrix,
-    d::PreMetric,
+    d::BinaryOp,
     x::AbstractVector{<:Real},
     y::AbstractVector{<:Real},
 )
     return Distances.pairwise!(out, d, reshape(x, :, 1), reshape(y, :, 1); dims=1)
 end
+
