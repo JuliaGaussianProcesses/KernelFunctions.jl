@@ -1,7 +1,7 @@
 @testset "utils" begin
     using KernelFunctions: vec_of_vecs, ColVecs, RowVecs
     rng, N, D = MersenneTwister(123456), 10, 4
-    x, X, v = randn(rng, N), randn(rng, D, N), randn(rng, D)
+    x, X, v, w = randn(rng, N), randn(rng, D, N), randn(rng, D), randn(rng, N)
     @testset "VecOfVecs" begin
         @test vec_of_vecs(X, obsdim = 2) == ColVecs(X)
         @test vec_of_vecs(X, obsdim = 1) == RowVecs(X)
@@ -56,9 +56,9 @@
         @test getindex(DX, :) == RowVecs(X)
         @test eachindex(DX) == 1:D
         @test first(DX) == X[1, :]
-        DX[2] = v
-        @test DX[2] == v
-        @test X[2, :] == v
+        DX[2] = w
+        @test DX[2] == w
+        @test X[2, :] == w
 
         Y = randn(rng, D + 1, N)
         DY = RowVecs(Y)
