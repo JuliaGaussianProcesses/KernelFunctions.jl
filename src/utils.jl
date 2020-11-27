@@ -38,6 +38,7 @@ Base.size(D::ColVecs) = (size(D.X, 2),)
 Base.getindex(D::ColVecs, i::Int) = view(D.X, :, i)
 Base.getindex(D::ColVecs, i::CartesianIndex{1}) = view(D.X, :, i)
 Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
+Base.setindex!(D::ColVecs, v::AbstractVector, i) = setindex!(D.X, v, :, i)
 
 dim(x::ColVecs) = size(x.X, 1)
 
@@ -76,6 +77,7 @@ Base.size(D::RowVecs) = (size(D.X, 1),)
 Base.getindex(D::RowVecs, i::Int) = view(D.X, i, :)
 Base.getindex(D::RowVecs, i::CartesianIndex{1}) = view(D.X, i, :)
 Base.getindex(D::RowVecs, i) = RowVecs(view(D.X, i, :))
+Base.setindex!(D::RowVecs, v::AbstractVector, i) = setindex!(D.X, v, i, :)
 
 dim(x::RowVecs) = size(x.X, 2)
 
@@ -93,17 +95,6 @@ end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs, y::RowVecs)
     return Distances.pairwise!(out, d, x.X, y.X; dims=1)
 end
-
-"""
-Will be implemented at some point
-```julia
-    params(k::Kernel)
-    params(t::Transform)
-```
-For a kernel return a tuple with parameters of the transform followed by the specific parameters of the kernel
-For a transform return its parameters, for a `ChainTransform` return a vector of `params(t)`.
-"""
-#params
 
 dim(x) = 0 # This is the passes-by-default choice. For a proper check, implement `KernelFunctions.dim` for your datatype.
 dim(x::AbstractVector) = dim(first(x))
