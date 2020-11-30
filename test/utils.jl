@@ -1,7 +1,11 @@
 @testset "utils" begin
     using KernelFunctions: vec_of_vecs, ColVecs, RowVecs
     rng, N, D = MersenneTwister(123456), 10, 4
-    x, X, v, w = randn(rng, N), randn(rng, D, N), randn(rng, D), randn(rng, N)
+    x = randn(rng, N)
+    X = randn(rng, D, N)
+    v = randn(rng, D)
+    w = randn(rng, N)
+
     @testset "VecOfVecs" begin
         @test vec_of_vecs(X, obsdim = 2) == ColVecs(X)
         @test vec_of_vecs(X, obsdim = 1) == RowVecs(X)
