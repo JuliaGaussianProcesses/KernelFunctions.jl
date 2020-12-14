@@ -68,6 +68,10 @@ function kerneldiagmatrix!(K::AbstractVector, κ::TransformedKernel, x::Abstract
     return kerneldiagmatrix!(K, κ.kernel, _map(κ.transform, x))
 end
 
+function kerneldiagmatrix!(K::AbstractVector, κ::TransformedKernel, x::AbstractVector, y::AbstractVector)
+    return kerneldiagmatrix!(K, κ.kernel, _map(κ.transform, x), _map(κ.transform, y))
+end
+
 function kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector)
     return kernelmatrix!(K, kernel(κ), _map(κ.transform, x))
 end
@@ -76,6 +80,14 @@ function kernelmatrix!(
     K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector, y::AbstractVector,
 )
     return kernelmatrix!(K, kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
+end
+
+function kerneldiagmatrix(κ::TransformedKernel, x::AbstractVector)
+    return kerneldiagmatrix(κ.kernel, _map(κ.transform, x))
+end
+
+function kerneldiagmatrix(κ::TransformedKernel, x::AbstractVector, y::AbstractVector)
+    return kerneldiagmatrix(κ.kernel, _map(κ.transform, x), _map(κ.transform, y))
 end
 
 function kernelmatrix(κ::TransformedKernel, x::AbstractVector)

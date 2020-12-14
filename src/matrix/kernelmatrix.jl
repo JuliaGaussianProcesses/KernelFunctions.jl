@@ -71,9 +71,9 @@ function kerneldiagmatrix!(
     return map!(κ, x, y)
 end
 
-kerneldiagmatrix(κ::Kernel, x::AbstractVector) = κ.(x, x)
+kerneldiagmatrix(κ::Kernel, x::AbstractVector) = map(x -> κ(x, x), x)
 
-kerneldiagmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector) = κ.(x, y)
+kerneldiagmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector) = map(κ, x, y)
 
 
 #
@@ -101,6 +101,14 @@ end
 function kernelmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
     validate_inputs(x, y)
     return map(d -> kappa(κ, d), pairwise(metric(κ), x, y))
+end
+
+function kerneldiagmatrix(κ::SimpleKernel, x::AbstractVector)
+    return map(x -> κ(x, x), x)
+end
+
+function kerneldiagmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
+    return map(d -> kappa(κ, d), map(metric(κ), x, y))
 end
 
 
