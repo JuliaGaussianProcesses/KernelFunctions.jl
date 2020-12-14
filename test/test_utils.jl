@@ -117,7 +117,7 @@ function test_FiniteDiff(kernelfunction, args = nothing, dims = [3, 3])
             @test_nowarn gradient(:FiniteDiff, B) do b
                 testdiagfunction(k, A, b, dim)
             end
-            if !(args === nothing)
+            if args !== nothing
                 @test_nowarn gradient(:FiniteDiff, args) do p
                     testdiagfunction(kernelfunction(p), A, B, dim)
                 end
@@ -184,7 +184,7 @@ function test_AD(AD::Symbol, kernelfunction, args = nothing, dims = [3, 3])
             compare_gradient(AD, B) do b
                 testdiagfunction(k, A, b, dim)
             end
-            if !(args === nothing)
+            if args !== nothing
                 compare_gradient(AD, args) do p
                     testdiagfunction(kernelfunction(p), A, dim)
                 end
