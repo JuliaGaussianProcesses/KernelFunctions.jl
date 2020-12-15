@@ -39,3 +39,15 @@ function pairwise!(
 )
     return Distances.pairwise!(out, d, reshape(x, :, 1), reshape(y, :, 1); dims=1)
 end
+
+
+# Also defines the colwise method for abstractvectors
+
+
+function colwise(::PreMetric, x::AbstractVector)
+    zeros(length(x))
+end
+
+function colwise(d::PreMetric, x::AbstractVector, y::AbstractVector)
+    broadcast(d, x, y)
+end

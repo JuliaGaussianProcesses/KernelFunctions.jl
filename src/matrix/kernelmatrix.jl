@@ -68,7 +68,7 @@ end
 function kerneldiagmatrix!(
     K::AbstractVector, κ::Kernel, x::AbstractVector, y::AbstractVector,
 )
-    return map!(κ, x, y)
+    return map!(κ, K, x, y)
 end
 
 kerneldiagmatrix(κ::Kernel, x::AbstractVector) = map(x -> κ(x, x), x)
@@ -104,11 +104,11 @@ function kernelmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
 end
 
 function kerneldiagmatrix(κ::SimpleKernel, x::AbstractVector)
-    return map(x -> κ(x, x), x)
+    return kerneldiagmatrix(κ, x, x)
 end
 
 function kerneldiagmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
-    return map(d -> kappa(κ, d), map(metric(κ), x, y))
+    return map(d -> kappa(κ, d), colwise(metric(κ), x, y))
 end
 
 
