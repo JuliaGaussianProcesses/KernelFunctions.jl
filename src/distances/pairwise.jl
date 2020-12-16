@@ -51,3 +51,11 @@ end
 function colwise(d::PreMetric, x::AbstractVector, y::AbstractVector)
     broadcast(d, x, y)
 end
+
+function colwise(d::PreMetric, x::RowVecs, y::RowVecs)
+    Distances.colwise(d, x.X', y.X')
+end
+
+function colwise(d::PreMetric, x::ColVecs, y::ColVecs)
+    Distances.colwise(d, x.X, y.X)
+end
