@@ -85,7 +85,14 @@ What if you want to differentiate through the kernel parameters? Even in a highl
       + 0.2 * (transform(LinearKernel(), 2.0) + PolynomialKernel()),
       [0.1, 0.5])
 ```
-One can access the array of trainable parameters via `params` from `Flux.jl`
+One can access the named tuple of trainable parameters via `Functors.functor` from `Functors.jl`.
+This means that in practice you can implicitly optimize the kernel parameters by calling:
+```julia
+using Flux
+hp = params(k)
+gradient(hp) do
+	... some loss function on the kernel ....
+end
 
 ```julia
   using Flux
