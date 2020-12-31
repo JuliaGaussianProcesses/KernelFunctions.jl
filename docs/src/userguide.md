@@ -11,7 +11,6 @@ For example to create a square exponential kernel
 For example, if you want to premultiply the input by 2.0, you can create your kernel with the following options:
 ```julia
   k = transform(SqExponentialKernel(), 2.0)) # returns a TransformedKernel
-  k = TransformedKernel(SqExponentialKernel(), ScaleTransform(2.0))
 ```
 In the example of the [SqExponentialKernel](@ref), you can reproduce the usual definition, $$\exp\left(-\frac{\|x-x'\|^2}{\rho^2}\right)$$, by using `transform(SqExponentialKernel(), 1 / ρ)`. 
 Check the [`Transform`](@ref) page to see the other options.
