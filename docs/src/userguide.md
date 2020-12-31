@@ -7,14 +7,15 @@ For example to create a square exponential kernel
 ```julia
   k = SqExponentialKernel()
 ```
-Instead of having lengthscale(s) for each kernel we use `Transform` objects (see [Transform](@ref)) which are directly going to act on the inputs before passing them to the kernel.
-For example to premultiply the input by 2.0 we create the kernel the following options are possible
+!!! tip "How do I set the lengthscale?" Instead of having lengthscale(s) for each kernel we use `Transform` objects (see [Transform](@ref)) which are directly going to act on the inputs before passing them to the kernel. 
+For example, if you want to to premultiply the input by 2.0, you can create your kernel with the following options:
 ```julia
-  k = transform(SqExponentialKernel(),ScaleTransform(2.0)) # returns a TransformedKernel
-  k = @kernel SqExponentialKernel() l=2.0 # Will be available soon
-  k = TransformedKernel(SqExponentialKernel(),ScaleTransform(2.0))
+  k = transform(SqExponentialKernel(), 2.0)) # returns a TransformedKernel
+  k = TransformedKernel(SqExponentialKernel(), ScaleTransform(2.0))
 ```
+In the example of the [SqExponentialKernel](@ref), you can reproduce the usual definition, $$\exp\left(-\frac{\|x-x'\|^2}{\rho^2}$$, by using the following `Transform` : `transform(SqExponentialKernel(), 1 / ρ`. 
 Check the [`Transform`](@ref) page to see the other options.
+
 To premultiply the kernel by a variance, you can use `*` or create a `ScaledKernel`
 ```julia
   k = 3.0*SqExponentialKernel()
@@ -79,9 +80,12 @@ For example :
 
 What if you want to differentiate through the kernel parameters? Even in a highly nested structure such as :
 ```julia
-  k = transform(0.5*SqExponentialKernel()*MaternKernel()+0.2*(transform(LinearKernel(),2.0)+PolynomialKernel()),[0.1,0.5])
+  k = transform(
+        0.5 * SqExponentialKernel() * MaternKernel()
+      + 0.2 * (transform(LinearKernel(), 2.0) + PolynomialKernel()),
+      [0.1, 0.5])
 ```
-One can get the array of parameters to optimize via `params` from `Flux.jl`
+One can access the array of trainable parameters via `params` from `Flux.jl`
 
 ```julia
   using Flux
