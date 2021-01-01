@@ -88,12 +88,8 @@ One can access the named tuple of trainable parameters via `Functors.functor` fr
 This means that in practice you can implicitly optimize the kernel parameters by calling:
 ```julia
 using Flux
-hp = params(k)
-gradient(hp) do
-	... some loss function on the kernel ....
+kernelparams = Flux.params(k)
+Flux.gradient(kernelparams) do
+    ... some loss function on the kernel ....
 end
-
-```julia
-  using Flux
-  params(k)
 ```
