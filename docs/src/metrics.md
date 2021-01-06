@@ -1,16 +1,17 @@
 # Metrics
 
 KernelFunctions.jl relies on [Distances.jl](https://github.com/JuliaStats/Distances.jl) for computing the pairwise matrix.
-To do so a distance measure is needed for each kernel. Two very common ones can already be used : `SqEuclidean` and `Euclidean`.
-However all kernels do not rely on distances metrics respecting all the definitions. That's why  additional metrics come with the package such as `DotProduct` (`<x,y>`) and `Delta` (`δ(x,y)`).
-Note that every `SimpleKernel` must have a defined metric defined as :
+To do so a distance measure is needed for each kernel. Two very common ones can already be used: `SqEuclidean` and `Euclidean`.
+However, not all kernels rely on distance metrics respecting all the definitions as in Distances.jl. For this reason, KernelFunctions.jl provides additional "metrics" such as `DotProduct` ($\langle x, y \rangle$) and `Delta` ($\delta(x,y)$).
+
+Note that every `SimpleKernel` must have a metric, specified as
 ```julia
     KernelFunctions.metric(::CustomKernel) = SqEuclidean()
 ```
 
 ## Adding a new metric
 
-If you want to create a new distance just implement the following :
+If you want to create a new "metric" just implement the following:
 
 ```julia
 struct Delta <: Distances.PreMetric
