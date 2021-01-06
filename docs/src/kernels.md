@@ -114,9 +114,9 @@ where $\nu > 0$.
 
 The Matérn 1/2 kernel is defined as
 ```math
-  k(x,x') = \exp\left(-|x-x'|\right).
+  k(x,x') = \exp\left(-|x-x'|\right),
 ```
-It is equivalent to the [`ExponentialKernel`](@ref).
+equivalent to the Exponential kernel. There is no `Matern12Kernel`, use [`ExponentialKernel`](@ref) instead.
 
 ### Matérn 3/2 Kernel
 
