@@ -17,7 +17,7 @@ metric(::SqExponentialKernel) = SqEuclidean()
 
 iskroncompatible(::SqExponentialKernel) = true
 
-Base.show(io::IO,::SqExponentialKernel) = print(io,"Squared Exponential Kernel")
+Base.show(io::IO, ::SqExponentialKernel) = print(io, "Squared Exponential Kernel")
 
 ## Aliases ##
 const RBFKernel = SqExponentialKernel
@@ -60,7 +60,7 @@ For `γ = 2`, see `SqExponentialKernel` and `γ = 1`, see `ExponentialKernel`.
 """
 struct GammaExponentialKernel{Tγ<:Real} <: SimpleKernel
     γ::Vector{Tγ}
-    function GammaExponentialKernel(; gamma::T=2.0, γ::T=gamma) where {T<:Real}
+    function GammaExponentialKernel(; gamma::T = 2.0, γ::T = gamma) where {T<:Real}
         @check_args(GammaExponentialKernel, γ, γ >= zero(T), "γ > 0")
         return new{T}([γ])
     end

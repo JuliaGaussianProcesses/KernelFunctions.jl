@@ -59,7 +59,7 @@ Base.show(io::IO, κ::TransformedKernel) = printshifted(io, κ, 0)
 
 function printshifted(io::IO, κ::TransformedKernel, shift::Int)
     printshifted(io, κ.kernel, shift)
-    print(io,"\n" * ("\t" ^ (shift + 1)) * "- $(κ.transform)")
+    print(io, "\n" * ("\t"^(shift + 1)) * "- $(κ.transform)")
 end
 
 # Kernel matrix operations
@@ -73,7 +73,10 @@ function kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, x::AbstractVect
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector, y::AbstractVector,
+    K::AbstractMatrix,
+    κ::TransformedKernel,
+    x::AbstractVector,
+    y::AbstractVector,
 )
     return kernelmatrix!(K, kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
 end

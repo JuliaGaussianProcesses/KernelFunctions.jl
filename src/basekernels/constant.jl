@@ -49,14 +49,14 @@ Kernel function always returning a constant value `c`
 """
 struct ConstantKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
-    function ConstantKernel(;c::T=1.0) where {T<:Real}
+    function ConstantKernel(; c::T = 1.0) where {T<:Real}
         new{T}([c])
     end
 end
 
 @functor ConstantKernel
 
-kappa(κ::ConstantKernel,x::Real) = first(κ.c)*one(x)
+kappa(κ::ConstantKernel, x::Real) = first(κ.c) * one(x)
 
 metric(::ConstantKernel) = Delta()
 

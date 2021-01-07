@@ -20,9 +20,13 @@ end
 @functor LinearTransform
 
 function set!(t::LinearTransform{<:AbstractMatrix{T}}, A::AbstractMatrix{T}) where {T<:Real}
-    size(t.A) == size(A) ||
-        error("size of the given matrix ", size(A), " and of the transformation matrix ",
-              size(t.A), " are not the same")
+    size(t.A) == size(A) || error(
+        "size of the given matrix ",
+        size(A),
+        " and of the transformation matrix ",
+        size(t.A),
+        " are not the same",
+    )
     t.A .= A
 end
 

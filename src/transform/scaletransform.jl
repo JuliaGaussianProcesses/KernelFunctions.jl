@@ -11,13 +11,13 @@ struct ScaleTransform{T<:Real} <: Transform
     s::Vector{T}
 end
 
-function ScaleTransform(s::T=1.0) where {T<:Real}
+function ScaleTransform(s::T = 1.0) where {T<:Real}
     ScaleTransform{T}([s])
 end
 
 @functor ScaleTransform
 
-set!(t::ScaleTransform,ρ::Real) = t.s .= [ρ]
+set!(t::ScaleTransform, ρ::Real) = t.s .= [ρ]
 
 (t::ScaleTransform)(x) = first(t.s) * x
 
@@ -25,6 +25,6 @@ _map(t::ScaleTransform, x::AbstractVector{<:Real}) = first(t.s) .* x
 _map(t::ScaleTransform, x::ColVecs) = ColVecs(first(t.s) .* x.X)
 _map(t::ScaleTransform, x::RowVecs) = RowVecs(first(t.s) .* x.X)
 
-Base.isequal(t::ScaleTransform,t2::ScaleTransform) = isequal(first(t.s),first(t2.s))
+Base.isequal(t::ScaleTransform, t2::ScaleTransform) = isequal(first(t.s), first(t2.s))
 
-Base.show(io::IO,t::ScaleTransform) = print(io,"Scale Transform (s = ", first(t.s), ")")
+Base.show(io::IO, t::ScaleTransform) = print(io, "Scale Transform (s = ", first(t.s), ")")

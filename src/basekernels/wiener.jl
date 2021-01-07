@@ -33,7 +33,7 @@ Hennig, NIPS, 2014, for more details.
 
 """
 struct WienerKernel{I} <: Kernel
-    function WienerKernel{I}() where I
+    function WienerKernel{I}() where {I}
         @assert I ∈ (-1, 0, 1, 2, 3) "Invalid parameter i=$(I). Should be -1, 0, 1, 2 or 3."
         if I == -1
             return WhiteKernel()
@@ -42,7 +42,7 @@ struct WienerKernel{I} <: Kernel
     end
 end
 
-function WienerKernel(;i::Integer=0)
+function WienerKernel(; i::Integer = 0)
     return WienerKernel{i}()
 end
 
@@ -63,16 +63,16 @@ function (::WienerKernel{2})(x, y)
     X = sqrt(sum(abs2, x))
     Y = sqrt(sum(abs2, y))
     minXY = min(X, Y)
-    return 1 / 20 * minXY^5 + 1 / 12 * minXY^3 * euclidean(x, y) *
-        ( X + Y - 1 / 2 * minXY )
+    return 1 / 20 * minXY^5 + 1 / 12 * minXY^3 * euclidean(x, y) * (X + Y - 1 / 2 * minXY)
 end
 
 function (::WienerKernel{3})(x, y)
     X = sqrt(sum(abs2, x))
     Y = sqrt(sum(abs2, y))
     minXY = min(X, Y)
-    return 1 / 252 * minXY^7 + 1 / 720 * minXY^4 * euclidean(x, y) *
-        ( 5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2 )
+    return 1 / 252 * minXY^7 +
+           1 / 720 * minXY^4 * euclidean(x, y) * (5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2)
 end
 
-Base.show(io::IO, ::WienerKernel{I}) where I = print(io, I, "-times integrated Wiener kernel")
+Base.show(io::IO, ::WienerKernel{I}) where {I} =
+    print(io, I, "-times integrated Wiener kernel")

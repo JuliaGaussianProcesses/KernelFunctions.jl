@@ -9,15 +9,15 @@ Gabor kernel with lengthscale `ell` and period `p`. Given by
 """
 struct GaborKernel{K<:Kernel} <: Kernel
     kernel::K
-    function GaborKernel(;ell=nothing, p=nothing)
-        k = _gabor(ell=ell, p=p)
+    function GaborKernel(; ell = nothing, p = nothing)
+        k = _gabor(ell = ell, p = p)
         return new{typeof(k)}(k)
     end
 end
 
 @functor GaborKernel
 
-(κ::GaborKernel)(x, y) = κ.kernel(x ,y)
+(κ::GaborKernel)(x, y) = κ.kernel(x, y)
 
 function _gabor(; ell = nothing, p = nothing)
     if ell === nothing
@@ -29,7 +29,8 @@ function _gabor(; ell = nothing, p = nothing)
     elseif p === nothing
         return transform(SqExponentialKernel(), 1 ./ ell) * CosineKernel()
     else
-        return transform(SqExponentialKernel(), 1 ./ ell) * transform(CosineKernel(), 1 ./ p)
+        return transform(SqExponentialKernel(), 1 ./ ell) *
+               transform(CosineKernel(), 1 ./ p)
     end
 end
 
@@ -38,11 +39,11 @@ function Base.getproperty(k::GaborKernel, v::Symbol)
         return getfield(k, v)
     elseif v == :ell
         kernel1 = k.kernel.kernels[1]
-    	if kernel1 isa TransformedKernel
-    	    return 1 ./ kernel1.transform.s[1]
-    	else
-    	    return 1.0
-    	end
+        if kernel1 isa TransformedKernel
+            return 1 ./ kernel1.transform.s[1]
+        else
+            return 1.0
+        end
     elseif v == :p
         kernel2 = k.kernel.kernels[2]
         if kernel2 isa TransformedKernel
@@ -55,7 +56,8 @@ function Base.getproperty(k::GaborKernel, v::Symbol)
     end
 end
 
-Base.show(io::IO, κ::GaborKernel) = print(io, "Gabor Kernel (ell = ", κ.ell, ", p = ", κ.p, ")")
+Base.show(io::IO, κ::GaborKernel) =
+    print(io, "Gabor Kernel (ell = ", κ.ell, ", p = ", κ.p, ")")
 
 kernelmatrix(κ::GaborKernel, x::AbstractVector) = kernelmatrix(κ.kernel, x)
 

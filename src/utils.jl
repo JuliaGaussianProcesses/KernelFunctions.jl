@@ -1,12 +1,20 @@
 hadamard(x, y) = x .* y
 
 # Macro for checking arguments
-macro check_args(K, param, cond, desc=string(cond))
+macro check_args(K, param, cond, desc = string(cond))
     quote
         if !($(esc(cond)))
             throw(ArgumentError(string(
-                $(string(K)), ": ", $(string(param)), " = ", $(esc(param)), " does not ",
-                "satisfy the constraint ", $(string(desc)), ".")))
+                $(string(K)),
+                ": ",
+                $(string(param)),
+                " = ",
+                $(esc(param)),
+                " does not ",
+                "satisfy the constraint ",
+                $(string(desc)),
+                ".",
+            )))
         end
     end
 end
@@ -26,11 +34,11 @@ end
 A lightweight wrapper for an `AbstractMatrix` to make it behave like a vector of vectors.
 Each vector represents a column of the matrix
 """
-struct ColVecs{T, TX<:AbstractMatrix{T}, S} <: AbstractVector{S}
+struct ColVecs{T,TX<:AbstractMatrix{T},S} <: AbstractVector{S}
     X::TX
-    function ColVecs(X::TX) where {T, TX<:AbstractMatrix{T}}
+    function ColVecs(X::TX) where {T,TX<:AbstractMatrix{T}}
         S = typeof(view(X, :, 1))
-        new{T, TX, S}(X)
+        new{T,TX,S}(X)
     end
 end
 
@@ -42,19 +50,19 @@ Base.setindex!(D::ColVecs, v::AbstractVector, i) = setindex!(D.X, v, :, i)
 
 dim(x::ColVecs) = size(x.X, 1)
 
-pairwise(d::PreMetric, x::ColVecs) = Distances.pairwise(d, x.X; dims=2)
-pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances.pairwise(d, x.X, y.X; dims=2)
+pairwise(d::PreMetric, x::ColVecs) = Distances.pairwise(d, x.X; dims = 2)
+pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances.pairwise(d, x.X, y.X; dims = 2)
 function pairwise(d::PreMetric, x::AbstractVector, y::ColVecs)
-    return Distances.pairwise(d, reduce(hcat, x), y.X; dims=2)
+    return Distances.pairwise(d, reduce(hcat, x), y.X; dims = 2)
 end
 function pairwise(d::PreMetric, x::ColVecs, y::AbstractVector)
-    return Distances.pairwise(d, x.X, reduce(hcat, y); dims=2)
+    return Distances.pairwise(d, x.X, reduce(hcat, y); dims = 2)
 end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs)
-    return Distances.pairwise!(out, d, x.X; dims=2)
+    return Distances.pairwise!(out, d, x.X; dims = 2)
 end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs, y::ColVecs)
-    return Distances.pairwise!(out, d, x.X, y.X; dims=2)
+    return Distances.pairwise!(out, d, x.X, y.X; dims = 2)
 end
 
 """
@@ -63,11 +71,11 @@ end
 A lightweight wrapper for an `AbstractMatrix` to make it behave like a vector of vectors.
 Each vector represents a row of the matrix
 """
-struct RowVecs{T, TX<:AbstractMatrix{T}, S} <: AbstractVector{S}
+struct RowVecs{T,TX<:AbstractMatrix{T},S} <: AbstractVector{S}
     X::TX
-    function RowVecs(X::TX) where {T, TX<:AbstractMatrix{T}}
+    function RowVecs(X::TX) where {T,TX<:AbstractMatrix{T}}
         S = typeof(view(X, 1, :))
-        new{T, TX, S}(X)
+        new{T,TX,S}(X)
     end
 end
 
@@ -81,19 +89,19 @@ Base.setindex!(D::RowVecs, v::AbstractVector, i) = setindex!(D.X, v, i, :)
 
 dim(x::RowVecs) = size(x.X, 2)
 
-pairwise(d::PreMetric, x::RowVecs) = Distances.pairwise(d, x.X; dims=1)
-pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = Distances.pairwise(d, x.X, y.X; dims=1)
+pairwise(d::PreMetric, x::RowVecs) = Distances.pairwise(d, x.X; dims = 1)
+pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = Distances.pairwise(d, x.X, y.X; dims = 1)
 function pairwise(d::PreMetric, x::AbstractVector, y::RowVecs)
-    return Distances.pairwise(d, permutedims(reduce(hcat, x)), y.X; dims=1)
+    return Distances.pairwise(d, permutedims(reduce(hcat, x)), y.X; dims = 1)
 end
 function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector)
-    return Distances.pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
+    return Distances.pairwise(d, x.X, permutedims(reduce(hcat, y)); dims = 1)
 end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs)
-    return Distances.pairwise!(out, d, x.X; dims=1)
+    return Distances.pairwise!(out, d, x.X; dims = 1)
 end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs, y::RowVecs)
-    return Distances.pairwise!(out, d, x.X, y.X; dims=1)
+    return Distances.pairwise!(out, d, x.X, y.X; dims = 1)
 end
 
 dim(x) = 0 # This is the passes-by-default choice. For a proper check, implement `KernelFunctions.dim` for your datatype.
@@ -104,9 +112,7 @@ dim(x::AbstractVector{<:Real}) = 1
 
 function validate_inputs(x, y)
     if dim(x) != dim(y) # Passes by default if `dim` is not defined
-        throw(DimensionMismatch(
-            "Dimensionality of x ($(dim(x))) not equality to that of y ($(dim(y)))",
-        ))
+        throw(DimensionMismatch("Dimensionality of x ($(dim(x))) not equality to that of y ($(dim(y)))",))
     end
     return nothing
 end

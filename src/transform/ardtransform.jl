@@ -32,5 +32,4 @@ _map(t::ARDTransform, x::RowVecs) = RowVecs(t.v' .* x.X)
 
 Base.isequal(t::ARDTransform, t2::ARDTransform) = isequal(t.v, t2.v)
 
-Base.show(io::IO, t::ARDTransform) =
-    print(io, "ARD Transform (dims: ", dim(t),")")
+Base.show(io::IO, t::ARDTransform) = print(io, "ARD Transform (dims: ", dim(t), ")")

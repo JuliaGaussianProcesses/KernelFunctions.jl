@@ -1,5 +1,5 @@
 struct Sinus{T} <: Distances.SemiMetric
-# struct Sinus{T} <: Distances.UnionSemiMetric
+    # struct Sinus{T} <: Distances.UnionSemiMetric
     r::Vector{T}
 end
 
@@ -10,7 +10,11 @@ Distances.parameters(d::Sinus) = d.r
 
 Distances.result_type(::Sinus{T}, Ta::Type, Tb::Type) where {T} = promote_type(T, Ta, Tb)
 
-@inline function Distances._evaluate(d::Sinus, a::AbstractVector, b::AbstractVector) where {T}
+@inline function Distances._evaluate(
+    d::Sinus,
+    a::AbstractVector,
+    b::AbstractVector,
+) where {T}
     @boundscheck if (length(a) != length(b)) || length(a) != length(d.r)
         throw(DimensionMismatch("Dimensions of the inputs are not matching : a = $(length(a)), b = $(length(b)), r = $(length(d.r))"))
     end

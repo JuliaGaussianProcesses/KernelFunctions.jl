@@ -9,7 +9,9 @@ function kernelkronmat(κ::Kernel, X::AbstractVector, dims::Int)
 end
 
 function kernelkronmat(
-    κ::Kernel, X::AbstractVector{<:AbstractVector}; obsdim::Int=defaultobs,
+    κ::Kernel,
+    X::AbstractVector{<:AbstractVector};
+    obsdim::Int = defaultobs,
 )
     @assert iskroncompatible(κ) "The chosen kernel is not compatible for Kronecker matrices"
     Ks = kernelmatrix.(κ, X)

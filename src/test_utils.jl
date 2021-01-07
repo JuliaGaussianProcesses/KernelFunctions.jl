@@ -34,8 +34,8 @@ function test_interface(
     x0::AbstractVector,
     x1::AbstractVector,
     x2::AbstractVector;
-    atol=__ATOL,
-    rtol=__RTOL,
+    atol = __ATOL,
+    rtol = __RTOL,
 )
     # Ensure that we have the required inputs.
     @assert length(x0) == length(x1)
@@ -50,11 +50,11 @@ function test_interface(
     @test size(kernelmatrix(k, x0, x2)) == (length(x0), length(x2))
 
     # Check that elementwise is consistent with pairwise.
-    @test kerneldiagmatrix(k, x0, x1) ≈ diag(kernelmatrix(k, x0, x1)) atol=atol
+    @test kerneldiagmatrix(k, x0, x1) ≈ diag(kernelmatrix(k, x0, x1)) atol = atol
 
     # Check additional binary elementwise properties for kernels.
     @test kerneldiagmatrix(k, x0, x1) ≈ kerneldiagmatrix(k, x1, x0)
-    @test kernelmatrix(k, x0, x2) ≈ kernelmatrix(k, x2, x0)' atol=atol
+    @test kernelmatrix(k, x0, x2) ≈ kernelmatrix(k, x2, x0)' atol = atol
 
     # Check that unary elementwise basically works.
     @test kerneldiagmatrix(k, x0) isa AbstractVector
@@ -63,17 +63,17 @@ function test_interface(
     # Check that unary pairwise basically works.
     @test kernelmatrix(k, x0) isa AbstractMatrix
     @test size(kernelmatrix(k, x0)) == (length(x0), length(x0))
-    @test kernelmatrix(k, x0) ≈ kernelmatrix(k, x0)' atol=atol
+    @test kernelmatrix(k, x0) ≈ kernelmatrix(k, x0)' atol = atol
 
     # Check that unary elementwise is consistent with unary pairwise.
-    @test kerneldiagmatrix(k, x0) ≈ diag(kernelmatrix(k, x0)) atol=atol
+    @test kerneldiagmatrix(k, x0) ≈ diag(kernelmatrix(k, x0)) atol = atol
 
     # Check that unary pairwise produces a positive definite matrix (approximately).
     @test eigmin(Matrix(kernelmatrix(k, x0))) > -atol
 
     # Check that unary elementwise / pairwise are consistent with the binary versions.
-    @test kerneldiagmatrix(k, x0) ≈ kerneldiagmatrix(k, x0, x0) atol=atol rtol=rtol
-    @test kernelmatrix(k, x0) ≈ kernelmatrix(k, x0, x0) atol=atol rtol=rtol
+    @test kerneldiagmatrix(k, x0) ≈ kerneldiagmatrix(k, x0, x0) atol = atol rtol = rtol
+    @test kernelmatrix(k, x0) ≈ kernelmatrix(k, x0, x0) atol = atol rtol = rtol
 
     # Check that basic kernel evaluation succeeds and is consistent with `kernelmatrix`.
     @test k(first(x0), first(x1)) isa Real
@@ -90,13 +90,26 @@ function test_interface(
 end
 
 function test_interface(
-    rng::AbstractRNG, k::Kernel, ::Type{Vector{T}}; kwargs...
+    rng::AbstractRNG,
+    k::Kernel,
+    ::Type{Vector{T}};
+    kwargs...,
 ) where {T<:Real}
-    test_interface(k, randn(rng, T, 1001), randn(rng, T, 1001), randn(rng, T, 1000); kwargs...)
+    test_interface(
+        k,
+        randn(rng, T, 1001),
+        randn(rng, T, 1001),
+        randn(rng, T, 1000);
+        kwargs...,
+    )
 end
 
 function test_interface(
-    rng::AbstractRNG, k::Kernel, ::Type{<:ColVecs{T}}; dim_in=2, kwargs...,
+    rng::AbstractRNG,
+    k::Kernel,
+    ::Type{<:ColVecs{T}};
+    dim_in = 2,
+    kwargs...,
 ) where {T<:Real}
     test_interface(
         k,
@@ -108,7 +121,11 @@ function test_interface(
 end
 
 function test_interface(
-    rng::AbstractRNG, k::Kernel, ::Type{<:RowVecs{T}}; dim_in=2, kwargs...,
+    rng::AbstractRNG,
+    k::Kernel,
+    ::Type{<:RowVecs{T}};
+    dim_in = 2,
+    kwargs...,
 ) where {T<:Real}
     test_interface(
         k,
@@ -135,7 +152,7 @@ function test_interface(rng::AbstractRNG, k::Kernel, T::Type{<:Real}; kwargs...)
     end
 end
 
-function test_interface(k::Kernel, T::Type{<:Real}=Float64; kwargs...)
+function test_interface(k::Kernel, T::Type{<:Real} = Float64; kwargs...)
     test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
 end
 

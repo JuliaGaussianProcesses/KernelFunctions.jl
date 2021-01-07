@@ -10,10 +10,10 @@ processes are hence v times  mean-square differentiable. The kernel function is:
 where `r` is the Mahalanobis distance mahalanobis(x,y) with `maha` as the metric.
 
 """
-struct PiecewisePolynomialKernel{V, A<:AbstractMatrix{<:Real}} <: SimpleKernel
+struct PiecewisePolynomialKernel{V,A<:AbstractMatrix{<:Real}} <: SimpleKernel
     maha::A
     j::Int
-    function PiecewisePolynomialKernel{V}(maha::AbstractMatrix{<:Real}) where V
+    function PiecewisePolynomialKernel{V}(maha::AbstractMatrix{<:Real}) where {V}
         V in (0, 1, 2, 3) || error("Invalid paramter v=$(V). Should be 0, 1, 2 or 3.")
         LinearAlgebra.checksquare(maha)
         j = div(size(maha, 1), 2) + V + 1
@@ -21,13 +21,13 @@ struct PiecewisePolynomialKernel{V, A<:AbstractMatrix{<:Real}} <: SimpleKernel
     end
 end
 
-function PiecewisePolynomialKernel(;v::Integer=0, maha::AbstractMatrix{<:Real})
+function PiecewisePolynomialKernel(; v::Integer = 0, maha::AbstractMatrix{<:Real})
     return PiecewisePolynomialKernel{v}(maha)
 end
 
 # Have to reconstruct the type parameter
 # See also https://github.com/FluxML/Functors.jl/issues/3#issuecomment-626747663
-function Functors.functor(::Type{<:PiecewisePolynomialKernel{V}}, x) where V
+function Functors.functor(::Type{<:PiecewisePolynomialKernel{V}}, x) where {V}
     function reconstruct_kernel(xs)
         return PiecewisePolynomialKernel{V}(xs.maha)
     end
@@ -36,11 +36,15 @@ end
 
 _f(κ::PiecewisePolynomialKernel{0}, r, j) = 1
 _f(κ::PiecewisePolynomialKernel{1}, r, j) = 1 + (j + 1) * r
-_f(κ::PiecewisePolynomialKernel{2}, r, j) = 1 + (j + 2) * r + (j^2 + 4 * j + 3) / 3 * r.^2
-_f(κ::PiecewisePolynomialKernel{3}, r, j) = 1 + (j + 3) * r +
-    (6 * j^2 + 36j + 45) / 15 * r.^2 + (j^3 + 9 * j^2 + 23j + 15) / 15 * r.^3
+_f(κ::PiecewisePolynomialKernel{2}, r, j) = 1 + (j + 2) * r + (j^2 + 4 * j + 3) / 3 * r .^ 2
+_f(κ::PiecewisePolynomialKernel{3}, r, j) =
+    1 +
+    (j + 3) * r +
+    (6 * j^2 + 36j + 45) / 15 * r .^ 2 +
+    (j^3 + 9 * j^2 + 23j + 15) / 15 * r .^ 3
 
-kappa(κ::PiecewisePolynomialKernel{V}, r) where V = max(1 - r, 0)^(κ.j + V) * _f(κ, r, κ.j)
+kappa(κ::PiecewisePolynomialKernel{V}, r) where {V} =
+    max(1 - r, 0)^(κ.j + V) * _f(κ, r, κ.j)
 
 metric(κ::PiecewisePolynomialKernel) = Mahalanobis(κ.maha)
 
