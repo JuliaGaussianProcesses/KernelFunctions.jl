@@ -153,13 +153,11 @@ where $r$ has the same dimension as $x$ and $r_i > 0$.
 
 ## Piecewise Polynomial Kernel
 
-The [`PiecewisePolynomialKernel`](@ref) is defined for $x\in \mathbb{R}^D$ and $V \in \{0,1,2,3\}$ as
+The [`PiecewisePolynomialKernel`](@ref) is defined for $x, x'\in \mathbb{R}^D$, a positive-definite matrix $P \in \mathbb{R}^{D \times D}$, and $V \in \{0,1,2,3\}$ as
 ```math
-  k(x,x'; P, V) = \max(1 - r, 0)^{j + V} f_V(r, j),
+  k(x,x'; P, V) = \max(1 - x^\top P x', 0)^{j + V} f_V(x^\top P x', j),
 ```
-where $r = x^\top P x'$ (with $P$ a positive-definite matrix) and $j = \lfloor \frac{D}{2}\rfloor + V + 1$.
-
-The polynomials $f_V$ are defined as follows:
+where $j = \lfloor \frac{D}{2}\rfloor + V + 1$, and $f_V$ are polynomials defined as follows:
 ````math
 \begin{aligned}
     f_0(r, j) &= 1, \\
