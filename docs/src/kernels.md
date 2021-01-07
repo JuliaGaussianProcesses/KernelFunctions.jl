@@ -234,7 +234,7 @@ where $i\in\{-1,0,1,2,3\}$ and coefficients $a_i$, $b_i$ are fixed and residuals
 The [`TransformedKernel`](@ref) is a kernel where inputs are transformed via a function `f`:
 
 ```math
-  k(x,x';f,\widetile{k}) = \widetilde{k}(f(x),f(x')),
+  k(x,x';f,\widetilde{k}) = \widetilde{k}(f(x),f(x')),
 ```
 where $\widetilde{k}$ is another kernel and $f$ is an arbitrary mapping.
 
