@@ -20,9 +20,28 @@ iskroncompatible(::SqExponentialKernel) = true
 Base.show(io::IO,::SqExponentialKernel) = print(io,"Squared Exponential Kernel")
 
 ## Aliases ##
+
+"""
+    RBFKernel()
+
+See [`SqExponentialKernel`](@ref)
+"""
 const RBFKernel = SqExponentialKernel
+
+"""
+    GaussianKernel()
+
+See [`SqExponentialKernel`](@ref)
+"""
 const GaussianKernel = SqExponentialKernel
+
+"""
+    SEKernel()
+
+See [`SqExponentialKernel`](@ref)
+"""
 const SEKernel = SqExponentialKernel
+
 
 """
     ExponentialKernel()
@@ -43,8 +62,21 @@ iskroncompatible(::ExponentialKernel) = true
 Base.show(io::IO, ::ExponentialKernel) = print(io, "Exponential Kernel")
 
 ## Aliases ##
+
+"""
+    LaplacianKernel()
+
+See [`ExponentialKernel`](@ref)
+"""
 const LaplacianKernel = ExponentialKernel
+
+"""
+    Matern12Kernel()
+
+See [`ExponentialKernel`](@ref)
+"""
 const Matern12Kernel = ExponentialKernel
+
 
 """
     GammaExponentialKernel(; γ = 2.0)
