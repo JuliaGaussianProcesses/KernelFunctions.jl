@@ -93,8 +93,7 @@ where $h$ is the [Hurst index](https://en.wikipedia.org/wiki/Hurst_exponent#Gene
 The [`GaborKernel`](@ref) is defined as
 
 ```math
-  k(x,x'; l,p) =& h(x-x';l,p)\\
-  h(u;l,p) =& \exp\left(-\cos\left(\pi \sum_i \frac{u_i}{p_i}\right)\sum_i \frac{u_i^2}{l_i^2}\right),
+  k(x,x'; l,p) = \exp\left(-\cos\left(\pi \sum_i \frac{x_i - x'_i}{p_i}\right)\sum_i \frac{(x_i - x'_i)^2}{l_i^2}\right),
 ```
 where $l_i > 0$ is the lengthscale and $p_i > 0$ is the period.
 
@@ -154,14 +153,12 @@ where $r$ has the same dimension as $x$ and $r_i > 0$.
 
 ## Piecewise Polynomial Kernel
 
-The [`PiecewisePolynomialKernel`](@ref) is defined as
-
+The [`PiecewisePolynomialKernel`](@ref) is defined for $x\in \mathbb{R}^D$ and $V \in \{0,1,2,3\}$ as
 ```math
-  k(x,x'; P, V) =& \max(1 - r, 0)^{j + V} f(r, j),\\
-  r =& x^\top P x',\\
-  j =& \lfloor \frac{D}{2}\rfloor + V + 1,
+  k(x,x'; P, V) &= \max(1 - r, 0)^{j + V} f(r, j),
 ```
-where $x\in \mathbb{R}^D$, $V \in \{0,1,2,3\} and $P$ is a positive-definite matrix.
+where $r = x^\top P x'$ (with $P$ a positive-definite matrix),
+$j = \lfloor \frac{D}{2}\rfloor + V + 1$, and
 $f$ is a piecewise polynomial (see source code).
 
 ## Polynomial Kernels
