@@ -42,8 +42,9 @@ iskroncompatible(::ExponentialKernel) = true
 
 Base.show(io::IO, ::ExponentialKernel) = print(io, "Exponential Kernel")
 
-## Alias ##
+## Aliases ##
 const LaplacianKernel = ExponentialKernel
+const Matern12Kernel = ExponentialKernel
 
 """
     GammaExponentialKernel(; γ = 2.0)

@@ -33,6 +33,8 @@ metric(::MaternKernel) = Euclidean()
 
 Base.show(io::IO, κ::MaternKernel) = print(io, "Matern Kernel (ν = ", first(κ.ν), ")")
 
+## Matern12Kernel = ExponentialKernel aliased in exponential.jl
+
 """
     Matern32Kernel()
 

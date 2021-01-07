@@ -116,7 +116,7 @@ The Matérn 1/2 kernel is defined as
 ```math
   k(x,x') = \exp\left(-|x-x'|\right),
 ```
-equivalent to the Exponential kernel. There is no `Matern12Kernel`, use [`ExponentialKernel`](@ref) instead.
+equivalent to the Exponential kernel. `Matern12Kernel` is an alias for [`ExponentialKernel`](@ref).
 
 ### Matérn 3/2 Kernel
 

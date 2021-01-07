@@ -9,7 +9,6 @@ The second dimension of `A` must match the number of features of the target.
 
 ```julia-repl
 julia> A = rand(10, 5)
-
 julia> tr = LinearTransform(A)
 ```
 """
