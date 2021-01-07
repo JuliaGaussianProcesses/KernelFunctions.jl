@@ -158,7 +158,7 @@ The [`PiecewisePolynomialKernel`](@ref) is defined for $x, x'\in \mathbb{R}^D$, 
   k(x,x'; P, V) = \max(1 - x^\top P x', 0)^{j + V} f_V(x^\top P x', j),
 ```
 where $j = \lfloor \frac{D}{2}\rfloor + V + 1$, and $f_V$ are polynomials defined as follows:
-````math
+```math
 \begin{aligned}
     f_0(r, j) &= 1, \\
     f_1(r, j) &= 1 + (j + 1) r, \\
