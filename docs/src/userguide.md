@@ -3,7 +3,7 @@
 ## Kernel creation
 
 To create a kernel object, choose one of the pre-implemented kernels, see [Base Kernels](@ref), or create your own, see [Creating your own kernel](@ref).
-For example, a square exponential kernel is created by
+For example, a squared exponential kernel is created by
 ```julia
   k = SqExponentialKernel()
 ```
