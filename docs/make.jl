@@ -6,11 +6,11 @@ if ispath(joinpath(@__DIR__, "src", "examples"))
     rm(joinpath(@__DIR__, "src", "examples"), recursive=true)
 end
 
-for filename in readdir(joinpath(@__DIR__, "..", "examples"))
+for filename in readdir(joinpath(@__DIR__, "examples"))
     endswith(filename, ".jl") || continue
     name = splitext(filename)[1]
     Literate.markdown(
-        joinpath(@__DIR__, "..", "examples", filename),
+        joinpath(@__DIR__, "examples", filename),
         joinpath(@__DIR__, "src", "examples"),
         name = name,
         documenter = true,
