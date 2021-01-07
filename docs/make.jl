@@ -16,7 +16,7 @@ makedocs(
              "User Guide" => "userguide.md",
              "Examples"=>"example.md",
              "Kernel Functions"=>"kernels.md",
-             "Transform"=>"transform.md",
+             "Input Transforms"=>"transform.md",
              "Metrics"=>"metrics.md",
              "Theory"=>"theory.md",
              "Custom Kernels"=>"create_kernel.md",
