@@ -1,5 +1,21 @@
 using Documenter
+using Literate
 using KernelFunctions
+
+if ispath(joinpath(@__DIR__, "src", "examples"))
+    rm(joinpath(@__DIR__, "src", "examples"), recursive=true)
+end
+
+for filename in readdir(joinpath(@__DIR__, "..", "examples"))
+    endswith(filename, ".jl") || continue
+    name = splitext(filename)[1]
+    Literate.markdown(
+        joinpath(@__DIR__, "..", "examples", filename),
+        joinpath(@__DIR__, "src", "examples"),
+        name = name,
+        documenter = true,
+    )
+end
 
 DocMeta.setdocmeta!(
     KernelFunctions,
@@ -14,7 +30,11 @@ makedocs(
     modules = [KernelFunctions],
     pages = ["Home"=>"index.md",
              "User Guide" => "userguide.md",
-             "Examples"=>"example.md",
+             "Examples"=>
+                    ["SVM" => "examples/svm.md",
+                     # "Kernel Ridge Regression" => "examples/kernelridgeregression.md",
+                     # "Deep Kernel Learning" => "examples/deepkernellearning.md",
+                     ],
              "Kernel Functions"=>"kernels.md",
              "Transform"=>"transform.md",
              "Metrics"=>"metrics.md",
