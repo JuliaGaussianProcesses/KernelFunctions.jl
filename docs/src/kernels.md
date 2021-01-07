@@ -155,11 +155,19 @@ where $r$ has the same dimension as $x$ and $r_i > 0$.
 
 The [`PiecewisePolynomialKernel`](@ref) is defined for $x\in \mathbb{R}^D$ and $V \in \{0,1,2,3\}$ as
 ```math
-  k(x,x'; P, V) &= \max(1 - r, 0)^{j + V} f(r, j),
+  k(x,x'; P, V) = \max(1 - r, 0)^{j + V} f_V(r, j),
 ```
-where $r = x^\top P x'$ (with $P$ a positive-definite matrix),
-$j = \lfloor \frac{D}{2}\rfloor + V + 1$, and
-$f$ is a piecewise polynomial (see source code).
+where $r = x^\top P x'$ (with $P$ a positive-definite matrix) and $j = \lfloor \frac{D}{2}\rfloor + V + 1$.
+
+The polynomials $f_V$ are defined as follows:
+````math
+\begin{aligned}
+    f_0(r, j) &= 1, \\
+    f_1(r, j) &= 1 + (j + 1) r, \\
+    f_2(r, j) &= 1 + (j + 2) r + ((j^2 + 4j + 3) / 3) r^2, \\
+    f_3(r, j) &= 1 + (j + 3) r + ((6 j^2 + 36j + 45) / 15) r^2 + ((j^3 + 9 j^2 + 23j + 15) / 15) r^3.
+\end{aligned}
+```
 
 ## Polynomial Kernels
 

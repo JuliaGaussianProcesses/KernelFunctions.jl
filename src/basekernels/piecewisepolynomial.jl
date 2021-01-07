@@ -2,13 +2,12 @@
     PiecewisePolynomialKernel{V}(maha::AbstractMatrix)
 
 Piecewise Polynomial covariance function with compact support, V = 0,1,2,3.
-The kernel functions are 2v times continuously differentiable and the corresponding
-processes are hence v times  mean-square differentiable. The kernel function is:
+The kernel functions are 2V times continuously differentiable and the corresponding
+processes are hence V times mean-square differentiable. The kernel function is:
 ```math
     κ(x, y) = max(1 - r, 0)^(j + V) * f(r, j) with j = floor(D / 2) + V + 1
 ```
 where `r` is the Mahalanobis distance mahalanobis(x,y) with `maha` as the metric.
-
 """
 struct PiecewisePolynomialKernel{V, A<:AbstractMatrix{<:Real}} <: SimpleKernel
     maha::A
