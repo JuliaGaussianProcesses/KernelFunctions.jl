@@ -12,7 +12,6 @@ For example, to premultiply the input by 2.0 (equivalent to a lengthscale of 0.5
 ```julia
   k = transform(SqExponentialKernel(), ScaleTransform(2.0))  # returns a TransformedKernel
   k = TransformedKernel(SqExponentialKernel(), ScaleTransform(2.0))
-  k = @kernel SqExponentialKernel() l=2.0  # Will be available soon
 ```
 Check the [`Transform`](@ref) page to see all available transforms.
 
@@ -20,7 +19,6 @@ To premultiply the kernel by a variance, you can use `*` or create a `ScaledKern
 ```julia
   k = 3.0*SqExponentialKernel()
   k = ScaledKernel(SqExponentialKernel(), 3.0)
-  @kernel 3.0*SqExponentialKernel()
 ```
 
 ## Using a kernel function
