@@ -6,4 +6,4 @@ You can also create a pipeline of `Transform` via `TransformChain`. For example,
 
 A transformation `t` can be applied to a matrix or a vector `v` via `KernelFunctions.apply(t, v)`.
 
-Check the list on the [API page](@ref Transforms).
+Check the full list of provided transforms on the [API page](@ref Transforms).

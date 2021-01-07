@@ -7,23 +7,25 @@ For example, a square exponential kernel is created by
 ```julia
   k = SqExponentialKernel()
 ```
-Instead of having lengthscale(s) for each kernel we use [`Transform`](@ref) objects which act on the inputs before passing them to the kernel.
-For example, to premultiply the input by 2.0 (equivalent to a lengthscale of 0.5) we can use the following options:
+
+!!! tip "How do I set the lengthscale?"
+Instead of having lengthscale(s) for each kernel we use [`Transform`](@ref) objects which act on the inputs before passing them to the kernel. Note that the transforms such as [`ScaleTransform`](@ref) and [`ARDTransform`](@ref) _multiply_ the input by a scale factor, which corresponds to the _inverse_ of the lengthscale.
+For example, a lengthscale of 0.5 is equivalent to premultiplying the input by 2.0, and you can create the corresponding kernel as follows:
 ```julia
-  k = transform(SqExponentialKernel(), ScaleTransform(2.0))  # returns a TransformedKernel
-  k = TransformedKernel(SqExponentialKernel(), ScaleTransform(2.0))
+  k = transform(SqExponentialKernel(), 2.0)
+  k = TransformedKernel(SqExponentialKernel(), ScaleTransform(2.0))  # equivalent explicit construction
 ```
-Check the [`Transform`](@ref) page to see all available transforms.
+Check the [Input Transforms](@ref) page for more details. The API documentation contains an [overview of all available transforms](@ref Transforms).
 
 To premultiply the kernel by a variance, you can use `*` or create a `ScaledKernel`:
 ```julia
-  k = 3.0*SqExponentialKernel()
-  k = ScaledKernel(SqExponentialKernel(), 3.0)
+  k = 3.0 * SqExponentialKernel()
+  k = ScaledKernel(SqExponentialKernel(), 3.0)  # equivalent explicit constructions
 ```
 
 ## Using a kernel function
 
-To compute the kernel function on two vectors you can call
+To evaluate the kernel function on two vectors you simply call the kernel object:
 ```julia
   k = SqExponentialKernel()
   x1 = rand(3)
@@ -76,12 +78,19 @@ For example:
 
 ## Kernel parameters
 
-What if you want to differentiate through the kernel parameters? Even in a highly nested structure such as:
+What if you want to differentiate through the kernel parameters? This is easy even in a highly nested structure such as:
 ```julia
-  k = transform(0.5*SqExponentialKernel()*MaternKernel() + 0.2*(transform(LinearKernel(), 2.0) + PolynomialKernel()), [0.1, 0.5])
+  k = transform(
+        0.5 * SqExponentialKernel() * Matern12Kernel()
+      + 0.2 * (transform(LinearKernel(), 2.0) + PolynomialKernel()),
+      [0.1, 0.5])
 ```
-One can get the array of parameters to optimize via `params` from `Flux.jl`:
+One can access the named tuple of trainable parameters via `Functors.functor` from `Functors.jl`.
+This means that in practice you can implicitly optimize the kernel parameters by calling:
 ```julia
-  using Flux
-  params(k)
+using Flux
+kernelparams = Flux.params(k)
+Flux.gradient(kernelparams) do
+    # ... some loss function on the kernel ....
+end
 ```
