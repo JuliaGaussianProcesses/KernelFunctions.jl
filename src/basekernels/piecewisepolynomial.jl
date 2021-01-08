@@ -13,7 +13,7 @@ struct PiecewisePolynomialKernel{V, A<:AbstractMatrix{<:Real}} <: SimpleKernel
     maha::A
     j::Int
     function PiecewisePolynomialKernel{V}(maha::AbstractMatrix{<:Real}) where V
-        V in (0, 1, 2, 3) || error("Invalid paramter v=$(V). Should be 0, 1, 2 or 3.")
+        V in (0, 1, 2, 3) || error("Invalid parameter V=$(V). Should be 0, 1, 2 or 3.")
         LinearAlgebra.checksquare(maha)
         j = div(size(maha, 1), 2) + V + 1
         return new{V,typeof(maha)}(maha, j)
