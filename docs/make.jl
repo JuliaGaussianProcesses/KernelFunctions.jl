@@ -2,16 +2,19 @@ using Documenter
 using Literate
 using KernelFunctions
 
-if ispath(joinpath(@__DIR__, "src", "examples"))
-    rm(joinpath(@__DIR__, "src", "examples"), recursive=true)
+const EXAMPLES_SRC = joinpath(@__DIR__, "..", "examples")
+const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
+
+if ispath(EXAMPLES_OUT)
+    rm(EXAMPLES_OUT, recursive=true)
 end
 
-for filename in readdir(joinpath(@__DIR__, "..", "examples"))
+for filename in readdir(EXAMPLES_SRC)
     endswith(filename, ".jl") || continue
     name = splitext(filename)[1]
     Literate.markdown(
-        joinpath(@__DIR__, "..", "examples", filename),
-        joinpath(@__DIR__, "src", "examples"),
+        joinpath(EXAMPLES_SRC, filename),
+        EXAMPLES_OUT,
         name = name,
         documenter = true,
     )
