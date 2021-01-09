@@ -34,7 +34,7 @@ end
 
 function validate_domain(k::TensorProduct, x::AbstractVector)
     return dim(x) == length(k) ||
-        error("number of kernels and groups of features are not consistent")
+           error("number of kernels and groups of features are not consistent")
 end
 
 # Utility for slicing up inputs.

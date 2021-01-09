@@ -4,7 +4,7 @@
 
 # Base Kernels
 
-These are the basic kernels without any transformation of the data. They are the building blocks of KernelFunctions
+These are the basic kernels without any transformation of the data. They are the building blocks of KernelFunctions.
 
 
 ## Constant Kernels
@@ -86,21 +86,20 @@ The [`FBMKernel`](@ref) is defined as
   k(x,x';h) =  \frac{|x|^{2h} + |x'|^{2h} - |x-x'|^{2h}}{2},
 ```
 
-where $h$ is the [Hurst index](https://en.wikipedia.org/wiki/Hurst_exponent#Generalized_exponent) and $0<h<1$.
+where $h$ is the [Hurst index](https://en.wikipedia.org/wiki/Hurst_exponent#Generalized_exponent) and $0 < h < 1$.
 
 ## Gabor Kernel
 
 The [`GaborKernel`](@ref) is defined as
 
 ```math
-  k(x,x'; l,p) =& h(x-x';l,p)\\
-  h(u;l,p) =& \exp\left(-\cos\left(\pi \sum_i \frac{u_i}{p_i}\right)\sum_i \frac{u_i^2}{l_i^2}\right),
+  k(x,x'; l,p) = \exp\left(-\cos\left(\pi \sum_i \frac{x_i - x'_i}{p_i}\right)\sum_i \frac{(x_i - x'_i)^2}{l_i^2}\right),
 ```
-where $l_i >0 $ is the lengthscale and $p_i>0$ is the period.
+where $l_i > 0$ is the lengthscale and $p_i > 0$ is the period.
 
-## Matern Kernels
+## Matérn Kernels
 
-### Matern Kernel
+### General Matérn Kernel
 
 The [`MaternKernel`](@ref) is defined as
 
@@ -110,7 +109,15 @@ The [`MaternKernel`](@ref) is defined as
 
 where $\nu > 0$.
 
-### Matern 3/2 Kernel
+### Matérn 1/2 Kernel
+
+The Matérn 1/2 kernel is defined as
+```math
+  k(x,x') = \exp\left(-|x-x'|\right),
+```
+equivalent to the Exponential kernel. `Matern12Kernel` is an alias for [`ExponentialKernel`](@ref).
+
+### Matérn 3/2 Kernel
 
 The [`Matern32Kernel`](@ref) is defined as
 
@@ -118,7 +125,7 @@ The [`Matern32Kernel`](@ref) is defined as
   k(x,x') = \left(1+\sqrt{3}|x-x'|\right)\exp\left(\sqrt{3}|x-x'|\right).
 ```
 
-### Matern 5/2 Kernel
+### Matérn 5/2 Kernel
 
 The [`Matern52Kernel`](@ref) is defined as
 
@@ -128,7 +135,7 @@ The [`Matern52Kernel`](@ref) is defined as
 
 ## Neural Network Kernel
 
-The [`NeuralNetworkKernel`](@ref) (as in the kernel for an infinitely wide neural network interpretated as a Gaussian process) is defined as
+The [`NeuralNetworkKernel`](@ref) (as in the kernel for an infinitely wide neural network interpreted as a Gaussian process) is defined as
 
 ```math
   k(x, x') = \arcsin\left(\frac{\langle x, x'\rangle}{\sqrt{(1+\langle x, x\rangle)(1+\langle x',x'\rangle)}}\right).
@@ -142,19 +149,23 @@ The [`PeriodicKernel`](@ref) is defined as
   k(x,x';r) = \exp\left(-0.5 \sum_i (sin (π(x_i - x'_i))/r_i)^2\right),
 ```
 
-where $r$ has the same dimension as $x$ and $r_i >0$.
+where $r$ has the same dimension as $x$ and $r_i > 0$.
 
 ## Piecewise Polynomial Kernel
 
-The [`PiecewisePolynomialKernel`](@ref) is defined as
-
+The [`PiecewisePolynomialKernel`](@ref) is defined for $x, x'\in \mathbb{R}^D$, a positive-definite matrix $P \in \mathbb{R}^{D \times D}$, and $V \in \{0,1,2,3\}$ as
 ```math
-  k(x,x'; P, V) =& \max(1 - r, 0)^{j + V} f(r, j),\\
-  r =& x^\top P x',\\
-  j =& \lfloor \frac{D}{2}\rfloor + V + 1,
+  k(x,x'; P, V) = \max(1 - \sqrt{x^\top P x'}, 0)^{j + V} f_V(\sqrt{x^\top P x'}, j),
 ```
-where $x\in \mathbb{R}^D$, $V \in \{0,1,2,3\} and $P$ is a positive definite matrix.
-$f$ is a piecewise polynomial (see source code).
+where $j = \lfloor \frac{D}{2}\rfloor + V + 1$, and $f_V$ are polynomials defined as follows:
+```math
+\begin{aligned}
+    f_0(r, j) &= 1, \\
+    f_1(r, j) &= 1 + (j + 1) r, \\
+    f_2(r, j) &= 1 + (j + 2) r + ((j^2 + 4j + 3) / 3) r^2, \\
+    f_3(r, j) &= 1 + (j + 3) r + ((6 j^2 + 36j + 45) / 15) r^2 + ((j^3 + 9 j^2 + 23j + 15) / 15) r^3.
+\end{aligned}
+```
 
 ## Polynomial Kernels
 
@@ -166,7 +177,7 @@ The [`LinearKernel`](@ref) is defined as
   k(x,x';c) = \langle x,x'\rangle + c,
 ```
 
-where $c \in \mathbb{R}$
+where $c \in \mathbb{R}$.
 
 ### Polynomial Kernel
 
@@ -176,7 +187,7 @@ The [`PolynomialKernel`](@ref) is defined as
   k(x,x';c,d) = \left(\langle x,x'\rangle + c\right)^d,
 ```
 
-where $c \in \mathbb{R}$ and $d>0$
+where $c \in \mathbb{R}$ and $d>0$.
 
 
 ## Rational Quadratic
@@ -223,35 +234,33 @@ where $i\in\{-1,0,1,2,3\}$ and coefficients $a_i$, $b_i$ are fixed and residuals
 
 ### Transformed Kernel
 
-The [`TransformedKernel`](@ref) is a kernel where input are transformed via a function `f`
+The [`TransformedKernel`](@ref) is a kernel where inputs are transformed via a function `f`:
 
 ```math
-  k(x,x';f,\widetile{k}) = \widetilde{k}(f(x),f(x')),
+  k(x,x';f,\widetilde{k}) = \widetilde{k}(f(x),f(x')),
 ```
-
-Where $\widetilde{k}$ is another kernel and $f$ is an arbitrary mapping.
+where $\widetilde{k}$ is another kernel and $f$ is an arbitrary mapping.
 
 ### Scaled Kernel
 
 The [`ScaledKernel`](@ref) is defined as
 
 ```math
-  k(x,x';\sigma^2,\widetilde{k}) = \sigma^2\widetilde{k}(x,x')
+  k(x,x';\sigma^2,\widetilde{k}) = \sigma^2\widetilde{k}(x,x') ,
 ```
-
-Where $\widetilde{k}$ is another kernel and $\sigma^2 > 0$.
+where $\widetilde{k}$ is another kernel and $\sigma^2 > 0$.
 
 ### Kernel Sum
 
-The [`KernelSum`](@ref) is defined as a sum of kernels
+The [`KernelSum`](@ref) is defined as a sum of kernels:
 
 ```math
   k(x, x'; \{k_i\}) = \sum_i k_i(x, x').
 ```
 
-### KernelProduct
+### Kernel Product
 
-The [`KernelProduct`](@ref) is defined as a product of kernels
+The [`KernelProduct`](@ref) is defined as a product of kernels:
 
 ```math
   k(x,x';\{k_i\}) = \prod_i k_i(x,x').
@@ -259,7 +268,7 @@ The [`KernelProduct`](@ref) is defined as a product of kernels
 
 ### Tensor Product
 
-The [`TensorProduct`](@ref) is defined as :
+The [`TensorProduct`](@ref) is defined as:
 
 ```math
   k(x,x';\{k_i\}) = \prod_i k_i(x_i,x'_i)
