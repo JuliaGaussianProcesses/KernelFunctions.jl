@@ -61,7 +61,7 @@ jobs:
           julia --project=test/ -e 'using JuliaFormatter; format(".", verbose=true)'
       - name: Format check
         run: |
-          CHANGED="$(git diff-index --name-only)"
+          CHANGED="$(git diff --name-only)"
           if [ ! -z $CHANGED ]; then
             >&2 echo "Some files have not been formatted !!!"
             echo "$CHANGED"
