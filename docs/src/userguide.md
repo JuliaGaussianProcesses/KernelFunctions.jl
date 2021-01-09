@@ -12,15 +12,14 @@ For example, a squared exponential kernel is created by
 Instead of having lengthscale(s) for each kernel we use [`Transform`](@ref) objects which act on the inputs before passing them to the kernel. Note that the transforms such as [`ScaleTransform`](@ref) and [`ARDTransform`](@ref) _multiply_ the input by a scale factor, which corresponds to the _inverse_ of the lengthscale.
 For example, a lengthscale of 0.5 is equivalent to premultiplying the input by 2.0, and you can create the corresponding kernel as follows:
 ```julia
-  k = transform(SqExponentialKernel(), 2.0)
-  k = TransformedKernel(SqExponentialKernel(), ScaleTransform(2.0))  # equivalent explicit construction
+  k = transform(SqExponentialKernel(), ScaleTransform(2.0))
+  k = transform(SqExponentialKernel(), 2.0)  # implicitly constructs a ScaleTransform(2.0)
 ```
 Check the [Input Transforms](@ref) page for more details. The API documentation contains an [overview of all available transforms](@ref Transforms).
 
-To premultiply the kernel by a variance, you can use `*` or create a `ScaledKernel`:
+To premultiply the kernel by a variance, you can use `*` with a scalar number:
 ```julia
   k = 3.0 * SqExponentialKernel()
-  k = ScaledKernel(SqExponentialKernel(), 3.0)  # equivalent explicit constructions
 ```
 
 ## Using a kernel function
