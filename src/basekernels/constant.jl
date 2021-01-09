@@ -1,11 +1,11 @@
 """
     ZeroKernel()
 
-Create a kernel that always returning zero
+Create a kernel that always returns zero
 ```
     κ(x,y) = 0.0
 ```
-The output type depends of `x` and `y`
+The output type depends on `x` and `y`
 """
 struct ZeroKernel <: SimpleKernel end
 

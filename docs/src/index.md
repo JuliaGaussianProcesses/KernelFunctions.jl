@@ -1,6 +1,6 @@
 # KernelFunctions.jl
 
-Model agnostic kernel functions compatible with automatic differentiation
+Model-agnostic kernel functions compatible with automatic differentiation
 
 **KernelFunctions.jl** is a general purpose kernel package.
 It aims at providing a flexible framework for creating kernels and manipulating them.
