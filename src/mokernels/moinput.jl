@@ -31,5 +31,6 @@ function Base.getindex(inp::MOInput, ind::Integer)
 end
 
 Base.iterate(inp::MOInput) = (inp[1], 1)
-Base.iterate(inp::MOInput, state) =
-    (state < length(inp)) ? (inp[state+1], state + 1) : nothing
+function Base.iterate(inp::MOInput, state)
+    return (state < length(inp)) ? (inp[state + 1], state + 1) : nothing
+end

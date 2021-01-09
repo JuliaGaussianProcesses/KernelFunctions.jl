@@ -29,7 +29,7 @@ struct LatentFactorMOKernel{Tg,Te<:MOKernel,TA<:AbstractMatrix} <: MOKernel
 end
 
 function (κ::LatentFactorMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
-    cov_f = sum(κ.A[px, q] * κ.g[q](x, y) * κ.A[py, q] for q = 1:length(κ.g))
+    cov_f = sum(κ.A[px, q] * κ.g[q](x, y) * κ.A[py, q] for q in 1:length(κ.g))
     return cov_f + κ.e((x, px), (y, py))
 end
 
@@ -51,12 +51,12 @@ function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)
 end
 
 function Base.show(io::IO, k::LatentFactorMOKernel)
-    print(io, "Semi-parametric Latent Factor Multi-Output Kernel")
+    return print(io, "Semi-parametric Latent Factor Multi-Output Kernel")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", k::LatentFactorMOKernel)
     print(io, "Semi-parametric Latent Factor Multi-Output Kernel\n\tgᵢ: ")
     join(io, k.g, "\n\t\t")
     print(io, "\n\teᵢ: ")
-    join(io, k.e, "\n\t\t")
+    return join(io, k.e, "\n\t\t")
 end

@@ -42,7 +42,7 @@ struct WienerKernel{I} <: Kernel
     end
 end
 
-function WienerKernel(; i::Integer = 0)
+function WienerKernel(; i::Integer=0)
     return WienerKernel{i}()
 end
 
@@ -74,5 +74,6 @@ function (::WienerKernel{3})(x, y)
            1 / 720 * minXY^4 * euclidean(x, y) * (5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2)
 end
 
-Base.show(io::IO, ::WienerKernel{I}) where {I} =
-    print(io, I, "-times integrated Wiener kernel")
+function Base.show(io::IO, ::WienerKernel{I}) where {I}
+    return print(io, I, "-times integrated Wiener kernel")
+end

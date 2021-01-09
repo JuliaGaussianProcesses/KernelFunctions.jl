@@ -25,28 +25,28 @@ end
 
 function kernelmatrix(::NeuralNetworkKernel, x::ColVecs, y::ColVecs)
     validate_inputs(x, y)
-    X_2 = sum(x.X .* x.X; dims = 1)
-    Y_2 = sum(y.X .* y.X; dims = 1)
+    X_2 = sum(x.X .* x.X; dims=1)
+    Y_2 = sum(y.X .* y.X; dims=1)
     XY = x.X' * y.X
     return asin.(XY ./ sqrt.((X_2 .+ 1)' * (Y_2 .+ 1)))
 end
 
 function kernelmatrix(::NeuralNetworkKernel, x::ColVecs)
-    X_2_1 = sum(x.X .* x.X; dims = 1) .+ 1
+    X_2_1 = sum(x.X .* x.X; dims=1) .+ 1
     XX = x.X' * x.X
     return asin.(XX ./ sqrt.(X_2_1' * X_2_1))
 end
 
 function kernelmatrix(::NeuralNetworkKernel, x::RowVecs, y::RowVecs)
     validate_inputs(x, y)
-    X_2 = sum(x.X .* x.X; dims = 2)
-    Y_2 = sum(y.X .* y.X; dims = 2)
+    X_2 = sum(x.X .* x.X; dims=2)
+    Y_2 = sum(y.X .* y.X; dims=2)
     XY = x.X * y.X'
     return asin.(XY ./ sqrt.((X_2 .+ 1) * (Y_2 .+ 1)'))
 end
 
 function kernelmatrix(::NeuralNetworkKernel, x::RowVecs)
-    X_2_1 = sum(x.X .* x.X; dims = 2) .+ 1
+    X_2_1 = sum(x.X .* x.X; dims=2) .+ 1
     XX = x.X * x.X'
     return asin.(XX ./ sqrt.(X_2_1 * X_2_1'))
 end

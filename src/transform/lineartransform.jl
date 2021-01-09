@@ -27,7 +27,7 @@ function set!(t::LinearTransform{<:AbstractMatrix{T}}, A::AbstractMatrix{T}) whe
         size(t.A),
         " are not the same",
     )
-    t.A .= A
+    return t.A .= A
 end
 
 (t::LinearTransform)(x::Real) = vec(t.A * x)
@@ -38,5 +38,5 @@ _map(t::LinearTransform, x::ColVecs) = ColVecs(t.A * x.X)
 _map(t::LinearTransform, x::RowVecs) = RowVecs(x.X * t.A')
 
 function Base.show(io::IO, t::LinearTransform)
-    print(io::IO, "Linear transform (size(A) = ", size(t.A), ")")
+    return print(io::IO, "Linear transform (size(A) = ", size(t.A), ")")
 end

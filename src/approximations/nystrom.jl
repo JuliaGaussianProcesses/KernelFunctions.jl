@@ -1,29 +1,26 @@
 # Following the algorithm by William and Seeger, 2001
 # Cs is equivalent to X_mm and C to X_mn
 
-function sampleindex(X::AbstractMatrix, r::Real; obsdim::Integer = defaultobs)
+function sampleindex(X::AbstractMatrix, r::Real; obsdim::Integer=defaultobs)
     0 < r <= 1 || throw(ArgumentError("Sample rate `r` must be in range (0,1]"))
     n = size(X, obsdim)
     m = ceil(Int, n * r)
-    S = StatsBase.sample(1:n, m; replace = false, ordered = true)
+    S = StatsBase.sample(1:n, m; replace=false, ordered=true)
     return S
 end
 
 function nystrom_sample(
-    k::Kernel,
-    X::AbstractMatrix,
-    S::Vector{<:Integer};
-    obsdim::Integer = defaultobs,
+    k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsdim::Integer=defaultobs
 )
     obsdim ∈ [1, 2] ||
         throw(ArgumentError("`obsdim` should be 1 or 2 (see docs of kernelmatrix))"))
     Xₘ = obsdim == 1 ? X[S, :] : X[:, S]
-    C = kernelmatrix(k, Xₘ, X; obsdim = obsdim)
+    C = kernelmatrix(k, Xₘ, X; obsdim=obsdim)
     Cs = C[:, S]
     return (C, Cs)
 end
 
-function nystrom_pinv!(Cs::Matrix{T}, tol::T = eps(T) * size(Cs, 1)) where {T<:Real}
+function nystrom_pinv!(Cs::Matrix{T}, tol::T=eps(T) * size(Cs, 1)) where {T<:Real}
     # Compute eigendecomposition of sampled component of K
     QΛQᵀ = LinearAlgebra.eigen!(LinearAlgebra.Symmetric(Cs))
 
@@ -75,13 +72,8 @@ Nystrom factorization satisfying:
 \mathbf{K} \approx \mathbf{C}^{\intercal}\mathbf{W}\mathbf{C}
 ```
 """
-function nystrom(
-    k::Kernel,
-    X::AbstractMatrix,
-    S::Vector{<:Integer};
-    obsdim::Int = defaultobs,
-)
-    C, Cs = nystrom_sample(k, X, S; obsdim = obsdim)
+function nystrom(k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsdim::Int=defaultobs)
+    C, Cs = nystrom_sample(k, X, S; obsdim=obsdim)
     W = nystrom_pinv!(Cs)
     return NystromFact(W, C)
 end
@@ -96,9 +88,9 @@ Returns a `NystromFact` struct which stores a Nystrom factorization satisfying:
 \mathbf{K} \approx \mathbf{C}^{\intercal}\mathbf{W}\mathbf{C}
 ```
 """
-function nystrom(k::Kernel, X::AbstractMatrix, r::Real; obsdim::Int = defaultobs)
-    S = sampleindex(X, r; obsdim = obsdim)
-    return nystrom(k, X, S; obsdim = obsdim)
+function nystrom(k::Kernel, X::AbstractMatrix, r::Real; obsdim::Int=defaultobs)
+    S = sampleindex(X, r; obsdim=obsdim)
+    return nystrom(k, X, S; obsdim=obsdim)
 end
 
 """

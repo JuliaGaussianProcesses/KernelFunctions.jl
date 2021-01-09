@@ -21,7 +21,7 @@ struct PiecewisePolynomialKernel{V,A<:AbstractMatrix{<:Real}} <: SimpleKernel
     end
 end
 
-function PiecewisePolynomialKernel(; v::Integer = 0, maha::AbstractMatrix{<:Real})
+function PiecewisePolynomialKernel(; v::Integer=0, maha::AbstractMatrix{<:Real})
     return PiecewisePolynomialKernel{v}(maha)
 end
 
@@ -31,23 +31,27 @@ function Functors.functor(::Type{<:PiecewisePolynomialKernel{V}}, x) where {V}
     function reconstruct_kernel(xs)
         return PiecewisePolynomialKernel{V}(xs.maha)
     end
-    return (maha = x.maha,), reconstruct_kernel
+    return (maha=x.maha,), reconstruct_kernel
 end
 
 _f(κ::PiecewisePolynomialKernel{0}, r, j) = 1
 _f(κ::PiecewisePolynomialKernel{1}, r, j) = 1 + (j + 1) * r
 _f(κ::PiecewisePolynomialKernel{2}, r, j) = 1 + (j + 2) * r + (j^2 + 4 * j + 3) / 3 * r .^ 2
-_f(κ::PiecewisePolynomialKernel{3}, r, j) =
-    1 +
-    (j + 3) * r +
-    (6 * j^2 + 36j + 45) / 15 * r .^ 2 +
-    (j^3 + 9 * j^2 + 23j + 15) / 15 * r .^ 3
+function _f(κ::PiecewisePolynomialKernel{3}, r, j)
+    return 1 +
+           (j + 3) * r +
+           (6 * j^2 + 36j + 45) / 15 * r .^ 2 +
+           (j^3 + 9 * j^2 + 23j + 15) / 15 * r .^ 3
+end
 
-kappa(κ::PiecewisePolynomialKernel{V}, r) where {V} =
-    max(1 - r, 0)^(κ.j + V) * _f(κ, r, κ.j)
+function kappa(κ::PiecewisePolynomialKernel{V}, r) where {V}
+    return max(1 - r, 0)^(κ.j + V) * _f(κ, r, κ.j)
+end
 
 metric(κ::PiecewisePolynomialKernel) = Mahalanobis(κ.maha)
 
 function Base.show(io::IO, κ::PiecewisePolynomialKernel{V}) where {V}
-    print(io, "Piecewise Polynomial Kernel (v = ", V, ", size(maha) = ", size(κ.maha), ")")
+    return print(
+        io, "Piecewise Polynomial Kernel (v = ", V, ", size(maha) = ", size(κ.maha), ")"
+    )
 end

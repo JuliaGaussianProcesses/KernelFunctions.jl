@@ -60,7 +60,7 @@ For `γ = 2`, see `SqExponentialKernel` and `γ = 1`, see `ExponentialKernel`.
 """
 struct GammaExponentialKernel{Tγ<:Real} <: SimpleKernel
     γ::Vector{Tγ}
-    function GammaExponentialKernel(; gamma::T = 2.0, γ::T = gamma) where {T<:Real}
+    function GammaExponentialKernel(; gamma::T=2.0, γ::T=gamma) where {T<:Real}
         @check_args(GammaExponentialKernel, γ, γ >= zero(T), "γ > 0")
         return new{T}([γ])
     end
@@ -75,5 +75,5 @@ metric(::GammaExponentialKernel) = Euclidean()
 iskroncompatible(::GammaExponentialKernel) = true
 
 function Base.show(io::IO, κ::GammaExponentialKernel)
-    print(io, "Gamma Exponential Kernel (γ = ", first(κ.γ), ")")
+    return print(io, "Gamma Exponential Kernel (γ = ", first(κ.γ), ")")
 end

@@ -9,8 +9,8 @@ Where `c` is a real number
 """
 struct LinearKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
-    function LinearKernel(; c::T = 0.0) where {T}
-        new{T}([c])
+    function LinearKernel(; c::T=0.0) where {T}
+        return new{T}([c])
     end
 end
 
@@ -34,7 +34,7 @@ Where `c` is a real number, and `d` is a shape parameter bigger than 1. For `d =
 struct PolynomialKernel{Td<:Real,Tc<:Real} <: SimpleKernel
     d::Vector{Td}
     c::Vector{Tc}
-    function PolynomialKernel(; d::Td = 2.0, c::Tc = 0.0) where {Td<:Real,Tc<:Real}
+    function PolynomialKernel(; d::Td=2.0, c::Tc=0.0) where {Td<:Real,Tc<:Real}
         @check_args(PolynomialKernel, d, d >= one(Td), "d >= 1")
         return new{Td,Tc}([d], [c])
     end
@@ -46,5 +46,6 @@ kappa(κ::PolynomialKernel, xᵀy::Real) = (xᵀy + first(κ.c))^(first(κ.d))
 
 metric(::PolynomialKernel) = DotProduct()
 
-Base.show(io::IO, κ::PolynomialKernel) =
-    print(io, "Polynomial Kernel (c = ", first(κ.c), ", d = ", first(κ.d), ")")
+function Base.show(io::IO, κ::PolynomialKernel)
+    return print(io, "Polynomial Kernel (c = ", first(κ.c), ", d = ", first(κ.d), ")")
+end

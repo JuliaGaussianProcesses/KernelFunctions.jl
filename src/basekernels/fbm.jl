@@ -11,7 +11,7 @@ positively correlated and for `h<1/2` the increments are negatively correlated.
 """
 struct FBMKernel{T<:Real} <: Kernel
     h::Vector{T}
-    function FBMKernel(; h::T = 0.5) where {T<:Real}
+    function FBMKernel(; h::T=0.5) where {T<:Real}
         @assert 0.0 <= h <= 1.0 "FBMKernel: Given Hurst index h is invalid."
         return new{T}([h])
     end
@@ -27,17 +27,19 @@ function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     return (modX^h + modY^h - modXY^h) / 2
 end
 
-(κ::FBMKernel)(x::Real, y::Real) =
-    (abs2(x)^first(κ.h) + abs2(y)^first(κ.h) - abs2(x - y)^first(κ.h)) / 2
+function (κ::FBMKernel)(x::Real, y::Real)
+    return (abs2(x)^first(κ.h) + abs2(y)^first(κ.h) - abs2(x - y)^first(κ.h)) / 2
+end
 
-Base.show(io::IO, κ::FBMKernel) =
-    print(io, "Fractional Brownian Motion Kernel (h = ", first(κ.h), ")")
+function Base.show(io::IO, κ::FBMKernel)
+    return print(io, "Fractional Brownian Motion Kernel (h = ", first(κ.h), ")")
+end
 
 _fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h) / 2
 
 _mod(x::AbstractVector{<:Real}) = abs2.(x)
-_mod(x::ColVecs) = vec(sum(abs2, x.X; dims = 1))
-_mod(x::RowVecs) = vec(sum(abs2, x.X; dims = 2))
+_mod(x::ColVecs) = vec(sum(abs2, x.X; dims=1))
+_mod(x::RowVecs) = vec(sum(abs2, x.X; dims=2))
 
 function kernelmatrix(κ::FBMKernel, x::AbstractVector)
     modx = _mod(x)
@@ -58,10 +60,7 @@ function kernelmatrix(κ::FBMKernel, x::AbstractVector, y::AbstractVector)
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::FBMKernel,
-    x::AbstractVector,
-    y::AbstractVector,
+    K::AbstractMatrix, κ::FBMKernel, x::AbstractVector, y::AbstractVector
 )
     pairwise!(K, SqEuclidean(), x, y)
     K .= _fbm.(_mod(x), _mod(y)', K, κ.h)

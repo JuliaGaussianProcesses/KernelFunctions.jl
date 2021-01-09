@@ -83,7 +83,7 @@ function kerneldiagmatrix(κ::KernelProduct, x::AbstractVector)
 end
 
 function Base.show(io::IO, κ::KernelProduct)
-    printshifted(io, κ, 0)
+    return printshifted(io, κ, 0)
 end
 
 function Base.:(==)(x::KernelProduct, y::KernelProduct)
@@ -97,7 +97,7 @@ function printshifted(io::IO, κ::KernelProduct, shift::Int)
     print(io, "Product of $(length(κ)) kernels:")
     for k in κ.kernels
         print(io, "\n")
-        for _ = 1:(shift+1)
+        for _ in 1:(shift + 1)
             print(io, "\t")
         end
         printshifted(io, k, shift + 2)

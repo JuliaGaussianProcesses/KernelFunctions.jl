@@ -33,7 +33,7 @@ are not consistent"))
 end
 
 function validate_domain(k::TensorProduct, x::AbstractVector)
-    dim(x) == length(k) ||
+    return dim(x) == length(k) ||
         error("number of kernels and groups of features are not consistent")
 end
 
@@ -56,10 +56,7 @@ function kernelmatrix!(K::AbstractMatrix, k::TensorProduct, x::AbstractVector)
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix,
-    k::TensorProduct,
-    x::AbstractVector,
-    y::AbstractVector,
+    K::AbstractMatrix, k::TensorProduct, x::AbstractVector, y::AbstractVector
 )
     validate_inplace_dims(K, x, y)
     validate_domain(k, x)
@@ -114,7 +111,7 @@ function printshifted(io::IO, kernel::TensorProduct, shift::Int)
     print(io, "Tensor product of ", length(kernel), " kernels:")
     for k in kernel.kernels
         print(io, "\n")
-        for _ = 1:(shift+1)
+        for _ in 1:(shift + 1)
             print(io, "\t")
         end
         print(io, "- ")

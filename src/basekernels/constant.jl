@@ -38,7 +38,6 @@ metric(::WhiteKernel) = Delta()
 
 Base.show(io::IO, ::WhiteKernel) = print(io, "White Kernel")
 
-
 """
     ConstantKernel(; c=1.0)
 
@@ -49,8 +48,8 @@ Kernel function always returning a constant value `c`
 """
 struct ConstantKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
-    function ConstantKernel(; c::T = 1.0) where {T<:Real}
-        new{T}([c])
+    function ConstantKernel(; c::T=1.0) where {T<:Real}
+        return new{T}([c])
     end
 end
 

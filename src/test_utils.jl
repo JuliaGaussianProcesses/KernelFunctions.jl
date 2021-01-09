@@ -34,8 +34,8 @@ function test_interface(
     x0::AbstractVector,
     x1::AbstractVector,
     x2::AbstractVector;
-    atol = __ATOL,
-    rtol = __RTOL,
+    atol=__ATOL,
+    rtol=__RTOL,
 )
     # Ensure that we have the required inputs.
     @assert length(x0) == length(x1)
@@ -90,28 +90,17 @@ function test_interface(
 end
 
 function test_interface(
-    rng::AbstractRNG,
-    k::Kernel,
-    ::Type{Vector{T}};
-    kwargs...,
+    rng::AbstractRNG, k::Kernel, ::Type{Vector{T}}; kwargs...
 ) where {T<:Real}
-    test_interface(
-        k,
-        randn(rng, T, 1001),
-        randn(rng, T, 1001),
-        randn(rng, T, 1000);
-        kwargs...,
+    return test_interface(
+        k, randn(rng, T, 1001), randn(rng, T, 1001), randn(rng, T, 1000); kwargs...
     )
 end
 
 function test_interface(
-    rng::AbstractRNG,
-    k::Kernel,
-    ::Type{<:ColVecs{T}};
-    dim_in = 2,
-    kwargs...,
+    rng::AbstractRNG, k::Kernel, ::Type{<:ColVecs{T}}; dim_in=2, kwargs...
 ) where {T<:Real}
-    test_interface(
+    return test_interface(
         k,
         ColVecs(randn(rng, T, dim_in, 1001)),
         ColVecs(randn(rng, T, dim_in, 1001)),
@@ -121,13 +110,9 @@ function test_interface(
 end
 
 function test_interface(
-    rng::AbstractRNG,
-    k::Kernel,
-    ::Type{<:RowVecs{T}};
-    dim_in = 2,
-    kwargs...,
+    rng::AbstractRNG, k::Kernel, ::Type{<:RowVecs{T}}; dim_in=2, kwargs...
 ) where {T<:Real}
-    test_interface(
+    return test_interface(
         k,
         RowVecs(randn(rng, T, 1001, dim_in)),
         RowVecs(randn(rng, T, 1001, dim_in)),
@@ -137,7 +122,7 @@ function test_interface(
 end
 
 function test_interface(k::Kernel, T::Type{<:AbstractVector}; kwargs...)
-    test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
+    return test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
 end
 
 function test_interface(rng::AbstractRNG, k::Kernel, T::Type{<:Real}; kwargs...)
@@ -152,8 +137,8 @@ function test_interface(rng::AbstractRNG, k::Kernel, T::Type{<:Real}; kwargs...)
     end
 end
 
-function test_interface(k::Kernel, T::Type{<:Real} = Float64; kwargs...)
-    test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
+function test_interface(k::Kernel, T::Type{<:Real}=Float64; kwargs...)
+    return test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
 end
 
 end # module

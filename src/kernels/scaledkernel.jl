@@ -8,7 +8,7 @@ struct ScaledKernel{Tk<:Kernel,Tσ²<:Real} <: Kernel
     σ²::Vector{Tσ²}
 end
 
-function ScaledKernel(kernel::Tk, σ²::Tσ² = 1.0) where {Tk<:Kernel,Tσ²<:Real}
+function ScaledKernel(kernel::Tk, σ²::Tσ²=1.0) where {Tk<:Kernel,Tσ²<:Real}
     @check_args(ScaledKernel, σ², σ² > zero(Tσ²), "σ² > 0")
     return ScaledKernel{Tk,Tσ²}(kernel, [σ²])
 end
@@ -30,10 +30,7 @@ function kerneldiagmatrix(κ::ScaledKernel, x::AbstractVector)
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::ScaledKernel,
-    x::AbstractVector,
-    y::AbstractVector,
+    K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector, y::AbstractVector
 )
     kernelmatrix!(K, κ, x, y)
     K .*= κ.σ²
@@ -58,5 +55,5 @@ Base.show(io::IO, κ::ScaledKernel) = printshifted(io, κ, 0)
 
 function printshifted(io::IO, κ::ScaledKernel, shift::Int)
     printshifted(io, κ.kernel, shift)
-    print(io, "\n" * ("\t"^(shift + 1)) * "- σ² = $(first(κ.σ²))")
+    return print(io, "\n" * ("\t"^(shift + 1)) * "- σ² = $(first(κ.σ²))")
 end

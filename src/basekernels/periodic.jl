@@ -10,15 +10,15 @@ Periodic Kernel as described in http://www.inference.org.uk/mackay/gpB.pdf eq. 4
 """
 struct PeriodicKernel{T} <: SimpleKernel
     r::Vector{T}
-    function PeriodicKernel(; r::AbstractVector{T} = ones(Float64, 1)) where {T<:Real}
+    function PeriodicKernel(; r::AbstractVector{T}=ones(Float64, 1)) where {T<:Real}
         @assert all(r .> 0)
-        new{T}(r)
+        return new{T}(r)
     end
 end
 
 PeriodicKernel(dims::Int) = PeriodicKernel(Float64, dims)
 
-PeriodicKernel(T::DataType, dims::Int = 1) = PeriodicKernel(r = ones(T, dims))
+PeriodicKernel(T::DataType, dims::Int=1) = PeriodicKernel(; r=ones(T, dims))
 
 @functor PeriodicKernel
 
@@ -27,5 +27,5 @@ metric(κ::PeriodicKernel) = Sinus(κ.r)
 kappa(κ::PeriodicKernel, d::Real) = exp(-0.5d)
 
 function Base.show(io::IO, κ::PeriodicKernel)
-    print(io, "Periodic Kernel, length(r) = $(length(κ.r))")
+    return print(io, "Periodic Kernel, length(r) = $(length(κ.r))")
 end

@@ -9,8 +9,8 @@ Gabor kernel with lengthscale `ell` and period `p`. Given by
 """
 struct GaborKernel{K<:Kernel} <: Kernel
     kernel::K
-    function GaborKernel(; ell = nothing, p = nothing)
-        k = _gabor(ell = ell, p = p)
+    function GaborKernel(; ell=nothing, p=nothing)
+        k = _gabor(; ell=ell, p=p)
         return new{typeof(k)}(k)
     end
 end
@@ -19,7 +19,7 @@ end
 
 (κ::GaborKernel)(x, y) = κ.kernel(x, y)
 
-function _gabor(; ell = nothing, p = nothing)
+function _gabor(; ell=nothing, p=nothing)
     if ell === nothing
         if p === nothing
             return SqExponentialKernel() * CosineKernel()
@@ -56,8 +56,9 @@ function Base.getproperty(k::GaborKernel, v::Symbol)
     end
 end
 
-Base.show(io::IO, κ::GaborKernel) =
-    print(io, "Gabor Kernel (ell = ", κ.ell, ", p = ", κ.p, ")")
+function Base.show(io::IO, κ::GaborKernel)
+    return print(io, "Gabor Kernel (ell = ", κ.ell, ", p = ", κ.p, ")")
+end
 
 kernelmatrix(κ::GaborKernel, x::AbstractVector) = kernelmatrix(κ.kernel, x)
 

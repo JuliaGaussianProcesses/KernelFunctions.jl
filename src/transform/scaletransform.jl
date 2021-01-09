@@ -11,8 +11,8 @@ struct ScaleTransform{T<:Real} <: Transform
     s::Vector{T}
 end
 
-function ScaleTransform(s::T = 1.0) where {T<:Real}
-    ScaleTransform{T}([s])
+function ScaleTransform(s::T=1.0) where {T<:Real}
+    return ScaleTransform{T}([s])
 end
 
 @functor ScaleTransform
