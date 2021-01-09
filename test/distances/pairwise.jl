@@ -9,13 +9,13 @@
     Y = hcat(y...)
     K = zeros(Ns)
 
-    @test KernelFunctions.pairwise(d, x, y) ≈ pairwise(d, X, Y, dims=2)
-    @test KernelFunctions.pairwise(d, x) ≈ pairwise(d, X, dims=2)
+    @test KernelFunctions.pairwise(d, x, y) ≈ pairwise(d, X, Y; dims=2)
+    @test KernelFunctions.pairwise(d, x) ≈ pairwise(d, X; dims=2)
     KernelFunctions.pairwise!(K, d, x, y)
-    @test K ≈ pairwise(d, X, Y, dims=2)
+    @test K ≈ pairwise(d, X, Y; dims=2)
     K = zeros(Ns[1], Ns[1])
     KernelFunctions.pairwise!(K, d, x)
-    @test K ≈ pairwise(d, X, dims=2)
+    @test K ≈ pairwise(d, X; dims=2)
 
     x = randn(rng, 10)
     X = reshape(x, :, 1)
@@ -25,5 +25,5 @@
     @test KernelFunctions.pairwise(d, x, y) ≈ pairwise(d, X, Y; dims=1)
     @test KernelFunctions.pairwise(d, x) ≈ pairwise(d, X; dims=1)
     KernelFunctions.pairwise!(K, d, x, y)
-    @test K ≈ pairwise(d, X, Y, dims=1)
+    @test K ≈ pairwise(d, X, Y; dims=1)
 end
