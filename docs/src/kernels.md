@@ -146,7 +146,7 @@ The [`NeuralNetworkKernel`](@ref) (as in the kernel for an infinitely wide neura
 The [`PeriodicKernel`](@ref) is defined as
 
 ```math
-  k(x,x';r) = \exp\left(-0.5 \sum_i (sin (π(x_i - x'_i))/r_i)^2\right),
+  k(x,x';r) = \exp\left(-0.5 \sum_i (\sin (\pi(x_i - x'_i))/r_i)^2\right),
 ```
 
 where $r$ has the same dimension as $x$ and $r_i > 0$.
