@@ -12,7 +12,7 @@ if !isfile(joinpath(@__DIR__, "update_v0.8.0"))
         This kernel now divides the squared distance by 2 to align with standard practice.
         This warning will be removed in 0.9.0.
         """;
-        color=Base.info_color(),
+        color = Base.info_color(),
     )
     touch(joinpath(@__DIR__, "update_v0.8.0"))
 end
