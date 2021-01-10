@@ -31,7 +31,7 @@ export FBMKernel
 export MaternKernel, Matern12Kernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
-export MahalanobisKernel, GaborKernel, PiecewisePolynomialKernel
+export GaborKernel, PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
 export KernelSum, KernelProduct
 export TransformedKernel, ScaledKernel
@@ -90,7 +90,6 @@ include(joinpath("basekernels", "exponential.jl"))
 include(joinpath("basekernels", "exponentiated.jl"))
 include(joinpath("basekernels", "fbm.jl"))
 include(joinpath("basekernels", "gabor.jl"))
-include(joinpath("basekernels", "maha.jl"))
 include(joinpath("basekernels", "matern.jl"))
 include(joinpath("basekernels", "nn.jl"))
 include(joinpath("basekernels", "periodic.jl"))
@@ -117,6 +116,8 @@ include(joinpath("mokernels", "slfm.jl"))
 include("zygote_adjoints.jl")
 
 include("test_utils.jl")
+
+include("deprecated.jl")
 
 function __init__()
     @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin

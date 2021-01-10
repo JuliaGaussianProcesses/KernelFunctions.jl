@@ -153,17 +153,19 @@ where $r$ has the same dimension as $x$ and $r_i > 0$.
 
 ## Piecewise Polynomial Kernel
 
-The [`PiecewisePolynomialKernel`](@ref) is defined for $x, x'\in \mathbb{R}^D$, a positive-definite matrix $P \in \mathbb{R}^{D \times D}$, and $V \in \{0,1,2,3\}$ as
+The [`PiecewisePolynomialKernel`](@ref) is defined for $x, x' \in \mathbb{R}^d$ and
+$v \in \{0,1,2,3\}$ as
 ```math
-  k(x,x'; P, V) = \max(1 - \sqrt{x^\top P x'}, 0)^{j + V} f_V(\sqrt{x^\top P x'}, j),
+k(x, x'; v) = \max(1 - \|x - x'\|, 0)^{j + v} f_v(\|x - x'\|, j),
 ```
-where $j = \lfloor \frac{D}{2}\rfloor + V + 1$, and $f_V$ are polynomials defined as follows:
+where $j = \lfloor \frac{d}{2}\rfloor + v + 1$, and $f_v$ are polynomials defined as
+follows:
 ```math
 \begin{aligned}
-    f_0(r, j) &= 1, \\
-    f_1(r, j) &= 1 + (j + 1) r, \\
-    f_2(r, j) &= 1 + (j + 2) r + ((j^2 + 4j + 3) / 3) r^2, \\
-    f_3(r, j) &= 1 + (j + 3) r + ((6 j^2 + 36j + 45) / 15) r^2 + ((j^3 + 9 j^2 + 23j + 15) / 15) r^3.
+f_0(r, j) &= 1, \\
+f_1(r, j) &= 1 + (j + 1) r, \\
+f_2(r, j) &= 1 + (j + 2) r + ((j^2 + 4j + 3) / 3) r^2, \\
+f_3(r, j) &= 1 + (j + 3) r + ((6 j^2 + 36j + 45) / 15) r^2 + ((j^3 + 9 j^2 + 23j + 15) / 15) r^3.
 \end{aligned}
 ```
 

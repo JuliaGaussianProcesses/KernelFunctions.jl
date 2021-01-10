@@ -1,56 +1,67 @@
 """
-    PiecewisePolynomialKernel{V}(maha::AbstractMatrix)
+    PiecewisePolynomialKernel(; v::Int=0, d::Int)
+    PiecewisePolynomialKernel{v}(d::Int)
 
-Piecewise Polynomial covariance function with compact support, V = 0,1,2,3.
-The kernel functions are 2V times continuously differentiable and the corresponding
-processes are hence V times mean-square differentiable. The kernel function is:
+Piecewise polynomial kernel with compact support.
+
+The kernel is defined for ``x, x' \\in \\mathbb{R}^d`` and ``v \\in \\{0,1,2,3\\}`` as
 ```math
-    κ(x, y) = max(1 - r, 0)^(j + V) * f(r, j) with j = floor(D / 2) + V + 1
+k(x, x'; v) = \\max(1 - \\|x - x'\\|, 0)^{j + v} f_v(\\|x - x'\\|, j),
 ```
-where `r` is the Mahalanobis distance mahalanobis(x,y) with `maha` as the metric.
+where ``j = \\lfloor \\frac{d}{2}\\rfloor + v + 1``, and ``f_v`` are polynomials defined as
+follows:
+```math
+\\begin{aligned}
+f_0(r, j) &= 1, \\\\
+f_1(r, j) &= 1 + (j + 1) r, \\\\
+f_2(r, j) &= 1 + (j + 2) r + ((j^2 + 4j + 3) / 3) r^2, \\\\
+f_3(r, j) &= 1 + (j + 3) r + ((6 j^2 + 36j + 45) / 15) r^2 + ((j^3 + 9 j^2 + 23j + 15) / 15) r^3.
+\\end{aligned}
+```
+
+The kernel is ``2v`` times continuously differentiable and the corresponding Gaussian
+process is hence ``v`` times mean-square differentiable.
 """
-struct PiecewisePolynomialKernel{V,A<:AbstractMatrix{<:Real}} <: SimpleKernel
-    maha::A
+struct PiecewisePolynomialKernel{V} <: SimpleKernel
     j::Int
-    function PiecewisePolynomialKernel{V}(maha::AbstractMatrix{<:Real}) where {V}
+
+    function PiecewisePolynomialKernel{V}(d::Int) where V
         V in (0, 1, 2, 3) || error("Invalid parameter V=$(V). Should be 0, 1, 2 or 3.")
-        LinearAlgebra.checksquare(maha)
-        j = div(size(maha, 1), 2) + V + 1
-        return new{V,typeof(maha)}(maha, j)
+        d > 0 || error("number of dimensions has to be positive")
+        j = div(d, 2) + V + 1
+        return new{V}(j)
     end
 end
 
-function PiecewisePolynomialKernel(; v::Integer=0, maha::AbstractMatrix{<:Real})
-    return PiecewisePolynomialKernel{v}(maha)
-end
-
-# Have to reconstruct the type parameter
-# See also https://github.com/FluxML/Functors.jl/issues/3#issuecomment-626747663
-function Functors.functor(::Type{<:PiecewisePolynomialKernel{V}}, x) where {V}
-    function reconstruct_kernel(xs)
-        return PiecewisePolynomialKernel{V}(xs.maha)
+# TODO: remove `maha` keyword argument in next breaking release
+function PiecewisePolynomialKernel(; v::Int=0, maha=nothing, d::Int=-1)
+    if maha !== nothing
+        Base.depwarn("keyword argument `maha` is deprecated", :PiecewisePolynomialKernel)
+        d = size(maha, 1)
+        return transform(PiecewisePolynomialKernel{v}(d), cholesky(maha).U)
+    else
+        return PiecewisePolynomialKernel{v}(d)
     end
-    return (maha=x.maha,), reconstruct_kernel
 end
 
-_f(κ::PiecewisePolynomialKernel{0}, r, j) = 1
-_f(κ::PiecewisePolynomialKernel{1}, r, j) = 1 + (j + 1) * r
-_f(κ::PiecewisePolynomialKernel{2}, r, j) = 1 + (j + 2) * r + (j^2 + 4 * j + 3) / 3 * r .^ 2
-function _f(κ::PiecewisePolynomialKernel{3}, r, j)
+_f(::PiecewisePolynomialKernel{1}, r, j) = 1 + (j + 1) * r
+_f(::PiecewisePolynomialKernel{2}, r, j) = 1 + (j + 2) * r + (j^2 + 4 * j + 3) / 3 * r^2
+function _f(::PiecewisePolynomialKernel{3}, r, j)
     return 1 +
-           (j + 3) * r +
-           (6 * j^2 + 36j + 45) / 15 * r .^ 2 +
-           (j^3 + 9 * j^2 + 23j + 15) / 15 * r .^ 3
+        (j + 3) * r +
+        (6 * j^2 + 36j + 45) / 15 * r ^ 2 +
+        (j^3 + 9 * j^2 + 23j + 15) / 15 * r ^ 3
 end
 
-function kappa(κ::PiecewisePolynomialKernel{V}, r) where {V}
+kappa(κ::PiecewisePolynomialKernel{0}, r) = max(1 - r, 0)^κ.j
+function kappa(κ::PiecewisePolynomialKernel{V}, r) where V
     return max(1 - r, 0)^(κ.j + V) * _f(κ, r, κ.j)
 end
 
-metric(κ::PiecewisePolynomialKernel) = Mahalanobis(κ.maha)
+metric(::PiecewisePolynomialKernel) = Euclidean()
 
 function Base.show(io::IO, κ::PiecewisePolynomialKernel{V}) where {V}
     return print(
-        io, "Piecewise Polynomial Kernel (v = ", V, ", size(maha) = ", size(κ.maha), ")"
+        io, "Piecewise Polynomial Kernel (v = ", V, ", ⌊d/2⌋ = ", κ.j - 1 - V , ")",
     )
 end
