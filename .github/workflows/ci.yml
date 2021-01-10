@@ -65,5 +65,5 @@ jobs:
           if [ ! -z $CHANGED ]; then
             >&2 echo "Some files have not been formatted !!!"
             echo "$CHANGED"
-            exit(1)
+            exit 1
           fi
