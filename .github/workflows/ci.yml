@@ -62,7 +62,7 @@ jobs:
       - name: Format check
         run: |
           CHANGED="$(git diff --name-only)"
-          if [ ! -z $CHANGED ]; then
+          if [ ! -z "$CHANGED" ]; then
             >&2 echo "Some files have not been formatted !!!"
             echo "$CHANGED"
             exit 1
