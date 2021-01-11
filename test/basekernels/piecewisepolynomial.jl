@@ -4,21 +4,26 @@
     v2 = rand(D)
     maha = Matrix{Float64}(I, D, D)
     v = 3
-    k = PiecewisePolynomialKernel{v}(maha)
 
-    k2 = PiecewisePolynomialKernel(; v=v, maha=maha)
+    k = PiecewisePolynomialKernel(; v=v, d=D)
+    k2 = PiecewisePolynomialKernel{v}(D)
+    k3 = @test_deprecated PiecewisePolynomialKernel{v}(maha)
+    k4 = @test_deprecated PiecewisePolynomialKernel(; v=v, maha=maha)
 
-    @test k2(v1, v2) ≈ k(v1, v2) atol = 1e-5
+    @test k2(v1, v2) == k(v1, v2)
+    @test k3(v1, v2) ≈ k(v1, v2)
+    @test k4(v1, v2) ≈ k(v1, v2)
 
     @test_throws ErrorException PiecewisePolynomialKernel{4}(maha)
+    @test_throws ErrorException PiecewisePolynomialKernel{4}(D)
+    @test_throws ErrorException PiecewisePolynomialKernel{v}(-1)
 
-    @test repr(k) == "Piecewise Polynomial Kernel (v = $(v), size(maha) = $(size(maha)))"
+    @test repr(k) == "Piecewise Polynomial Kernel (v = $(v), ⌊d/2⌋ = $(div(D, 2)))"
 
     # Standardised tests.
     TestUtils.test_interface(k, ColVecs{Float64}; dim_in=2)
     TestUtils.test_interface(k, RowVecs{Float64}; dim_in=2)
-    # test_ADs(maha-> PiecewisePolynomialKernel(v=2, maha = maha), maha)
-    @test_broken "Nothing passes (problem with Mahalanobis distance in Distances)"
+    test_ADs(() -> PiecewisePolynomialKernel{v}(D))
 
-    test_params(k, (maha,))
+    test_params(k, ())
 end
