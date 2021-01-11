@@ -25,7 +25,7 @@ process is hence ``v`` times mean-square differentiable.
 struct PiecewisePolynomialKernel{V} <: SimpleKernel
     j::Int
 
-    function PiecewisePolynomialKernel{V}(d::Int) where V
+    function PiecewisePolynomialKernel{V}(d::Int) where {V}
         V in (0, 1, 2, 3) || error("Invalid parameter V=$(V). Should be 0, 1, 2 or 3.")
         d > 0 || error("number of dimensions has to be positive")
         j = div(d, 2) + V + 1
@@ -54,14 +54,12 @@ function _f(::PiecewisePolynomialKernel{3}, r, j)
 end
 
 kappa(κ::PiecewisePolynomialKernel{0}, r) = max(1 - r, 0)^κ.j
-function kappa(κ::PiecewisePolynomialKernel{V}, r) where V
+function kappa(κ::PiecewisePolynomialKernel{V}, r) where {V}
     return max(1 - r, 0)^(κ.j + V) * _f(κ, r, κ.j)
 end
 
 metric(::PiecewisePolynomialKernel) = Euclidean()
 
 function Base.show(io::IO, κ::PiecewisePolynomialKernel{V}) where {V}
-    return print(
-        io, "Piecewise Polynomial Kernel (v = ", V, ", ⌊d/2⌋ = ", κ.j - 1 - V , ")",
-    )
+    return print(io, "Piecewise Polynomial Kernel (v = ", V, ", ⌊d/2⌋ = ", κ.j - 1 - V, ")")
 end
