@@ -41,7 +41,7 @@ end
 
 @functor KernelProduct
 
-Base.:*(k1::Kernel,k2::Kernel) = KernelProduct(k1, k2)
+Base.:*(k1::Kernel, k2::Kernel) = KernelProduct(k1, k2)
 
 function Base.:*(
     k1::KernelProduct{<:AbstractVector{<:Kernel}},
@@ -50,7 +50,7 @@ function Base.:*(
     return KernelProduct(vcat(k1.kernels, k2.kernels))
 end
 
-function Base.:*(k1::KernelProduct,k2::KernelProduct)
+function Base.:*(k1::KernelProduct, k2::KernelProduct)
     return KernelProduct(k1.kernels..., k2.kernels...)
 end
 
@@ -58,13 +58,13 @@ function Base.:*(k::Kernel, ks::KernelProduct{<:AbstractVector{<:Kernel}})
     return KernelProduct(vcat(k, ks.kernels))
 end
 
-Base.:*(k::Kernel,kp::KernelProduct) = KernelProduct(k, kp.kernels...)
+Base.:*(k::Kernel, kp::KernelProduct) = KernelProduct(k, kp.kernels...)
 
 function Base.:*(ks::KernelProduct{<:AbstractVector{<:Kernel}}, k::Kernel)
     return KernelProduct(vcat(ks.kernels, k))
 end
 
-Base.:*(kp::KernelProduct,k::Kernel) = KernelProduct(kp.kernels..., k)
+Base.:*(kp::KernelProduct, k::Kernel) = KernelProduct(kp.kernels..., k)
 
 Base.length(k::KernelProduct) = length(k.kernels)
 
@@ -83,12 +83,12 @@ function kerneldiagmatrix(κ::KernelProduct, x::AbstractVector)
 end
 
 function Base.show(io::IO, κ::KernelProduct)
-    printshifted(io, κ, 0)
+    return printshifted(io, κ, 0)
 end
 
 function Base.:(==)(x::KernelProduct, y::KernelProduct)
     return (
-        length(x.kernels) == length(y.kernels) && 
+        length(x.kernels) == length(y.kernels) &&
         all(kx == ky for (kx, ky) in zip(x.kernels, y.kernels))
     )
 end
@@ -96,7 +96,7 @@ end
 function printshifted(io::IO, κ::KernelProduct, shift::Int)
     print(io, "Product of $(length(κ)) kernels:")
     for k in κ.kernels
-        print(io, "\n" )
+        print(io, "\n")
         for _ in 1:(shift + 1)
             print(io, "\t")
         end

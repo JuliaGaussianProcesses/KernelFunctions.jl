@@ -6,9 +6,9 @@
     v = 3
     k = PiecewisePolynomialKernel{v}(maha)
 
-    k2 = PiecewisePolynomialKernel(v=v, maha=maha)
+    k2 = PiecewisePolynomialKernel(; v=v, maha=maha)
 
-    @test k2(v1, v2) ≈ k(v1, v2) atol=1e-5
+    @test k2(v1, v2) ≈ k(v1, v2) atol = 1e-5
 
     @test_throws ErrorException PiecewisePolynomialKernel{4}(maha)
 

@@ -15,12 +15,12 @@ end
 
 set!(t::SelectTransform, dims) = t.select .= dims
 
-duplicate(t::SelectTransform,θ) = t
+duplicate(t::SelectTransform, θ) = t
 
 (t::SelectTransform)(x::AbstractVector) = _maybe_unwrap(view(x, t.select))
 
 _maybe_unwrap(x) = x
-_maybe_unwrap(x::AbstractArray{<:Any, 0}) = x[]
+_maybe_unwrap(x::AbstractArray{<:Any,0}) = x[]
 
 _map(t::SelectTransform, x::ColVecs) = _wrap(view(x.X, t.select, :), ColVecs)
 _map(t::SelectTransform, x::RowVecs) = _wrap(view(x.X, :, t.select), RowVecs)

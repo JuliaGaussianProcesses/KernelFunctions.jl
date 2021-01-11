@@ -41,6 +41,6 @@
     a = rand()
     @test all(
         FiniteDifferences.j′vp(FDM, test_slfm, a, k.A, x1[1][1], x2[1][1]) .≈
-        Zygote.pullback(test_slfm, k.A, x1[1][1], x2[1][1])[2](a)
+        Zygote.pullback(test_slfm, k.A, x1[1][1], x2[1][1])[2](a),
     )
 end
