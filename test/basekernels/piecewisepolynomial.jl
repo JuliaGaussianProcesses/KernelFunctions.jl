@@ -22,7 +22,8 @@
     @test_throws ErrorException PiecewisePolynomialKernel{4}(D)
     @test_throws ErrorException PiecewisePolynomialKernel{degree}(-1)
 
-    @test repr(k) == "Piecewise Polynomial Kernel (degree = $(degree), ⌊dim/2⌋ = $(div(D, 2)))"
+    @test repr(k) ==
+          "Piecewise Polynomial Kernel (degree = $(degree), ⌊dim/2⌋ = $(div(D, 2)))"
 
     # Standardised tests.
     TestUtils.test_interface(k, ColVecs{Float64}; dim_in=2)

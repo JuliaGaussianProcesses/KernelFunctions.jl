@@ -56,7 +56,7 @@ function PiecewisePolynomialKernel(; v::Int=-1, degree::Int=v, maha=nothing, dim
         )
         dim = size(maha, 1)
         return transform(
-            PiecewisePolynomialKernel{degree}(dim), LinearTransform(cholesky(maha).U),
+            PiecewisePolynomialKernel{degree}(dim), LinearTransform(cholesky(maha).U)
         )
     else
         return PiecewisePolynomialKernel{degree}(dim)
@@ -65,24 +65,37 @@ end
 
 piecewise_polynomial_coefficients(::Val{0}, ::Int) = (1,)
 piecewise_polynomial_coefficients(::Val{1}, j::Int) = (1, j + 1)
-piecewise_polynomial_coefficients(::Val{2}, j::Int) = (1, j + 2, (j^2 + 4 * j) // 3 + 1)
+piecewise_polynomial_coefficients(::Val{2}, j::Int) = (1, j + 2, (j^2 + 4 * j)//3 + 1)
 function piecewise_polynomial_coefficients(::Val{3}, j::Int)
-    return (1, j + 3, (2 * j^2 + 12 * j) // 5 + 3, (j^3 + 9 * j^2 + 23 * j) // 15 + 1)
+    return (1, j + 3, (2 * j^2 + 12 * j)//5 + 3, (j^3 + 9 * j^2 + 23 * j)//15 + 1)
 end
-function piecewise_polynomial_coefficients(::Val{D}, ::Int) where D
+function piecewise_polynomial_coefficients(::Val{D}, ::Int) where {D}
     return error("invalid degree $D, only 0, 1, 2, or 3 are supported")
 end
 
-function kappa(κ::PiecewisePolynomialKernel{D}, r) where {D}
-    @static if VERSION < v"1.4"
-        return max(1 - r, 0)^(κ.alpha) * @evalpoly(r, κ.coeffs...)
-    else
-        return max(1 - r, 0)^(κ.alpha) * evalpoly(r, κ.coeffs)
+# `evalpoly` is not available on Julia < 1.4
+@static if VERSION < v"1.4"
+    @generated function _evalpoly(r, coeffs)
+        N = length(coeffs.parameters)
+        return quote
+            return @evalpoly(r, $((:(coeffs[$i]) for i in 1:N)...))
+        end
     end
+else
+    _evalpoly(r, coeffs) = evalpoly(r, coeffs)
 end
+
+kappa(κ::PiecewisePolynomialKernel, r) = max(1 - r, 0)^κ.alpha * _evalpoly(r, κ.coeffs)
 
 metric(::PiecewisePolynomialKernel) = Euclidean()
 
 function Base.show(io::IO, κ::PiecewisePolynomialKernel{D}) where {D}
-    return print(io, "Piecewise Polynomial Kernel (degree = ", D, ", ⌊dim/2⌋ = ", κ.alpha - 1 - 2 * D, ")")
+    return print(
+        io,
+        "Piecewise Polynomial Kernel (degree = ",
+        D,
+        ", ⌊dim/2⌋ = ",
+        κ.alpha - 1 - 2 * D,
+        ")",
+    )
 end
