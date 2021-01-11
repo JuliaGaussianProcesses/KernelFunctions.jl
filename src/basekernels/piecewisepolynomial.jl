@@ -38,7 +38,7 @@ function PiecewisePolynomialKernel(; v::Int=0, maha=nothing, d::Int=-1)
     if maha !== nothing
         Base.depwarn("keyword argument `maha` is deprecated", :PiecewisePolynomialKernel)
         d = size(maha, 1)
-        return transform(PiecewisePolynomialKernel{v}(d), cholesky(maha).U)
+        return transform(PiecewisePolynomialKernel{v}(d), LinearTransform(cholesky(maha).U))
     else
         return PiecewisePolynomialKernel{v}(d)
     end
