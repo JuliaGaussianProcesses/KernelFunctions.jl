@@ -75,7 +75,7 @@ where $\gamma > 0$.
 The [`ExponentiatedKernel`](@ref) is defined as
 
 ```math
-  k(x,x') = \exp\left(\langle x,x'\rangle).
+  k(x,x') = \exp\left(\langle x,x'\rangle\right).
 ```
 
 ## Fractional Brownian Motion
