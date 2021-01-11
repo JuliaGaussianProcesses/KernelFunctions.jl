@@ -1,65 +1,88 @@
 """
-    PiecewisePolynomialKernel(; v::Int=0, d::Int)
-    PiecewisePolynomialKernel{v}(d::Int)
+    PiecewisePolynomialKernel(; degree::Int=0, dim::Int)
+    PiecewisePolynomialKernel{degree}(dim::Int)
 
-Piecewise polynomial kernel with compact support.
+Piecewise polynomial kernel of degree `degree` for inputs of dimension `dim` with support in
+the unit ball.
 
-The kernel is defined for ``x, x' \\in \\mathbb{R}^d`` and ``v \\in \\{0,1,2,3\\}`` as
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^d`` of dimension ``d``, the piecewise polynomial kernel
+of degree ``v \\in \\{0,1,2,3\\}`` is defined as
 ```math
-k(x, x'; v) = \\max(1 - \\|x - x'\\|, 0)^{j + v} f_v(\\|x - x'\\|, j),
+k(x, x'; v) = \\max(1 - \\|x - x'\\|, 0)^{\\alpha(v,d)} f_{v,d}(\\|x - x'\\|),
 ```
-where ``j = \\lfloor \\frac{d}{2}\\rfloor + v + 1``, and ``f_v`` are polynomials defined as
-follows:
+where ``\\alpha(v, d) = \\lfloor \\frac{d}{2}\\rfloor + 2v + 1`` and ``f_{v,d}`` are
+polynomials of degree ``v`` given by
 ```math
 \\begin{aligned}
-f_0(r, j) &= 1, \\\\
-f_1(r, j) &= 1 + (j + 1) r, \\\\
-f_2(r, j) &= 1 + (j + 2) r + ((j^2 + 4j + 3) / 3) r^2, \\\\
-f_3(r, j) &= 1 + (j + 3) r + ((6 j^2 + 36j + 45) / 15) r^2 + ((j^3 + 9 j^2 + 23j + 15) / 15) r^3.
+f_{0,d}(r) &= 1, \\\\
+f_{1,d}(r) &= 1 + (j + 1) r, \\\\
+f_{2,d}(r) &= 1 + (j + 2) r + ((j^2 + 4j + 3) / 3) r^2, \\\\
+f_{3,d}(r) &= 1 + (j + 3) r + ((6 j^2 + 36j + 45) / 15) r^2 + ((j^3 + 9 j^2 + 23j + 15) / 15) r^3,
 \\end{aligned}
 ```
+where ``j = \\lfloor \\frac{d}{2}\\rfloor + v + 1``.
 
 The kernel is ``2v`` times continuously differentiable and the corresponding Gaussian
 process is hence ``v`` times mean-square differentiable.
 """
-struct PiecewisePolynomialKernel{V} <: SimpleKernel
-    j::Int
+struct PiecewisePolynomialKernel{D,C<:Tuple} <: SimpleKernel
+    alpha::Int
+    coeffs::C
 
-    function PiecewisePolynomialKernel{V}(d::Int) where {V}
-        V in (0, 1, 2, 3) || error("Invalid parameter V=$(V). Should be 0, 1, 2 or 3.")
-        d > 0 || error("number of dimensions has to be positive")
-        j = div(d, 2) + V + 1
-        return new{V}(j)
+    function PiecewisePolynomialKernel{D}(dim::Int) where {D}
+        dim > 0 || error("number of dimensions has to be positive")
+        j = div(dim, 2) + D + 1
+        alpha = j + D
+        coeffs = piecewise_polynomial_coefficients(Val(D), j)
+        return new{D,typeof(coeffs)}(alpha, coeffs)
     end
 end
 
 # TODO: remove `maha` keyword argument in next breaking release
-function PiecewisePolynomialKernel(; v::Int=0, maha=nothing, d::Int=-1)
+function PiecewisePolynomialKernel(; v::Int=-1, degree::Int=v, maha=nothing, dim::Int=-1)
+    if v != -1
+        Base.depwarn(
+            "keyword argument `v` is deprecated, use `degree` instead",
+            :PiecewisePolynomialKernel,
+        )
+    end
+
     if maha !== nothing
-        Base.depwarn("keyword argument `maha` is deprecated", :PiecewisePolynomialKernel)
-        d = size(maha, 1)
-        return transform(PiecewisePolynomialKernel{v}(d), LinearTransform(cholesky(maha).U))
+        Base.depwarn(
+            "keyword argument `maha` is deprecated, use a `LinearTransform` instead",
+            :PiecewisePolynomialKernel,
+        )
+        dim = size(maha, 1)
+        return transform(
+            PiecewisePolynomialKernel{degree}(dim), LinearTransform(cholesky(maha).U),
+        )
     else
-        return PiecewisePolynomialKernel{v}(d)
+        return PiecewisePolynomialKernel{degree}(dim)
     end
 end
 
-_f(::PiecewisePolynomialKernel{1}, r, j) = 1 + (j + 1) * r
-_f(::PiecewisePolynomialKernel{2}, r, j) = 1 + (j + 2) * r + (j^2 + 4 * j + 3) / 3 * r^2
-function _f(::PiecewisePolynomialKernel{3}, r, j)
-    return 1 +
-        (j + 3) * r +
-        (6 * j^2 + 36j + 45) / 15 * r ^ 2 +
-        (j^3 + 9 * j^2 + 23j + 15) / 15 * r ^ 3
+piecewise_polynomial_coefficients(::Val{0}, ::Int) = (1,)
+piecewise_polynomial_coefficients(::Val{1}, j::Int) = (1, j + 1)
+piecewise_polynomial_coefficients(::Val{2}, j::Int) = (1, j + 2, (j^2 + 4 * j) // 3 + 1)
+function piecewise_polynomial_coefficients(::Val{3}, j::Int)
+    return (1, j + 3, (2 * j^2 + 12 * j) // 5 + 3, (j^3 + 9 * j^2 + 23 * j) // 15 + 1)
+end
+function piecewise_polynomial_coefficients(::Val{D}, ::Int) where D
+    return error("invalid degree $D, only 0, 1, 2, or 3 are supported")
 end
 
-kappa(κ::PiecewisePolynomialKernel{0}, r) = max(1 - r, 0)^κ.j
-function kappa(κ::PiecewisePolynomialKernel{V}, r) where {V}
-    return max(1 - r, 0)^(κ.j + V) * _f(κ, r, κ.j)
+function kappa(κ::PiecewisePolynomialKernel{D}, r) where {D}
+    @static if VERSION < v"1.4"
+        return max(1 - r, 0)^(κ.alpha) * @evalpoly(r, κ.coeffs...)
+    else
+        return max(1 - r, 0)^(κ.alpha) * evalpoly(r, κ.coeffs)
+    end
 end
 
 metric(::PiecewisePolynomialKernel) = Euclidean()
 
-function Base.show(io::IO, κ::PiecewisePolynomialKernel{V}) where {V}
-    return print(io, "Piecewise Polynomial Kernel (v = ", V, ", ⌊d/2⌋ = ", κ.j - 1 - V, ")")
+function Base.show(io::IO, κ::PiecewisePolynomialKernel{D}) where {D}
+    return print(io, "Piecewise Polynomial Kernel (degree = ", D, ", ⌊dim/2⌋ = ", κ.alpha - 1 - 2 * D, ")")
 end
