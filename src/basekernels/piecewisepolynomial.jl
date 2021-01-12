@@ -1,4 +1,4 @@
-"""
+@doc raw"""
     PiecewisePolynomialKernel(; degree::Int=0, dim::Int)
     PiecewisePolynomialKernel{degree}(dim::Int)
 
@@ -7,22 +7,22 @@ the unit ball.
 
 # Definition
 
-For inputs ``x, x' \\in \\mathbb{R}^d`` of dimension ``d``, the piecewise polynomial kernel
-of degree ``v \\in \\{0,1,2,3\\}`` is defined as
+For inputs ``x, x' \in \mathbb{R}^d`` of dimension ``d``, the piecewise polynomial kernel
+of degree ``v \in \{0,1,2,3\}`` is defined as
 ```math
-k(x, x'; v) = \\max(1 - \\|x - x'\\|, 0)^{\\alpha(v,d)} f_{v,d}(\\|x - x'\\|),
+k(x, x'; v) = \max(1 - \|x - x'\|, 0)^{\alpha(v,d)} f_{v,d}(\|x - x'\|),
 ```
-where ``\\alpha(v, d) = \\lfloor \\frac{d}{2}\\rfloor + 2v + 1`` and ``f_{v,d}`` are
+where ``\alpha(v, d) = \lfloor \frac{d}{2}\rfloor + 2v + 1`` and ``f_{v,d}`` are
 polynomials of degree ``v`` given by
 ```math
-\\begin{aligned}
-f_{0,d}(r) &= 1, \\\\
-f_{1,d}(r) &= 1 + (j + 1) r, \\\\
-f_{2,d}(r) &= 1 + (j + 2) r + ((j^2 + 4j + 3) / 3) r^2, \\\\
-f_{3,d}(r) &= 1 + (j + 3) r + ((6 j^2 + 36j + 45) / 15) r^2 + ((j^3 + 9 j^2 + 23j + 15) / 15) r^3,
-\\end{aligned}
+\begin{aligned}
+f_{0,d}(r) &= 1, \\
+f_{1,d}(r) &= 1 + (j + 1) r, \\
+f_{2,d}(r) &= 1 + (j + 2) r + \big((j^2 + 4j + 3) / 3\big) r^2, \\
+f_{3,d}(r) &= 1 + (j + 3) r + \big((6 j^2 + 36j + 45) / 15\big) r^2 + \big((j^3 + 9 j^2 + 23j + 15) / 15\big) r^3,
+\end{aligned}
 ```
-where ``j = \\lfloor \\frac{d}{2}\\rfloor + v + 1``.
+where ``j = \lfloor \frac{d}{2}\rfloor + v + 1``.
 
 The kernel is ``2v`` times continuously differentiable and the corresponding Gaussian
 process is hence ``v`` times mean-square differentiable.
