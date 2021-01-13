@@ -8,18 +8,20 @@ using Distributions, LinearAlgebra
 using Plots
 using ProgressMeter
 using AbstractGPs
-pyplot(); default(legendfontsize = 15.0, linewidth = 3.0)
+pyplot();
+default(; legendfontsize=15.0, linewidth=3.0);
 
 # ## Data creation
 # We create a simple 1D Problem with very different variations
-xmin = -3; xmax = 3 # Limits
+xmin = -3;
+xmax = 3; # Limits
 N = 150
 noise = 0.01
 x_train = collect(eachrow(rand(Uniform(xmin, xmax), N))) # Training dataset
-target_f(x) = sinc(abs(x) ^ abs(x)) # We use sinc with a highly varying value
+target_f(x) = sinc(abs(x)^abs(x)) # We use sinc with a highly varying value
 target_f(x::AbstractArray) = target_f(first(x))
 y_train = target_f.(x_train) + randn(N) * noise
-x_test = collect(eachrow(range(xmin, xmax, length=200))) # Testing dataset
+x_test = collect(eachrow(range(xmin, xmax; length=200))) # Testing dataset
 spectral_mixture_kernel()
 # ## Model definition
 # We create a neural net with 2 layers and 10 units each
@@ -27,7 +29,7 @@ spectral_mixture_kernel()
 neuralnet = Chain(Dense(1, 20), Dense(20, 30), Dense(30, 5))
 # We use two cases :
 # - The Squared Exponential Kernel
-k = transform(SqExponentialKernel(), FunctionTransform(neuralnet) )
+k = transform(SqExponentialKernel(), FunctionTransform(neuralnet))
 
 # We use AbstractGPs.jl to define our model
 gpprior = GP(k) # GP Prior
@@ -44,15 +46,17 @@ loss(y) = -logpdf(fx, y)
 ps = Flux.params(k)
 
 # We show the initial prediction with the untrained model
-p_init = Plots.plot(vcat(x_test...), target_f, lab = "true f", title = "Loss = $(loss(y_train))")
-Plots.scatter!(vcat(x_train...), y_train, lab = "data")
+p_init = Plots.plot(
+    vcat(x_test...), target_f; lab="true f", title="Loss = $(loss(y_train))"
+)
+Plots.scatter!(vcat(x_train...), y_train; lab="data")
 pred = marginals(fp(x_test))
-Plots.plot!(vcat(x_test...), mean.(pred), ribbon = std.(pred), lab = "Prediction")
+Plots.plot!(vcat(x_test...), mean.(pred); ribbon=std.(pred), lab="Prediction")
 # ## Training
 anim = Animation()
-nmax= 1000
+nmax = 1000
 opt = Flux.ADAM(0.1)
-@showprogress for i = 1:nmax
+@showprogress for i in 1:nmax
     global grads = gradient(ps) do
         loss(y_train)
     end
@@ -61,12 +65,14 @@ opt = Flux.ADAM(0.1)
         @info "$i/$nmax"
         L = loss(y_train)
         # @info "Loss = $L"
-        p = Plots.plot(vcat(x_test...), target_f, lab = "true f", title = "Loss = $(loss(y_train))")
-        p = Plots.scatter!(vcat(x_train...), y_train, lab = "data")
+        p = Plots.plot(
+            vcat(x_test...), target_f; lab="true f", title="Loss = $(loss(y_train))"
+        )
+        p = Plots.scatter!(vcat(x_train...), y_train; lab="data")
         pred = marginals(posterior(fx, y_train)(x_test))
-        Plots.plot!(vcat(x_test...), mean.(pred), ribbon = std.(pred), lab = "Prediction")
+        Plots.plot!(vcat(x_test...), mean.(pred); ribbon=std.(pred), lab="Prediction")
         frame(anim)
         display(p)
     end
 end
-gif(anim, fps = 5)
+gif(anim; fps=5)

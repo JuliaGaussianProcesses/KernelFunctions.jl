@@ -25,5 +25,5 @@ function Base.isequal(t1::PeriodicTransform, t2::PeriodicTransform)
 end
 
 function Base.show(io::IO, t::PeriodicTransform)
-    print(io, "Periodic Transform with frequency $(first(t.f))")
+    return print(io, "Periodic Transform with frequency $(first(t.f))")
 end

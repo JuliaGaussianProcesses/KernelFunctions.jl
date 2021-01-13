@@ -18,7 +18,6 @@ end
 (t::FunctionTransform)(x) = t.f(x)
 
 _map(t::FunctionTransform, x::AbstractVector{<:Real}) = map(t.f, x)
-     
 
 function _map(t::FunctionTransform, x::ColVecs)
     vals = map(axes(x.X, 2)) do i
@@ -34,6 +33,6 @@ function _map(t::FunctionTransform, x::RowVecs)
     return RowVecs(reduce(hcat, vals)')
 end
 
-duplicate(t::FunctionTransform,f) = FunctionTransform(f)
+duplicate(t::FunctionTransform, f) = FunctionTransform(f)
 
 Base.show(io::IO, t::FunctionTransform) = print(io, "Function Transform: ", t.f)

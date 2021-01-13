@@ -11,7 +11,7 @@ For `ν=n+1/2, n=0,1,2,...` it can be simplified and you should instead use
 """
 struct MaternKernel{Tν<:Real} <: SimpleKernel
     ν::Vector{Tν}
-    function MaternKernel(;nu::T=1.5, ν::T=nu) where {T<:Real}
+    function MaternKernel(; nu::T=1.5, ν::T=nu) where {T<:Real}
         @check_args(MaternKernel, ν, ν > zero(T), "ν > 0")
         return new{T}([ν])
     end
