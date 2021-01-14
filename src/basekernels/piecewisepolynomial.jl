@@ -73,19 +73,7 @@ function piecewise_polynomial_coefficients(::Val{D}, ::Int) where {D}
     return error("invalid degree $D, only 0, 1, 2, or 3 are supported")
 end
 
-# `evalpoly` is not available on Julia < 1.4
-@static if VERSION < v"1.4"
-    @generated function _evalpoly(r, coeffs)
-        N = length(coeffs.parameters)
-        return quote
-            return @evalpoly(r, $((:(coeffs[$i]) for i in 1:N)...))
-        end
-    end
-else
-    _evalpoly(r, coeffs) = evalpoly(r, coeffs)
-end
-
-kappa(κ::PiecewisePolynomialKernel, r) = max(1 - r, 0)^κ.alpha * _evalpoly(r, κ.coeffs)
+kappa(κ::PiecewisePolynomialKernel, r) = max(1 - r, 0)^κ.alpha * evalpoly(r, κ.coeffs)
 
 metric(::PiecewisePolynomialKernel) = Euclidean()
 
