@@ -8,7 +8,7 @@ Linear kernel with constant offset `c`.
 For inputs ``x, x' \\in \\mathbb{R}^k``, the linear kernel with constant offset
 ``c \\in \\mathbb{R}`` is defined as
 ```math
-k(x, x'; c) = x^\top x' + c.
+k(x, x'; c) = x^\\top x' + c.
 ```
 
 See also: [`PolynomialKernel`](@ref)
@@ -38,7 +38,7 @@ Polynomial kernel of degree `d` with constant offset `c`.
 For inputs ``x, x' \\in \\mathbb{R}^k``, the polynomial kernel of degree ``d \\geq 1``
 with constant offset ``c \\in \\mathbb{R}`` is defined as
 ```math
-k(x, x'; c, d) = (x^\top x' + c)^d.
+k(x, x'; c, d) = (x^\\top x' + c)^d.
 ```
 
 See also: [`LinearKernel`](@ref)
