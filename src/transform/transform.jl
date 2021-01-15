@@ -18,7 +18,6 @@ _map(::IdentityTransform, x::AbstractVector) = x
 
 ### TODO Maybe defining adjoints could help but so far it's not working
 
-
 # @adjoint function ScaleTransform(s::T) where {T<:Real}
 #     @check_args(ScaleTransform, s, s > zero(T), "s > 0")
 #     ScaleTransform{T}(s),Δ->ScaleTransform{T}(Δ)

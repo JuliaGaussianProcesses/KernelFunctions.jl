@@ -8,22 +8,23 @@ DocMeta.setdocmeta!(
     recursive=true,
 )
 
-makedocs(
-    sitename = "KernelFunctions",
-    format = Documenter.HTML(),
-    modules = [KernelFunctions],
-    pages = ["Home"=>"index.md",
-             "User Guide" => "userguide.md",
-             "Examples"=>"example.md",
-             "Kernel Functions"=>"kernels.md",
-             "Input Transforms"=>"transform.md",
-             "Metrics"=>"metrics.md",
-             "Theory"=>"theory.md",
-             "Custom Kernels"=>"create_kernel.md",
-             "API"=>"api.md"]
+makedocs(;
+    sitename="KernelFunctions",
+    format=Documenter.HTML(),
+    modules=[KernelFunctions],
+    pages=[
+        "Home" => "index.md",
+        "User Guide" => "userguide.md",
+        "Examples" => "example.md",
+        "Kernel Functions" => "kernels.md",
+        "Input Transforms" => "transform.md",
+        "Metrics" => "metrics.md",
+        "Theory" => "theory.md",
+        "Custom Kernels" => "create_kernel.md",
+        "API" => "api.md",
+    ],
 )
 
 deploydocs(;
-    repo = "github.com/JuliaGaussianProcesses/KernelFunctions.jl.git",
-    push_preview = true,
+    repo="github.com/JuliaGaussianProcesses/KernelFunctions.jl.git", push_preview=true
 )

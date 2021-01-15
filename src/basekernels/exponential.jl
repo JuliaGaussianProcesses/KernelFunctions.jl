@@ -16,7 +16,7 @@ metric(::SqExponentialKernel) = SqEuclidean()
 
 iskroncompatible(::SqExponentialKernel) = true
 
-Base.show(io::IO,::SqExponentialKernel) = print(io,"Squared Exponential Kernel")
+Base.show(io::IO, ::SqExponentialKernel) = print(io, "Squared Exponential Kernel")
 
 ## Aliases ##
 
@@ -40,7 +40,6 @@ const GaussianKernel = SqExponentialKernel
 See [`SqExponentialKernel`](@ref)
 """
 const SEKernel = SqExponentialKernel
-
 
 """
     ExponentialKernel()
@@ -78,7 +77,6 @@ See [`ExponentialKernel`](@ref)
 """
 const Matern12Kernel = ExponentialKernel
 
-
 """
     GammaExponentialKernel(; γ = 2.0)
 
@@ -109,5 +107,5 @@ metric(::GammaExponentialKernel) = Euclidean()
 iskroncompatible(::GammaExponentialKernel) = true
 
 function Base.show(io::IO, κ::GammaExponentialKernel)
-    print(io, "Gamma Exponential Kernel (γ = ", first(κ.γ), ")")
+    return print(io, "Gamma Exponential Kernel (γ = ", first(κ.γ), ")")
 end

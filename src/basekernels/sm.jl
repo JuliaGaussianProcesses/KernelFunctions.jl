@@ -50,9 +50,7 @@ function spectral_mixture_kernel(
 end
 
 function spectral_mixture_kernel(
-    αs::AbstractVector{<:Real},
-    γs::AbstractMatrix{<:Real},
-    ωs::AbstractMatrix{<:Real}
+    αs::AbstractVector{<:Real}, γs::AbstractMatrix{<:Real}, ωs::AbstractMatrix{<:Real}
 )
     return spectral_mixture_kernel(SqExponentialKernel(), αs, γs, ωs)
 end
@@ -94,15 +92,14 @@ function spectral_mixture_product_kernel(
     if !(size(αs) == size(γs) == size(ωs))
         throw(DimensionMismatch("The dimensions of αs, γs, ans ωs do not match"))
     end
-    return TensorProduct(spectral_mixture_kernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :))
-        for (α, γ, ω) in zip(eachrow(αs), eachrow(γs), eachrow(ωs)))
+    return TensorProduct(
+        spectral_mixture_kernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :)) for
+        (α, γ, ω) in zip(eachrow(αs), eachrow(γs), eachrow(ωs))
+    )
 end
 
 function spectral_mixture_product_kernel(
-    αs::AbstractMatrix{<:Real},
-    γs::AbstractMatrix{<:Real},
-    ωs::AbstractMatrix{<:Real}
+    αs::AbstractMatrix{<:Real}, γs::AbstractMatrix{<:Real}, ωs::AbstractMatrix{<:Real}
 )
     return spectral_mixture_product_kernel(SqExponentialKernel(), αs, γs, ωs)
 end
-

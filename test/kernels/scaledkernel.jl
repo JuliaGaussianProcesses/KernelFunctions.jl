@@ -11,7 +11,7 @@
 
     # Standardised tests.
     TestUtils.test_interface(k, Float64)
-    test_ADs(x->exp(x[1]) * SqExponentialKernel(), rand(1))
+    test_ADs(x -> exp(x[1]) * SqExponentialKernel(), rand(1))
 
     test_params(s * k, (k, [s]))
 end
