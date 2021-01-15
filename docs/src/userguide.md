@@ -23,6 +23,22 @@ For example, a squared exponential kernel is created by
       k = 3.0 * SqExponentialKernel()
     ```
 
+!!! tip "How do I use a Mahalanobis kernel?"
+    The `MahalanobisKernel(; P=P)`, defined by
+    ```math
+    k(x, x'; P) = \exp{\big(- (x - x')^\top P (x - x')\big)}
+    ```
+    for a positive definite matrix $P = Q^\top Q$, is deprecated. Instead you can
+    use a squared exponential kernel together with a [`LinearTransform`](@ref) of
+    the inputs:
+    ```julia
+    k = transform(SqExponentialKernel(), LinearTransform(sqrt(2) .* Q))
+    ```
+    Analogously, you can combine other kernels such as the
+    [`PiecewisePolynomialKernel`](@ref) with a [`LinearTransform`](@ref) of the
+    inputs to obtain a kernel that is a function of the Mahalanobis distance
+    between inputs.
+
 ## Using a kernel function
 
 To evaluate the kernel function on two vectors you simply call the kernel object:
