@@ -1,16 +1,22 @@
 """
-    LinearKernel(; c = 0.0)
+    LinearKernel(; c::Real=0)
 
-The linear kernel is a Mercer kernel given by
+Linear kernel with constant offset `c`.
+
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^k``, the linear kernel with constant offset
+``c \\in \\mathbb{R}`` is defined as
+```math
+k(x, x'; c) = x^\top x' + c.
 ```
-    κ(x,y) = xᵀy + c
-```
-Where `c` is a real number
+
+See also: [`PolynomialKernel`](@ref)
 """
 struct LinearKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
-    function LinearKernel(; c::T=0.0) where {T}
-        return new{T}([c])
+    function LinearKernel(; c::Real=0)
+        return new{typeof(c)}([c])
     end
 end
 
@@ -23,20 +29,26 @@ metric(::LinearKernel) = DotProduct()
 Base.show(io::IO, κ::LinearKernel) = print(io, "Linear Kernel (c = ", first(κ.c), ")")
 
 """
-    PolynomialKernel(; d = 2.0, c = 0.0)
+    PolynomialKernel(; d::Real=2, c::Real=0)
 
-The polynomial kernel is a Mercer kernel given by
+Polynomial kernel of degree `d` with constant offset `c`.
+
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^k``, the polynomial kernel of degree ``d \\geq 1``
+with constant offset ``c \\in \\mathbb{R}`` is defined as
+```math
+k(x, x'; c, d) = (x^\top x' + c)^d.
 ```
-    κ(x,y) = (xᵀy + c)^d
-```
-Where `c` is a real number, and `d` is a shape parameter bigger than 1. For `d = 1` see [`LinearKernel`](@ref)
+
+See also: [`LinearKernel`](@ref)
 """
 struct PolynomialKernel{Td<:Real,Tc<:Real} <: SimpleKernel
     d::Vector{Td}
     c::Vector{Tc}
-    function PolynomialKernel(; d::Td=2.0, c::Tc=0.0) where {Td<:Real,Tc<:Real}
-        @check_args(PolynomialKernel, d, d >= one(Td), "d >= 1")
-        return new{Td,Tc}([d], [c])
+    function PolynomialKernel(; d::Real=2, c::Real=0)
+        @check_args(PolynomialKernel, d, d >= one(d), "d >= 1")
+        return new{typeof(d),typeof(c)}([d], [c])
     end
 end
 
