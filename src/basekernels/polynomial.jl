@@ -71,7 +71,7 @@ end
 # The degree of the polynomial kernel is a fixed discrete parameter
 function Functors.functor(::Type{<:PolynomialKernel}, x)
     reconstruct_polynomialkernel(xs) = PolynomialKernel{typeof(xs.c)}(x.degree, xs.c)
-    return (c=x.c,), recconstruct_polynomialkernel
+    return (c=x.c,), reconstruct_polynomialkernel
 end
 
 kappa(κ::PolynomialKernel, xᵀy::Real) = (xᵀy + first(κ.c))^κ.degree
