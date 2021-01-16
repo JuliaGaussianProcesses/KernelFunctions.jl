@@ -17,7 +17,7 @@ The [`ConstantKernel`](@ref) is defined as
   k(x,x';c) = c,
 ```
 
-where $c \in \mathbb{R}$.
+where $c \geq 0$.
 
 ### White Kernel
 
