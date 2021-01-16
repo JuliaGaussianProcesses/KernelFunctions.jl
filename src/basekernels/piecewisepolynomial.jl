@@ -41,12 +41,13 @@ struct PiecewisePolynomialKernel{D,C<:Tuple} <: SimpleKernel
 end
 
 # TODO: remove `maha` keyword argument in next breaking release
-function PiecewisePolynomialKernel(; v::Int=-1, degree::Int=v, maha=nothing, dim::Int=-1)
+function PiecewisePolynomialKernel(; v::Int=-1, degree::Int=0, maha=nothing, dim::Int=-1)
     if v != -1
         Base.depwarn(
             "keyword argument `v` is deprecated, use `degree` instead",
             :PiecewisePolynomialKernel,
         )
+        degree = v
     end
 
     if maha !== nothing
