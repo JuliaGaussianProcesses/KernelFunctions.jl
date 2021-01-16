@@ -8,7 +8,10 @@ using Random
 using SpecialFunctions
 using Test
 using Flux
-import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
+using Zygote: Zygote
+using ForwardDiff: ForwardDiff
+using ReverseDiff: ReverseDiff
+using FiniteDifferences: FiniteDifferences
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 
@@ -49,7 +52,6 @@ using KernelFunctions.TestUtils: test_interface
 include("test_utils.jl")
 
 @testset "KernelFunctions" begin
-
     include("utils.jl")
 
     @testset "distances" begin

@@ -35,7 +35,6 @@ NeuralNetworkKernel
 LinearKernel
 PolynomialKernel
 PiecewisePolynomialKernel
-MahalanobisKernel
 RationalQuadraticKernel
 GammaRationalQuadraticKernel
 spectral_mixture_kernel

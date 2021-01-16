@@ -27,10 +27,7 @@
     # Standardised tests.
     TestUtils.test_interface(kernel1, ColVecs{Float64})
     TestUtils.test_interface(kernel1, RowVecs{Float64})
-    test_ADs(
-        ()->TensorProduct(SqExponentialKernel(), LinearKernel());
-        dims = [2, 2],
-    ) # ADs = [:ForwardDiff, :ReverseDiff])
+    test_ADs(() -> TensorProduct(SqExponentialKernel(), LinearKernel()); dims=[2, 2]) # ADs = [:ForwardDiff, :ReverseDiff])
     test_params(TensorProduct(k1, k2), (k1, k2))
 
     @testset "single kernel" begin

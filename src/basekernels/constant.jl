@@ -1,11 +1,11 @@
 """
     ZeroKernel()
 
-Create a kernel that always returning zero
+Create a kernel that always returns zero
 ```
     κ(x,y) = 0.0
 ```
-The output type depends of `x` and `y`
+The output type depends on `x` and `y`
 """
 struct ZeroKernel <: SimpleKernel end
 
@@ -38,7 +38,6 @@ metric(::WhiteKernel) = Delta()
 
 Base.show(io::IO, ::WhiteKernel) = print(io, "White Kernel")
 
-
 """
     ConstantKernel(; c=1.0)
 
@@ -49,14 +48,14 @@ Kernel function always returning a constant value `c`
 """
 struct ConstantKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
-    function ConstantKernel(;c::T=1.0) where {T<:Real}
-        new{T}([c])
+    function ConstantKernel(; c::T=1.0) where {T<:Real}
+        return new{T}([c])
     end
 end
 
 @functor ConstantKernel
 
-kappa(κ::ConstantKernel,x::Real) = first(κ.c)*one(x)
+kappa(κ::ConstantKernel, x::Real) = first(κ.c) * one(x)
 
 metric(::ConstantKernel) = Delta()
 

@@ -11,7 +11,6 @@ KernelFunctions.metric(::ToySimpleKernel) = SqEuclidean()
 KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
 
 @testset "kernelmatrix" begin
-
     @testset "Kernels" begin
         rng = MersenneTwister(123456)
         k = BaseSE()
@@ -26,7 +25,6 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
         rowvecs = (RowVecs(randn(rng, Nx, D)), RowVecs(randn(rng, Ny, D)))
 
         @testset "$(typeof(x))" for (x, y) in [vecs, colvecs, rowvecs]
-
             @test kernelmatrix(k_se, x, y) ≈ kernelmatrix(k, x, y)
 
             @test kernelmatrix(k, x) ≈ kernelmatrix(k, x, x)
@@ -54,24 +52,19 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
         Ny = 3
         D = 2
 
-        vecs = (
-            randn(rng, Nx),
-            randn(rng, Ny),
-            ColVecs(randn(rng, D, Ny)),
-        )
+        vecs = (randn(rng, Nx), randn(rng, Ny), ColVecs(randn(rng, D, Ny)))
         colvecs = (
-            x = ColVecs(randn(rng, D, Nx)),
-            y = ColVecs(randn(rng, D, Ny)),
-            x_bad = ColVecs(randn(rng, D + 1, Nx)),
+            x=ColVecs(randn(rng, D, Nx)),
+            y=ColVecs(randn(rng, D, Ny)),
+            x_bad=ColVecs(randn(rng, D + 1, Nx)),
         )
         rowvecs = (
-            x = RowVecs(randn(rng, Nx, D)),
-            y = RowVecs(randn(rng, Ny, D)),
-            x_bad = RowVecs(randn(rng, Ny, D + 1)),
+            x=RowVecs(randn(rng, Nx, D)),
+            y=RowVecs(randn(rng, Ny, D)),
+            x_bad=RowVecs(randn(rng, Ny, D + 1)),
         )
 
         @testset "$(typeof(x))" for (x, y, x_bad) in [vecs, colvecs, rowvecs]
-
             @test kernelmatrix(k, x, y) ≈ transpose(kernelmatrix(k, y, x))
             @test_throws DimensionMismatch kernelmatrix(k, x, x_bad)
 
@@ -103,8 +96,8 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
         D = 3
 
         data = (
-            (obsdim = 1, x = RowVecs(randn(rng, Nx, D)), y = RowVecs(randn(rng, Ny, D))),
-            (obsdim = 2, x = ColVecs(randn(rng, D, Nx)), y = ColVecs(randn(rng, D, Ny))),
+            (obsdim=1, x=RowVecs(randn(rng, Nx, D)), y=RowVecs(randn(rng, Ny, D))),
+            (obsdim=2, x=ColVecs(randn(rng, D, Nx)), y=ColVecs(randn(rng, D, Ny))),
         )
 
         @testset "obsdim = $(d.obsdim)" for d in data

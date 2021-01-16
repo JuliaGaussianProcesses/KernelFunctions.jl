@@ -9,7 +9,6 @@ The second dimension of `A` must match the number of features of the target.
 
 ```julia-repl
 julia> A = rand(10, 5)
-
 julia> tr = LinearTransform(A)
 ```
 """
@@ -20,10 +19,14 @@ end
 @functor LinearTransform
 
 function set!(t::LinearTransform{<:AbstractMatrix{T}}, A::AbstractMatrix{T}) where {T<:Real}
-    size(t.A) == size(A) ||
-        error("size of the given matrix ", size(A), " and of the transformation matrix ",
-              size(t.A), " are not the same")
-    t.A .= A
+    size(t.A) == size(A) || error(
+        "size of the given matrix ",
+        size(A),
+        " and of the transformation matrix ",
+        size(t.A),
+        " are not the same",
+    )
+    return t.A .= A
 end
 
 (t::LinearTransform)(x::Real) = vec(t.A * x)
@@ -34,5 +37,5 @@ _map(t::LinearTransform, x::ColVecs) = ColVecs(t.A * x.X)
 _map(t::LinearTransform, x::RowVecs) = RowVecs(x.X * t.A')
 
 function Base.show(io::IO, t::LinearTransform)
-    print(io::IO, "Linear transform (size(A) = ", size(t.A), ")")
+    return print(io::IO, "Linear transform (size(A) = ", size(t.A), ")")
 end

@@ -44,7 +44,7 @@ end
 Base.:+(k1::Kernel, k2::Kernel) = KernelSum(k1, k2)
 
 function Base.:+(
-    k1::KernelSum{<:AbstractVector{<:Kernel}}, k2::KernelSum{<:AbstractVector{<:Kernel}},
+    k1::KernelSum{<:AbstractVector{<:Kernel}}, k2::KernelSum{<:AbstractVector{<:Kernel}}
 )
     return KernelSum(vcat(k1.kernels, k2.kernels))
 end
@@ -80,20 +80,20 @@ function kerneldiagmatrix(κ::KernelSum, x::AbstractVector)
 end
 
 function Base.show(io::IO, κ::KernelSum)
-    printshifted(io, κ, 0)
+    return printshifted(io, κ, 0)
 end
 
 function Base.:(==)(x::KernelSum, y::KernelSum)
     return (
-        length(x.kernels) == length(y.kernels) && 
+        length(x.kernels) == length(y.kernels) &&
         all(kx == ky for (kx, ky) in zip(x.kernels, y.kernels))
     )
 end
 
-function printshifted(io::IO,κ::KernelSum, shift::Int)
-    print(io,"Sum of $(length(κ)) kernels:")
+function printshifted(io::IO, κ::KernelSum, shift::Int)
+    print(io, "Sum of $(length(κ)) kernels:")
     for k in κ.kernels
-        print(io, "\n" )
+        print(io, "\n")
         for _ in 1:(shift + 1)
             print(io, "\t")
         end
