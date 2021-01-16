@@ -40,10 +40,8 @@ The [`ZeroKernel`](@ref) is defined as
 The [`CosineKernel`](@ref) is defined as
 
 ```math
-  k(x, x') = \cos(\pi |x-x'|),
+  k(x, x') = \cos(\pi \|x-x'\|).
 ```
-
-where $x\in\mathbb{R}$.
 
 ## Exponential Kernels
 
