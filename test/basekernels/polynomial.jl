@@ -13,6 +13,9 @@
         @test metric(LinearKernel(; c=c)) == KernelFunctions.DotProduct()
         @test repr(k) == "Linear Kernel (c = 0.0)"
 
+        # Errors.
+        @test_throws ArgumentError LinearKernel(; c=-0.5)
+
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(x -> LinearKernel(; c=x[1]), [c])

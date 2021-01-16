@@ -15,7 +15,9 @@ See also: [`PolynomialKernel`](@ref)
 """
 struct LinearKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
+
     function LinearKernel(; c::Real=0.0)
+        @check_args(LinearKernel, c, c >= zero(c), "c ≥ 0")
         return new{typeof(c)}([c])
     end
 end
