@@ -20,9 +20,6 @@ julia> k1 = SqExponentialKernel(); k2 = LinearKernel(); X = [rand(2) for _ in 1:
 
 julia> kernelmatrix(k1 ⊗ k2, X) == kernelmatrix(k1, first.(X)) .* kernelmatrix(k2, last.(X))
 true
-
-julia> kernelmatrix(k, X) == kernelmatrix(k1 + k2, X)
-true
 ```
 
 You can also specify a `KernelTensorProduct` by providing kernels as individual arguments
