@@ -4,7 +4,13 @@ using KernelFunctions
 DocMeta.setdocmeta!(
     KernelFunctions,
     :DocTestSetup,
-    :(using KernelFunctions, LinearAlgebra, Random);
+    quote
+        using KernelFunctions
+        using LinearAlgebra
+        using Random
+        using Kronecker: Kronecker
+        using PDMats: PDMats
+    end;
     recursive=true,
 )
 
