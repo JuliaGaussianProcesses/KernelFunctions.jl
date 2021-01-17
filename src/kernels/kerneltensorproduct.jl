@@ -1,14 +1,14 @@
 """
     KernelTensorProduct <: Kernel
 
-Tensor product kernel.
+Tensor product of kernels.
 
 ## Definition
 
-For inputs ``x = (x_1, \\ldots, x_n)`` and ``x' = (x'_1, \\ldots, x'_n)``, a tensor
-product kernel from kernels ``k_1, \\ldots, k_n`` is defined as
+For inputs ``x = (x_1, \\ldots, x_n)`` and ``x' = (x'_1, \\ldots, x'_n)``, the tensor
+product of kernels ``k_1, \\ldots, k_n`` is defined as
 ```math
-k(x, x'; k_1, \\ldots, k_n) = \\prod_{i=1}^n k_i(x_i, y_i).
+k(x, x'; k_1, \\ldots, k_n) = \\Big(\\bigotimes_{i=1}^n k_i\\Big)(x, x') = \\prod_{i=1}^n k_i(x_i, x'_i).
 ```
 
 ## Construction
