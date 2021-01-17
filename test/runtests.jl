@@ -1,7 +1,7 @@
 using KernelFunctions
 using AxisArrays
 using Distances
-using Kronecker
+using Kronecker: Kronecker
 using LinearAlgebra
 using PDMats
 using Random
@@ -119,8 +119,9 @@ include("test_utils.jl")
     @testset "kernels" begin
         include(joinpath("kernels", "kernelproduct.jl"))
         include(joinpath("kernels", "kernelsum.jl"))
+        include(joinpath("kernels", "kerneltensorproduct.jl"))
+        include(joinpath("kernels", "overloads.jl"))
         include(joinpath("kernels", "scaledkernel.jl"))
-        include(joinpath("kernels", "tensorproduct.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
     end
     @info "Ran tests on Kernel"

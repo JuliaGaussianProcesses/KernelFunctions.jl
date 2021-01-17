@@ -1,4 +1,4 @@
-@testset "tensorproduct" begin
+@testset "kerneltensorproduct" begin
     rng = MersenneTwister(123456)
     u1 = rand(rng, 10)
     u2 = rand(rng, 10)
@@ -23,18 +23,6 @@
             @test kernel1(x, y) == kernel2(x, y) == val
         end
     end
-
-    # Overloaded operators.
-    k3 = LinearKernel()
-    @test (KernelTensorProduct([k1, k2]) ⊗ KernelTensorProduct([k2, k1])).kernels ==
-          [k1, k2, k2, k1]
-    @test (KernelTensorProduct([k1, k2]) ⊗ k3).kernels == [k1, k2, k3]
-    @test (k3 ⊗ KernelTensorProduct([k1, k2])).kernels == [k3, k1, k2]
-
-    @test (KernelTensorProduct((k1, k2)) ⊗ KernelTensorProduct((k2, k1))).kernels ==
-          (k1, k2, k2, k1)
-    @test (KernelTensorProduct((k1, k2)) ⊗ k3).kernels == (k1, k2, k3)
-    @test (k3 ⊗ KernelTensorProduct((k1, k2))).kernels == (k3, k1, k2)
 
     # Deprecations
     @test (@test_deprecated TensorProduct(k1, k2)) == k1 ⊗ k2
