@@ -178,7 +178,7 @@ The [`LinearKernel`](@ref) is defined as
   k(x,x';c) = \langle x,x'\rangle + c,
 ```
 
-where $c \in \mathbb{R}$.
+where $c \geq 0$.
 
 ### Polynomial Kernel
 
@@ -188,8 +188,7 @@ The [`PolynomialKernel`](@ref) is defined as
   k(x,x';c,d) = \left(\langle x,x'\rangle + c\right)^d,
 ```
 
-where $c \in \mathbb{R}$ and $d>0$.
-
+where $c \geq 0$ and $d \in \mathbb{N}$.
 
 ## Rational Quadratic
 
