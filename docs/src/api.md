@@ -23,12 +23,17 @@ EyeKernel
 ZeroKernel
 CosineKernel
 SqExponentialKernel
+GaussianKernel
+RBFKernel
+SEKernel
 ExponentialKernel
+LaplacianKernel
 GammaExponentialKernel
 ExponentiatedKernel
 FBMKernel
 GaborKernel
 MaternKernel
+Matern12Kernel
 Matern32Kernel
 Matern52Kernel
 NeuralNetworkKernel
@@ -41,6 +46,9 @@ spectral_mixture_kernel
 spectral_mixture_product_kernel
 PeriodicKernel
 WienerKernel
+MOKernel
+IndependentMOKernel
+LatentFactorMOKernel
 ```
 
 ## Composite Kernels
@@ -64,6 +72,7 @@ LinearTransform
 FunctionTransform
 SelectTransform
 ChainTransform
+PeriodicTransform
 ```
 
 ## Functions
@@ -84,6 +93,7 @@ transform
 ```@docs
 ColVecs
 RowVecs
+MOInput
 NystromFact
 ```
 

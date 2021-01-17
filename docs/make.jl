@@ -24,6 +24,7 @@ makedocs(;
         "API" => "api.md",
     ],
     strict=true,
+    checkdocs=:exports,
 )
 
 deploydocs(;
