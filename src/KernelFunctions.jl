@@ -33,9 +33,8 @@ export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
 export GaborKernel, PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
-export KernelSum, KernelProduct
+export KernelSum, KernelProduct, KernelTensorProduct
 export TransformedKernel, ScaledKernel
-export TensorProduct
 
 export Transform,
     SelectTransform,
@@ -56,6 +55,9 @@ export ColVecs, RowVecs
 export MOInput
 export IndependentMOKernel, LatentFactorMOKernel
 
+# Reexports
+export tensor, ⊗
+
 using Compat
 using Requires
 using Distances, LinearAlgebra
@@ -65,6 +67,7 @@ using ZygoteRules: @adjoint, pullback
 using StatsFuns: logtwo
 using InteractiveUtils: subtypes
 using StatsBase
+using TensorCore
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
@@ -105,6 +108,7 @@ include(joinpath("matrix", "kernelmatrix.jl"))
 include(joinpath("kernels", "kernelsum.jl"))
 include(joinpath("kernels", "kernelproduct.jl"))
 include(joinpath("kernels", "tensorproduct.jl"))
+include(joinpath("kernels", "overloads.jl"))
 include(joinpath("approximations", "nystrom.jl"))
 include("generic.jl")
 

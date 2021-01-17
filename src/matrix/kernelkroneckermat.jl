@@ -1,11 +1,11 @@
-using .Kronecker
+using .Kronecker: Kronecker
 
 export kernelkronmat
 
 function kernelkronmat(κ::Kernel, X::AbstractVector, dims::Int)
     @assert iskroncompatible(κ) "The chosen kernel is not compatible for kroenecker matrices (see [`iskroncompatible`](@ref))"
     k = kernelmatrix(κ, X)
-    return kronecker(k, dims)
+    return Kronecker.kronecker(k, dims)
 end
 
 function kernelkronmat(
@@ -13,7 +13,7 @@ function kernelkronmat(
 )
     @assert iskroncompatible(κ) "The chosen kernel is not compatible for Kronecker matrices"
     Ks = kernelmatrix.(κ, X)
-    return K = reduce(⊗, Ks)
+    return K = reduce(Kronecker.:⊗, Ks)
 end
 
 """
