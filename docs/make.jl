@@ -23,6 +23,7 @@ makedocs(;
         "Custom Kernels" => "create_kernel.md",
         "API" => "api.md",
     ],
+    strict=true,
 )
 
 deploydocs(;

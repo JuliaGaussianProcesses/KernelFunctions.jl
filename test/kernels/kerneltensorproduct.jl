@@ -32,7 +32,11 @@
     # Standardised tests.
     TestUtils.test_interface(kernel1, ColVecs{Float64})
     TestUtils.test_interface(kernel1, RowVecs{Float64})
-    test_ADs(() -> KernelTensorProduct(SqExponentialKernel(), LinearKernel()); dims=[2, 2])
+    test_ADs(
+        x -> KernelTensorProduct(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))),
+        rand(1);
+        dims=[2, 2],
+    )
     test_params(KernelTensorProduct(k1, k2), (k1, k2))
 
     @testset "single kernel" begin

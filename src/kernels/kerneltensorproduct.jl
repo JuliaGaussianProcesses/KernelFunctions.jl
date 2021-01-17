@@ -16,9 +16,9 @@ k(x, x'; k_1, \\ldots, k_n) = \\Big(\\bigotimes_{i=1}^n k_i\\Big)(x, x') = \\pro
 The simplest way to specify a `KernelTensorProduct` is to use the overloaded `tensor`
 operator or its alias `⊗` (can be typed by `\\otimes<tab>`).
 ```jldoctest tensorproduct
-julia> k1 = SqExponentialKernel(); k2 = LinearKernel(); X = [rand(2) for _ in 1:5];
+julia> k1 = SqExponentialKernel(); k2 = LinearKernel(); X = rand(5, 2);
 
-julia> kernelmatrix(k1 ⊗ k2, X) == kernelmatrix(k1, first.(X)) .* kernelmatrix(k2, last.(X))
+julia> kernelmatrix(k1 ⊗ k2, RowVecs(X)) == kernelmatrix(k1, X[:, 1]) .* kernelmatrix(k2, X[:, 2])
 true
 ```
 

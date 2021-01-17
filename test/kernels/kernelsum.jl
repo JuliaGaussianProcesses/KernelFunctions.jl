@@ -10,11 +10,7 @@
 
     # Standardised tests.
     TestUtils.test_interface(k, Float64)
-    test_ADs(
-        x -> KernelSum(SqExponentialKernel(), LinearKernel(; c=x[1])),
-        rand(1);
-        ADs=[:ForwardDiff, :ReverseDiff, :Zygote],
-    )
+    test_ADs(x -> KernelSum(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))), rand(1))
 
     test_params(k1 + k2, (k1, k2))
 end
