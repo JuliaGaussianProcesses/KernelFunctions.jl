@@ -50,7 +50,7 @@ TransformedKernel
 ScaledKernel
 KernelSum
 KernelProduct
-TensorProduct
+KernelTensorProduct
 ```
 
 ## Transforms
