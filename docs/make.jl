@@ -32,9 +32,11 @@ makedocs(;
         "Home" => "index.md",
         "User Guide" => "userguide.md",
         "Examples" => [
+            "Kernel Ridge Regression" => "examples/kernel_ridge_regression.md",
+            "Training kernel parameters" => "examples/train_kernel_parameters.md",
+            "Gaussian process priors" => "examples/gaussianprocesspriors.md",
             "SVM" => "examples/svm.md",
-            # "Kernel Ridge Regression" => "examples/kernelridgeregression.md",
-            # "Deep Kernel Learning" => "examples/deepkernellearning.md",
+            "Deep Kernel Learning" => "examples/deepkernellearning.md",
         ],
         "Kernel Functions" => "kernels.md",
         "Input Transforms" => "transform.md",
