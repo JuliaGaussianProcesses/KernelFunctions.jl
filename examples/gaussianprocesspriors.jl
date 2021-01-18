@@ -18,7 +18,7 @@
 #
 # In this notebook we show samples from zero-mean GPs with different kernels.
 
-# Load required packages
+## Load required packages
 using KernelFunctions
 using LinearAlgebra
 using Distributions
@@ -26,6 +26,10 @@ using Plots
 default(; lw=1.0, legendfontsize=15.0)
 using Random: seed!
 seed!(42);
+
+# We now define a function that visualizes a kernel
+# for us. We use the same randomness to obtain
+# comparable samples.
 
 num_inputs = 101
 xlim = (-5, 5)
@@ -72,7 +76,12 @@ function visualize(k::Kernel; xref=0.0)
     return plot(p_kernel_2d, p_kernel_cut, p_samples; layout=(1, 3), xlabel=raw"$x$")
 end
 
+# We can now visualize a kernel and show samples from
+# a Gaussian process with this kernel:
+
 visualize(SqExponentialKernel())
+
+# This also allows us to compare different kernels:
 
 kernel_classes = [Matern12Kernel, Matern32Kernel, Matern52Kernel, SqExponentialKernel]
 plot(

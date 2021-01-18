@@ -3,28 +3,21 @@
 #
 # Building on linear regression, we can fit non-linear data sets by introducing a feature space. In a higher-dimensional feature space, we can overfit the data; ridge regression introduces regularization to avoid this. In this notebook we show how we can use KernelFunctions.jl for *kernel* ridge regression.
 
-# +
-# Loading and setup of required packages
+## Loading and setup of required packages
 using KernelFunctions
 using LinearAlgebra
 using Distributions
 
-# Plotting
+## Plotting
 using Plots;
 default(; lw=2.0, legendfontsize=15.0);
 
-# Gradient-based optimization
-using Flux: Optimise
-using ForwardDiff
-
 using Random: seed!
 seed!(42);
-# -
 
 # ## From linear regression to ridge regression
 # Here we use a one-dimensional toy problem. We generate data using the fourth-order polynomial $f(x) = (x+4)(x+1)(x-1)(x-3)$:
 
-# +
 f_truth(x) = (x + 4) * (x + 1) * (x - 1) * (x - 3)
 
 x_train = collect(-5:0.5:5)
@@ -36,7 +29,6 @@ y_test = f_truth.(x_test)
 
 plot(x_test, y_test; label=raw"$f(x)$")
 scatter!(x_train, y_train; label="observations")
-# -
 
 # For training inputs $\mathrm{X}=(\mathbf{x}_n)_{n=1}^N$ and observations $\mathbf{y}=(y_n)_{n=1}^N$, the linear regression weights $\mathbf{w}$ using the least-squares estimator are given by
 # $$
@@ -66,7 +58,6 @@ function featurize_poly(x; degree=1)
     return hcat(xcols...)
 end
 
-# +
 function featurized_fit_and_plot(degree)
     X = featurize_poly(x_train; degree=degree)
     Xstar = featurize_poly(x_test; degree=degree)
@@ -77,7 +68,6 @@ function featurized_fit_and_plot(degree)
 end
 
 plot([featurized_fit_and_plot(degree) for degree in 1:4]...)
-# -
 
 # Note that the fit becomes perfect when we include exactly as many orders in the features as we have in the underlying polynomial (4).
 #
@@ -107,7 +97,6 @@ function ridge_regression(
     return Xstar * weights
 end
 
-# +
 function regularized_fit_and_plot(degree, lambda)
     X = featurize_poly(x_train; degree=degree)
     Xstar = featurize_poly(x_test; degree=degree)
@@ -118,7 +107,6 @@ function regularized_fit_and_plot(degree, lambda)
 end
 
 plot([regularized_fit_and_plot(18, lambda) for lambda in [1e-4, 1e-2, 0.1, 10]]...)
-# -
 
 # Instead of constructing the feature matrix explicitly, we can use *kernels* to replace inner products of feature vectors with a kernel evaluation: $\langle \phi(x), \phi(x') \rangle = k(x, x')$ or $\mathrm{X} \mathrm{X}^\top = \mathrm{K}$, where $\mathrm{K}_{ij} = k(x_i, x_j)$.
 #
@@ -157,7 +145,6 @@ end
 
 # Now, instead of explicitly constructing features, we can simply pass in a `PolynomialKernel` object:
 
-# +
 function kernelized_fit_and_plot(kernel, lambda=1e-4)
     y_pred = kernel_ridge_regression(kernel, x_train, y_train, x_test, lambda)
     if kernel isa PolynomialKernel
@@ -177,7 +164,6 @@ function kernelized_fit_and_plot(kernel, lambda=1e-4)
 end
 
 plot([kernelized_fit_and_plot(PolynomialKernel(; degree=degree, c=1)) for degree in 1:4]...)
-# -
 
 # However, we can now also use kernels that would have an infinite-dimensional feature expansion, such as the squared exponential kernel:
 
