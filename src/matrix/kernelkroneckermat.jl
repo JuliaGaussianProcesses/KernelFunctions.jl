@@ -1,3 +1,6 @@
+# Since Kronecker does not implement `TensorCore.:⊗` but instead exports its own function
+# `Kronecker.:⊗`, only the module is imported and Kronecker.:⊗ and Kronecker.kronecker are
+# called explicitly.
 using .Kronecker: Kronecker
 
 export kernelkronmat
