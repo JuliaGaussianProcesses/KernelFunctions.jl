@@ -21,6 +21,11 @@
     @test_throws ErrorException PiecewisePolynomialKernel{4}(maha)
     @test_throws ErrorException PiecewisePolynomialKernel{4}(D)
     @test_throws ErrorException PiecewisePolynomialKernel{degree}(-1)
+    @test_throws ErrorException PiecewisePolynomialKernel()
+    @test_throws ErrorException PiecewisePolynomialKernel(; degree=degree)
+
+    # default degree
+    @test PiecewisePolynomialKernel(; dim=D) isa PiecewisePolynomialKernel{0}
 
     @test repr(k) ==
           "Piecewise Polynomial Kernel (degree = $(degree), ⌊dim/2⌋ = $(div(D, 2)))"

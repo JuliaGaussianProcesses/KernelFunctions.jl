@@ -17,7 +17,7 @@ The [`ConstantKernel`](@ref) is defined as
   k(x,x';c) = c,
 ```
 
-where $c \in \mathbb{R}$.
+where $c \geq 0$.
 
 ### White Kernel
 
@@ -40,10 +40,8 @@ The [`ZeroKernel`](@ref) is defined as
 The [`CosineKernel`](@ref) is defined as
 
 ```math
-  k(x, x') = \cos(\pi |x-x'|),
+  k(x, x') = \cos(\pi \|x-x'\|).
 ```
-
-where $x\in\mathbb{R}$.
 
 ## Exponential Kernels
 
@@ -180,7 +178,7 @@ The [`LinearKernel`](@ref) is defined as
   k(x,x';c) = \langle x,x'\rangle + c,
 ```
 
-where $c \in \mathbb{R}$.
+where $c \geq 0$.
 
 ### Polynomial Kernel
 
@@ -190,8 +188,7 @@ The [`PolynomialKernel`](@ref) is defined as
   k(x,x';c,d) = \left(\langle x,x'\rangle + c\right)^d,
 ```
 
-where $c \in \mathbb{R}$ and $d>0$.
-
+where $c \geq 0$ and $d \in \mathbb{N}$.
 
 ## Rational Quadratic
 
