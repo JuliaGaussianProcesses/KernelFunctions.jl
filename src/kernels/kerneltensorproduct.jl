@@ -3,7 +3,7 @@
 
 Tensor product of kernels.
 
-## Definition
+# Definition
 
 For inputs ``x = (x_1, \\ldots, x_n)`` and ``x' = (x'_1, \\ldots, x'_n)``, the tensor
 product of kernels ``k_1, \\ldots, k_n`` is defined as
@@ -11,7 +11,7 @@ product of kernels ``k_1, \\ldots, k_n`` is defined as
 k(x, x'; k_1, \\ldots, k_n) = \\Big(\\bigotimes_{i=1}^n k_i\\Big)(x, x') = \\prod_{i=1}^n k_i(x_i, x'_i).
 ```
 
-## Construction
+# Construction
 
 The simplest way to specify a `KernelTensorProduct` is to use the overloaded `tensor`
 operator or its alias `⊗` (can be typed by `\\otimes<tab>`).
