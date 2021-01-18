@@ -71,8 +71,8 @@ ChainTransform
 ```@docs
 kernelmatrix
 kernelmatrix!
-kerneldiagmatrix
-kerneldiagmatrix!
+kernelmatrix_diag
+kernelmatrix_diag!
 kernelpdmat
 kernelkronmat
 nystrom
