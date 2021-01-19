@@ -1,6 +1,6 @@
 """
     MOKernel
 
-An abstract type for multi-output kernels.
+Abstract type for kernels with multiple outpus.
 """
 abstract type MOKernel <: Kernel end

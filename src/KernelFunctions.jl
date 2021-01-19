@@ -1,7 +1,3 @@
-"""
-KernelFunctions. [Github](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl)
-[Documentation](https://juliagaussianprocesses.github.io/KernelFunctions.jl/stable/)
-"""
 module KernelFunctions
 
 if !isfile(joinpath(@__DIR__, "update_v0.8.0"))

@@ -1,17 +1,26 @@
 """
     ARDTransform(v::AbstractVector)
-    ARDTransform(s::Real, dims::Int)
 
-Multiply every vector of observation by `v` element-wise
-```
-    v = rand(3)
-    tr = ARDTransform(v)
+Transformation that multiplies the input elementwise by `v`.
+
+# Examples
+
+```jldoctest
+julia> v = rand(10); t = ARDTransform(v); X = rand(10, 100);
+
+julia> map(t, ColVecs(X)) == ColVecs(v .* X)
+true
 ```
 """
 struct ARDTransform{Tv<:AbstractVector{<:Real}} <: Transform
     v::Tv
 end
 
+"""
+    ARDTransform(s::Real, dims::Integer)
+
+Create an [`ARDTransform`](@ref) with vector `fill(s, dims)`.
+"""
 ARDTransform(s::Real, dims::Integer) = ARDTransform(fill(s, dims))
 
 @functor ARDTransform
