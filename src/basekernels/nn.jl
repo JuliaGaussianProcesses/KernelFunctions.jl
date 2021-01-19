@@ -1,21 +1,35 @@
 """
     NeuralNetworkKernel()
 
-Neural network kernel function.
+Kernel of a Gaussian process obtained as the limit of a Bayesian neural network with a
+single hidden layer as the number of units goes to infinity.
 
+# Definition
+
+Consider the single-layer Bayesian neural network
+``f \\colon \\mathbb{R}^d \\to \\mathbb{R}`` with ``h`` hidden units defined by
 ```math
-    κ(x, y) =  asin(x' * y / sqrt[(1 + x' * x) * (1 + y' * y)])
+f(x; b, v, u) = b + \\sqrt{\\frac{\\pi}{2}} \\sum_{i=1}^{h} v_i \\mathrm{erf}\\big(u_i^\\top x\\big),
 ```
-# Significance
-Neal (1996) pursued the limits of large models, and showed that a Bayesian neural network
-becomes a Gaussian process with a **neural network kernel** as the number of units
-approaches infinity. Here, we give the neural network kernel for single hidden layer
-Bayesian neural network with erf (Error Function) as activation function.
+where ``\\mathrm{erf}`` is the error function, and with prior distributions
+```math
+\\begin{aligned}
+b &\\sim \\mathcal{N}(0, \\sigma_b^2),\\\\
+v &\\sim \\mathcal{N}(0, \\sigma_v^2 \\mathrm{I}_{h}/h),\\\\
+u_i &\\sim \\mathcal{N}(0, \\mathrm{I}_{d}/2) \\qquad (i = 1,\\ldots,h).
+\\end{aligned}
+```
+As ``h \\to \\infty``, the neural network converges to the Gaussian process
+```math
+g(\\cdot) \\sim \\mathcal{GP}\\big(0, \\sigma_b^2 + \\sigma_v^2 k(\\cdot, \\cdot)\\big),
+```
+where the neural network kernel ``k`` is given by
+```math
+k(x, x') = \\arcsin\\left(\\frac{x^\\top x'}{\\sqrt{\\big(1 + \\|x\\|^2_2\\big) \\big(1 + \\|x'\\|_2^2\\big)}}\\right)
+```
+for inputs ``x, x' \\in \\mathbb{R}^d``.[^CW]
 
-# References:
-- [GPML Pg 105](http://www.gaussianprocess.org/gpml/chapters/RW4.pdf)
-- [Neal(1996)](https://www.cs.toronto.edu/~radford/bnn.book.html)
-- [Andrew Gordon's Thesis Pg 45](http://www.cs.cmu.edu/~andrewgw/andrewgwthesis.pdf)
+[^CW]: C. K. I. Williams (1998). Computation with infinite neural networks.
 """
 struct NeuralNetworkKernel <: Kernel end
 
@@ -51,4 +65,4 @@ function kernelmatrix(::NeuralNetworkKernel, x::RowVecs)
     return asin.(XX ./ sqrt.(X_2_1 * X_2_1'))
 end
 
-Base.show(io::IO, κ::NeuralNetworkKernel) = print(io, "Neural Network Kernel")
+Base.show(io::IO, ::NeuralNetworkKernel) = print(io, "Neural Network Kernel")

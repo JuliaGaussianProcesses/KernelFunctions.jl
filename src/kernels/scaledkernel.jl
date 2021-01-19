@@ -1,7 +1,15 @@
 """
-    ScaledKernel(k::Kernel, σ²::Real)
+    ScaledKernel(k::Kernel, σ²::Real=1.0)
 
-Return a kernel premultiplied by the variance `σ²` : `σ² k(x,x')`
+Scaled kernel derived from `k` by multiplication with variance `σ²`.
+
+# Definition
+
+For inputs ``x, x'``, the scaled kernel derived from kernel ``\\widetilde{k}`` by
+multiplication with variance ``\\sigma^2 > 0`` is defined as
+```math
+k(x, x'; \\sigma^2, \\widetilde{k}) = \\sigma^2 \\widetilde{k}(x, x').
+```
 """
 struct ScaledKernel{Tk<:Kernel,Tσ²<:Real} <: Kernel
     kernel::Tk

@@ -1,7 +1,10 @@
 """
+    WienerKernel(; i::Int=0)
     WienerKernel{i}()
 
-i-times integrated Wiener process kernel function.
+An `i`-times integrated Wiener process kernel function.
+
+# Definition
 
 - For i=-1, this is just the white noise covariance, see [`WhiteKernel`](@ref).
 - For i= 0, this is the Wiener process covariance,
@@ -31,10 +34,11 @@ and for ``i >= 1``,
 See the paper *Probabilistic ODE Solvers with Runge-Kutta Means* by Schober, Duvenaud and
 Hennig, NIPS, 2014, for more details.
 
+See also: [`WhiteKernel`](@ref)
 """
 struct WienerKernel{I} <: Kernel
     function WienerKernel{I}() where {I}
-        @assert I ∈ (-1, 0, 1, 2, 3) "Invalid parameter i=$(I). Should be -1, 0, 1, 2 or 3."
+        @check_args(WienerKernel, I, I ∈ (-1, 0, 1, 2, 3), "I ∈ {-1, 0, 1, 2, 3}")
         if I == -1
             return WhiteKernel()
         end

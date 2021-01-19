@@ -1,12 +1,15 @@
 """
     SelectTransform(dims)
 
-Select the dimensions `dims` that the kernel is applied to.
-```
-    dims = [1,3,5,6,7]
-    tr = SelectTransform(dims)
-    X = rand(100,10)
-    transform(tr,X,obsdim=2) == X[dims,:]
+Transformation that selects the dimensions `dims` of the input.
+
+# Examples
+
+```jldoctest
+julia> dims = [1, 3, 5, 6, 7]; t = SelectTransform(dims); X = rand(100, 10);
+
+julia> map(t, ColVecs(X)) == ColVecs(X[dims, :])
+true
 ```
 """
 struct SelectTransform{T} <: Transform

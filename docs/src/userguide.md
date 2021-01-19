@@ -15,7 +15,7 @@ For example, a squared exponential kernel is created by
       k = transform(SqExponentialKernel(), ScaleTransform(2.0))
       k = transform(SqExponentialKernel(), 2.0)  # implicitly constructs a ScaleTransform(2.0)
     ```
-    Check the [Input Transforms](@ref) page for more details. The API documentation contains an [overview of all available transforms](@ref Transforms).
+    Check the [Input Transforms](@ref) page for more details.
 
 !!! tip "How do I set the kernel variance?"
     To premultiply the kernel by a variance, you can use `*` with a scalar number:

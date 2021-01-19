@@ -1,20 +1,18 @@
 @doc raw"""
     LatentFactorMOKernel(g, e::MOKernel, A::AbstractMatrix)
 
-The kernel associated with the Semiparametric Latent Factor Model, introduced by 
-Seeger, Teh and Jordan (2005).
+Kernel associated with the semiparametric latent factor model.
 
-``k((x, p_x), (y, p_y)) = \Sum^{Q}_{q=1} A_{p_xq}g_q(x, y)A_{p_yq} + e((x, p_x), (y, p_y))``
+# Definition
 
-# Arguments
-- `g`: a collection of kernels, one for each latent process
-- `e`: a [`MOKernel`](@ref) - multi-output kernel
-- `A::AbstractMatrix`: a matrix of weights for the kernels of size `(out_dim, length(g))`
+The kernel is defined as[^STJ]
+```math
+k\big((x, p_x), (y, p_y)\big) = \sum^{Q}_{q=1} A_{p_xq}g_q(x, y)A_{p_yq} + e\big((x, p_x), (y, p_y)\big),
+```
+where ``g_1, \ldots, g_Q`` are ``Q`` kernels, one for each latent process, ``e`` is a
+kernel for ``k`` outputs, and ``A`` is a matrix of weights for the kernels of size ``k \times Q``.
 
-
-# Reference:
-- [Seeger, Teh, and Jordan (2005)](https://infoscience.epfl.ch/record/161465/files/slfm-long.pdf)
-
+[^STJ]: M. Seeger, Y. Teh, & M. I. Jordan (2005). [Semiparametric Latent Factor Models](https://infoscience.epfl.ch/record/161465/files/slfm-long.pdf).
 """
 struct LatentFactorMOKernel{Tg,Te<:MOKernel,TA<:AbstractMatrix} <: MOKernel
     g::Tg
