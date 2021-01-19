@@ -1,3 +1,5 @@
+# Custom Kernels
+
 ## Creating your own kernel
 
 KernelFunctions.jl contains the most popular kernels already but you might want to make your own!

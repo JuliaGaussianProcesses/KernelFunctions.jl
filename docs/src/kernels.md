@@ -120,7 +120,7 @@ of kernels together.
 TransformedKernel
 transform(::Kernel, ::Transform)
 transform(::Kernel, ::Real)
-transform(::Kernel, ::AbstractVector{<:Real})
+transform(::Kernel, ::AbstractVector)
 ScaledKernel
 KernelSum
 KernelProduct
