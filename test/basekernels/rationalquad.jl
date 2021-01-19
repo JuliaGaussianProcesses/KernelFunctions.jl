@@ -32,47 +32,46 @@
 
         @test repr(k) == "Gamma Rational Quadratic Kernel (α = 2.0, γ = 2.0)"
 
-        @testset "Default GammaRQ ≈ RQ" begin
+        @testset "Default GammaRQ ≈ RQ with rescaled inputs" begin
             @test isapprox(
-                GammaRationalQuadraticKernel()(v1, v2), RationalQuadraticKernel()(v1, v2)
+                GammaRationalQuadraticKernel()(v1 ./ sqrt(2), v2 ./ sqrt(2)),
+                RationalQuadraticKernel()(v1, v2),
             )
             a = 1.0 + rand()
             @test isapprox(
-                GammaRationalQuadraticKernel(; α=a)(v1, v2),
+                GammaRationalQuadraticKernel(; α=a)(v1 ./ sqrt(2), v2 ./ sqrt(2)),
                 RationalQuadraticKernel(; α=a)(v1, v2),
             )
         end
 
-        @testset "GammaRQ ≈ EQ for large α" begin
+        @testset "GammaRQ ≈ EQ for large α with rescaled inputs" begin
             v1 = randn(2)
             v2 = randn(2)
             @test isapprox(
-                GammaRationalQuadraticKernel(; α=1e9)(v1, v2),
+                GammaRationalQuadraticKernel(; α=1e9)(v1 ./ sqrt(2), v2 ./ sqrt(2)),
                 SqExponentialKernel()(v1, v2);
                 atol=1e-6,
                 rtol=1e-6,
             )
         end
 
-        @testset "GammaRQ(γ=1) ≈ Exponential for large α with rescaled inputs" begin
+        @testset "GammaRQ(γ=1) ≈ Exponential with rescaled inputs for large α" begin
             v1 = randn(4)
             v2 = randn(4)
             @test isapprox(
-                GammaRationalQuadraticKernel(; α=1e9, γ=1.0)(2 .* v1, 2 .* v2),
+                GammaRationalQuadraticKernel(; α=1e9, γ=1.0)(v1, v2),
                 ExponentialKernel()(v1, v2);
                 atol=1e-6,
                 rtol=1e-6,
             )
         end
 
-        @testset "GammaRQ ≈ GammaExponential for same γ and large α with rescaled inputs" begin
+        @testset "GammaRQ ≈ GammaExponential for same γ and large α" begin
             v1 = randn(3)
             v2 = randn(3)
             γ = rand() + 0.5
             @test isapprox(
-                GammaRationalQuadraticKernel(; α=1e9, γ=γ)(
-                    2^(1 / γ) .* v1, 2^(1 / γ) .* v2
-                ),
+                GammaRationalQuadraticKernel(; α=1e9, γ=γ)(v1, v2),
                 GammaExponentialKernel(; γ=γ)(v1, v2);
                 atol=1e-6,
                 rtol=1e-6,

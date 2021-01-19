@@ -11,6 +11,8 @@ For inputs ``x, x' \\in \\mathbb{R}^d``, the rational-quadratic kernel with shap
 k(x, x'; \\alpha) = \\bigg(1 + \\frac{\\|x - x'\\|_2^2}{2\\alpha}\\bigg)^{-\\alpha}.
 ```
 
+The [`SqExponentialKernel`](@ref) is recovered in the limit as ``\\alpha \\to \\infty``.
+
 See also: [`GammaRationalQuadraticKernel`](@ref)
 """
 struct RationalQuadraticKernel{Tα<:Real} <: SimpleKernel
@@ -43,8 +45,10 @@ end
 For inputs ``x, x' \\in \\mathbb{R}^d``, the γ-rational-quadratic kernel with shape
 parameters ``\\alpha > 0`` and ``\\gamma \\in (0, 2]`` is defined as
 ```math
-k(x, x'; \\alpha, \\gamma) = \\bigg(1 + \\frac{\\|x - x'\\|_2^{\\gamma}}{2\\alpha}\\bigg)^{-\\alpha}.
+k(x, x'; \\alpha, \\gamma) = \\bigg(1 + \\frac{\\|x - x'\\|_2^{\\gamma}}{\\alpha}\\bigg)^{-\\alpha}.
 ```
+
+The [`GammaExponentialKernel`](@ref) is recovered in the limit as ``\\alpha \\to \\infty``.
 
 See also: [`RationalQuadraticKernel`](@ref)
 """
@@ -63,7 +67,7 @@ end
 @functor GammaRationalQuadraticKernel
 
 function kappa(κ::GammaRationalQuadraticKernel, d::Real)
-    return (one(d) + d^first(κ.γ) / (2 * first(κ.α)))^(-first(κ.α))
+    return (one(d) + d^first(κ.γ) / first(κ.α))^(-first(κ.α))
 end
 
 metric(::GammaRationalQuadraticKernel) = Euclidean()
