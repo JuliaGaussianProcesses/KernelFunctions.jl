@@ -19,7 +19,7 @@ end
 """
     ARDTransform(s::Real, dims::Integer)
 
-Create an [`ARDTransform`] with vector `fill(s, dims)`.
+Create an [`ARDTransform`](@ref) with vector `fill(s, dims)`.
 """
 ARDTransform(s::Real, dims::Integer) = ARDTransform(fill(s, dims))
 
