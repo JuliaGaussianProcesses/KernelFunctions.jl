@@ -9,15 +9,15 @@
 )
 
 # TODO: remove tests when removed
-@deprecate function kerneldiagmatrix(κ::Kernel, X; obsdim::Int=2)
-    return kernelmatrix_diag(κ, X; obsdim=obsdim)
-end
-@deprecate function kerneldiagmatrix(κ::Kernel, X, Y; obsdim::Int=2)
-    return kernelmatrix_diag(κ, X, Y; obsdim=obsdim)
-end
-@deprecate function kerneldiagmatrix!(K::AbstractVector, κ::Kernel, X; obsdim::Int=2)
-    return kernelmatrix_diag!(K, κ, X; obsdim=obsdim)
-end
-@deprecate function kerneldiagmatrix!(K::AbstractVector, κ::Kernel, X, Y; obsdim::Int=2)
-    return kernelmatrix_diag!(K, κ, X, Y; obsdim=obsdim)
-end
+@deprecate kerneldiagmatrix(κ::Kernel, X; obsdim::Int=2) kernelmatrix_diag(
+    κ, X; obsdim=obsdim
+)
+@deprecate kerneldiagmatrix(κ::Kernel, X, Y; obsdim::Int=2) kernelmatrix_diag(
+    κ, X, Y; obsdim=obsdim
+)
+@deprecate kerneldiagmatrix!(K::AbstractVector, κ::Kernel, X; obsdim::Int=2) kernelmatrix_diag!(
+    K, κ, X; obsdim=obsdim
+)
+@deprecate kerneldiagmatrix!(K::AbstractVector, κ::Kernel, X, Y; obsdim::Int=2) kernelmatrix_diag!(
+    K, κ, X, Y; obsdim=obsdim
+)
