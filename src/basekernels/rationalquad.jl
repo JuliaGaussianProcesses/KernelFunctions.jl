@@ -52,11 +52,11 @@ struct GammaRationalQuadraticKernel{Tα<:Real,Tγ<:Real} <: SimpleKernel
     α::Vector{Tα}
     γ::Vector{Tγ}
     function GammaRationalQuadraticKernel(;
-        alpha::Tα=2.0, gamma::Tγ=2.0, α::Tα=alpha, γ::Tγ=gamma
-    ) where {Tα<:Real,Tγ<:Real}
-        @check_args(GammaRationalQuadraticKernel, α, α > zero(Tα), "α > 0")
-        @check_args(GammaRationalQuadraticKernel, γ, zero(γ) < γ <= 2, "γ ∈ (0, 2]")
-        return new{Tα,Tγ}([α], [γ])
+        alpha::Real=2.0, gamma::Real=2.0, α::Real=alpha, γ::Real=gamma
+    )
+        @check_args(GammaRationalQuadraticKernel, α, α > zero(α), "α > 0")
+        @check_args(GammaRationalQuadraticKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
+        return new{typeof(α),typeof(γ)}([α], [γ])
     end
 end
 

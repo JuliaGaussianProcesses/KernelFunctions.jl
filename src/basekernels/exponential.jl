@@ -105,7 +105,7 @@ See also: [`ExponentialKernel`](@ref), [`SqExponentialKernel`](@ref)
 struct GammaExponentialKernel{Tγ<:Real} <: SimpleKernel
     γ::Vector{Tγ}
     function GammaExponentialKernel(; gamma::Real=2.0, γ::Real=gamma)
-        @check_args(GammaExponentialKernel, γ, zero(γ) < γ ≤ 2 * one(γ), "γ ∈ (0, 2]")
+        @check_args(GammaExponentialKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
         return new{typeof(γ)}([γ])
     end
 end
