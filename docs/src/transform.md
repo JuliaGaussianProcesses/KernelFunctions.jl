@@ -1,6 +1,6 @@
 # Input Transforms
 
-[`Transform`](@ref) is the object that takes care of transforming the input data before distances are being computed.
+[`Transform`](@ref)s are designed to change input data before passing it on to a kernel object.
 
 It can be as standard as [`IdentityTransform`](@ref) returning the same input, or
 multiplying the data by a scalar with [`ScaleTransform`](@ref) or by a vector with
@@ -13,7 +13,13 @@ You can also create a pipeline of [`Transform`](@ref)s via [`ChainTransform`](@r
 LowRankTransform(rand(10, 5)) ∘ ScaleTransform(2.0)
 ```
 
-A transformation `t` can be applied to a vector `v` with `map`.
+
+A transformation `t` can be applied to a single input `x` with `t(x)` and to multiple inputs
+`xs` with `map(t, xs)`.
+
+Kernels can be coupled with input transformations with
+[`transform`](@ref). It falls back to creating a [`TransformedKernel`](@ref) but allows more
+optimized implementations for specific kernels and transformations.
 
 ## List of Input Transforms
 

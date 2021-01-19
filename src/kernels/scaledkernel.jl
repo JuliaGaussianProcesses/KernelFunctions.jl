@@ -5,10 +5,10 @@ Scaled kernel derived from `k` by multiplication with variance `σ²`.
 
 # Definition
 
-For inputs ``x, x'``, the scaled kernel derived from kernel ``\\widetilde{k}`` by
+For inputs ``x, x'``, the scaled kernel ``\\widetilde{k}`` derived from kernel ``k`` by
 multiplication with variance ``\\sigma^2 > 0`` is defined as
 ```math
-k(x, x'; \\sigma^2, \\widetilde{k}) = \\sigma^2 \\widetilde{k}(x, x').
+\\widetilde{k}(x, x'; k, \\sigma^2) = \\sigma^2 k(x, x').
 ```
 """
 struct ScaledKernel{Tk<:Kernel,Tσ²<:Real} <: Kernel

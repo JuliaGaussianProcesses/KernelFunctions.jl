@@ -108,6 +108,11 @@ WienerKernel
 
 # Composite Kernels
 
+The modular design of KernelFunctions.jl uses [base kernels](@ref) as building blocks for
+more complex kernels. These composite kernels can be created by adding
+[input transforms](@ref) such as scaling the inputs with an inverse lengthscale, by scaling the
+variance of a kernel, or by summing or multiplying different kernels.
+
 ```@docs
 TransformedKernel
 transform(::Kernel, ::Transform)

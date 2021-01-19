@@ -3,12 +3,16 @@
 
 Kernel derived from `k` for which inputs are transformed via a [`Transform`](@ref) `t`.
 
+It is preferred to create kernels with input transformations with [`transform`](@ref)
+instead of  `TransformedKernel` directly since [`transform`](@ref) allows optimized
+implementations for specific kernels and transformations.
+
 # Definition
 
-For inputs ``x, x'``, the transformed kernel derived from kernel ``\\widetilde{k}`` by
+For inputs ``x, x'``, the transformed kernel ``\\widetilde{k}`` derived from kernel ``k`` by
 input transformation ``t`` is defined as
 ```math
-k(x, x'; t, \\widetilde{k}) = \\widetilde{k}(t(x), t(x')).
+\\widetilde{k}(x, x'; k, t) = k\\big(t(x), t(x')\\big).
 ```
 """
 struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
