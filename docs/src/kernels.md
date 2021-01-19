@@ -86,7 +86,7 @@ LinearKernel
 PolynomialKernel
 ```
 
-## Rational Quadratic
+## Rational Quadratic Kernels
 
 ```@docs
 RationalQuadraticKernel
