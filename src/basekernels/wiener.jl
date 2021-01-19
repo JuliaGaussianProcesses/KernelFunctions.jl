@@ -34,7 +34,7 @@ r_3(t, t') &= 5 \\max(t, t')^2 + 2 tt' + 3 \\min(t, t')^2.
 \\end{aligned}
 ```
 
-For ``i = -1``, one recovers the the [`WhiteKernel`](@ref).
+The [`WhiteKernel`](@ref) is recovered for ``i = -1``.
 
 [^SDH]: Schober, Duvenaud & Hennig (2014). Probabilistic ODE Solvers with Runge-Kutta Means.
 """
