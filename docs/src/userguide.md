@@ -2,7 +2,7 @@
 
 ## Kernel creation
 
-To create a kernel object, choose one of the pre-implemented kernels, see [Base Kernels](@ref), or create your own, see [Creating your own kernel](@ref).
+To create a kernel object, choose one of the pre-implemented kernels, see [Kernel Functions](@ref), or create your own, see [Creating your own kernel](@ref).
 For example, a squared exponential kernel is created by
 ```julia
   k = SqExponentialKernel()
@@ -15,7 +15,7 @@ For example, a squared exponential kernel is created by
       k = transform(SqExponentialKernel(), ScaleTransform(2.0))
       k = transform(SqExponentialKernel(), 2.0)  # implicitly constructs a ScaleTransform(2.0)
     ```
-    Check the [Input Transforms](@ref) page for more details.
+    Check the [Input Transforms](@ref input_transforms) page for more details.
 
 !!! tip "How do I set the kernel variance?"
     To premultiply the kernel by a variance, you can use `*` with a scalar number:
