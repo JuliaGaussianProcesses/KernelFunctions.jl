@@ -17,9 +17,7 @@ kernelmatrix!
 kerneldiagmatrix
 kerneldiagmatrix!
 kernelpdmat
-kernelkronmat
 nystrom
-transform
 ```
 
 ## Utilities

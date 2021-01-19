@@ -1,10 +1,21 @@
 using Documenter
+
+# Print `@debug` statements (https://github.com/JuliaDocs/Documenter.jl/issues/955)
+if haskey(ENV, "GITHUB_ACTIONS")
+    ENV["JULIA_DEBUG"] = "Documenter"
+end
+
 using KernelFunctions
 
 DocMeta.setdocmeta!(
     KernelFunctions,
     :DocTestSetup,
-    :(using KernelFunctions, LinearAlgebra, Random);
+    quote
+        using KernelFunctions
+        using LinearAlgebra
+        using Random
+        using PDMats: PDMats
+    end;
     recursive=true,
 )
 
@@ -14,15 +25,17 @@ makedocs(;
     modules=[KernelFunctions],
     pages=[
         "Home" => "index.md",
-        "User Guide" => "userguide.md",
-        "Examples" => "example.md",
-        "Kernel Functions" => "kernels.md",
-        "Input Transforms" => "transform.md",
-        "Metrics" => "metrics.md",
-        "Theory" => "theory.md",
-        "Custom Kernels" => "create_kernel.md",
+        "userguide.md",
+        "kernels.md",
+        "transform.md",
+        "metrics.md",
+        "theory.md",
+        "create_kernel.md",
         "API" => "api.md",
+        "Examples" => "example.md",
     ],
+    strict=true,
+    checkdocs=:exports,
 )
 
 deploydocs(;

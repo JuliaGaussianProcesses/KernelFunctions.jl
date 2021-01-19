@@ -1,6 +1,7 @@
 using KernelFunctions
 using AxisArrays
 using Distances
+using Documenter
 using Kronecker
 using LinearAlgebra
 using PDMats
@@ -145,4 +146,19 @@ include("test_utils.jl")
 
     include("generic.jl")
     include("zygote_adjoints.jl")
+
+    @testset "doctests" begin
+        DocMeta.setdocmeta!(
+            KernelFunctions,
+            :DocTestSetup,
+            quote
+                using KernelFunctions
+                using LinearAlgebra
+                using Random
+                using PDMats: PDMats
+            end;
+            recursive=true,
+        )
+        doctest(KernelFunctions)
+    end
 end
