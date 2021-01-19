@@ -1,4 +1,6 @@
-# Input Transforms
+# [Input Transforms](@id input_transforms)
+
+## Overview
 
 [`Transform`](@ref)s are designed to change input data before passing it on to a kernel object.
 
@@ -12,7 +14,6 @@ You can also create a pipeline of [`Transform`](@ref)s via [`ChainTransform`](@r
 ```julia
 LowRankTransform(rand(10, 5)) ∘ ScaleTransform(2.0)
 ```
-
 
 A transformation `t` can be applied to a single input `x` with `t(x)` and to multiple inputs
 `xs` with `map(t, xs)`.
