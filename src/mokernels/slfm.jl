@@ -5,12 +5,14 @@ Kernel associated with the semiparametric latent factor model.
 
 # Definition
 
-The kernel is defined as[^STJ]
+For inputs ``x, x'`` and output dimensions ``p_x, p_{x'}'``, the kernel is defined as[^STJ]
 ```math
-k\big((x, p_x), (y, p_y)\big) = \sum^{Q}_{q=1} A_{p_xq}g_q(x, y)A_{p_yq} + e\big((x, p_x), (y, p_y)\big),
+k\big((x, p_x), (x, p_{x'})\big) = \sum^{Q}_{q=1} A_{p_xq}g_q(x, x')A_{p_{x'}q}
+                                   + e\big((x, p_x), (x', p_{x'})\big),
 ```
 where ``g_1, \ldots, g_Q`` are ``Q`` kernels, one for each latent process, ``e`` is a
-kernel for ``k`` outputs, and ``A`` is a matrix of weights for the kernels of size ``k \times Q``.
+multi-output kernel for ``m`` outputs, and ``A`` is a matrix of weights for the kernels of
+size ``m \times Q``.
 
 [^STJ]: M. Seeger, Y. Teh, & M. I. Jordan (2005). [Semiparametric Latent Factor Models](https://infoscience.epfl.ch/record/161465/files/slfm-long.pdf).
 """

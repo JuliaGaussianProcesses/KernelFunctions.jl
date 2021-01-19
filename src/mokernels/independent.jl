@@ -1,23 +1,23 @@
 """
     IndependentMOKernel(k::Kernel)
 
-Kernel for multiple independent outputs with kernel `k`.
+Kernel for multiple independent outputs with kernel `k` each.
 
 # Definition
 
-For inputs ``x, x'`` and output dimensions ``p_x, p_{x'}'``, the kernel for independent
-outputs with kernel ``\\widetilde{k}`` is defined as
+For inputs ``x, x'`` and output dimensions ``p_x, p_{x'}'``, the kernel ``\\widetilde{k}``
+for independent outputs with kernel ``k`` each is defined as
 ```math
-k\\big((x, p_x), (x', p_{x'})\\big) = \\begin{cases}
-    \\widetilde{k}(x, x') & \\text{if } p_x = p_{x'}, \\\\
+\\widetilde{k}\\big((x, p_x), (x', p_{x'})\\big) = \\begin{cases}
+    k(x, x') & \\text{if } p_x = p_{x'}, \\\\
     0 & \\text{otherwise}.
 \\end{cases}
 ```
 Mathematically, it is equivalent to a matrix-valued kernel defined as
 ```math
-k(x, x') = \\mathrm{diag}\\big(k(x, x'), \\ldots, k(x, x')\\big) \\in \\mathbb{R}^{k \\times k},
+\\widetilde{K}(x, x') = \\mathrm{diag}\\big(k(x, x'), \\ldots, k(x, x')\\big) \\in \\mathbb{R}^{m \\times m},
 ```
-where ``k`` is the number of output dimensions.
+where ``m`` is the number of outputs.
 """
 struct IndependentMOKernel{Tkernel<:Kernel} <: MOKernel
     kernel::Tkernel
