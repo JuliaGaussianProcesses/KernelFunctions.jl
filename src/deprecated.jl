@@ -9,15 +9,23 @@
 )
 
 # TODO: remove tests when removed
-@deprecate kerneldiagmatrix(κ::Kernel, X; obsdim::Int=2) kernelmatrix_diag(
-    κ, X; obsdim=obsdim
+@deprecate kerneldiagmatrix(k::Kernel, x::AbstractVector) kernelmatrix_diag(k, x)
+@deprecate kerneldiagmatrix(k::Kernel, x::AbstractVector, y::AbstractVector) kernelmatrix_diag(
+    k, x, y
 )
-@deprecate kerneldiagmatrix(κ::Kernel, X, Y; obsdim::Int=2) kernelmatrix_diag(
-    κ, X, Y; obsdim=obsdim
+@deprecate kerneldiagmatrix!(K, k::Kernel, x::AbstractVector) kernelmatrix_diag!(K, k, x)
+@deprecate kerneldiagmatrix!(K, k::Kernel, x::AbstractVector, y::AbstractVector) kernelmatrix_diag!(
+    K, k, x, y
 )
-@deprecate kerneldiagmatrix!(K::AbstractVector, κ::Kernel, X; obsdim::Int=2) kernelmatrix_diag!(
-    K, κ, X; obsdim=obsdim
+@deprecate kerneldiagmatrix(k::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs) kernelmatrix_diag(
+    k, X; obsdim=obsdim
 )
-@deprecate kerneldiagmatrix!(K::AbstractVector, κ::Kernel, X, Y; obsdim::Int=2) kernelmatrix_diag!(
-    K, κ, X, Y; obsdim=obsdim
+@deprecate kerneldiagmatrix(
+    k::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int=defaultobs
+) kernelmatrix_diag(k, X, Y; obsdim=obsdim)
+@deprecate kerneldiagmatrix!(K, k::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs) kernelmatrix_diag!(
+    K, k, X; obsdim=obsdim
 )
+@deprecate kerneldiagmatrix!(
+    K, k::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int=defaultobs
+) kernelmatrix_diag!(K, k, X, Y; obsdim=obsdim)
