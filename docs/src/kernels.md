@@ -2,11 +2,18 @@
   CurrentModule = KernelFunctions
 ```
 
-# Base Kernels
+# Kernel Functions
+
+```@contents
+Pages = ["kernels.md"]
+Depth = 3
+```
+
+## Base Kernels
 
 These are the basic kernels without any transformation of the data. They are the building blocks of KernelFunctions.
 
-## Constant Kernels
+### Constant Kernels
 
 ```@docs
 ZeroKernel
@@ -15,13 +22,13 @@ WhiteKernel
 EyeKernel
 ```
 
-## Cosine Kernel
+### Cosine Kernel
 
 ```@docs
 CosineKernel
 ```
 
-## Exponential Kernels
+### Exponential Kernels
 
 ```@docs
 ExponentialKernel
@@ -33,25 +40,25 @@ RBFKernel
 GammaExponentialKernel
 ```
 
-## Exponentiated Kernel
+### Exponentiated Kernel
 
 ```@docs
 ExponentiatedKernel
 ```
 
-## Fractional Brownian Motion Kernel
+### Fractional Brownian Motion Kernel
 
 ```@docs
 FBMKernel
 ```
 
-## Gabor Kernel
+### Gabor Kernel
 
 ```@docs
 GaborKernel
 ```
 
-## Matérn Kernels
+### Matérn Kernels
 
 ```@docs
 MaternKernel
@@ -60,53 +67,53 @@ Matern32Kernel
 Matern52Kernel
 ```
 
-## Neural Network Kernel
+### Neural Network Kernel
 
 ```@docs
 NeuralNetworkKernel
 ```
 
-## Periodic Kernel
+### Periodic Kernel
 
 ```@docs
 PeriodicKernel
 PeriodicKernel(::DataType, ::Int)
 ```
 
-## Piecewise Polynomial Kernel
+### Piecewise Polynomial Kernel
 
 ```@docs
 PiecewisePolynomialKernel
 ```
 
-## Polynomial Kernels
+### Polynomial Kernels
 
 ```@docs
 LinearKernel
 PolynomialKernel
 ```
 
-## Rational Quadratic Kernels
+### Rational Quadratic Kernels
 
 ```@docs
 RationalQuadraticKernel
 GammaRationalQuadraticKernel
 ```
 
-## Spectral Mixture Kernels
+### Spectral Mixture Kernels
 
 ```@docs
 spectral_mixture_kernel
 spectral_mixture_product_kernel
 ```
 
-## Wiener Kernel
+### Wiener Kernel
 
 ```@docs
 WienerKernel
 ```
 
-# Composite Kernels
+## Composite Kernels
 
 The modular design of KernelFunctions.jl uses [base kernels](@ref) as building blocks for
 more complex kernels. These composite kernels can be created by adding
@@ -124,7 +131,7 @@ KernelProduct
 TensorProduct
 ```
 
-# Multi-output Kernels
+## Multi-output Kernels
 
 ```@docs
 MOKernel
