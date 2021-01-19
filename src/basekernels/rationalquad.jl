@@ -8,7 +8,7 @@ Rational-quadratic kernel with shape parameter `α`.
 For inputs ``x, x' \\in \\mathbb{R}^d``, the rational-quadratic kernel with shape parameter
 ``\\alpha > 0`` is defined as
 ```math
-k(x, x'; \\alpha) = \\bigg(1 + \\frac{\\|x - x'\\|_2^2}{2\\alpha}\\right)^{-\\alpha}.
+k(x, x'; \\alpha) = \\bigg(1 + \\frac{\\|x - x'\\|_2^2}{2\\alpha}\\bigg)^{-\\alpha}.
 ```
 
 See also: [`GammaRationalQuadraticKernel`](@ref)
