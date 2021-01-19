@@ -34,8 +34,7 @@
 
         @testset "Default GammaRQ ≈ RQ" begin
             @test isapprox(
-                GammaRationalQuadraticKernel()(v1, v2),
-                RationalQuadraticKernel()(v1, v2),
+                GammaRationalQuadraticKernel()(v1, v2), RationalQuadraticKernel()(v1, v2)
             )
             a = 1.0 + rand()
             @test isapprox(
@@ -71,7 +70,9 @@
             v2 = randn(3)
             γ = rand() + 0.5
             @test isapprox(
-                GammaRationalQuadraticKernel(; α=1e9, γ=γ)(2^(1/γ) .* v1, 2^(1/γ) .* v2),
+                GammaRationalQuadraticKernel(; α=1e9, γ=γ)(
+                    2^(1 / γ) .* v1, 2^(1 / γ) .* v2
+                ),
                 GammaExponentialKernel(; γ=γ)(v1, v2);
                 atol=1e-6,
                 rtol=1e-6,
@@ -85,7 +86,7 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         a = 1.0 + rand()
-        test_ADs(x -> GammaRationalQuadraticKernel(α=x[1], γ=x[2]), [a, 1 + 0.5 * rand()])
+        test_ADs(x -> GammaRationalQuadraticKernel(; α=x[1], γ=x[2]), [a, 1 + 0.5 * rand()])
         test_params(GammaRationalQuadraticKernel(; α=a, γ=x), ([a], [x]))
     end
 end
