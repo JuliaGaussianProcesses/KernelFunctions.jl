@@ -1,16 +1,20 @@
 """
     SqExponentialKernel()
 
-The squared exponential kernel is a Mercer kernel given by the formula:
+Squared exponential kernel.
+
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^d``, the squared exponential kernel is defined as
+```math
+k(x, x') = \\exp\\bigg(- \\frac{\\|x - x'\\|_2^2}{2}\\bigg).
 ```
-    κ(x, y) = exp(-‖x - y‖² / 2)
-```
-Can also be called via `RBFKernel`, `GaussianKernel` or `SEKernel`.
-See [`GammaExponentialKernel`](@ref) for a generalization.
+
+See also: [`GammaExponentialKernel`](@ref)
 """
 struct SqExponentialKernel <: SimpleKernel end
 
-kappa(κ::SqExponentialKernel, d²::Real) = exp(-d² / 2)
+kappa(::SqExponentialKernel, d²::Real) = exp(-d² / 2)
 
 metric(::SqExponentialKernel) = SqEuclidean()
 
@@ -23,37 +27,41 @@ Base.show(io::IO, ::SqExponentialKernel) = print(io, "Squared Exponential Kernel
 """
     RBFKernel()
 
-See [`SqExponentialKernel`](@ref)
+Alias of [`SqExponentialKernel`](@ref).
 """
 const RBFKernel = SqExponentialKernel
 
 """
     GaussianKernel()
 
-See [`SqExponentialKernel`](@ref)
+Alias of [`SqExponentialKernel`](@ref).
 """
 const GaussianKernel = SqExponentialKernel
 
 """
     SEKernel()
 
-See [`SqExponentialKernel`](@ref)
+Alias of [`SqExponentialKernel`](@ref).
 """
 const SEKernel = SqExponentialKernel
 
 """
     ExponentialKernel()
 
-The exponential kernel is a Mercer kernel given by the formula:
+Exponential kernel.
+
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^d``, the exponential kernel is defined as
+```math
+k(x, x') = \\exp\\big(- \\|x - x'\\|_2\\big).
 ```
-    κ(x,y) = exp(-‖x-y‖)
-```
-Can also be called via `LaplacianKernel` or `Matern12Kernel`.
-See [`GammaExponentialKernel`](@ref) for a generalization.
+
+See also: [`GammaExponentialKernel`](@ref)
 """
 struct ExponentialKernel <: SimpleKernel end
 
-kappa(κ::ExponentialKernel, d::Real) = exp(-d)
+kappa(::ExponentialKernel, d::Real) = exp(-d)
 
 metric(::ExponentialKernel) = Euclidean()
 
@@ -66,35 +74,39 @@ Base.show(io::IO, ::ExponentialKernel) = print(io, "Exponential Kernel")
 """
     LaplacianKernel()
 
-See [`ExponentialKernel`](@ref)
+Alias of [`ExponentialKernel`](@ref).
 """
 const LaplacianKernel = ExponentialKernel
 
 """
     Matern12Kernel()
 
-See [`ExponentialKernel`](@ref)
+Alias of [`ExponentialKernel`](@ref).
 """
 const Matern12Kernel = ExponentialKernel
 
 """
-    GammaExponentialKernel(; γ = 2.0)
+    GammaExponentialKernel(; γ::Real=2.0)
 
-The γ-exponential kernel [1] is an isotropic Mercer kernel given by the formula:
-```
-    κ(x,y) = exp(-‖x-y‖^γ)
-```
-Where `γ > 0`, (the keyword `γ` can be replaced by `gamma`)
-For `γ = 2`, see [`SqExponentialKernel`](@ref); for `γ = 1`, see [`ExponentialKernel`](@ref).
+γ-exponential kernel with parameter `γ`.
 
-[1] - Gaussian Processes for Machine Learning, Carl Edward Rasmussen and Christopher K. I.
-    Williams, MIT Press, 2006.
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^d``, the γ-exponential kernel[^RW] with parameter
+``\\gamma \\in (0, 2]`` is defined as
+```math
+k(x, x'; \\gamma) = \\exp\\big(- \\|x - x'\\|_2^{\\gamma}\\big).
+```
+
+See also: [`ExponentialKernel`](@ref), [`SqExponentialKernel`](@ref)
+
+[^RW]: C. E. Rasmussen & C. K. I. Williams (2006). Gaussian Processes for Machine Learning.
 """
 struct GammaExponentialKernel{Tγ<:Real} <: SimpleKernel
     γ::Vector{Tγ}
-    function GammaExponentialKernel(; gamma::T=2.0, γ::T=gamma) where {T<:Real}
-        @check_args(GammaExponentialKernel, γ, γ >= zero(T), "γ > 0")
-        return new{T}([γ])
+    function GammaExponentialKernel(; gamma::Real=2.0, γ::Real=gamma)
+        @check_args(GammaExponentialKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
+        return new{typeof(γ)}([γ])
     end
 end
 

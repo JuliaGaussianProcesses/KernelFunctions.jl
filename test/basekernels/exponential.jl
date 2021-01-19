@@ -44,7 +44,7 @@
         @test repr(k) == "Gamma Exponential Kernel (γ = $(γ))"
         @test KernelFunctions.iskroncompatible(k) == true
 
-        test_ADs(γ -> GammaExponentialKernel(; gamma=first(γ)), [γ])
+        test_ADs(γ -> GammaExponentialKernel(; gamma=first(γ)), [1 + 0.5 * rand()])
         test_params(k, ([γ],))
         TestUtils.test_interface(GammaExponentialKernel(; γ=1.36))
 

@@ -1,19 +1,22 @@
 """
     FBMKernel(; h::Real=0.5)
 
-Fractional Brownian motion kernel with Hurst index `h` from (0,1) given by
-```
-    κ(x,y) =  ( |x|²ʰ + |y|²ʰ - |x-y|²ʰ ) / 2
-```
+Fractional Brownian motion kernel with Hurst index `h`.
 
-For `h=1/2`, this is the Wiener Kernel, for `h>1/2`, the increments are
-positively correlated and for `h<1/2` the increments are negatively correlated.
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^d``, the fractional Brownian motion kernel with
+[Hurst index](https://en.wikipedia.org/wiki/Hurst_exponent#Generalized_exponent)
+``h \\in [0,1]`` is defined as
+```math
+k(x, x'; h) =  \\frac{\\|x\\|_2^{2h} + \\|x'\\|_2^{2h} - \\|x - x'\\|^{2h}}{2}.
+```
 """
 struct FBMKernel{T<:Real} <: Kernel
     h::Vector{T}
-    function FBMKernel(; h::T=0.5) where {T<:Real}
-        @assert 0.0 <= h <= 1.0 "FBMKernel: Given Hurst index h is invalid."
-        return new{T}([h])
+    function FBMKernel(; h::Real=0.5)
+        @check_args(FBMKernel, h, zero(h) ≤ h ≤ one(h), "h ∈ [0, 1]")
+        return new{typeof(h)}([h])
     end
 end
 
