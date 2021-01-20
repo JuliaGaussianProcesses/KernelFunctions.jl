@@ -125,7 +125,7 @@ transform(::Kernel, ::AbstractVector)
 ScaledKernel
 KernelSum
 KernelProduct
-TensorProduct
+KernelTensorProduct
 ```
 
 ## Multi-output Kernels
