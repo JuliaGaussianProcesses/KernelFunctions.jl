@@ -1,5 +1,5 @@
 """
-    KernelTensorProduct <: Kernel
+    KernelTensorProduct
 
 Tensor product of kernels.
 
@@ -139,7 +139,6 @@ function printshifted(io::IO, kernel::KernelTensorProduct, shift::Int)
         for _ in 1:(shift + 1)
             print(io, "\t")
         end
-        print(io, "- ")
         printshifted(io, k, shift + 2)
     end
 end
