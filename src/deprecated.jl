@@ -7,3 +7,6 @@
 @deprecate PiecewisePolynomialKernel{V}(A::AbstractMatrix{<:Real}) where {V} transform(
     PiecewisePolynomialKernel{V}(size(A, 1)), LinearTransform(cholesky(A).U)
 )
+
+# TODO: remove in next breaking release
+const GammaRationalQuadraticKernel = GammaRationalKernel
