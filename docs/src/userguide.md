@@ -2,7 +2,7 @@
 
 ## Kernel creation
 
-To create a kernel object, choose one of the pre-implemented kernels, see [Base Kernels](@ref), or create your own, see [Creating your own kernel](@ref).
+To create a kernel object, choose one of the pre-implemented kernels, see [Kernel Functions](@ref), or create your own, see [Creating your own kernel](@ref).
 For example, a squared exponential kernel is created by
 ```julia
   k = SqExponentialKernel()
@@ -15,7 +15,7 @@ For example, a squared exponential kernel is created by
       k = transform(SqExponentialKernel(), ScaleTransform(2.0))
       k = transform(SqExponentialKernel(), 2.0)  # implicitly constructs a ScaleTransform(2.0)
     ```
-    Check the [Input Transforms](@ref) page for more details. The API documentation contains an [overview of all available transforms](@ref Transforms).
+    Check the [Input Transforms](@ref input_transforms) page for more details.
 
 !!! tip "How do I set the kernel variance?"
     To premultiply the kernel by a variance, you can use `*` with a scalar number:
@@ -52,7 +52,7 @@ To evaluate the kernel function on two vectors you simply call the kernel object
 ## Creating a kernel matrix
 
 Kernel matrices can be created via the `kernelmatrix` function or `kerneldiagmatrix` for only the diagonal.
-An important argument to give is the data layout of the input `obsdim`. It specifies whether the number of observed data points is along the first dimension (`obsdim=1`, i.e. the matrix shape is number of samples times number of features) or along the second dimension (`obsdim=2`, i.e. the matrix shape is number of features times number of samples), similarly to [Distances.jl](https://github.com/JuliaStats/Distances.jl). If not given explicitly, `obsdim` defaults to [`defaultobs`](@ref).
+An important argument to give is the data layout of the input `obsdim`. It specifies whether the number of observed data points is along the first dimension (`obsdim=1`, i.e. the matrix shape is number of samples times number of features) or along the second dimension (`obsdim=2`, i.e. the matrix shape is number of features times number of samples), similarly to [Distances.jl](https://github.com/JuliaStats/Distances.jl). If not given explicitly, `obsdim` defaults to `2`.
 For example:
 ```julia
   k = SqExponentialKernel()

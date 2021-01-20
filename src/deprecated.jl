@@ -7,3 +7,5 @@
 @deprecate PiecewisePolynomialKernel{V}(A::AbstractMatrix{<:Real}) where {V} transform(
     PiecewisePolynomialKernel{V}(size(A, 1)), LinearTransform(cholesky(A).U)
 )
+
+Base.@deprecate_binding TensorProduct KernelTensorProduct

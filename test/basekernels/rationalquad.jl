@@ -32,7 +32,7 @@
 
         @test repr(k) == "Gamma Rational Quadratic Kernel (α = 2.0, γ = 2.0)"
 
-        @testset "Default GammaRQ ≈ RQ for large α with rescaled inputs" begin
+        @testset "Default GammaRQ ≈ RQ with rescaled inputs" begin
             @test isapprox(
                 GammaRationalQuadraticKernel()(v1 ./ sqrt(2), v2 ./ sqrt(2)),
                 RationalQuadraticKernel()(v1, v2),
@@ -78,15 +78,14 @@
             )
         end
 
-        @test metric(GammaRationalQuadraticKernel()) == SqEuclidean()
-        @test metric(GammaRationalQuadraticKernel(; γ=2.0)) == SqEuclidean()
-        @test metric(GammaRationalQuadraticKernel(; γ=2.0, α=3.0)) == SqEuclidean()
+        @test metric(GammaRationalQuadraticKernel()) == Euclidean()
+        @test metric(GammaRationalQuadraticKernel(; γ=2.0)) == Euclidean()
+        @test metric(GammaRationalQuadraticKernel(; γ=2.0, α=3.0)) == Euclidean()
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
-        # test_ADs(x->GammaRationalQuadraticKernel(α=x[1], γ=x[2]), [a, 2.0])
-        @test_broken "All (problem with power operation)"
         a = 1.0 + rand()
+        test_ADs(x -> GammaRationalQuadraticKernel(; α=x[1], γ=x[2]), [a, 1 + 0.5 * rand()])
         test_params(GammaRationalQuadraticKernel(; α=a, γ=x), ([a], [x]))
     end
 end
