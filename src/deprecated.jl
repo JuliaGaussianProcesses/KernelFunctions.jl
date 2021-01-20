@@ -8,9 +8,6 @@
     PiecewisePolynomialKernel{V}(size(A, 1)), LinearTransform(cholesky(A).U)
 )
 
-@deprecate TensorProduct(kernels) KernelTensorProduct(kernels)
-@deprecate TensorProduct(kernel::Kernel, kernels::Kernel...) KernelTensorProduct(
-    kernel, kernels...
-)
+Base.@deprecate_binding TensorProduct KernelTensorProduct
 
 Base.@deprecate_binding GammaRationalQuadraticKernel GammaRationalKernel

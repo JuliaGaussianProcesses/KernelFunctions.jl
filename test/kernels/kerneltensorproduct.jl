@@ -28,9 +28,10 @@
     end
 
     # Deprecations
-    @test (@test_deprecated TensorProduct(k1, k2)) == k1 ⊗ k2
-    @test (@test_deprecated TensorProduct((k1, k2))) == k1 ⊗ k2
-    @test (@test_deprecated TensorProduct([k1, k2])) == k1 ⊗ k2
+    @test TensorProduct === KernelTensorProduct
+    @test TensorProduct(k1, k2) == k1 ⊗ k2
+    @test TensorProduct((k1, k2)) == k1 ⊗ k2
+    @test TensorProduct([k1, k2]) == k1 ⊗ k2
 
     # Standardised tests.
     TestUtils.test_interface(kernel1, ColVecs{Float64})
