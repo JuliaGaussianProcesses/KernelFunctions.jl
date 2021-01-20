@@ -92,7 +92,7 @@ function spectral_mixture_product_kernel(
     if !(size(αs) == size(γs) == size(ωs))
         throw(DimensionMismatch("The dimensions of αs, γs, ans ωs do not match"))
     end
-    return TensorProduct(
+    return KernelTensorProduct(
         spectral_mixture_kernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :)) for
         (α, γ, ω) in zip(eachrow(αs), eachrow(γs), eachrow(ωs))
     )
