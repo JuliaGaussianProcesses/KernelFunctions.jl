@@ -116,6 +116,7 @@
         # Deprecations.
         a = rand()
         g = 2 * rand()
+        @test GammaRationalQuadraticKernel === GammaRationalKernel
         @test GammaRationalQuadraticKernel()(v1, v2) == GammaRationalKernel()(v1, v2)
         @test GammaRationalQuadraticKernel(; γ=g)(v1, v2) ==
               GammaRationalKernel(; γ=g)(v1, v2)

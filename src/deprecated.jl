@@ -9,4 +9,4 @@
 )
 
 # TODO: remove in next breaking release
-const GammaRationalQuadraticKernel = GammaRationalKernel
+Base.@deprecate_binding GammaRationalQuadraticKernel GammaRationalKernel
