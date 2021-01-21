@@ -4,10 +4,8 @@
     k = KernelProduct(k1, k2)
     @test k == KernelProduct([k1, k2]) == KernelProduct((k1, k2))
     @test length(k) == 2
-    @test string(k) == (
-        "Product of 2 kernels:\n\tLinear Kernel (c = 0.0)\n\tSquared " *
-        "Exponential Kernel"
-    )
+    @test repr(k) == "$k1 * $k2"
+    @test repr(MIME("text/plain"), k) == "Product of 2 kernels:\n   $k1 * $k2"
 
     # Standardised tests.
     TestUtils.test_interface(k, Float64)

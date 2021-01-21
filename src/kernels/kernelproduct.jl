@@ -57,8 +57,10 @@ function kerneldiagmatrix(κ::KernelProduct, x::AbstractVector)
     return reduce(hadamard, kerneldiagmatrix(k, x) for k in κ.kernels)
 end
 
-function Base.show(io::IO, κ::KernelProduct)
-    return printshifted(io, κ, 0)
+print_toplevel(io::IO, k::KernelProduct) = join(io, k.kernels, " * ")
+Base.show(io::IO, k::KernelProduct) = print_nested(io, k)
+function Base.show(io::IO, ::MIME"text/plain", k::KernelProduct)
+    return print(io, "Product of ", length(k), " kernels:\n   ", k)
 end
 
 function Base.:(==)(x::KernelProduct, y::KernelProduct)
@@ -66,15 +68,4 @@ function Base.:(==)(x::KernelProduct, y::KernelProduct)
         length(x.kernels) == length(y.kernels) &&
         all(kx == ky for (kx, ky) in zip(x.kernels, y.kernels))
     )
-end
-
-function printshifted(io::IO, κ::KernelProduct, shift::Int)
-    print(io, "Product of $(length(κ)) kernels:")
-    for k in κ.kernels
-        print(io, "\n")
-        for _ in 1:(shift + 1)
-            print(io, "\t")
-        end
-        printshifted(io, k, shift + 2)
-    end
 end

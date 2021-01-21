@@ -41,4 +41,4 @@ end
 
 duplicate(t::FunctionTransform, f) = FunctionTransform(f)
 
-Base.show(io::IO, t::FunctionTransform) = print(io, "Function Transform: ", t.f)
+Base.show(io::IO, t::FunctionTransform) = print(io, "Function Transform (f = ", t.f, ")")

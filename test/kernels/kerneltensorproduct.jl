@@ -14,9 +14,8 @@
     @test kernel1 == kernel2
     @test kernel1.kernels === (k1, k2) === KernelTensorProduct((k1, k2)).kernels
     @test length(kernel1) == length(kernel2) == 2
-    @test string(kernel1) == (
-        "Tensor product of 2 kernels:\n\tSquared Exponential Kernel\n\tExponential Kernel"
-    )
+    @test repr(kernel1) == "$k1 ⊗ $k2"
+    @test repr(MIME("text/plain"), kernel1) == "Tensor product of 2 kernels:\n   $kernel1"
     @test_throws DimensionMismatch kernel1(rand(3), rand(3))
 
     @testset "val" begin

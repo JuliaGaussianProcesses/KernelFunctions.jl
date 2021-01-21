@@ -32,7 +32,7 @@ end
 metric(::RationalQuadraticKernel) = SqEuclidean()
 
 function Base.show(io::IO, κ::RationalQuadraticKernel)
-    return print(io, "Rational Quadratic Kernel (α = $(first(κ.α)))")
+    return print(io, "Rational Quadratic Kernel (α = ", first(κ.α), ")")
 end
 
 """
@@ -74,6 +74,6 @@ metric(::GammaRationalQuadraticKernel) = Euclidean()
 
 function Base.show(io::IO, κ::GammaRationalQuadraticKernel)
     return print(
-        io, "Gamma Rational Quadratic Kernel (α = $(first(κ.α)), γ = $(first(κ.γ)))"
+        io, "Gamma Rational Quadratic Kernel (α = ", first(κ.α), ", γ = ", first(κ.γ), ")"
     )
 end

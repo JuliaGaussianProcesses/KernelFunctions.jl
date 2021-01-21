@@ -18,6 +18,8 @@ struct IdentityTransform <: Transform end
 (t::IdentityTransform)(x) = x
 _map(::IdentityTransform, x::AbstractVector) = x
 
+Base.show(io::IO, ::IdentityTransform) = print(io, "Identity Transform")
+
 ### TODO Maybe defining adjoints could help but so far it's not working
 
 # @adjoint function ScaleTransform(s::T) where {T<:Real}

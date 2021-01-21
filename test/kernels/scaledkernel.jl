@@ -9,6 +9,9 @@
     @test ks(x, y) == s * k(x, y)
     @test ks(x, y) == (s * k)(x, y)
 
+    @test repr(ks) == "$s * $k"
+    @test repr(MIME("text/plain"), ks) == "Scaled kernel:\n   $ks"
+
     # Standardised tests.
     TestUtils.test_interface(k, Float64)
     test_ADs(x -> exp(x[1]) * SqExponentialKernel(), rand(1))

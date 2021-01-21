@@ -41,8 +41,8 @@
     KernelFunctions.set!(ts, select_symbols2)
     @test ts.select == select_symbols2
 
-    @test repr(t) == "Select Transform (dims: $(select2))"
-    @test repr(ts) == "Select Transform (dims: $(select_symbols2))"
+    @test repr(t) == "Select Transform (dims = $(select2))"
+    @test repr(ts) == "Select Transform (dims = $(select_symbols2))"
 
     test_ADs(() -> transform(SEKernel(), SelectTransform([1, 2])))
 

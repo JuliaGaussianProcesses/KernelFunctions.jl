@@ -41,6 +41,6 @@
 
     @test_throws DimensionMismatch map(t, ColVecs(randn(rng, D + 1, 3)))
 
-    @test repr(t) == "ARD Transform (dims: $D)"
+    @test repr(t) == "ARD Transform (dims = $D)"
     test_ADs(x -> transform(SEKernel(), exp.(x)), randn(rng, 3))
 end

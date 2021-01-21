@@ -59,9 +59,8 @@ end
 
 Base.:*(w::Real, k::Kernel) = ScaledKernel(k, w)
 
-Base.show(io::IO, κ::ScaledKernel) = printshifted(io, κ, 0)
-
-function printshifted(io::IO, κ::ScaledKernel, shift::Int)
-    printshifted(io, κ.kernel, shift)
-    return print(io, "\n" * ("\t"^(shift + 1)) * "- σ² = $(first(κ.σ²))")
+print_toplevel(io::IO, k::ScaledKernel) = print(io, first(k.σ²), " * ", k.kernel)
+Base.show(io::IO, k::ScaledKernel) = print_nested(io, k)
+function Base.show(io::IO, ::MIME"text/plain", k::ScaledKernel)
+    return print(io, "Scaled kernel:\n   ", k)
 end

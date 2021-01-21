@@ -123,22 +123,15 @@ function kerneldiagmatrix(k::KernelTensorProduct, x::AbstractVector)
     return mapreduce(kerneldiagmatrix, hadamard, k.kernels, slices(x))
 end
 
-Base.show(io::IO, kernel::KernelTensorProduct) = printshifted(io, kernel, 0)
+print_toplevel(io::IO, k::KernelTensorProduct) = join(io, k.kernels, " ⊗ ")
+Base.show(io::IO, k::KernelTensorProduct) = print_nested(io, k)
+function Base.show(io::IO, ::MIME"text/plain", k::KernelTensorProduct)
+    return print(io, "Tensor product of ", length(k), " kernels:\n   ", k)
+end
 
 function Base.:(==)(x::KernelTensorProduct, y::KernelTensorProduct)
     return (
         length(x.kernels) == length(y.kernels) &&
         all(kx == ky for (kx, ky) in zip(x.kernels, y.kernels))
     )
-end
-
-function printshifted(io::IO, kernel::KernelTensorProduct, shift::Int)
-    print(io, "Tensor product of ", length(kernel), " kernels:")
-    for k in kernel.kernels
-        print(io, "\n")
-        for _ in 1:(shift + 1)
-            print(io, "\t")
-        end
-        printshifted(io, k, shift + 2)
-    end
 end
