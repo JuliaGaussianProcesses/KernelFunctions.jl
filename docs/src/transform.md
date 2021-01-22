@@ -28,6 +28,7 @@ optimized implementations for specific kernels and transformations.
 Transform
 IdentityTransform
 ScaleTransform
+median_heuristic_transform
 ARDTransform
 ARDTransform(::Real, ::Integer)
 LinearTransform

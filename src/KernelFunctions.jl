@@ -42,6 +42,8 @@ export Transform,
     FunctionTransform,
     PeriodicTransform
 
+export median_heuristic_transform
+
 export NystromFact, nystrom
 
 export spectral_mixture_kernel, spectral_mixture_product_kernel
@@ -64,6 +66,8 @@ using StatsFuns: logtwo
 using InteractiveUtils: subtypes
 using StatsBase
 using TensorCore
+
+using Statistics: median!
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end

@@ -7,6 +7,7 @@ using LinearAlgebra
 using PDMats
 using Random
 using SpecialFunctions
+using Statistics
 using Test
 using Flux
 using Zygote: Zygote
