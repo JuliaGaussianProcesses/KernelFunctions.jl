@@ -61,7 +61,6 @@ using Functors
 using SpecialFunctions: loggamma, besselk, polygamma
 using ZygoteRules: @adjoint, pullback
 using StatsFuns: logtwo
-using InteractiveUtils: subtypes
 using StatsBase
 using TensorCore
 
