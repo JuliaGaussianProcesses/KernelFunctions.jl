@@ -1,11 +1,16 @@
 """
     GaborKernel(; ell::Real=1.0, p::Real=1.0)
 
-Gabor kernel with lengthscale `ell` and period `p`. Given by
-```math
-    κ(x,y) =  h(x-z), h(t) = exp(-sum(t.^2./(ell.^2)))*cos(pi*sum(t./p))
-```
+Gabor kernel with lengthscale `ell` and period `p`.
 
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^d``, the Gabor kernel with lengthscale ``l_i > 0``
+and period ``p_i > 0`` is defined as
+```math
+k(x, x'; l, p) = \\exp\\bigg(- \\cos\\bigg(\\pi\\sum_{i=1}^d \\frac{x_i - x'_i}{p_i}\\bigg)
+                             \\sum_{i=1}^d \\frac{(x_i - x'_i)^2}{l_i^2}\\bigg).
+```
 """
 struct GaborKernel{K<:Kernel} <: Kernel
     kernel::K

@@ -1,5 +1,7 @@
 """
-Abstract type defining a slice-wise transformation on an input matrix
+    Transform
+
+Abstract type defining a transformation of the input.
 """
 abstract type Transform end
 
@@ -9,7 +11,7 @@ _map(t::Transform, x::AbstractVector) = t.(x)
 """
     IdentityTransform()
 
-Return exactly the input
+Transformation that returns exactly the input.
 """
 struct IdentityTransform <: Transform end
 

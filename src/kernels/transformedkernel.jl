@@ -1,8 +1,19 @@
 """
-    TransformedKernel(k::Kernel,t::Transform)
+    TransformedKernel(k::Kernel, t::Transform)
 
-Return a kernel where inputs are pretransformed by `t` : `k(t(x),t(x'))`
-Can also be called via [`transform`](@ref) : `transform(k, t)`
+Kernel derived from `k` for which inputs are transformed via a [`Transform`](@ref) `t`.
+
+It is preferred to create kernels with input transformations with [`transform`](@ref)
+instead of  `TransformedKernel` directly since [`transform`](@ref) allows optimized
+implementations for specific kernels and transformations.
+
+# Definition
+
+For inputs ``x, x'``, the transformed kernel ``\\widetilde{k}`` derived from kernel ``k`` by
+input transformation ``t`` is defined as
+```math
+\\widetilde{k}(x, x'; k, t) = k\\big(t(x), t(x')\\big).
+```
 """
 struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
     kernel::Tk
@@ -31,25 +42,27 @@ end
 _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, t(x), t(y))
 
 """
-```julia
-    transform(k::Kernel, t::Transform) (1)
-    transform(k::Kernel, ρ::Real) (2)
-    transform(k::Kernel, ρ::AbstractVector) (3)
-```
-(1) Create a TransformedKernel with transform `t` and kernel `k`
-(2) Same as (1) with a `ScaleTransform` with scale `ρ`
-(3) Same as (1) with an `ARDTransform` with scales `ρ`
+    transform(k::Kernel, t::Transform)
+
+Create a [`TransformedKernel`](@ref) for kernel `k` and transform `t`.
 """
-transform
-
 transform(k::Kernel, t::Transform) = TransformedKernel(k, t)
-
 function transform(k::TransformedKernel, t::Transform)
     return TransformedKernel(k.kernel, t ∘ k.transform)
 end
 
+"""
+    transform(k::Kernel, ρ::Real)
+
+Create a [`TransformedKernel`](@ref) for kernel `k` and inverse lengthscale `ρ`.
+"""
 transform(k::Kernel, ρ::Real) = transform(k, ScaleTransform(ρ))
 
+"""
+    transform(k::Kernel, ρ::AbstractVector)
+
+Create a [`TransformedKernel`](@ref) for kernel `k` and inverse lengthscales `ρ`.
+"""
 transform(k::Kernel, ρ::AbstractVector) = transform(k, ARDTransform(ρ))
 
 kernel(κ) = κ.kernel

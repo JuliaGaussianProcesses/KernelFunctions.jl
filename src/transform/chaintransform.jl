@@ -1,12 +1,22 @@
 """
     ChainTransform(ts::AbstractVector{<:Transform})
 
-Chain a series of transform, here `t1` will be called first
-```
-    t1 = ScaleTransform()
-    t2 = LinearTransform(rand(3,4))
-    ct = ChainTransform([t1,t2]) #t1 will be called first
-    ct == t2 ∘ t1
+Transformation that applies a chain of transformations `ts` to the input.
+
+The transformation `first(ts)` is applied first.
+
+# Examples
+
+```jldoctest
+julia> l = rand(); A = rand(3, 4); t1 = ScaleTransform(l); t2 = LinearTransform(A);
+
+julia> X = rand(4, 10);
+
+julia> map(ChainTransform([t1, t2]), ColVecs(X)) == ColVecs(A * (l .* X))
+true
+
+julia> map(t2 ∘ t1, ColVecs(X)) == ColVecs(A * (l .* X))
+true
 ```
 """
 struct ChainTransform{V<:AbstractVector{<:Transform}} <: Transform

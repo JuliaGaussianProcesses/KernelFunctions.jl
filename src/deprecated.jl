@@ -8,6 +8,8 @@
     PiecewisePolynomialKernel{V}(size(A, 1)), LinearTransform(cholesky(A).U)
 )
 
+Base.@deprecate_binding TensorProduct KernelTensorProduct
+
 # TODO: remove tests when removed
 @deprecate kerneldiagmatrix(k::Kernel, x::AbstractVector) kernelmatrix_diag(k, x)
 @deprecate kerneldiagmatrix(k::Kernel, x::AbstractVector, y::AbstractVector) kernelmatrix_diag(

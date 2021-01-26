@@ -41,31 +41,6 @@ end
 
 @functor KernelProduct
 
-Base.:*(k1::Kernel, k2::Kernel) = KernelProduct(k1, k2)
-
-function Base.:*(
-    k1::KernelProduct{<:AbstractVector{<:Kernel}},
-    k2::KernelProduct{<:AbstractVector{<:Kernel}},
-)
-    return KernelProduct(vcat(k1.kernels, k2.kernels))
-end
-
-function Base.:*(k1::KernelProduct, k2::KernelProduct)
-    return KernelProduct(k1.kernels..., k2.kernels...)
-end
-
-function Base.:*(k::Kernel, ks::KernelProduct{<:AbstractVector{<:Kernel}})
-    return KernelProduct(vcat(k, ks.kernels))
-end
-
-Base.:*(k::Kernel, kp::KernelProduct) = KernelProduct(k, kp.kernels...)
-
-function Base.:*(ks::KernelProduct{<:AbstractVector{<:Kernel}}, k::Kernel)
-    return KernelProduct(vcat(ks.kernels, k))
-end
-
-Base.:*(kp::KernelProduct, k::Kernel) = KernelProduct(kp.kernels..., k)
-
 Base.length(k::KernelProduct) = length(k.kernels)
 
 (κ::KernelProduct)(x, y) = prod(k(x, y) for k in κ.kernels)

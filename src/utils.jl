@@ -1,5 +1,3 @@
-hadamard(x, y) = x .* y
-
 # Macro for checking arguments
 macro check_args(K, param, cond, desc=string(cond))
     quote

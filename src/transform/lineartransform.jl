@@ -1,15 +1,17 @@
 """
     LinearTransform(A::AbstractMatrix)
 
-Apply the linear transformation realised by the matrix `A`.
+Linear transformation of the input realised by the matrix `A`.
 
 The second dimension of `A` must match the number of features of the target.
 
 # Examples
 
-```julia-repl
-julia> A = rand(10, 5)
-julia> tr = LinearTransform(A)
+```jldoctest
+julia> A = rand(10, 5); t = LinearTransform(A); X = rand(5, 100);
+
+julia> map(t, ColVecs(X)) == ColVecs(A * X)
+true
 ```
 """
 struct LinearTransform{T<:AbstractMatrix{<:Real}} <: Transform
