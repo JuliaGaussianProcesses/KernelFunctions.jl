@@ -1,5 +1,11 @@
 using Documenter
 using Literate
+
+# Print `@debug` statements (https://github.com/JuliaDocs/Documenter.jl/issues/955)
+if haskey(ENV, "GITHUB_ACTIONS")
+    ENV["JULIA_DEBUG"] = "Documenter"
+end
+
 using KernelFunctions
 
 const EXAMPLES_SRC = joinpath(@__DIR__, "..", "examples")
@@ -20,7 +26,12 @@ end
 DocMeta.setdocmeta!(
     KernelFunctions,
     :DocTestSetup,
-    :(using KernelFunctions, LinearAlgebra, Random);
+    quote
+        using KernelFunctions
+        using LinearAlgebra
+        using Random
+        using PDMats: PDMats
+    end;
     recursive=true,
 )
 
@@ -30,7 +41,13 @@ makedocs(;
     modules=[KernelFunctions],
     pages=[
         "Home" => "index.md",
-        "User Guide" => "userguide.md",
+        "userguide.md",
+        "kernels.md",
+        "transform.md",
+        "metrics.md",
+        "theory.md",
+        "create_kernel.md",
+        "API" => "api.md",
         "Examples" => [
             "Kernel Ridge Regression" => "examples/kernel_ridge_regression.md",
             "Training kernel parameters" => "examples/train_kernel_parameters.md",
@@ -43,8 +60,9 @@ makedocs(;
         "Metrics" => "metrics.md",
         "Theory" => "theory.md",
         "Custom Kernels" => "create_kernel.md",
-        "API" => "api.md",
     ],
+    strict=true,
+    checkdocs=:exports,
 )
 
 deploydocs(;
