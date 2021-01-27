@@ -66,7 +66,7 @@ end
 function kernelmatrix_diag!(
     K::AbstractVector, κ::Kernel, x::AbstractVector, y::AbstractVector
 )
-    return map!(κ, x, y)
+    return map!(κ, K, x, y)
 end
 
 kernelmatrix_diag(κ::Kernel, x::AbstractVector) = map(x -> κ(x, x), x)

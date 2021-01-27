@@ -44,6 +44,9 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
             tmp_diag = Vector{Float64}(undef, length(x))
             @test kernelmatrix_diag!(tmp_diag, k, x) ≈ kernelmatrix_diag(k, x)
             @test tmp_diag ≈ kernelmatrix_diag(k, x)
+            tmp_diag = Vector{Float64}(undef, length(x))
+            @test kernelmatrix_diag!(tmp_diag, k, x, x) ≈ kernelmatrix_diag(k, x, x)
+            @test tmp_diag ≈ kernelmatrix_diag(k, x, x)
 
             # Test deprecations
             @test @test_deprecated kerneldiagmatrix(k, x) == kernelmatrix_diag(k, x)
@@ -52,6 +55,8 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
             tmp_diag_dep = Vector{Float64}(undef, length(x))
             @test_deprecated kerneldiagmatrix!(tmp_diag_dep, k, x)
             @test tmp_diag_dep == kernelmatrix_diag(k, x)
+
+            tmp_diag_dep = Vector{Float64}(undef, length(x))            
             @test_deprecated kerneldiagmatrix!(tmp_diag_dep, k, x, x)
             @test tmp_diag_dep == kernelmatrix_diag(k, x, x)
         end
@@ -141,6 +146,10 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
             @test kernelmatrix_diag(k, x) ≈
                   kernelmatrix_diag!(tmp_diag, k, X; obsdim=obsdim)
             @test kernelmatrix_diag(k, x) ≈ tmp_diag
+            tmp_diag = Vector{Float64}(undef, length(x))
+            @test kernelmatrix_diag!(tmp_diag, k, X, X; obsdim=obsdim) ≈
+                  kernelmatrix_diag(k, x, x)
+            @test tmp_diag ≈ kernelmatrix_diag(k, x, x)
 
             # Test deprecations
             @test @test_deprecated kerneldiagmatrix(k, X; obsdim=obsdim) ==
@@ -151,6 +160,7 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
             tmp_diag_dep = Vector{Float64}(undef, length(x))
             @test_deprecated kerneldiagmatrix!(tmp_diag_dep, k, X; obsdim=obsdim)
             @test tmp_diag_dep == kernelmatrix_diag(k, X; obsdim=obsdim)
+            tmp_diag_dep = Vector{Float64}(undef, length(x))
             @test_deprecated kerneldiagmatrix!(tmp_diag_dep, k, X, X; obsdim=obsdim)
             @test tmp_diag_dep == kernelmatrix_diag(k, X, X; obsdim=obsdim)
         end
