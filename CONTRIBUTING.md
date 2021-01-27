@@ -4,7 +4,7 @@ We follow the [ColPrac guide for collaborative practices](https://colprac.sciml.
 
 ## PRs and version numbers
 
-When contributing a PR, bump the version number (defined by `version = "..."` at the top of the base `Project.toml`) accordingly: generally this should be the patch version for backwards-compatible changes.
+When contributing a PR, bump the version number (defined by `version = "..."` at the top of the base `Project.toml`) accordingly (as explained by the [guidance on the versioning scheme](https://colprac.sciml.ai/#incrementing-the-package-version) in the ColPrac guide).
 
 ## Workflows
 
