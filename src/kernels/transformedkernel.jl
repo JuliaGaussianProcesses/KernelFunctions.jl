@@ -76,8 +76,8 @@ end
 
 # Kernel matrix operations
 
-function kerneldiagmatrix!(K::AbstractVector, κ::TransformedKernel, x::AbstractVector)
-    return kerneldiagmatrix!(K, κ.kernel, _map(κ.transform, x))
+function kernelmatrix_diag!(K::AbstractVector, κ::TransformedKernel, x::AbstractVector)
+    return kernelmatrix_diag!(K, κ.kernel, _map(κ.transform, x))
 end
 
 function kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector)
@@ -90,8 +90,8 @@ function kernelmatrix!(
     return kernelmatrix!(K, kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
 end
 
-function kerneldiagmatrix(κ::TransformedKernel, x::AbstractVector)
-    return kerneldiagmatrix(κ.kernel, _map(κ.transform, x))
+function kernelmatrix_diag(κ::TransformedKernel, x::AbstractVector)
+    return kernelmatrix_diag(κ.kernel, _map(κ.transform, x))
 end
 
 function kernelmatrix(κ::TransformedKernel, x::AbstractVector)
