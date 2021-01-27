@@ -138,12 +138,15 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
             @test kernelmatrix(k, x) ≈ tmp_square
 
             tmp_diag = Vector{Float64}(undef, length(x))
-            @test kernelmatrix_diag(k, x) ≈ kernelmatrix_diag!(tmp_diag, k, X; obsdim=obsdim)
+            @test kernelmatrix_diag(k, x) ≈
+                  kernelmatrix_diag!(tmp_diag, k, X; obsdim=obsdim)
             @test kernelmatrix_diag(k, x) ≈ tmp_diag
 
             # Test deprecations
-            @test @test_deprecated kerneldiagmatrix(k, X; obsdim=obsdim) == kernelmatrix_diag(k, X; obsdim=obsdim)
-            @test @test_deprecated kerneldiagmatrix(k, X, X; obsdim=obsdim) == kernelmatrix_diag(k, X, X; obsdim=obsdim)
+            @test @test_deprecated kerneldiagmatrix(k, X; obsdim=obsdim) ==
+                                   kernelmatrix_diag(k, X; obsdim=obsdim)
+            @test @test_deprecated kerneldiagmatrix(k, X, X; obsdim=obsdim) ==
+                                   kernelmatrix_diag(k, X, X; obsdim=obsdim)
 
             tmp_diag_dep = Vector{Float64}(undef, length(x))
             @test_deprecated kerneldiagmatrix!(tmp_diag_dep, k, X; obsdim=obsdim)
