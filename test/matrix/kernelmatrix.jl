@@ -56,7 +56,7 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
             @test_deprecated kerneldiagmatrix!(tmp_diag_dep, k, x)
             @test tmp_diag_dep == kernelmatrix_diag(k, x)
 
-            tmp_diag_dep = Vector{Float64}(undef, length(x))            
+            tmp_diag_dep = Vector{Float64}(undef, length(x))
             @test_deprecated kerneldiagmatrix!(tmp_diag_dep, k, x, x)
             @test tmp_diag_dep == kernelmatrix_diag(k, x, x)
         end
