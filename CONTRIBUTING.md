@@ -2,11 +2,24 @@
 
 We follow the [ColPrac guide for collaborative practices](https://colprac.sciml.ai/). New contributors should make sure to read that guide.
 
-## PRs and version numbers
+
+# Workflows
+
+
+## Creating a new pull request
+
+### Bumping the version number
 
 When contributing a PR, bump the version number (defined by `version = "..."` at the top of the base `Project.toml`) accordingly (as explained by the [guidance on the versioning scheme](https://colprac.sciml.ai/#incrementing-the-package-version) in the ColPrac guide).
 
-## Workflows
+### Running tests locally
+
+Run `make test`.
+
+### Code formatting
+
+Run `make format` before pushing your changes.
+
 
 ### How to make a new release (for organization members)
 
