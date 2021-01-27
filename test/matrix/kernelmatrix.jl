@@ -35,12 +35,15 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
 
             tmp = Matrix{Float64}(undef, length(x), length(y))
             @test kernelmatrix!(tmp, k, x, y) ≈ kernelmatrix(k, x, y)
+            @test tmp ≈ kernelmatrix(k, x, y)
 
             tmp_square = Matrix{Float64}(undef, length(x), length(x))
             @test kernelmatrix!(tmp_square, k, x) ≈ kernelmatrix(k, x)
+            @test tmp_square ≈ kernelmatrix(k, x)
 
             tmp_diag = Vector{Float64}(undef, length(x))
             @test kernelmatrix_diag!(tmp_diag, k, x) ≈ kernelmatrix_diag(k, x)
+            @test tmp_diag ≈ kernelmatrix_diag(k, x)
 
             # Test deprecations
             @test @test_deprecated kerneldiagmatrix(k, x) == kernelmatrix_diag(k, x)
@@ -84,15 +87,18 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
 
             tmp = Matrix{Float64}(undef, length(x), length(y))
             @test kernelmatrix!(tmp, k, x, y) ≈ kernelmatrix(k, x, y)
+            @test tmp ≈ kernelmatrix(k, x, y)
             @test_throws DimensionMismatch kernelmatrix!(tmp, k, x, x)
             @test_throws DimensionMismatch kernelmatrix!(tmp, k, x, x_bad)
 
             tmp_square = Matrix{Float64}(undef, length(x), length(x))
             @test kernelmatrix!(tmp_square, k, x) ≈ kernelmatrix(k, x)
+            @test tmp_square ≈ kernelmatrix(k, x)
             @test_throws DimensionMismatch kernelmatrix!(tmp_square, k, y)
 
             tmp_diag = Vector{Float64}(undef, length(x))
             @test kernelmatrix_diag!(tmp_diag, k, x) ≈ kernelmatrix_diag(k, x)
+            @test tmp_diag ≈ kernelmatrix_diag(k, x)
             @test_throws DimensionMismatch kernelmatrix_diag!(tmp_diag, k, y)
         end
     end
@@ -125,13 +131,15 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
 
             tmp = Matrix{Float64}(undef, length(x), length(y))
             @test kernelmatrix(k, x, y) ≈ kernelmatrix!(tmp, k, X, Y; obsdim=obsdim)
+            @test kernelmatrix(k, x, y) ≈ tmp
 
             tmp_square = Matrix{Float64}(undef, length(x), length(x))
             @test kernelmatrix(k, x) ≈ kernelmatrix!(tmp_square, k, X; obsdim=obsdim)
+            @test kernelmatrix(k, x) ≈ tmp_square
 
             tmp_diag = Vector{Float64}(undef, length(x))
-            @test kernelmatrix_diag(k, x) ≈
-                  kernelmatrix_diag!(tmp_diag, k, X; obsdim=obsdim)
+            @test kernelmatrix_diag(k, x) ≈ kernelmatrix_diag!(tmp_diag, k, X; obsdim=obsdim)
+            @test kernelmatrix_diag(k, x) ≈ tmp_diag
 
             # Test deprecations
             @test @test_deprecated kerneldiagmatrix(k, X; obsdim=obsdim) == kernelmatrix_diag(k, X; obsdim=obsdim)
