@@ -31,7 +31,3 @@ function kernelpdmat(k::Kernel, X::AbstractVector)
     end
     return PDMat(K + α * I)
 end
-
-function kernelpdmat(κ::Kernel, X::AbstractVector{<:Real}; obsdim=defaultobs)
-    return kernelpdmat(κ, reshape(X, 1, :); obsdim=2)
-end
