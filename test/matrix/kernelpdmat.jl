@@ -1,7 +1,7 @@
 @testset "kernelpdmat" begin
     rng = MersenneTwister(123456)
     A = rand(rng, 10, 5)
-    vecA = (ColVecs(A), RowVecs(A))
+    vecA = (RowVecs(A), ColVecs(A))
     a = rand(rng, 10)
     k = SqExponentialKernel()
     for obsdim in [1, 2]
