@@ -11,8 +11,8 @@ with the cholesky decomposition precomputed.
 The algorithm recursively tries to add recursively a diagonal nugget until positive
 definiteness is achieved or until the noise is too big.
 """
-function kernelpdmat(κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs)
-    kernelpdmat(κ, vec_of_vecs(X; obsdim=obsdim))
+function kernelpdmat(κ::Kernel, X::AbstractMatrix; obsdim::Int = defaultobs)
+    return kernelpdmat(κ, vec_of_vecs(X; obsdim = obsdim))
 end
 
 function kernelpdmat(κ::Kernel, X::AbstractVector)
