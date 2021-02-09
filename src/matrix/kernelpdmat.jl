@@ -12,10 +12,10 @@ The algorithm recursively tries to add recursively a diagonal nugget until posit
 definiteness is achieved or until the noise is too big.
 """
 function kernelpdmat(κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs)
-    kernelpdmat(κ, vec_of_vecs(X; obsdim=obsim))
+    kernelpdmat(κ, vec_of_vecs(X; obsdim=obsdim))
 end
 
-function kernelpdmat(k::Kernel, X::AbstractVector)
+function kernelpdmat(κ::Kernel, X::AbstractVector)
     K = kernelmatrix(κ, X)
     Kmax = maximum(K)
     α = eps(eltype(K))
