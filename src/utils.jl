@@ -52,18 +52,18 @@ Base.setindex!(D::ColVecs, v::AbstractVector, i) = setindex!(D.X, v, :, i)
 
 dim(x::ColVecs) = size(x.X, 1)
 
-pairwise(d::BinaryOp, x::ColVecs) = Distances.pairwise(d, x.X; dims=2)
-pairwise(d::BinaryOp, x::ColVecs, y::ColVecs) = Distances.pairwise(d, x.X, y.X; dims=2)
-function pairwise(d::BinaryOp, x::AbstractVector, y::ColVecs)
+Distances.pairwise(d::BinaryOp, x::ColVecs) = Distances.pairwise(d, x.X; dims=2)
+Distances.pairwise(d::BinaryOp, x::ColVecs, y::ColVecs) = Distances.pairwise(d, x.X, y.X; dims=2)
+function Distances.pairwise(d::BinaryOp, x::AbstractVector, y::ColVecs)
     return Distances.pairwise(d, reduce(hcat, x), y.X; dims=2)
 end
-function pairwise(d::BinaryOp, x::ColVecs, y::AbstractVector)
+function Distances.pairwise(d::BinaryOp, x::ColVecs, y::AbstractVector)
     return Distances.pairwise(d, x.X, reduce(hcat, y); dims=2)
 end
-function pairwise!(out::AbstractMatrix, d::BinaryOp, x::ColVecs)
+function Distances.pairwise!(out::AbstractMatrix, d::BinaryOp, x::ColVecs)
     return Distances.pairwise!(out, d, x.X; dims=2)
 end
-function pairwise!(out::AbstractMatrix, d::BinaryOp, x::ColVecs, y::ColVecs)
+function Distances.pairwise!(out::AbstractMatrix, d::BinaryOp, x::ColVecs, y::ColVecs)
     return Distances.pairwise!(out, d, x.X, y.X; dims=2)
 end
 
@@ -91,18 +91,18 @@ Base.setindex!(D::RowVecs, v::AbstractVector, i) = setindex!(D.X, v, i, :)
 
 dim(x::RowVecs) = size(x.X, 2)
 
-pairwise(d::BinaryOp, x::RowVecs) = Distances.pairwise(d, x.X; dims=1)
-pairwise(d::BinaryOp, x::RowVecs, y::RowVecs) = Distances.pairwise(d, x.X, y.X; dims=1)
-function pairwise(d::BinaryOp, x::AbstractVector, y::RowVecs)
+Distances.pairwise(d::BinaryOp, x::RowVecs) = Distances.pairwise(d, x.X; dims=1)
+Distances.pairwise(d::BinaryOp, x::RowVecs, y::RowVecs) = Distances.pairwise(d, x.X, y.X; dims=1)
+function Distances.pairwise(d::BinaryOp, x::AbstractVector, y::RowVecs)
     return Distances.pairwise(d, permutedims(reduce(hcat, x)), y.X; dims=1)
 end
-function pairwise(d::BinaryOp, x::RowVecs, y::AbstractVector)
+function Distances.pairwise(d::BinaryOp, x::RowVecs, y::AbstractVector)
     return Distances.pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
 end
-function pairwise!(out::AbstractMatrix, d::BinaryOp, x::RowVecs)
+function Distances.pairwise!(out::AbstractMatrix, d::BinaryOp, x::RowVecs)
     return Distances.pairwise!(out, d, x.X; dims=1)
 end
-function pairwise!(out::AbstractMatrix, d::BinaryOp, x::RowVecs, y::RowVecs)
+function Distances.pairwise!(out::AbstractMatrix, d::BinaryOp, x::RowVecs, y::RowVecs)
     return Distances.pairwise!(out, d, x.X, y.X; dims=1)
 end
 

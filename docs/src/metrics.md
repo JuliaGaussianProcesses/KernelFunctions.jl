@@ -1,4 +1,4 @@
-# Metrics
+# Binary Operations
 
 `SimpleKernel` implementations rely on [Distances.jl](https://github.com/JuliaStats/Distances.jl) for efficiently computing the pairwise matrix.
 This requires a distance measure or metric, such as the commonly used `SqEuclidean` and `Euclidean`.
@@ -11,21 +11,32 @@ KernelFunctions.binary_op(::CustomKernel) = SqEuclidean()
 However, there are kernels that can be implemented efficiently using "metrics" that do not respect all the definitions expected by Distances.jl. For this reason, KernelFunctions.jl provides additional "metrics" such as `DotProduct` ($\langle x, y \rangle$) and `Delta` ($\delta(x,y)$).
 
 
-## Adding a new metric
+## Adding a new binary operation
 
-If you want to create a new "metric" just implement the following:
+If you want to create a new binary operation you have the choice.
+If your operation respects all [`PreMetric` conditions](https://en.wikipedia.org/wiki/Metric_(mathematics)#Generalized_metrics) you can just implement the following:
 
 ```julia
-struct Delta <: Distances.PreMetric
-end
+struct Delta <: Distances.PreMetric end
 
-@inline function Distances._evaluate(::Delta,a::AbstractVector{T},b::AbstractVector{T}) where {T}
+@inline function Distances._evaluate(
+    ::Delta,
+    a::AbstractVector{T},
+    b::AbstractVector{T}
+    ) where {T}
     @boundscheck if length(a) != length(b)
         throw(DimensionMismatch("first array has length $(length(a)) which does not match the length of the second, $(length(b))."))
     end
     return a==b
 end
 
-@inline (dist::Delta)(a::AbstractArray,b::AbstractArray) = Distances._evaluate(dist,a,b)
-@inline (dist::Delta)(a::Number,b::Number) = a==b
+@inline (dist::Delta)(a::AbstractArray, b::AbstractArray) = Distances._evaluate(dist,a,b)
+@inline (dist::Delta)(a::Number, b::Number) = a==b
+```
+
+However if it somehow does not respect some of the conditions (for instance `d(x, y) ≥ 0` for the `DotProduct`), we have a similar backend:
+```julia
+struct DotProduct <: KernelFunctions.AbstractBinaryOp end
+(d::DotProduct)(a, b) = evaluate(d, a,b)
+Distances.evaluate(::DotProduct, a, b) = dot(a, b)
 ```

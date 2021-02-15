@@ -47,7 +47,6 @@ function Distances._pairwise!(P::AbstractMatrix, d::AbstractBinaryOp, a::Abstrac
     return P
 end
 
-
 ## pairwise function for vectors
 function Distances.pairwise(d::AbstractBinaryOp, X::AbstractVector, Y::AbstractVector=X)
     return broadcast(d, X, permutedims(Y))
@@ -62,28 +61,5 @@ function Distances.pairwise!(
     broadcast!(d, out, X, permutedims(Y))
 end
 
-# function pairwise(d::BinaryOp, x::AbstractVector{<:Real})
-#     return Distances.pairwise(d, reshape(x, :, 1); dims = 1)
-# end
-
-# function pairwise(
-#     d::BinaryOp,
-#     x::AbstractVector{<:Real},
-#     y::AbstractVector{<:Real},
-# )
-#     return Distances.pairwise(d, reshape(x, :, 1), reshape(y, :, 1); dims = 1)
-# end
-
-# function pairwise!(out::AbstractMatrix, d::BinaryOp, x::AbstractVector{<:Real})
-#     return Distances.pairwise!(out, d, reshape(x, :, 1); dims = 1)
-# end
-
-# function pairwise!(
-#     out::AbstractMatrix,
-#     d::BinaryOp,
-#     x::AbstractVector{<:Real},
-#     y::AbstractVector{<:Real},
-# )
-#     return Distances.pairwise!(out, d, reshape(x, :, 1), reshape(y, :, 1); dims=1)
-# end
-
+## Additional needed Helpers
+Distances.result_type(::AbstractBinaryOp, Ta::Type, Tb::Type) = promote_type(Ta, Tb)
