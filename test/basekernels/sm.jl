@@ -1,5 +1,4 @@
 @testset "sm" begin
-
     D_in = 5
     v1 = rand(D_in)
     v2 = rand(D_in)
@@ -14,20 +13,25 @@
 
     t = v1 - v2
 
-    @test k1(v1, v2) ≈ sum(αs₁ .* exp.(-(t' * γs)'.^2 ./ 2) .* cospi.((t' * ωs)')) atol=1e-5
+    @test k1(v1, v2) ≈ sum(αs₁ .* exp.(-(t' * γs)' .^ 2 ./ 2) .* cospi.((t' * ωs)')) atol =
+        1e-5
 
     @test isapprox(
         k2(v1, v2),
-        prod(
-            [sum(αs₂[i,:]' .* exp.(-(γs[i,:]' * t[i]).^2 ./ 2) .*
-            cospi.(ωs[i,:]' * t[i])) for i in 1:length(t)],
-        );
+        prod([
+            sum(
+                αs₂[i, :]' .* exp.(-(γs[i, :]' * t[i]) .^ 2 ./ 2) .*
+                cospi.(ωs[i, :]' * t[i]),
+            ) for i in 1:length(t)
+        ],);
         atol=1e-5,
     )
 
-    @test_throws DimensionMismatch spectral_mixture_kernel(rand(5) ,rand(4,3), rand(4,3))
-    @test_throws DimensionMismatch spectral_mixture_kernel(rand(3) ,rand(4,3), rand(5,3))
-    @test_throws DimensionMismatch spectral_mixture_product_kernel(rand(5,3) ,rand(4,3), rand(5,3))
+    @test_throws DimensionMismatch spectral_mixture_kernel(rand(5), rand(4, 3), rand(4, 3))
+    @test_throws DimensionMismatch spectral_mixture_kernel(rand(3), rand(4, 3), rand(5, 3))
+    @test_throws DimensionMismatch spectral_mixture_product_kernel(
+        rand(5, 3), rand(4, 3), rand(5, 3)
+    )
 
     # Standardised tests. Choose input dims carefully.
     @testset "ColVecs" begin

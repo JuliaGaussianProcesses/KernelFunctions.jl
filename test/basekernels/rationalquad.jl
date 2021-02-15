@@ -1,28 +1,29 @@
 @testset "rationalquad" begin
     rng = MersenneTwister(123456)
-    x = rand(rng)*2
+    x = rand(rng) * 2
     v1 = rand(rng, 3)
     v2 = rand(rng, 3)
 
     @testset "RationalQuadraticKernel" begin
         α = 2.0
-        k = RationalQuadraticKernel(α=α)
+        k = RationalQuadraticKernel(; α=α)
 
         @testset "RQ ≈ EQ for large α" begin
             @test isapprox(
-                RationalQuadraticKernel(α=1e9)(v1, v2),
+                RationalQuadraticKernel(; α=1e9)(v1, v2),
                 SqExponentialKernel()(v1, v2);
-                atol=1e-6, rtol=1e-6,
+                atol=1e-6,
+                rtol=1e-6,
             )
         end
 
         @test binary_op(RationalQuadraticKernel()) == SqEuclidean()
-        @test binary_op(RationalQuadraticKernel(α=2.0)) == SqEuclidean()
+        @test binary_op(RationalQuadraticKernel(; α=2.0)) == SqEuclidean()
         @test repr(k) == "Rational Quadratic Kernel (α = $(α))"
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
-        test_ADs(x->RationalQuadraticKernel(alpha=x[1]),[α])
+        test_ADs(x -> RationalQuadraticKernel(; alpha=x[1]), [α])
         test_params(k, ([α],))
     end
 
@@ -31,15 +32,15 @@
 
         @test repr(k) == "Gamma Rational Quadratic Kernel (α = 2.0, γ = 2.0)"
 
-        @testset "Default GammaRQ ≈ RQ for large α with rescaled inputs" begin
+        @testset "Default GammaRQ ≈ RQ with rescaled inputs" begin
             @test isapprox(
                 GammaRationalQuadraticKernel()(v1 ./ sqrt(2), v2 ./ sqrt(2)),
                 RationalQuadraticKernel()(v1, v2),
             )
             a = 1.0 + rand()
             @test isapprox(
-                GammaRationalQuadraticKernel(α=a)(v1 ./ sqrt(2), v2 ./ sqrt(2)),
-                RationalQuadraticKernel(α=a)(v1, v2),
+                GammaRationalQuadraticKernel(; α=a)(v1 ./ sqrt(2), v2 ./ sqrt(2)),
+                RationalQuadraticKernel(; α=a)(v1, v2),
             )
         end
 
@@ -47,9 +48,10 @@
             v1 = randn(2)
             v2 = randn(2)
             @test isapprox(
-                GammaRationalQuadraticKernel(α=1e9)(v1 ./ sqrt(2), v2 ./ sqrt(2)),
+                GammaRationalQuadraticKernel(; α=1e9)(v1 ./ sqrt(2), v2 ./ sqrt(2)),
                 SqExponentialKernel()(v1, v2);
-                atol=1e-6, rtol=1e-6,
+                atol=1e-6,
+                rtol=1e-6,
             )
         end
 
@@ -57,9 +59,10 @@
             v1 = randn(4)
             v2 = randn(4)
             @test isapprox(
-                GammaRationalQuadraticKernel(α=1e9, γ=1.0)(v1, v2),
+                GammaRationalQuadraticKernel(; α=1e9, γ=1.0)(v1, v2),
                 ExponentialKernel()(v1, v2);
-                atol=1e-6, rtol=1e-6,
+                atol=1e-6,
+                rtol=1e-6,
             )
         end
 
@@ -68,21 +71,21 @@
             v2 = randn(3)
             γ = rand() + 0.5
             @test isapprox(
-                GammaRationalQuadraticKernel(α=1e9, γ=γ)(v1, v2),
-                GammaExponentialKernel(γ=γ)(v1, v2);
-                atol=1e-6, rtol=1e-6,
+                GammaRationalQuadraticKernel(; α=1e9, γ=γ)(v1, v2),
+                GammaExponentialKernel(; γ=γ)(v1, v2);
+                atol=1e-6,
+                rtol=1e-6,
             )
         end
 
-        @test binary_op(GammaRationalQuadraticKernel()) == SqEuclidean()
-        @test binary_op(GammaRationalQuadraticKernel(γ=2.0)) == SqEuclidean()
-        @test binary_op(GammaRationalQuadraticKernel(γ=2.0, α=3.0)) == SqEuclidean()
+        @test binary_op(GammaRationalQuadraticKernel()) == Euclidean()
+        @test binary_op(GammaRationalQuadraticKernel(; γ=2.0)) == Euclidean()
+        @test binary_op(GammaRationalQuadraticKernel(; γ=2.0, α=3.0)) == Euclidean()
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
-        # test_ADs(x->GammaRationalQuadraticKernel(α=x[1], γ=x[2]), [a, 2.0])
-        @test_broken "All (problem with power operation)"
         a = 1.0 + rand()
+        test_ADs(x -> GammaRationalQuadraticKernel(; α=x[1], γ=x[2]), [a, 1 + 0.5 * rand()])
         test_params(GammaRationalQuadraticKernel(; α=a, γ=x), ([a], [x]))
     end
 end

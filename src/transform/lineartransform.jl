@@ -1,16 +1,17 @@
 """
     LinearTransform(A::AbstractMatrix)
 
-Apply the linear transformation realised by the matrix `A`.
+Linear transformation of the input realised by the matrix `A`.
 
 The second dimension of `A` must match the number of features of the target.
 
 # Examples
 
-```julia-repl
-julia> A = rand(10, 5)
+```jldoctest
+julia> A = rand(10, 5); t = LinearTransform(A); X = rand(5, 100);
 
-julia> tr = LinearTransform(A)
+julia> map(t, ColVecs(X)) == ColVecs(A * X)
+true
 ```
 """
 struct LinearTransform{T<:AbstractMatrix{<:Real}} <: Transform
@@ -20,10 +21,14 @@ end
 @functor LinearTransform
 
 function set!(t::LinearTransform{<:AbstractMatrix{T}}, A::AbstractMatrix{T}) where {T<:Real}
-    size(t.A) == size(A) ||
-        error("size of the given matrix ", size(A), " and of the transformation matrix ",
-              size(t.A), " are not the same")
-    t.A .= A
+    size(t.A) == size(A) || error(
+        "size of the given matrix ",
+        size(A),
+        " and of the transformation matrix ",
+        size(t.A),
+        " are not the same",
+    )
+    return t.A .= A
 end
 
 (t::LinearTransform)(x::Real) = vec(t.A * x)
@@ -34,5 +39,5 @@ _map(t::LinearTransform, x::ColVecs) = ColVecs(t.A * x.X)
 _map(t::LinearTransform, x::RowVecs) = RowVecs(x.X * t.A')
 
 function Base.show(io::IO, t::LinearTransform)
-    print(io::IO, "Linear transform (size(A) = ", size(t.A), ")")
+    return print(io::IO, "Linear transform (size(A) = ", size(t.A), ")")
 end

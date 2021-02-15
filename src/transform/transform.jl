@@ -1,5 +1,7 @@
 """
-Abstract type defining a slice-wise transformation on an input matrix
+    Transform
+
+Abstract type defining a transformation of the input.
 """
 abstract type Transform end
 
@@ -9,7 +11,7 @@ _map(t::Transform, x::AbstractVector) = t.(x)
 """
     IdentityTransform()
 
-Return exactly the input
+Transformation that returns exactly the input.
 """
 struct IdentityTransform <: Transform end
 
@@ -17,7 +19,6 @@ struct IdentityTransform <: Transform end
 _map(::IdentityTransform, x::AbstractVector) = x
 
 ### TODO Maybe defining adjoints could help but so far it's not working
-
 
 # @adjoint function ScaleTransform(s::T) where {T<:Real}
 #     @check_args(ScaleTransform, s, s > zero(T), "s > 0")

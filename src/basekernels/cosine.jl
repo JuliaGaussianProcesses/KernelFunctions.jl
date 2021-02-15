@@ -1,14 +1,18 @@
 """
     CosineKernel()
 
-The cosine kernel is a stationary kernel for a sinusoidal given by
-```
-    κ(x,y) = cos( π * (x-y) )
+Cosine kernel.
+
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^d``, the cosine kernel is defined as
+```math
+k(x, x') = \\cos(\\pi \\|x-x'\\|_2).
 ```
 """
 struct CosineKernel <: SimpleKernel end
 
-kappa(κ::CosineKernel, d::Real) = cospi(d)
+kappa(::CosineKernel, d::Real) = cospi(d)
 
 binary_op(::CosineKernel) = Euclidean()
 

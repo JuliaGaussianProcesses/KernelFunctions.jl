@@ -1,7 +1,3 @@
-"""
-KernelFunctions. [Github](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl)
-[Documentation](https://juliagaussianprocesses.github.io/KernelFunctions.jl/stable/)
-"""
 module KernelFunctions
 
 if !isfile(joinpath(@__DIR__, "update_v0.8.0"))
@@ -12,12 +8,12 @@ if !isfile(joinpath(@__DIR__, "update_v0.8.0"))
         This kernel now divides the squared distance by 2 to align with standard practice.
         This warning will be removed in 0.9.0.
         """;
-        color = Base.info_color(),
+        color=Base.info_color(),
     )
     touch(joinpath(@__DIR__, "update_v0.8.0"))
 end
 
-export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!
+export kernelmatrix, kernelmatrix!, kernelmatrix_diag, kernelmatrix_diag!
 export transform
 export duplicate, set! # Helpers
 
@@ -28,17 +24,23 @@ export SqExponentialKernel, RBFKernel, GaussianKernel, SEKernel
 export LaplacianKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
 export FBMKernel
-export MaternKernel, Matern32Kernel, Matern52Kernel
+export MaternKernel, Matern12Kernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalQuadraticKernel, GammaRationalQuadraticKernel
-export MahalanobisKernel, GaborKernel, PiecewisePolynomialKernel
+export GaborKernel, PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
-export KernelSum, KernelProduct
+export KernelSum, KernelProduct, KernelTensorProduct
 export TransformedKernel, ScaledKernel
-export TensorProduct
 
-export Transform, SelectTransform, ChainTransform, ScaleTransform, LinearTransform,
-    ARDTransform, IdentityTransform, FunctionTransform, PeriodicTransform
+export Transform,
+    SelectTransform,
+    ChainTransform,
+    ScaleTransform,
+    LinearTransform,
+    ARDTransform,
+    IdentityTransform,
+    FunctionTransform,
+    PeriodicTransform
 
 export NystromFact, nystrom
 
@@ -49,6 +51,9 @@ export ColVecs, RowVecs
 export MOInput
 export IndependentMOKernel, LatentFactorMOKernel
 
+# Reexports
+export tensor, ⊗
+
 using Compat
 using Requires
 using Distances, LinearAlgebra
@@ -56,9 +61,8 @@ using Functors
 using SpecialFunctions: loggamma, besselk, polygamma
 using ZygoteRules: @adjoint, pullback
 using StatsFuns: logtwo
-using InteractiveUtils: subtypes
 using StatsBase
-
+using TensorCore
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
@@ -88,7 +92,6 @@ include(joinpath("basekernels", "exponential.jl"))
 include(joinpath("basekernels", "exponentiated.jl"))
 include(joinpath("basekernels", "fbm.jl"))
 include(joinpath("basekernels", "gabor.jl"))
-include(joinpath("basekernels", "maha.jl"))
 include(joinpath("basekernels", "matern.jl"))
 include(joinpath("basekernels", "nn.jl"))
 include(joinpath("basekernels", "periodic.jl"))
@@ -103,7 +106,8 @@ include(joinpath("kernels", "scaledkernel.jl"))
 include(joinpath("matrix", "kernelmatrix.jl"))
 include(joinpath("kernels", "kernelsum.jl"))
 include(joinpath("kernels", "kernelproduct.jl"))
-include(joinpath("kernels", "tensorproduct.jl"))
+include(joinpath("kernels", "kerneltensorproduct.jl"))
+include(joinpath("kernels", "overloads.jl"))
 include(joinpath("approximations", "nystrom.jl"))
 include("generic.jl")
 
@@ -116,11 +120,13 @@ include("zygote_adjoints.jl")
 
 include("test_utils.jl")
 
+include("deprecated.jl")
+
 function __init__()
-    @require Kronecker="2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin
+    @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin
         include(joinpath("matrix", "kernelkroneckermat.jl"))
     end
-    @require PDMats="90014a1f-27ba-587c-ab20-58faa44d9150" begin
+    @require PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150" begin
         include(joinpath("matrix", "kernelpdmat.jl"))
     end
 end

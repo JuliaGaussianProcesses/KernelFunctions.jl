@@ -1,12 +1,18 @@
 """
     FunctionTransform(f)
 
-Take a function or object `f` as an argument which is going to act on each vector individually.
-Make sure that `f` is supposed to act on a vector.
-For example replace `f(x)=sin(x)` by `f(x)=sin.(x)`
-```
-    f(x) = abs.(x)
-    tr = FunctionTransform(f)
+Transformation that applies function `f` to the input.
+
+Make sure that `f` can act on an input. For instance, if the inputs are vectors, use
+`f(x) = sin.(x)` instead of `f = sin`.
+
+# Examples
+
+```jldoctest
+julia> f(x) = sum(x); t = FunctionTransform(f); X = randn(100, 10);
+
+julia> map(t, ColVecs(X)) == ColVecs(sum(X; dims=1))
+true
 ```
 """
 struct FunctionTransform{F} <: Transform
@@ -18,7 +24,6 @@ end
 (t::FunctionTransform)(x) = t.f(x)
 
 _map(t::FunctionTransform, x::AbstractVector{<:Real}) = map(t.f, x)
-     
 
 function _map(t::FunctionTransform, x::ColVecs)
     vals = map(axes(x.X, 2)) do i
@@ -34,6 +39,6 @@ function _map(t::FunctionTransform, x::RowVecs)
     return RowVecs(reduce(hcat, vals)')
 end
 
-duplicate(t::FunctionTransform,f) = FunctionTransform(f)
+duplicate(t::FunctionTransform, f) = FunctionTransform(f)
 
 Base.show(io::IO, t::FunctionTransform) = print(io, "Function Transform: ", t.f)

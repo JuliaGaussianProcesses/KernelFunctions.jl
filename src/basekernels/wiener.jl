@@ -1,40 +1,46 @@
 """
+    WienerKernel(; i::Int=0)
     WienerKernel{i}()
 
-i-times integrated Wiener process kernel function.
+The `i`-times integrated Wiener process kernel function.
 
-- For i=-1, this is just the white noise covariance, see [`WhiteKernel`](@ref).
-- For i= 0, this is the Wiener process covariance,
-- For i= 1, this is the integrated Wiener process covariance (velocity),
-- For i= 2, this is the twice-integrated Wiener process covariance (accel.),
-- For i= 3, this is the thrice-integrated Wiener process covariance,
+# Definition
 
-where ``κᵢ`` is given by
-
+For inputs ``x, x' \\in \\mathbb{R}^d``, the ``i``-times integrated Wiener process kernel
+with ``i \\in \\{-1, 0, 1, 2, 3\\}`` is defined[^SDH] as
 ```math
-    κ₋₁(x, y) =  δ(x, y)
-    κ₀(x, y)  =  min(x, y)
+k_i(x, x') = \\begin{cases}
+    \\delta(x, x') & \\text{if } i=-1,\\\\
+    \\min\\big(\\|x\\|_2, \\|x'\\|_2\\big) & \\text{if } i=0,\\\\
+    a_{i1}^{-1} \\min\\big(\\|x\\|_2, \\|x'\\|_2\\big)^{2i + 1}
+    + a_{i2}^{-1} \\|x - x'\\|_2 r_i\\big(\\|x\\|_2, \\|x'\\|_2\\big) \\min\\big(\\|x\\|_2, \\|x'\\|_2\\big)^{i + 1}
+    & \\text{otherwise},
+\\end{cases}
 ```
-and for ``i >= 1``,
+where the coefficients ``a`` are given by
 ```math
-    κᵢ(x, y) = 1 / aᵢ * min(x, y)^(2i + 1) + bᵢ * min(x, y)^(i + 1) * |x - y| * rᵢ(x, y),
+a = \\begin{bmatrix}
+3 & 2 \\\\
+20 & 12 \\\\
+252 & 720
+\\end{bmatrix}
 ```
-    with the coefficients ``aᵢ``, ``bᵢ`` and the residual ``rᵢ(x, y)`` defined as follows:
+and the functions ``r_i`` are defined as
 ```math
-    a₁ = 3, b₁ = 1/2, r₁(x, y) = 1,
-    a₂ = 20, b₂ = 1/12, r₂(x, y) = x + y - min(x, y) / 2,
-    a₃ = 252, b₃ = 1/720, r₃(x, y) = 5 * max(x, y)² + 2 * x * z + 3 * min(x, y)²
-
+\\begin{aligned}
+r_1(t, t') &= 1,\\\\
+r_2(t, t') &= t + t' - \\frac{\\min(t, t')}{2},\\\\
+r_3(t, t') &= 5 \\max(t, t')^2 + 2 tt' + 3 \\min(t, t')^2.
+\\end{aligned}
 ```
 
-# References:
-See the paper *Probabilistic ODE Solvers with Runge-Kutta Means* by Schober, Duvenaud and
-Hennig, NIPS, 2014, for more details.
+The [`WhiteKernel`](@ref) is recovered for ``i = -1``.
 
+[^SDH]: Schober, Duvenaud & Hennig (2014). Probabilistic ODE Solvers with Runge-Kutta Means.
 """
 struct WienerKernel{I} <: Kernel
-    function WienerKernel{I}() where I
-        @assert I ∈ (-1, 0, 1, 2, 3) "Invalid parameter i=$(I). Should be -1, 0, 1, 2 or 3."
+    function WienerKernel{I}() where {I}
+        @check_args(WienerKernel, I, I ∈ (-1, 0, 1, 2, 3), "I ∈ {-1, 0, 1, 2, 3}")
         if I == -1
             return WhiteKernel()
         end
@@ -42,7 +48,7 @@ struct WienerKernel{I} <: Kernel
     end
 end
 
-function WienerKernel(;i::Integer=0)
+function WienerKernel(; i::Integer=0)
     return WienerKernel{i}()
 end
 
@@ -63,16 +69,17 @@ function (::WienerKernel{2})(x, y)
     X = sqrt(sum(abs2, x))
     Y = sqrt(sum(abs2, y))
     minXY = min(X, Y)
-    return 1 / 20 * minXY^5 + 1 / 12 * minXY^3 * euclidean(x, y) *
-        ( X + Y - 1 / 2 * minXY )
+    return 1 / 20 * minXY^5 + 1 / 12 * minXY^3 * euclidean(x, y) * (X + Y - 1 / 2 * minXY)
 end
 
 function (::WienerKernel{3})(x, y)
     X = sqrt(sum(abs2, x))
     Y = sqrt(sum(abs2, y))
     minXY = min(X, Y)
-    return 1 / 252 * minXY^7 + 1 / 720 * minXY^4 * euclidean(x, y) *
-        ( 5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2 )
+    return 1 / 252 * minXY^7 +
+           1 / 720 * minXY^4 * euclidean(x, y) * (5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2)
 end
 
-Base.show(io::IO, ::WienerKernel{I}) where I = print(io, I, "-times integrated Wiener kernel")
+function Base.show(io::IO, ::WienerKernel{I}) where {I}
+    return print(io, I, "-times integrated Wiener kernel")
+end

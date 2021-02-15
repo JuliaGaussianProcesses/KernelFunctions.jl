@@ -1,14 +1,18 @@
 """
     ExponentiatedKernel()
 
-The exponentiated kernel is a Mercer kernel given by:
-```
-    κ(x,y) = exp(xᵀy)
+Exponentiated kernel.
+
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^d``, the exponentiated kernel is defined as
+```math
+k(x, x') = \\exp(x^\\top x').
 ```
 """
 struct ExponentiatedKernel <: SimpleKernel end
 
-kappa(κ::ExponentiatedKernel, xᵀy::Real) = exp(xᵀy)
+kappa(::ExponentiatedKernel, xᵀy::Real) = exp(xᵀy)
 
 binary_op(::ExponentiatedKernel) = DotProduct()
 

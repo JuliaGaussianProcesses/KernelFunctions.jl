@@ -1,10 +1,12 @@
+# Custom Kernels
+
 ## Creating your own kernel
 
 KernelFunctions.jl contains the most popular kernels already but you might want to make your own!
 
-Here are a few ways depending on how complicated your kernel is :
+Here are a few ways depending on how complicated your kernel is:
 
-### SimpleKernel for kernels function depending on a metric
+### SimpleKernel for kernel functions depending on a metric
 
 If your kernel function is of the form `k(x, y) = f(binary_op(x, y))` where `binary_op(x, y)` is a `PreMetric` or another function/instance implementing `pairwise` and `evaluate` from `Distances.jl`,
 you can construct your custom kernel by defining `kappa` and `binary_op` for your kernel.
@@ -20,7 +22,7 @@ KernelFunctions.binary_op(::MyKernel) = SqEuclidean()
 ### Kernel for more complex kernels
 
 If your kernel does not satisfy such a representation, all you need to do is define `(k::MyKernel)(x, y)` and inherit from `Kernel`.
-For example we recreate here the `NeuralNetworkKernel`
+For example, we recreate here the `NeuralNetworkKernel`:
 
 ```julia
 struct MyKernel <: KernelFunctions.Kernel end
@@ -28,7 +30,7 @@ struct MyKernel <: KernelFunctions.Kernel end
 (::MyKernel)(x, y) = asin(dot(x, y) / sqrt((1 + sum(abs2, x)) * (1 + sum(abs2, y))))
 ```
 
-Note that `BaseKernel` do not use `Distances.jl` and can therefore be a bit slower.
+Note that the fallback implementation of the base `Kernel` evaluation does not use `Distances.jl` and can therefore be a bit slower.
 
 ### Additional Options
 
@@ -37,7 +39,7 @@ Finally there are additional functions you can define to bring in more features:
  - `KernelFunctions.dim(x::MyDataType)`: by default the dimension of the inputs will only be checked for vectors of type `AbstractVector{<:Real}`. If you want to check the dimensionality of your inputs, dispatch the `dim` function on your datatype. Note that `0` is the default.
  - `dim` is called within `KernelFunctions.validate_inputs(x::MyDataType, y::MyDataType)`, which can instead be directly overloaded if you want to run special checks for your input types.
  - `kernelmatrix(k::MyKernel, ...)`: you can redefine the diverse `kernelmatrix` functions to eventually optimize the computations.
- - `Base.print(io::IO, k::MyKernel)`: if you want to specialize the printing of your kernel
+ - `Base.print(io::IO, k::MyKernel)`: if you want to specialize the printing of your kernel.
 
 KernelFunctions uses [Functors.jl](https://github.com/FluxML/Functors.jl) for specifying trainable kernel parameters
 in a way that is compatible with the [Flux ML framework](https://github.com/FluxML/Flux.jl).
