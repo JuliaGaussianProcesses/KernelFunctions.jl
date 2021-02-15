@@ -68,11 +68,11 @@ abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
 
 abstract type AbstractBinaryOp end
-const BinaryOp = Union{Metric, AbstractBinaryOp}
+const BinaryOp = Union{Distances.Metric, AbstractBinaryOp}
 
 include("utils.jl")
 
-include(joinpath("binary_op", "pairwise.jl"))
+include(joinpath("binary_op", "abstractbinaryop.jl"))
 include(joinpath("binary_op", "dotproduct.jl"))
 include(joinpath("binary_op", "delta.jl"))
 include(joinpath("binary_op", "sinus.jl"))

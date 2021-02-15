@@ -29,15 +29,15 @@
 
         Y = randn(rng, D, N + 1)
         DY = ColVecs(Y)
-        @test KernelFunctions.pairwise(SqEuclidean(), DX) ≈
+        @test pairwise(SqEuclidean(), DX) ≈
               pairwise(SqEuclidean(), X; dims=2)
-        @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈
+        @test pairwise(SqEuclidean(), DX, DY) ≈
               pairwise(SqEuclidean(), X, Y; dims=2)
         K = zeros(N, N)
-        KernelFunctions.pairwise!(K, SqEuclidean(), DX)
+        pairwise!(K, SqEuclidean(), DX)
         @test K ≈ pairwise(SqEuclidean(), X; dims=2)
         K = zeros(N, N + 1)
-        KernelFunctions.pairwise!(K, SqEuclidean(), DX, DY)
+        pairwise!(K, SqEuclidean(), DX, DY)
         @test K ≈ pairwise(SqEuclidean(), X, Y; dims=2)
 
         let
@@ -68,15 +68,15 @@
 
         Y = randn(rng, D + 1, N)
         DY = RowVecs(Y)
-        @test KernelFunctions.pairwise(SqEuclidean(), DX) ≈
+        @test pairwise(SqEuclidean(), DX) ≈
               pairwise(SqEuclidean(), X; dims=1)
-        @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈
+        @test pairwise(SqEuclidean(), DX, DY) ≈
               pairwise(SqEuclidean(), X, Y; dims=1)
         K = zeros(D, D)
-        KernelFunctions.pairwise!(K, SqEuclidean(), DX)
+        pairwise!(K, SqEuclidean(), DX)
         @test K ≈ pairwise(SqEuclidean(), X; dims=1)
         K = zeros(D, D + 1)
-        KernelFunctions.pairwise!(K, SqEuclidean(), DX, DY)
+        pairwise!(K, SqEuclidean(), DX, DY)
         @test K ≈ pairwise(SqEuclidean(), X, Y; dims=1)
 
         let

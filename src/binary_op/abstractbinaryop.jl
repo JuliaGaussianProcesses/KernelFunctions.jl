@@ -8,15 +8,15 @@ function Distances.pairwise(d::AbstractBinaryOp, a::AbstractMatrix, b::AbstractM
     m = size(a, dims)
     n = size(b, dims)
     P = Matrix{Distances.result_type(d, a, b)}(undef, m, n)
-    return mul!(P, a, b')
     if dims == 1
-        return _pairwise!(P, d, transpose(a), transpose(b))
+        return Distances._pairwise!(P, d, transpose(a), transpose(b))
     else
-        return _pairwise!(P, d, a, b)
+        return Distances._pairwise!(P, d, a, b)
     end
+    return P
 end
 
-function Distances.pairwise!(P::AbstractMatrix, ::DotProduct, a::AbstractMatrix, b::AbstractMatrix=a; dims=1)
+function Distances.pairwise!(P::AbstractMatrix, d::AbstractBinaryOp, a::AbstractMatrix, b::AbstractMatrix=a; dims=1)
     dims = deprecated_dims(dims)
     dims in (1, 2) || throw(ArgumentError("dims should be 1 or 2 (got $dims)"))
     if dims == 1
@@ -33,18 +33,27 @@ function Distances.pairwise!(P::AbstractMatrix, ::DotProduct, a::AbstractMatrix,
     size(P) == (na, nb) ||
         throw(DimensionMismatch("Incorrect size of P (got $(size(P)), expected $((na, nb)))."))
     if dims == 1
-        _pairwise!(P, metric, transpose(a), transpose(b))
+        _pairwise!(P, d, transpose(a), transpose(b))
     else
-        _pairwise!(P, metric, a, b)
+        _pairwise!(P, d, a, b)
     end
+    return P
 end
 
+function Distances._pairwise!(P::AbstractMatrix, d::AbstractBinaryOp, a::AbstractMatrix, b::AbstractMatrix)
+    for ij in CartesianIndices(P)
+        P[ij] = @views d(a[:, ij[1]], b[:, ij[2]])
+    end
+    return P
+end
+
+
 ## pairwise function for vectors
-function pairwise(d::AbstractBinaryOp, X::AbstractVector, Y::AbstractVector=X)
+function Distances.pairwise(d::AbstractBinaryOp, X::AbstractVector, Y::AbstractVector=X)
     return broadcast(d, X, permutedims(Y))
 end
 
-function pairwise!(
+function Distances.pairwise!(
     out::AbstractMatrix,
     d::AbstractBinaryOp,
     X::AbstractVector,

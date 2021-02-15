@@ -5,8 +5,8 @@ struct DotProduct <: AbstractBinaryOp end
 (d::DotProduct)(a, b) = Distances.evaluate(d, a, b)
 Distances.evaluate(::DotProduct, a, b) = dot(a, b)
 
-function Distances._pairwise!(P::AbstractMatrix, ::DotProduct, a::AbstractMatrix, b::AbstractMatrix=a)
-    return mul!(P, a, transpose(b))
+function Distances._pairwise!(P::AbstractMatrix, ::KernelFunctions.DotProduct, a::AbstractMatrix, b::AbstractMatrix=a)
+    return mul!(P, transpose(a), b)
 end
 
 # @inline function Distances._evaluate(::DotProduct, a::AbstractVector, b::AbstractVector)
