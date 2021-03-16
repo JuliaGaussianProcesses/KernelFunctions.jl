@@ -34,26 +34,26 @@ end
 # Also defines the colwise method for abstractvectors
 
 
-function Distances.colwise(d::PreMetric, x::ColVecs)
+function colwise(d::PreMetric, x::ColVecs)
     Distances.colwise(d, x.X, x.X)
 end
 
-function Distances.colwise(d::PreMetric, x::RowVecs)
+function colwise(d::PreMetric, x::RowVecs)
     Distances.colwise(d, x.X', x.X')
 end
 
-function Distances.colwise(d::PreMetric, x::AbstractVector)
+function colwise(d::PreMetric, x::AbstractVector)
     d.(x, x)
 end
 
-function Distances.colwise(d::PreMetric, x::ColVecs, y::ColVecs)
+function colwise(d::PreMetric, x::ColVecs, y::ColVecs)
     Distances.colwise(d, x.X, y.X)
 end
 
-function Distances.colwise(d::PreMetric, x::RowVecs, y::RowVecs)
+function colwise(d::PreMetric, x::RowVecs, y::RowVecs)
     Distances.colwise(d, x.X', y.X')
 end
 
-function Distances.colwise(d::PreMetric, x::AbstractVector, y::AbstractVector)
+function colwise(d::PreMetric, x::AbstractVector, y::AbstractVector)
     d.(x, y)
 end
