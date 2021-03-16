@@ -31,29 +31,31 @@ function gradient(f, ::Val{:Zygote}, args)
 end
 
 function gradient(f, ::Val{:ForwardDiff}, args)
-    ForwardDiff.gradient(f, args)
+    return ForwardDiff.gradient(f, args)
 end
 
 function gradient(f, ::Val{:ReverseDiff}, args)
-    ReverseDiff.gradient(f, args)
+    return ReverseDiff.gradient(f, args)
 end
 
 function gradient(f, ::Val{:FiniteDiff}, args)
-    first(FiniteDifferences.grad(FDM, f, args))
+    return first(FiniteDifferences.grad(FDM, f, args))
 end
 
 function compare_gradient(f, AD::Symbol, args)
     grad_AD = gradient(f, AD, args)
     grad_FD = gradient(f, :FiniteDiff, args)
-    @test grad_AD ≈ grad_FD atol=1e-8 rtol=1e-5
+    @test grad_AD ≈ grad_FD atol = 1e-8 rtol = 1e-5
 end
 
-testfunction(k, A, B, dim) = sum(kernelmatrix(k, A, B, obsdim = dim))
-testfunction(k, A, dim) = sum(kernelmatrix(k, A, obsdim = dim))
-testdiagfunction(k, A, dim) = sum(kerneldiagmatrix(k, A, obsdim = dim))
-testdiagfunction(k, A, B, dim) = sum(kerneldiagmatrix(k, A, B, obsdim = dim))
+testfunction(k, A, B, dim) = sum(kernelmatrix(k, A, B, obsdim=dim))
+testfunction(k, A, dim) = sum(kernelmatrix(k, A, obsdim=dim))
+testdiagfunction(k, A, dim) = sum(kerneldiagmatrix(k, A, obsdim=dim))
+testdiagfunction(k, A, B, dim) = sum(kerneldiagmatrix(k, A, B, obsdim=dim))
 
-function test_ADs(kernelfunction, args = nothing; ADs = [:Zygote, :ForwardDiff, :ReverseDiff], dims = [3, 3])
+function test_ADs(
+    kernelfunction, args=nothing; ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=[3, 3]
+)
     test_fd = test_FiniteDiff(kernelfunction, args, dims)
     if !test_fd.anynonpass
         for AD in ADs
@@ -62,7 +64,7 @@ function test_ADs(kernelfunction, args = nothing; ADs = [:Zygote, :ForwardDiff, 
     end
 end
 
-function test_FiniteDiff(kernelfunction, args = nothing, dims = [3, 3])
+function test_FiniteDiff(kernelfunction, args=nothing, dims=[3, 3])
     # Init arguments :
     k = if args === nothing
         kernelfunction()
@@ -82,8 +84,8 @@ function test_FiniteDiff(kernelfunction, args = nothing, dims = [3, 3])
         x = rand(rng, dims[1])
         y = rand(rng, dims[1])
         @test_nowarn gradient(:FiniteDiff, x) do x
-                k(x, y)
-            end
+            k(x, y)
+        end
         if !(args === nothing)
             @test_nowarn gradient(:FiniteDiff, args) do p
                 kernelfunction(p)(x, y)
@@ -96,7 +98,7 @@ function test_FiniteDiff(kernelfunction, args = nothing, dims = [3, 3])
             @test_nowarn gradient(:FiniteDiff, A) do a
                 testfunction(k, a, dim)
             end
-            @test_nowarn gradient(:FiniteDiff , A) do a
+            @test_nowarn gradient(:FiniteDiff, A) do a
                 testfunction(k, a, B, dim)
             end
             @test_nowarn gradient(:FiniteDiff, B) do b
@@ -126,7 +128,7 @@ function test_FiniteDiff(kernelfunction, args = nothing, dims = [3, 3])
     end
 end
 
-function test_AD(AD::Symbol, kernelfunction, args = nothing, dims = [3, 3])
+function test_AD(AD::Symbol, kernelfunction, args=nothing, dims=[3, 3])
     @testset "$(AD)" begin
         # Test kappa function
         k = if args === nothing
@@ -153,7 +155,7 @@ function test_AD(AD::Symbol, kernelfunction, args = nothing, dims = [3, 3])
         end
         if !(args === nothing)
             compare_gradient(AD, args) do p
-                kernelfunction(p)(x,y)
+                kernelfunction(p)(x, y)
             end
         end
         # Testing kernel matrices

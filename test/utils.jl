@@ -7,8 +7,8 @@
     w = randn(rng, N)
 
     @testset "VecOfVecs" begin
-        @test vec_of_vecs(X, obsdim = 2) == ColVecs(X)
-        @test vec_of_vecs(X, obsdim = 1) == RowVecs(X)
+        @test vec_of_vecs(X; obsdim=2) == ColVecs(X)
+        @test vec_of_vecs(X; obsdim=1) == RowVecs(X)
     end
     # Test Matrix data sets.
     @testset "ColVecs" begin
@@ -29,8 +29,10 @@
 
         Y = randn(rng, D, N + 1)
         DY = ColVecs(Y)
-        @test KernelFunctions.pairwise(SqEuclidean(), DX) ≈ pairwise(SqEuclidean(), X; dims=2)
-        @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈ pairwise(SqEuclidean(), X, Y; dims=2)
+        @test KernelFunctions.pairwise(SqEuclidean(), DX) ≈
+              pairwise(SqEuclidean(), X; dims=2)
+        @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈
+              pairwise(SqEuclidean(), X, Y; dims=2)
         K = zeros(N, N)
         KernelFunctions.pairwise!(K, SqEuclidean(), DX)
         @test K ≈ pairwise(SqEuclidean(), X; dims=2)
@@ -43,8 +45,8 @@
             DX, back = Zygote.pullback(ColVecs, X)
             @test back((X=ones(size(X)),))[1] == ones(size(X))
 
-            @test Zygote.pullback(DX->DX.X, DX)[1] == X
-            X_, back = Zygote.pullback(DX->DX.X, DX)
+            @test Zygote.pullback(DX -> DX.X, DX)[1] == X
+            X_, back = Zygote.pullback(DX -> DX.X, DX)
             @test back(ones(size(X)))[1].X == ones(size(X))
         end
     end
@@ -66,8 +68,10 @@
 
         Y = randn(rng, D + 1, N)
         DY = RowVecs(Y)
-        @test KernelFunctions.pairwise(SqEuclidean(), DX) ≈ pairwise(SqEuclidean(), X; dims=1)
-        @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈ pairwise(SqEuclidean(), X, Y; dims=1)
+        @test KernelFunctions.pairwise(SqEuclidean(), DX) ≈
+              pairwise(SqEuclidean(), X; dims=1)
+        @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈
+              pairwise(SqEuclidean(), X, Y; dims=1)
         K = zeros(D, D)
         KernelFunctions.pairwise!(K, SqEuclidean(), DX)
         @test K ≈ pairwise(SqEuclidean(), X; dims=1)
@@ -80,14 +84,16 @@
             DX, back = Zygote.pullback(RowVecs, X)
             @test back((X=ones(size(X)),))[1] == ones(size(X))
 
-            @test Zygote.pullback(DX->DX.X, DX)[1] == X
-            X_, back = Zygote.pullback(DX->DX.X, DX)
+            @test Zygote.pullback(DX -> DX.X, DX)[1] == X
+            X_, back = Zygote.pullback(DX -> DX.X, DX)
             @test back(ones(size(X)))[1].X == ones(size(X))
         end
     end
     @testset "input checks" begin
-        D = 3; D⁻ = 2
-        N1 = 2; N2 = 3
+        D = 3
+        D⁻ = 2
+        N1 = 2
+        N2 = 3
         x = [rand(rng, D) for _ in 1:N1]
         x⁻ = [rand(rng, D⁻) for _ in 1:N1]
         y = [rand(rng, D) for _ in 1:N2]
@@ -101,8 +107,12 @@
         @test KernelFunctions.dim(x) == D
 
         @test_nowarn KernelFunctions.validate_inplace_dims(zeros(N1, N2), x, y)
-        @test_throws DimensionMismatch KernelFunctions.validate_inplace_dims(zeros(N1, N1), x, y)
-        @test_throws DimensionMismatch KernelFunctions.validate_inplace_dims(zeros(N1, N2), x⁻, y)
+        @test_throws DimensionMismatch KernelFunctions.validate_inplace_dims(
+            zeros(N1, N1), x, y
+        )
+        @test_throws DimensionMismatch KernelFunctions.validate_inplace_dims(
+            zeros(N1, N2), x⁻, y
+        )
         @test_nowarn KernelFunctions.validate_inplace_dims(zeros(N1, N1), x)
         @test_nowarn KernelFunctions.validate_inplace_dims(zeros(N1), x)
         @test_throws DimensionMismatch KernelFunctions.validate_inplace_dims(zeros(N2), x)

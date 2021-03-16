@@ -1,19 +1,28 @@
 """
-    MaternKernel(; ν = 1.0)
+    MaternKernel(; ν::Real=1.5)
 
-The matern kernel is a Mercer kernel given by the formula:
+Matérn kernel of order `ν`.
+
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^d``, the Matérn kernel of order ``\\nu > 0`` is
+defined as
+```math
+k(x,x';\\nu) = \\frac{2^{1-\\nu}}{\\Gamma(\\nu)}\\big(\\sqrt{2\\nu}\\|x-x'\\|_2\\big) K_\\nu\\big(\\sqrt{2\\nu}\\|x-x'\\|_2\\big),
 ```
-    κ(x,y) = 2^{1-ν}/Γ(ν)*(√(2ν)‖x-y‖)^ν K_ν(√(2ν)‖x-y‖)
-```
-For `ν=n+1/2, n=0,1,2,...` it can be simplified and you should instead use 
-[`ExponentialKernel`](@ref) for `n=0`, [`Matern32Kernel`](@ref), for `n=1`, 
-[`Matern52Kernel`](@ref) for `n=2` and [`SqExponentialKernel`](@ref) for `n=∞`.
+where ``\\Gamma`` is the Gamma function and ``K_{\\nu}`` is the modified Bessel function of
+the second kind of order ``\\nu``.
+
+A Gaussian process with a Matérn kernel is ``\\lceil \\nu \\rceil - 1``-times
+differentiable in the mean-square sense.
+
+See also: [`Matern12Kernel`](@ref), [`Matern32Kernel`](@ref), [`Matern52Kernel`](@ref)
 """
 struct MaternKernel{Tν<:Real} <: SimpleKernel
     ν::Vector{Tν}
-    function MaternKernel(;nu::T=1.5, ν::T=nu) where {T<:Real}
-        @check_args(MaternKernel, ν, ν > zero(T), "ν > 0")
-        return new{T}([ν])
+    function MaternKernel(; nu::Real=1.5, ν::Real=nu)
+        @check_args(MaternKernel, ν, ν > zero(ν), "ν > 0")
+        return new{typeof(ν)}([ν])
     end
 end
 
@@ -33,17 +42,25 @@ metric(::MaternKernel) = Euclidean()
 
 Base.show(io::IO, κ::MaternKernel) = print(io, "Matern Kernel (ν = ", first(κ.ν), ")")
 
+## Matern12Kernel = ExponentialKernel aliased in exponential.jl
+
 """
     Matern32Kernel()
 
-The matern 3/2 kernel is a Mercer kernel given by the formula:
+Matérn kernel of order ``3/2``.
+
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^d``, the Matérn kernel of order ``3/2`` is given by
+```math
+k(x, x') = \\big(1 + \\sqrt{3} \\|x - x'\\|_2 \\big) \\exp\\big(- \\sqrt{3}\\|x - x'\\|_2\\big).
 ```
-    κ(x,y) = (1+√(3)‖x-y‖)exp(-√(3)‖x-y‖)
-```
+
+See also: [`MaternKernel`](@ref)
 """
 struct Matern32Kernel <: SimpleKernel end
 
-kappa(κ::Matern32Kernel, d::Real) = (1 + sqrt(3) * d) * exp(-sqrt(3) * d)
+kappa(::Matern32Kernel, d::Real) = (1 + sqrt(3) * d) * exp(-sqrt(3) * d)
 
 metric(::Matern32Kernel) = Euclidean()
 
@@ -52,14 +69,21 @@ Base.show(io::IO, ::Matern32Kernel) = print(io, "Matern 3/2 Kernel")
 """
     Matern52Kernel()
 
-The matern 5/2 kernel is a Mercer kernel given by the formula:
+Matérn kernel of order ``5/2``.
+
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^d``, the Matérn kernel of order ``5/2`` is given by
+```math
+k(x, x') = \\bigg(1 + \\sqrt{5} \\|x - x'\\|_2 + \\frac{5}{3}\\|x - x'\\|_2^2\\bigg)
+           \\exp\\big(- \\sqrt{5}\\|x - x'\\|_2\\big).
 ```
-    κ(x,y) = (1+√(5)‖x-y‖ + 5/3‖x-y‖^2)exp(-√(5)‖x-y‖)
-```
+
+See also: [`MaternKernel`](@ref)
 """
 struct Matern52Kernel <: SimpleKernel end
 
-kappa(κ::Matern52Kernel, d::Real) = (1 + sqrt(5) * d + 5 * d^2 / 3) * exp(-sqrt(5) * d)
+kappa(::Matern52Kernel, d::Real) = (1 + sqrt(5) * d + 5 * d^2 / 3) * exp(-sqrt(5) * d)
 
 metric(::Matern52Kernel) = Euclidean()
 

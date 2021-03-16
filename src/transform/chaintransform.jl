@@ -1,12 +1,22 @@
 """
     ChainTransform(ts::AbstractVector{<:Transform})
 
-Chain a series of transform, here `t1` will be called first
-```
-    t1 = ScaleTransform()
-    t2 = LinearTransform(rand(3,4))
-    ct = ChainTransform([t1,t2]) #t1 will be called first
-    ct == t2 ∘ t1
+Transformation that applies a chain of transformations `ts` to the input.
+
+The transformation `first(ts)` is applied first.
+
+# Examples
+
+```jldoctest
+julia> l = rand(); A = rand(3, 4); t1 = ScaleTransform(l); t2 = LinearTransform(A);
+
+julia> X = rand(4, 10);
+
+julia> map(ChainTransform([t1, t2]), ColVecs(X)) == ColVecs(A * (l .* X))
+true
+
+julia> map(t2 ∘ t1, ColVecs(X)) == ColVecs(A * (l .* X))
+true
 ```
 """
 struct ChainTransform{V<:AbstractVector{<:Transform}} <: Transform
@@ -18,9 +28,9 @@ end
 Base.length(t::ChainTransform) = length(t.transforms)
 
 # Constructor to create a chain transform with an array of parameters
-function ChainTransform(v::AbstractVector{<:Type{<:Transform}},θ::AbstractVector)
+function ChainTransform(v::AbstractVector{<:Type{<:Transform}}, θ::AbstractVector)
     @assert length(v) == length(θ)
-    ChainTransform(v.(θ))
+    return ChainTransform(v.(θ))
 end
 
 Base.:∘(t₁::Transform, t₂::Transform) = ChainTransform([t₂, t₁])
@@ -33,8 +43,8 @@ function _map(t::ChainTransform, x::AbstractVector)
     return foldl((x, t) -> map(t, x), t.transforms; init=x)
 end
 
-set!(t::ChainTransform,θ) = set!.(t.transforms,θ)
-duplicate(t::ChainTransform,θ) = ChainTransform(duplicate.(t.transforms,θ))
+set!(t::ChainTransform, θ) = set!.(t.transforms, θ)
+duplicate(t::ChainTransform, θ) = ChainTransform(duplicate.(t.transforms, θ))
 
 Base.show(io::IO, t::ChainTransform) = printshifted(io, t, 0)
 

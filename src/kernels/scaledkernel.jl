@@ -1,16 +1,24 @@
 """
-    ScaledKernel(k::Kernel, σ²::Real)
+    ScaledKernel(k::Kernel, σ²::Real=1.0)
 
-Return a kernel premultiplied by the variance `σ²` : `σ² k(x,x')`
+Scaled kernel derived from `k` by multiplication with variance `σ²`.
+
+# Definition
+
+For inputs ``x, x'``, the scaled kernel ``\\widetilde{k}`` derived from kernel ``k`` by
+multiplication with variance ``\\sigma^2 > 0`` is defined as
+```math
+\\widetilde{k}(x, x'; k, \\sigma^2) = \\sigma^2 k(x, x').
+```
 """
-struct ScaledKernel{Tk<:Kernel, Tσ²<:Real} <: Kernel
+struct ScaledKernel{Tk<:Kernel,Tσ²<:Real} <: Kernel
     kernel::Tk
     σ²::Vector{Tσ²}
 end
 
 function ScaledKernel(kernel::Tk, σ²::Tσ²=1.0) where {Tk<:Kernel,Tσ²<:Real}
     @check_args(ScaledKernel, σ², σ² > zero(Tσ²), "σ² > 0")
-    return ScaledKernel{Tk, Tσ²}(kernel, [σ²])
+    return ScaledKernel{Tk,Tσ²}(kernel, [σ²])
 end
 
 @functor ScaledKernel
@@ -25,15 +33,15 @@ function kernelmatrix(κ::ScaledKernel, x::AbstractVector)
     return κ.σ² .* kernelmatrix(κ.kernel, x)
 end
 
-function kerneldiagmatrix(κ::ScaledKernel, x::AbstractVector)
-    return κ.σ² .* kerneldiagmatrix(κ.kernel, x)
+function kernelmatrix_diag(κ::ScaledKernel, x::AbstractVector)
+    return κ.σ² .* kernelmatrix_diag(κ.kernel, x)
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector, y::AbstractVector,
+    K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector, y::AbstractVector
 )
     kernelmatrix!(K, κ, x, y)
-    K .*= κ.σ² 
+    K .*= κ.σ²
     return K
 end
 
@@ -43,8 +51,8 @@ function kernelmatrix!(K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector)
     return K
 end
 
-function kerneldiagmatrix!(K::AbstractVector, κ::ScaledKernel, x::AbstractVector)
-    kerneldiagmatrix!(K, κ, x)
+function kernelmatrix_diag!(K::AbstractVector, κ::ScaledKernel, x::AbstractVector)
+    kernelmatrix_diag!(K, κ, x)
     K .*= κ.σ²
     return K
 end
@@ -55,5 +63,5 @@ Base.show(io::IO, κ::ScaledKernel) = printshifted(io, κ, 0)
 
 function printshifted(io::IO, κ::ScaledKernel, shift::Int)
     printshifted(io, κ.kernel, shift)
-    print(io,"\n" * ("\t"^(shift+1)) * "- σ² = $(first(κ.σ²))")
+    return print(io, "\n" * ("\t"^(shift + 1)) * "- σ² = $(first(κ.σ²))")
 end

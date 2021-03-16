@@ -1,8 +1,19 @@
 """
-    TransformedKernel(k::Kernel,t::Transform)
+    TransformedKernel(k::Kernel, t::Transform)
 
-Return a kernel where inputs are pretransformed by `t` : `k(t(x),t(x'))`
-Can also be called via [`transform`](@ref) : `transform(k, t)`
+Kernel derived from `k` for which inputs are transformed via a [`Transform`](@ref) `t`.
+
+It is preferred to create kernels with input transformations with [`transform`](@ref)
+instead of  `TransformedKernel` directly since [`transform`](@ref) allows optimized
+implementations for specific kernels and transformations.
+
+# Definition
+
+For inputs ``x, x'``, the transformed kernel ``\\widetilde{k}`` derived from kernel ``k`` by
+input transformation ``t`` is defined as
+```math
+\\widetilde{k}(x, x'; k, t) = k\\big(t(x), t(x')\\big).
+```
 """
 struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
     kernel::Tk
@@ -17,8 +28,7 @@ end
 # Instead of a multiplying every element of the inputs before evaluating the metric,
 # we perform a scalar multiplcation of the distance of the original inputs, if possible.
 function (k::TransformedKernel{<:SimpleKernel,<:ScaleTransform})(
-    x::AbstractVector{<:Real},
-    y::AbstractVector{<:Real},
+    x::AbstractVector{<:Real}, y::AbstractVector{<:Real}
 )
     return kappa(k.kernel, _scale(k.transform, metric(k.kernel), x, y))
 end
@@ -32,25 +42,27 @@ end
 _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, t(x), t(y))
 
 """
-```julia
-    transform(k::Kernel, t::Transform) (1)
-    transform(k::Kernel, ρ::Real) (2)
-    transform(k::Kernel, ρ::AbstractVector) (3)
-```
-(1) Create a TransformedKernel with transform `t` and kernel `k`
-(2) Same as (1) with a `ScaleTransform` with scale `ρ`
-(3) Same as (1) with an `ARDTransform` with scales `ρ`
+    transform(k::Kernel, t::Transform)
+
+Create a [`TransformedKernel`](@ref) for kernel `k` and transform `t`.
 """
-transform
-
 transform(k::Kernel, t::Transform) = TransformedKernel(k, t)
-
 function transform(k::TransformedKernel, t::Transform)
     return TransformedKernel(k.kernel, t ∘ k.transform)
 end
 
+"""
+    transform(k::Kernel, ρ::Real)
+
+Create a [`TransformedKernel`](@ref) for kernel `k` and inverse lengthscale `ρ`.
+"""
 transform(k::Kernel, ρ::Real) = transform(k, ScaleTransform(ρ))
 
+"""
+    transform(k::Kernel, ρ::AbstractVector)
+
+Create a [`TransformedKernel`](@ref) for kernel `k` and inverse lengthscales `ρ`.
+"""
 transform(k::Kernel, ρ::AbstractVector) = transform(k, ARDTransform(ρ))
 
 kernel(κ) = κ.kernel
@@ -59,13 +71,13 @@ Base.show(io::IO, κ::TransformedKernel) = printshifted(io, κ, 0)
 
 function printshifted(io::IO, κ::TransformedKernel, shift::Int)
     printshifted(io, κ.kernel, shift)
-    print(io,"\n" * ("\t" ^ (shift + 1)) * "- $(κ.transform)")
+    return print(io, "\n" * ("\t"^(shift + 1)) * "- $(κ.transform)")
 end
 
 # Kernel matrix operations
 
-function kerneldiagmatrix!(K::AbstractVector, κ::TransformedKernel, x::AbstractVector)
-    return kerneldiagmatrix!(K, κ.kernel, _map(κ.transform, x))
+function kernelmatrix_diag!(K::AbstractVector, κ::TransformedKernel, x::AbstractVector)
+    return kernelmatrix_diag!(K, κ.kernel, _map(κ.transform, x))
 end
 
 function kerneldiagmatrix!(K::AbstractVector, κ::TransformedKernel, x::AbstractVector, y::AbstractVector)
@@ -77,13 +89,13 @@ function kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, x::AbstractVect
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector, y::AbstractVector,
+    K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector, y::AbstractVector
 )
     return kernelmatrix!(K, kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
 end
 
-function kerneldiagmatrix(κ::TransformedKernel, x::AbstractVector)
-    return kerneldiagmatrix(κ.kernel, _map(κ.transform, x))
+function kernelmatrix_diag(κ::TransformedKernel, x::AbstractVector)
+    return kernelmatrix_diag(κ.kernel, _map(κ.transform, x))
 end
 
 function kerneldiagmatrix(κ::TransformedKernel, x::AbstractVector, y::AbstractVector)

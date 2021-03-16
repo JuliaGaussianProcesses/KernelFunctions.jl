@@ -1,4 +1,4 @@
-@testset "tensorproduct" begin
+@testset "kerneltensorproduct" begin
     rng = MersenneTwister(123456)
     u1 = rand(rng, 10)
     u2 = rand(rng, 10)
@@ -8,12 +8,15 @@
     # kernels
     k1 = SqExponentialKernel()
     k2 = ExponentialKernel()
-    kernel1 = TensorProduct(k1, k2)
-    kernel2 = TensorProduct([k1, k2])
+    kernel1 = KernelTensorProduct(k1, k2)
+    kernel2 = KernelTensorProduct([k1, k2])
 
     @test kernel1 == kernel2
-    @test kernel1.kernels === (k1, k2) === TensorProduct((k1, k2)).kernels
+    @test kernel1.kernels === (k1, k2) === KernelTensorProduct((k1, k2)).kernels
     @test length(kernel1) == length(kernel2) == 2
+    @test string(kernel1) == (
+        "Tensor product of 2 kernels:\n\tSquared Exponential Kernel\n\tExponential Kernel"
+    )
     @test_throws DimensionMismatch kernel1(rand(3), rand(3))
 
     @testset "val" begin
@@ -24,17 +27,24 @@
         end
     end
 
+    # Deprecations
+    @test TensorProduct === KernelTensorProduct
+    @test TensorProduct(k1, k2) == k1 ⊗ k2
+    @test TensorProduct((k1, k2)) == k1 ⊗ k2
+    @test TensorProduct([k1, k2]) == k1 ⊗ k2
+
     # Standardised tests.
     TestUtils.test_interface(kernel1, ColVecs{Float64})
     TestUtils.test_interface(kernel1, RowVecs{Float64})
     test_ADs(
-        ()->TensorProduct(SqExponentialKernel(), LinearKernel());
-        dims = [2, 2],
-    ) # ADs = [:ForwardDiff, :ReverseDiff])
-    test_params(TensorProduct(k1, k2), (k1, k2))
+        x -> KernelTensorProduct(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))),
+        rand(1);
+        dims=[2, 2],
+    )
+    test_params(KernelTensorProduct(k1, k2), (k1, k2))
 
     @testset "single kernel" begin
-        kernel = TensorProduct(k1)
+        kernel = KernelTensorProduct(k1)
         @test length(kernel) == 1
 
         @testset "eval" begin

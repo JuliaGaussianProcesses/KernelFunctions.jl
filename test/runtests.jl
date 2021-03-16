@@ -1,14 +1,18 @@
 using KernelFunctions
 using AxisArrays
 using Distances
-using Kronecker
+using Documenter
+using Kronecker: Kronecker
 using LinearAlgebra
 using PDMats
 using Random
 using SpecialFunctions
 using Test
 using Flux
-import Zygote, ForwardDiff, ReverseDiff, FiniteDifferences
+using Zygote: Zygote
+using ForwardDiff: ForwardDiff
+using ReverseDiff: ReverseDiff
+using FiniteDifferences: FiniteDifferences
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 
@@ -49,7 +53,6 @@ using KernelFunctions.TestUtils: test_interface
 include("test_utils.jl")
 
 @testset "KernelFunctions" begin
-
     include("utils.jl")
 
     @testset "distances" begin
@@ -117,8 +120,9 @@ include("test_utils.jl")
     @testset "kernels" begin
         include(joinpath("kernels", "kernelproduct.jl"))
         include(joinpath("kernels", "kernelsum.jl"))
+        include(joinpath("kernels", "kerneltensorproduct.jl"))
+        include(joinpath("kernels", "overloads.jl"))
         include(joinpath("kernels", "scaledkernel.jl"))
-        include(joinpath("kernels", "tensorproduct.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
     end
     @info "Ran tests on Kernel"
@@ -143,4 +147,19 @@ include("test_utils.jl")
 
     include("generic.jl")
     include("zygote_adjoints.jl")
+
+    @testset "doctests" begin
+        DocMeta.setdocmeta!(
+            KernelFunctions,
+            :DocTestSetup,
+            quote
+                using KernelFunctions
+                using LinearAlgebra
+                using Random
+                using PDMats: PDMats
+            end;
+            recursive=true,
+        )
+        doctest(KernelFunctions)
+    end
 end

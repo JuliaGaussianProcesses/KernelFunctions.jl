@@ -1,19 +1,22 @@
 """
     FBMKernel(; h::Real=0.5)
 
-Fractional Brownian motion kernel with Hurst index `h` from (0,1) given by
-```
-    κ(x,y) =  ( |x|²ʰ + |y|²ʰ - |x-y|²ʰ ) / 2
-```
+Fractional Brownian motion kernel with Hurst index `h`.
 
-For `h=1/2`, this is the Wiener Kernel, for `h>1/2`, the increments are
-positively correlated and for `h<1/2` the increments are negatively correlated.
+# Definition
+
+For inputs ``x, x' \\in \\mathbb{R}^d``, the fractional Brownian motion kernel with
+[Hurst index](https://en.wikipedia.org/wiki/Hurst_exponent#Generalized_exponent)
+``h \\in [0,1]`` is defined as
+```math
+k(x, x'; h) =  \\frac{\\|x\\|_2^{2h} + \\|x'\\|_2^{2h} - \\|x - x'\\|^{2h}}{2}.
+```
 """
 struct FBMKernel{T<:Real} <: Kernel
     h::Vector{T}
-    function FBMKernel(; h::T=0.5) where {T<:Real}
-        @assert 0.0 <= h <= 1.0 "FBMKernel: Given Hurst index h is invalid."
-        return new{T}([h])
+    function FBMKernel(; h::Real=0.5)
+        @check_args(FBMKernel, h, zero(h) ≤ h ≤ one(h), "h ∈ [0, 1]")
+        return new{typeof(h)}([h])
     end
 end
 
@@ -24,14 +27,18 @@ function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modY = sum(abs2, y)
     modXY = sqeuclidean(x, y)
     h = first(κ.h)
-    return (modX^h + modY^h - modXY^h)/2
+    return (modX^h + modY^h - modXY^h) / 2
 end
 
-(κ::FBMKernel)(x::Real, y::Real) = (abs2(x)^first(κ.h) + abs2(y)^first(κ.h) - abs2(x - y)^first(κ.h)) / 2
+function (κ::FBMKernel)(x::Real, y::Real)
+    return (abs2(x)^first(κ.h) + abs2(y)^first(κ.h) - abs2(x - y)^first(κ.h)) / 2
+end
 
-Base.show(io::IO, κ::FBMKernel) = print(io, "Fractional Brownian Motion Kernel (h = ", first(κ.h), ")")
+function Base.show(io::IO, κ::FBMKernel)
+    return print(io, "Fractional Brownian Motion Kernel (h = ", first(κ.h), ")")
+end
 
-_fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h)/2
+_fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h) / 2
 
 _mod(x::AbstractVector{<:Real}) = abs2.(x)
 _mod(x::ColVecs) = vec(sum(abs2, x.X; dims=1))
@@ -56,10 +63,7 @@ function kernelmatrix(κ::FBMKernel, x::AbstractVector, y::AbstractVector)
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix,
-    κ::FBMKernel,
-    x::AbstractVector,
-    y::AbstractVector,
+    K::AbstractMatrix, κ::FBMKernel, x::AbstractVector, y::AbstractVector
 )
     pairwise!(K, SqEuclidean(), x, y)
     K .= _fbm.(_mod(x), _mod(y)', K, κ.h)

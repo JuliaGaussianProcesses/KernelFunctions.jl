@@ -18,28 +18,26 @@ Calculate the kernel matrix of `X` (and `Y`) with respect to kernel `κ`.
 kernelmatrix
 
 """
-    kerneldiagmatrix!(K::AbstractVector, κ::Kernel, X; obsdim::Int = 2)
-    kerneldiagmatrix!(K::AbstractVector, κ::Kernel, X, Y; obsdim::Int = 2)
+    kernelmatrix_diag!(K::AbstractVector, κ::Kernel, X; obsdim::Int = 2)
+    kernelmatrix_diag!(K::AbstractVector, κ::Kernel, X, Y; obsdim::Int = 2)
 
-In place version of [`kerneldiagmatrix`](@ref)
+In place version of [`kernelmatrix_diag`](@ref)
 """
-kerneldiagmatrix!
+kernelmatrix_diag!
 
 """
-    kerneldiagmatrix(κ::Kernel, X; obsdim::Int = 2)
+    kernelmatrix_diag(κ::Kernel, X; obsdim::Int = 2)
 
 Calculate the diagonal matrix of `X` with respect to kernel `κ`
 `obsdim = 1` means the matrix `X` has size #samples x #dimension
 `obsdim = 2` means the matrix `X` has size #dimension x #samples
 
-    kerneldiagmatrix(κ::Kernel, X, Y; obsdim::Int = 2)
+    kernelmatrix_diag(κ::Kernel, X, Y; obsdim::Int = 2)
 
 Calculate the diagonal of `kernelmatrix(κ, X, Y; obsdim)` efficiently. Requires that `X` and
 `Y` are the same length.
 """
-kerneldiagmatrix
-
-
+kernelmatrix_diag
 
 #
 # Kernel implementations. Generic fallbacks that depend only on kernel evaluation.
@@ -60,21 +58,20 @@ function kernelmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector)
     return κ.(x, permutedims(y))
 end
 
-function kerneldiagmatrix!(K::AbstractVector, κ::Kernel, x::AbstractVector)
+function kernelmatrix_diag!(K::AbstractVector, κ::Kernel, x::AbstractVector)
     validate_inplace_dims(K, x)
     return map!(x -> κ(x, x), K, x)
 end
 
-function kerneldiagmatrix!(
-    K::AbstractVector, κ::Kernel, x::AbstractVector, y::AbstractVector,
+function kernelmatrix_diag!(
+    K::AbstractVector, κ::Kernel, x::AbstractVector, y::AbstractVector
 )
     return map!(κ, K, x, y)
 end
 
-kerneldiagmatrix(κ::Kernel, x::AbstractVector) = map(x -> κ(x, x), x)
+kernelmatrix_diag(κ::Kernel, x::AbstractVector) = map(x -> κ(x, x), x)
 
-kerneldiagmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector) = map(κ, x, y)
-
+kernelmatrix_diag(κ::Kernel, x::AbstractVector, y::AbstractVector) = map(κ, x, y)
 
 #
 # SimpleKernel optimisations.
@@ -87,7 +84,7 @@ function kernelmatrix!(K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector)
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector, y::AbstractVector,
+    K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector, y::AbstractVector
 )
     validate_inplace_dims(K, x, y)
     pairwise!(K, metric(κ), x, y)
@@ -103,11 +100,11 @@ function kernelmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
     return map(d -> kappa(κ, d), pairwise(metric(κ), x, y))
 end
 
-function kerneldiagmatrix(κ::SimpleKernel, x::AbstractVector)
+function kernelmatrix_diag(κ::SimpleKernel, x::AbstractVector)
     return kerneldiagmatrix(κ, x, x)
 end
 
-function kerneldiagmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
+function kernelmatrix_diag(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
     return map(d -> kappa(κ, d), colwise(metric(κ), x, y))
 end
 
@@ -120,13 +117,16 @@ end
 const defaultobs = 2
 
 function kernelmatrix!(
-    K::AbstractMatrix, κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs,
+    K::AbstractMatrix, κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs
 )
     return kernelmatrix!(K, κ, vec_of_vecs(X; obsdim=obsdim))
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix, κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix;
+    K::AbstractMatrix,
+    κ::Kernel,
+    X::AbstractMatrix,
+    Y::AbstractMatrix;
     obsdim::Int=defaultobs,
 )
     return kernelmatrix!(K, κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim))
@@ -140,27 +140,32 @@ function kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim=d
     return kernelmatrix(κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim))
 end
 
-function kerneldiagmatrix!(
+function kernelmatrix_diag!(
     K::AbstractVector, κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs
 )
-    return kerneldiagmatrix!(K, κ, vec_of_vecs(X; obsdim=obsdim))
+    return kernelmatrix_diag!(K, κ, vec_of_vecs(X; obsdim=obsdim))
 end
 
-function kerneldiagmatrix!(
-    K::AbstractVector, κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix;
-    obsdim::Int = defaultobs,
+function kernelmatrix_diag!(
+    K::AbstractVector,
+    κ::Kernel,
+    X::AbstractMatrix,
+    Y::AbstractMatrix;
+    obsdim::Int=defaultobs,
 )
-    return kerneldiagmatrix!(
-        K, κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim),
+    return kernelmatrix_diag!(
+        K, κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim)
     )
 end
 
-function kerneldiagmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs)
-    return kerneldiagmatrix(κ, vec_of_vecs(X; obsdim=obsdim))
+function kernelmatrix_diag(κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs)
+    return kernelmatrix_diag(κ, vec_of_vecs(X; obsdim=obsdim))
 end
 
-function kerneldiagmatrix(
-    κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int=defaultobs,
+function kernelmatrix_diag(
+    κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int=defaultobs
 )
-    return kerneldiagmatrix(κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim))
+    return kernelmatrix_diag(
+        κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim)
+    )
 end

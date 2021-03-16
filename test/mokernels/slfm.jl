@@ -8,7 +8,7 @@
     x2 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
 
     k = LatentFactorMOKernel(
-        [MaternKernel(), SqExponentialKernel(), FBMKernel()],
+        [Matern32Kernel(), SqExponentialKernel(), FBMKernel()],
         IndependentMOKernel(GaussianKernel()),
         rand(rng, out_dim, 3),
     )
@@ -23,7 +23,7 @@
     @test string(k) == "Semi-parametric Latent Factor Multi-Output Kernel"
     @test repr("text/plain", k) == (
         "Semi-parametric Latent Factor Multi-Output Kernel\n\tgᵢ: " *
-        "Matern Kernel (ν = 1.5)\n\t\tSquared Exponential Kernel\n" * 
+        "Matern 3/2 Kernel\n\t\tSquared Exponential Kernel\n" *
         "\t\tFractional Brownian Motion Kernel (h = 0.5)\n\teᵢ: " *
         "Independent Multi-Output Kernel\n\tSquared Exponential Kernel"
     )
@@ -31,7 +31,7 @@
     # AD test
     function test_slfm(A::AbstractMatrix, x1, x2)
         k = LatentFactorMOKernel(
-            [MaternKernel(), SqExponentialKernel(), FBMKernel()],
+            [Matern32Kernel(), SqExponentialKernel(), FBMKernel()],
             IndependentMOKernel(GaussianKernel()),
             A,
         )
@@ -40,8 +40,7 @@
 
     a = rand()
     @test all(
-        FiniteDifferences.j′vp(FDM, test_slfm, a, k.A, x1[1][1], x2[1][1]) .≈ 
-        Zygote.pullback(test_slfm, k.A, x1[1][1], x2[1][1])[2](a)
-        )
-    
+        FiniteDifferences.j′vp(FDM, test_slfm, a, k.A, x1[1][1], x2[1][1]) .≈
+        Zygote.pullback(test_slfm, k.A, x1[1][1], x2[1][1])[2](a),
+    )
 end

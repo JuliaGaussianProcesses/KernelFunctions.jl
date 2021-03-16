@@ -1,11 +1,17 @@
 """
     ZeroKernel()
 
-Create a kernel that always returning zero
+Zero kernel.
+
+# Definition
+
+For inputs ``x, x'``, the zero kernel is defined as
+```math
+k(x, x') = 0.
 ```
-    κ(x,y) = 0.0
-```
-The output type depends of `x` and `y`
+The output type depends on ``x`` and ``x'``.
+
+See also: [`ConstantKernel`](@ref)
 """
 struct ZeroKernel <: SimpleKernel end
 
@@ -18,17 +24,21 @@ Base.show(io::IO, ::ZeroKernel) = print(io, "Zero Kernel")
 """
     WhiteKernel()
 
+White noise kernel.
+
+# Definition
+
+For inputs ``x, x'``, the white noise kernel is defined as
+```math
+k(x, x') = \\delta(x, x').
 ```
-    κ(x,y) = δ(x,y)
-```
-Kernel function working as an equivalent to add white noise. Can also be called via `EyeKernel()`
 """
 struct WhiteKernel <: SimpleKernel end
 
 """
     EyeKernel()
 
-See [`WhiteKernel`](@ref)
+Alias of [`WhiteKernel`](@ref).
 """
 const EyeKernel = WhiteKernel
 
@@ -38,25 +48,32 @@ metric(::WhiteKernel) = Delta()
 
 Base.show(io::IO, ::WhiteKernel) = print(io, "White Kernel")
 
-
 """
-    ConstantKernel(; c=1.0)
+    ConstantKernel(; c::Real=1.0)
 
-Kernel function always returning a constant value `c`
+Kernel of constant value `c`.
+
+# Definition
+
+For inputs ``x, x'``, the kernel of constant value ``c \\geq 0`` is defined as
+```math
+k(x, x') = c.
 ```
-    κ(x,y) = c
-```
+
+See also: [`ZeroKernel`](@ref)
 """
 struct ConstantKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
-    function ConstantKernel(;c::T=1.0) where {T<:Real}
-        new{T}([c])
+
+    function ConstantKernel(; c::Real=1.0)
+        @check_args(ConstantKernel, c, c >= zero(c), "c ≥ 0")
+        return new{typeof(c)}([c])
     end
 end
 
 @functor ConstantKernel
 
-kappa(κ::ConstantKernel,x::Real) = first(κ.c)*one(x)
+kappa(κ::ConstantKernel, x::Real) = first(κ.c) * one(x)
 
 metric(::ConstantKernel) = Delta()
 
