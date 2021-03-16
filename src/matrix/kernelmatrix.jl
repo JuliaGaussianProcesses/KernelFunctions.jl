@@ -101,7 +101,7 @@ function kernelmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
 end
 
 function kernelmatrix_diag(κ::SimpleKernel, x::AbstractVector)
-    return kerneldiagmatrix(κ, x, x)
+    return κ.(x, x)
 end
 
 function kernelmatrix_diag(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)

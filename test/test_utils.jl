@@ -50,8 +50,8 @@ end
 
 testfunction(k, A, B, dim) = sum(kernelmatrix(k, A, B, obsdim=dim))
 testfunction(k, A, dim) = sum(kernelmatrix(k, A, obsdim=dim))
-testdiagfunction(k, A, dim) = sum(kerneldiagmatrix(k, A, obsdim=dim))
-testdiagfunction(k, A, B, dim) = sum(kerneldiagmatrix(k, A, B, obsdim=dim))
+testdiagfunction(k, A, dim) = sum(kernelmatrix_diag(k, A, obsdim=dim))
+testdiagfunction(k, A, B, dim) = sum(kernelmatrix_diag(k, A, B, obsdim=dim))
 
 function test_ADs(
     kernelfunction, args=nothing; ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=[3, 3]
