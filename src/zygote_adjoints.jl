@@ -74,6 +74,7 @@ end
     RowVecs_pullback(Δ::NamedTuple) = (Δ.X,)
     RowVecs_pullback(Δ::AbstractMatrix) = (Δ,)
     function RowVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
+        @show Δ
         return throw(error("In slow method"))
     end
     return RowVecs(X), RowVecs_pullback

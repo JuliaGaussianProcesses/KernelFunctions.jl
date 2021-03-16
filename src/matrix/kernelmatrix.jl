@@ -101,11 +101,11 @@ function kernelmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
 end
 
 function kernelmatrix_diag(κ::SimpleKernel, x::AbstractVector)
-    return κ.(x, x)
+    return map(d -> kappa(κ, d), Distances.colwise(metric(κ), x))
 end
 
 function kernelmatrix_diag(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
-    return map(d -> kappa(κ, d), colwise(metric(κ), x, y))
+    return map(d -> kappa(κ, d), Distances.colwise(metric(κ), x, y))
 end
 
 
