@@ -23,6 +23,11 @@ end
     end
 end
 
+@adjoint function Distances.colwise(d::Delta, X::AbstractMatrix, Y::AbstractMatrix)
+    return Distances.colwise(d, X, Y), function (Δ::AbstractVector)
+        return (nothing, nothing, nothing)
+    end
+end
 ## Adjoints DotProduct
 @adjoint function evaluate(s::DotProduct, x::AbstractVector, y::AbstractVector)
     return dot(x, y), Δ -> begin
@@ -47,6 +52,12 @@ end
         return D, Δ -> (nothing, 2 * Δ * X)
     else
         return D, Δ -> (nothing, 2 * X * Δ)
+    end
+end
+
+@adjoint function Distances.colwise(d::DotProduct, X::AbstractMatrix, Y::AbstractMatrix)
+    return Distances.colwise(d, X, Y), function (Δ::AbstractVector)
+        return (nothing, Δ .* Y,  Δ .* X)
     end
 end
 
