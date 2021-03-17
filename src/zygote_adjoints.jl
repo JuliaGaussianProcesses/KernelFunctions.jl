@@ -57,7 +57,7 @@ end
 
 @adjoint function Distances.colwise(d::DotProduct, X::AbstractMatrix, Y::AbstractMatrix)
     return Distances.colwise(d, X, Y), function (Δ::AbstractVector)
-        return (nothing, Δ .* Y,  Δ .* X)
+        return (nothing, Δ' .* Y,  Δ' .* X)
     end
 end
 
