@@ -1,64 +1,82 @@
 ## Adjoints Delta
-@adjoint function evaluate(s::Delta, x::AbstractVector, y::AbstractVector)
-    return evaluate(s, x, y), Δ -> begin
-        (nothing, nothing, nothing)
+function rrule(::typeof(Distances.evaluate), s::Delta, x::AbstractVector, y::AbstractVector)
+    d = evaluate(s, x, y)
+    function evaluate_pullback(::Any)
+        return NO_FIELDS, Zero(), Zero()
     end
+    return d, evaluate_pullback
 end
 
-@adjoint function Distances.pairwise(d::Delta, X::AbstractMatrix, Y::AbstractMatrix; dims=2)
-    D = Distances.pairwise(d, X, Y; dims=dims)
-    if dims == 1
-        return D, Δ -> (nothing, nothing, nothing)
-    else
-        return D, Δ -> (nothing, nothing, nothing)
+function rrule(::typeof(Distances.pairwise), d::Delta, X::AbstractMatrix, Y::AbstractMatrix; dims=2)
+    P = Distances.pairwise(d, X, Y; dims=dims)
+    function pairwise_pullback(::Any)
+        return NO_FIELDS, Zero(), Zero()
     end
+    return P, pairwise_pullback
 end
 
-@adjoint function Distances.pairwise(d::Delta, X::AbstractMatrix; dims=2)
-    D = Distances.pairwise(d, X; dims=dims)
-    if dims == 1
-        return D, Δ -> (nothing, nothing)
-    else
-        return D, Δ -> (nothing, nothing)
+function rrule(::typeof(Distances.pairwise), d::Delta, X::AbstractMatrix; dims=2)
+    P = Distances.pairwise(d, X; dims=dims)
+    function pairwise_pullback(::Any)
+        return NO_FIELDS, Zero()
     end
+    return P, pairwise_pullback
 end
 
-@adjoint function Distances.colwise(d::Delta, X::AbstractMatrix, Y::AbstractMatrix)
-    return Distances.colwise(d, X, Y), function (Δ::AbstractVector)
-        return (nothing, nothing, nothing)
+function rrule(::typeof(Distances.colwise), d::Delta, X::AbstractMatrix, Y::AbstractMatrix)
+    C = Distances.colwise(d, X, Y)
+    function colwise_pullback(::AbstractVector)
+        return NO_FIELDS, Zero(), Zero()
     end
+    return C, colwise_pullback
 end
 ## Adjoints DotProduct
-@adjoint function evaluate(s::DotProduct, x::AbstractVector, y::AbstractVector)
-    return dot(x, y), Δ -> begin
-        (nothing, Δ .* y, Δ .* x)
+function rrule(::typeof(Distances.evaluate), s::DotProduct, x::AbstractVector, y::AbstractVector)
+    d = dot(x, y)
+    function evaluate_pullback(Δ)
+        return NO_FIELDS, Δ .* y, Δ .* x
     end
+    return d, evaluate_pullback
 end
 
-@adjoint function Distances.pairwise(
+function rrule(::typeof(Distances.pairwise), 
     d::DotProduct, X::AbstractMatrix, Y::AbstractMatrix; dims=2
 )
-    D = Distances.pairwise(d, X, Y; dims=dims)
+    P = Distances.pairwise(d, X, Y; dims=dims)
     if dims == 1
-        return D, Δ -> (nothing, Δ * Y, (X' * Δ)')
+        function pairwise_pullback(Δ)
+            return NO_FIELDS, Δ * Y, Δ' * X
+        end
+        return P, pairwise_pullback
     else
-        return D, Δ -> (nothing, (Δ * Y')', X * Δ)
+        function pairwise_pullback(Δ)
+            return NO_FIELDS, Y * Δ', X * Δ
+        end
+        return P, pairwise_pullback
     end
 end
 
-@adjoint function Distances.pairwise(d::DotProduct, X::AbstractMatrix; dims=2)
-    D = Distances.pairwise(d, X; dims=dims)
+function rrule(::typeof(Distances.pairwise), d::DotProduct, X::AbstractMatrix; dims=2)
+    P = Distances.pairwise(d, X; dims=dims)
     if dims == 1
-        return D, Δ -> (nothing, 2 * Δ * X)
+        function pairwise_pullback(Δ)
+            NO_FIELDS, 2 * Δ * X
+        end
+        return P, pairwise_pullback
     else
-        return D, Δ -> (nothing, 2 * X * Δ)
+        function pairwise_pullback(Δ)
+            NO_FIELDS, 2 * X * Δ
+        end
+        return P, pairwise_pullback
     end
 end
 
-@adjoint function Distances.colwise(d::DotProduct, X::AbstractMatrix, Y::AbstractMatrix)
-    return Distances.colwise(d, X, Y), function (Δ::AbstractVector)
+function rrule(::typeof(Distances.colwise), d::DotProduct, X::AbstractMatrix, Y::AbstractMatrix)
+    C =  Distances.colwise(d, X, Y)
+    function colwise_pullback(Δ::AbstractVector)
         return (nothing, Δ' .* Y,  Δ' .* X)
     end
+    return C, colwise_pullback
 end
 
 ## Adjoints Sinus
@@ -72,7 +90,9 @@ end
     end
 end
 
-@adjoint function ColVecs(X::AbstractMatrix)
+## Adjoints for matrix wrappers
+
+function rrule(::typeof(ColVecs), X::AbstractMatrix)
     ColVecs_pullback(Δ::NamedTuple) = (Δ.X,)
     ColVecs_pullback(Δ::AbstractMatrix) = (Δ,)
     function ColVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
@@ -81,22 +101,21 @@ end
     return ColVecs(X), ColVecs_pullback
 end
 
-@adjoint function RowVecs(X::AbstractMatrix)
+function rrule(::typeof(RowVecs), X::AbstractMatrix)
     RowVecs_pullback(Δ::NamedTuple) = (Δ.X,)
     RowVecs_pullback(Δ::AbstractMatrix) = (Δ,)
     function RowVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
-        @show Δ
         return throw(error("In slow method"))
     end
     return RowVecs(X), RowVecs_pullback
 end
 
 @adjoint function Base.map(t::Transform, X::ColVecs)
-    return pullback(_map, t, X)
+    return ZygoteRules.pullback(_map, t, X)
 end
 
 @adjoint function Base.map(t::Transform, X::RowVecs)
-    return pullback(_map, t, X)
+    return ZygoteRules.pullback(_map, t, X)
 end
 
 @adjoint function (dist::Distances.SqMahalanobis)(a, b)

@@ -80,7 +80,7 @@ kernelmatrix_diag(κ::Kernel, x::AbstractVector, y::AbstractVector) = map(κ, x,
 function kernelmatrix!(K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector)
     validate_inplace_dims(K, x)
     pairwise!(K, metric(κ), x)
-    return map!(d -> kappa(κ, d), K, K)
+    return map!(Base.Fix1(kappa, κ), K, K)
 end
 
 function kernelmatrix!(
@@ -88,27 +88,25 @@ function kernelmatrix!(
 )
     validate_inplace_dims(K, x, y)
     pairwise!(K, metric(κ), x, y)
-    return map!(d -> kappa(κ, d), K, K)
+    return map!(Base.Fix1(kappa, κ), K, K)
 end
 
 function kernelmatrix(κ::SimpleKernel, x::AbstractVector)
-    return map(d -> kappa(κ, d), pairwise(metric(κ), x))
+    return map(Base.Fix1(kappa, κ), pairwise(metric(κ), x))
 end
 
 function kernelmatrix(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
     validate_inputs(x, y)
-    return map(d -> kappa(κ, d), pairwise(metric(κ), x, y))
+    return map(Base.Fix1(kappa, κ), pairwise(metric(κ), x, y))
 end
 
 function kernelmatrix_diag(κ::SimpleKernel, x::AbstractVector)
-    return map(d -> kappa(κ, d), colwise(metric(κ), x))
+    return map(Base.Fix1(kappa, κ), colwise(metric(κ), x))
 end
 
 function kernelmatrix_diag(κ::SimpleKernel, x::AbstractVector, y::AbstractVector)
-    return map(d -> kappa(κ, d), colwise(metric(κ), x, y))
+    return map(Base.Fix1(kappa, κ), colwise(metric(κ), x, y))
 end
-
-
 
 #
 # Wrapper methods for AbstractMatrix inputs to maintain obsdim interface.
