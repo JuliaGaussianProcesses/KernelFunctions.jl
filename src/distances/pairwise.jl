@@ -30,30 +30,28 @@ function pairwise!(
     return Distances.pairwise!(out, d, reshape(x, :, 1), reshape(y, :, 1); dims=1)
 end
 
-
 # Also defines the colwise method for abstractvectors
 
-
 function colwise(d::PreMetric, x::ColVecs)
-    Distances.colwise(d, x.X, x.X)
+    return Distances.colwise(d, x.X, x.X)
 end
 
 function colwise(d::PreMetric, x::RowVecs)
-    Distances.colwise(d, x.X', x.X')
+    return Distances.colwise(d, x.X', x.X')
 end
 
 function colwise(d::PreMetric, x::AbstractVector)
-    map(d, x, x)
+    return map(d, x, x)
 end
 
 function colwise(d::PreMetric, x::ColVecs, y::ColVecs)
-    Distances.colwise(d, x.X, y.X)
+    return Distances.colwise(d, x.X, y.X)
 end
 
 function colwise(d::PreMetric, x::RowVecs, y::RowVecs)
-    Distances.colwise(d, x.X', y.X')
+    return Distances.colwise(d, x.X', y.X')
 end
 
 function colwise(d::PreMetric, x::AbstractVector, y::AbstractVector)
-    map(d, x, y)
+    return map(d, x, y)
 end
