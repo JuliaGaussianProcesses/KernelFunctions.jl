@@ -43,7 +43,7 @@ function colwise(d::PreMetric, x::RowVecs)
 end
 
 function colwise(d::PreMetric, x::AbstractVector)
-    d.(x, x)
+    map(d, x, x)
 end
 
 function colwise(d::PreMetric, x::ColVecs, y::ColVecs)
@@ -55,5 +55,5 @@ function colwise(d::PreMetric, x::RowVecs, y::RowVecs)
 end
 
 function colwise(d::PreMetric, x::AbstractVector, y::AbstractVector)
-    d.(x, y)
+    map(d, x, y)
 end
