@@ -7,13 +7,13 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@latest
         with:
           version: 1
-      - uses: actions/checkout@v2
       - run: |
-          julia --project=test/ -e 'using Pkg; Pkg.instantiate()'
-          julia --project=test/ -e 'using JuliaFormatter; format(".", verbose=true)'
+          julia  -e 'using Pkg; Pkg.add("JuliaFormatter")'
+          julia  -e 'using JuliaFormatter; format("."; verbose=true)'
       - uses: reviewdog/action-suggester@v1
         with:
           tool_name: JuliaFormatter
