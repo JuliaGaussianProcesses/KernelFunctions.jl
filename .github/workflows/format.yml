@@ -1,41 +1,42 @@
 name: Comment-Triggered Formatting
 
 on:
-  pull_request:
-    types: opened
   issue_comment:
     types: created
+  pull_request:
+    types: opened
 
 jobs:
   check-comment-format:
+    name: Check comment and Format
     runs-on: ubuntu-latest
     steps:
-      - uses: xt0rted/pull-request-comment-branch@v1 # Check that the comment is from a pull request
-        name: Filter comment from PR
-        id: comment-branch
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: khan/pull-request-comment-trigger@master # Check for a specific trigger in the comment
-        id: check
-        if: success()
-        with:
-          trigger: '[format]'
-          reaction: rocket
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-      - uses: julia-actions/setup-julia@latest # Install Julia
-        with:
-          version: 1
-        if: steps.check.outputs.triggered == 'true'
-      - uses: actions/checkout@v1
-        if: steps.check.outputs.triggered == 'true'
-      - name: Install JuliaFormatter and format
-        if: steps.check.outputs.triggered == 'true'
-        run: |
-          julia --project=test/ -e 'using Pkg; Pkg.instantiate()'
-          julia --project=test/ -e 'using JuliaFormatter; format(".", verbose=true)'
-          CHANGED="$(git diff --name-only)"
-          if [ ! -z "$CHANGED"]; then
-            git commit -am 'Corrected formatting'
-            git push
-          fi  
+    - name: Filter comment from PR
+      uses: xt0rted/pull-request-comment-branch@v1 # Check that the comment is from a pull request
+      id: comment-branch
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: khan/pull-request-comment-trigger@master # Check for a specific trigger in the comment
+      id: check
+      if: success()
+      with:
+        trigger: '[format]'
+        reaction: rocket
+      env:
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+    - uses: julia-actions/setup-julia@latest # Install Julia
+      with:
+        version: 1
+      if: steps.check.outputs.triggered == 'true'
+    - uses: actions/checkout@v1
+      if: steps.check.outputs.triggered == 'true'
+    - name: Install JuliaFormatter and format
+      if: steps.check.outputs.triggered == 'true'
+      run: |
+        julia --project=test/ -e 'using Pkg; Pkg.instantiate()'
+        julia --project=test/ -e 'using JuliaFormatter; format(".", verbose=true)'
+        CHANGED="$(git diff --name-only)"
+        if [ ! -z "$CHANGED"]; then
+          git commit -am 'Corrected formatting'
+          git push
+        fi
