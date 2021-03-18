@@ -1,24 +1,29 @@
-name: Comment Triggered Formatting
+name: Comment-Triggered Formatting
+
 on:
   pull_request:
-    types: [opened]
-  pull_request_review_comment:
-    types: [created]
+    types: opened
   issue_comment:
-    types: [created]
+    types: created
 
 jobs:
-  check-comment:
+  check-comment-format:
     runs-on: ubuntu-latest
     steps:
-      - uses: khan/pull-request-comment-trigger@master
+      - uses: xt0rted/pull-request-comment-branch@v1 # Check that the comment is from a pull request
+        name: Filter comment from PR
+        id: comment-branch
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: khan/pull-request-comment-trigger@master # Check for a specific trigger in the comment
         id: check
+        if: success()
         with:
           trigger: '[format]'
           reaction: rocket
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-      - uses: julia-actions/setup-julia@latest
+      - uses: julia-actions/setup-julia@latest # Install Julia
         with:
           version: 1
         if: steps.check.outputs.triggered == 'true'
