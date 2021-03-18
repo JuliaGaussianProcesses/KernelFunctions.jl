@@ -9,7 +9,7 @@ using Random
 using SpecialFunctions
 using Test
 using Flux
-import Zygote
+using Zygote: Zygote
 using ForwardDiff: ForwardDiff
 using ReverseDiff: ReverseDiff
 using FiniteDifferences: FiniteDifferences
