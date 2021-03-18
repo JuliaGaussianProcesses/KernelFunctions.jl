@@ -1,3 +1,4 @@
+name: Comment Triggered Formatting
 on:
   pull_request:
     types: [opened]
