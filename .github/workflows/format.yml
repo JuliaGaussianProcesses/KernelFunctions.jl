@@ -17,3 +17,4 @@ jobs:
       - uses: reviewdog/action-suggester@v1
         with:
           tool_name: JuliaFormatter
+          fail_on_error: true
