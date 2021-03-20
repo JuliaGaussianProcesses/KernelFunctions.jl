@@ -49,7 +49,7 @@ export spectral_mixture_kernel, spectral_mixture_product_kernel
 export ColVecs, RowVecs
 
 export MOInput
-export IndependentMOKernel, LatentFactorMOKernel
+export IndependentMOKernel, LatentFactorMOKernel, IntrinsicCoregionalizationMOKernel
 
 # Reexports
 export tensor, ⊗
@@ -111,6 +111,7 @@ include(joinpath("mokernels", "mokernel.jl"))
 include(joinpath("mokernels", "moinput.jl"))
 include(joinpath("mokernels", "independent.jl"))
 include(joinpath("mokernels", "slfm.jl"))
+include(joinpath("mokernels", "icm.jl"))
 
 include("zygote_adjoints.jl")
 
