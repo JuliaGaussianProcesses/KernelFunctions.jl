@@ -40,19 +40,19 @@ end
 function kernelmatrix!(
     K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector, y::AbstractVector
 )
-    kernelmatrix!(K, κ, x, y)
+    kernelmatrix!(K, κ.kernel, x, y)
     K .*= κ.σ²
     return K
 end
 
 function kernelmatrix!(K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector)
-    kernelmatrix!(K, κ, x)
+    kernelmatrix!(K, κ.kernel, x)
     K .*= κ.σ²
     return K
 end
 
 function kernelmatrix_diag!(K::AbstractVector, κ::ScaledKernel, x::AbstractVector)
-    kernelmatrix_diag!(K, κ, x)
+    kernelmatrix_diag!(K, κ.kernel, x)
     K .*= κ.σ²
     return K
 end
