@@ -7,7 +7,7 @@ Kernel associated with the intrinsic coregionalization model.
 
 For inputs ``x, x'`` and output dimensions ``p_x, p_{x'}'``, the kernel is defined as[^ARL]
 ```math
-k\big((x, p_x), (x, p_{x'})\big) = [B]_{p_x, p_{x'}} k^{x}\big(x, x'\big),
+k\big((x, p_x), (x', p_{x'}); B, \tilde{k}\big) = [B]_{p_x, p_{x'}} \tilde{k}\big(x, x'\big),
 ```
 where ``B`` is a positive semidefinite matrix of size ``m \times m``, with ``m`` being the number of outputs, and k^{x} is a scalar-valued kernel shared by the latent processes.
 
