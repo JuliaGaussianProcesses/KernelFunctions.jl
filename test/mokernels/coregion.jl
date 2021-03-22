@@ -5,15 +5,15 @@
     in_dim = 2
     out_dim = 2
     rank = 1
-    
+
     A = randn(out_dim, rank)
     B = A * transpose(A)
 
-    X = [(rand(in_dim), rand(1:out_dim))  for i in 1:n_obs]
+    X = [(rand(in_dim), rand(1:out_dim)) for i in 1:n_obs]
 
     kernel = ExponentialKernel()
     coregionkernel = CoregionMOKernel(kernel, B)
-    
+
     @test coregionkernel isa CoregionMOKernel
     @test coregionkernel isa MOKernel
     @test coregionkernel isa Kernel
