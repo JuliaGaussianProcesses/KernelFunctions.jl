@@ -48,10 +48,10 @@ function compare_gradient(f, AD::Symbol, args)
     @test grad_AD ≈ grad_FD atol = 1e-8 rtol = 1e-5
 end
 
-testfunction(k, A, B, dim) = sum(kernelmatrix(k, A, B, obsdim=dim))
-testfunction(k, A, dim) = sum(kernelmatrix(k, A, obsdim=dim))
-testdiagfunction(k, A, dim) = sum(kernelmatrix_diag(k, A, obsdim=dim))
-testdiagfunction(k, A, B, dim) = sum(kernelmatrix_diag(k, A, B, obsdim=dim))
+testfunction(k, A, B, dim) = sum(kernelmatrix(k, A, B; obsdim=dim))
+testfunction(k, A, dim) = sum(kernelmatrix(k, A; obsdim=dim))
+testdiagfunction(k, A, dim) = sum(kernelmatrix_diag(k, A; obsdim=dim))
+testdiagfunction(k, A, B, dim) = sum(kernelmatrix_diag(k, A, B; obsdim=dim))
 
 function test_ADs(
     kernelfunction, args=nothing; ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=[3, 3]
@@ -113,7 +113,7 @@ function test_FiniteDiff(kernelfunction, args=nothing, dims=[3, 3])
             @test_nowarn gradient(:FiniteDiff, A) do a
                 testdiagfunction(k, a, dim)
             end
-            @test_nowarn gradient(:FiniteDiff , A) do a
+            @test_nowarn gradient(:FiniteDiff, A) do a
                 testdiagfunction(k, a, B, dim)
             end
             @test_nowarn gradient(:FiniteDiff, B) do b

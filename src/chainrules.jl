@@ -8,7 +8,9 @@ function rrule(::typeof(Distances.evaluate), s::Delta, x::AbstractVector, y::Abs
     return d, evaluate_pullback
 end
 
-function rrule(::typeof(Distances.pairwise), d::Delta, X::AbstractMatrix, Y::AbstractMatrix; dims=2)
+function rrule(
+    ::typeof(Distances.pairwise), d::Delta, X::AbstractMatrix, Y::AbstractMatrix; dims=2
+)
     P = Distances.pairwise(d, X, Y; dims=dims)
     function pairwise_pullback(::Any)
         return NO_FIELDS, Zero(), Zero()
@@ -33,7 +35,9 @@ function rrule(::typeof(Distances.colwise), d::Delta, X::AbstractMatrix, Y::Abst
 end
 
 ## Reverse Rules DotProduct
-function rrule(::typeof(Distances.evaluate), s::DotProduct, x::AbstractVector, y::AbstractVector)
+function rrule(
+    ::typeof(Distances.evaluate), s::DotProduct, x::AbstractVector, y::AbstractVector
+)
     d = dot(x, y)
     function evaluate_pullback(Δ)
         return NO_FIELDS, Δ .* y, Δ .* x
@@ -41,8 +45,12 @@ function rrule(::typeof(Distances.evaluate), s::DotProduct, x::AbstractVector, y
     return d, evaluate_pullback
 end
 
-function rrule(::typeof(Distances.pairwise), 
-    d::DotProduct, X::AbstractMatrix, Y::AbstractMatrix; dims=2
+function rrule(
+    ::typeof(Distances.pairwise),
+    d::DotProduct,
+    X::AbstractMatrix,
+    Y::AbstractMatrix;
+    dims=2,
 )
     P = Distances.pairwise(d, X, Y; dims=dims)
     if dims == 1
@@ -62,21 +70,23 @@ function rrule(::typeof(Distances.pairwise), d::DotProduct, X::AbstractMatrix; d
     P = Distances.pairwise(d, X; dims=dims)
     if dims == 1
         function pairwise_pullback_cols(Δ)
-            NO_FIELDS, 2 * Δ * X
+            return NO_FIELDS, 2 * Δ * X
         end
         return P, pairwise_pullback_cols
     else
         function pairwise_pullback_rows(Δ)
-            NO_FIELDS, 2 * X * Δ
+            return NO_FIELDS, 2 * X * Δ
         end
         return P, pairwise_pullback_rows
     end
 end
 
-function rrule(::typeof(Distances.colwise), d::DotProduct, X::AbstractMatrix, Y::AbstractMatrix)
-    C =  Distances.colwise(d, X, Y)
+function rrule(
+    ::typeof(Distances.colwise), d::DotProduct, X::AbstractMatrix, Y::AbstractMatrix
+)
+    C = Distances.colwise(d, X, Y)
     function colwise_pullback(Δ::AbstractVector)
-        return (nothing, Δ' .* Y,  Δ' .* X)
+        return (nothing, Δ' .* Y, Δ' .* X)
     end
     return C, colwise_pullback
 end
@@ -88,7 +98,7 @@ function rrule(::typeof(Distances.evaluate), s::Sinus, x::AbstractVector, y::Abs
     val = sum(abs2, sind ./ s.r)
     gradx = 2π .* cospi.(d) .* sind ./ (s.r .^ 2)
     function evaluate_pullback(Δ)
-        return  (r=-2Δ .* abs2.(sind) ./ s.r,), Δ * gradx, -Δ * gradx
+        return (r=-2Δ .* abs2.(sind) ./ s.r,), Δ * gradx, -Δ * gradx
     end
     return val, evaluate_pullback
 end
