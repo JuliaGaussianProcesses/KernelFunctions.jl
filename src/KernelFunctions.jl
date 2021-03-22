@@ -55,11 +55,12 @@ export IndependentMOKernel, LatentFactorMOKernel
 export tensor, ⊗
 
 using Compat
+using ChainRulesCore
 using Requires
 using Distances, LinearAlgebra
 using Functors
 using SpecialFunctions: loggamma, besselk, polygamma
-using ZygoteRules: @adjoint, pullback
+# using ZygoteRules: @adjoint, pullback, ZygoteRules
 using StatsFuns: logtwo
 using StatsBase
 using TensorCore
@@ -112,7 +113,7 @@ include(joinpath("mokernels", "moinput.jl"))
 include(joinpath("mokernels", "independent.jl"))
 include(joinpath("mokernels", "slfm.jl"))
 
-include("zygote_adjoints.jl")
+include("chainrules.jl")
 
 include("test_utils.jl")
 

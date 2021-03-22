@@ -1,4 +1,5 @@
-## Adjoints Delta
+## Reverse Rules Delta
+
 function rrule(::typeof(Distances.evaluate), s::Delta, x::AbstractVector, y::AbstractVector)
     d = evaluate(s, x, y)
     function evaluate_pullback(::Any)
@@ -30,7 +31,8 @@ function rrule(::typeof(Distances.colwise), d::Delta, X::AbstractMatrix, Y::Abst
     end
     return C, colwise_pullback
 end
-## Adjoints DotProduct
+
+## Reverse Rules DotProduct
 function rrule(::typeof(Distances.evaluate), s::DotProduct, x::AbstractVector, y::AbstractVector)
     d = dot(x, y)
     function evaluate_pullback(Δ)
@@ -79,7 +81,7 @@ function rrule(::typeof(Distances.colwise), d::DotProduct, X::AbstractMatrix, Y:
     return C, colwise_pullback
 end
 
-## Adjoints Sinus
+## Reverse Rules Sinus
 function rrule(::typeof(Distances.evaluate), s::Sinus, x::AbstractVector, y::AbstractVector)
     d = (x - y)
     sind = sinpi.(d)
@@ -91,7 +93,7 @@ function rrule(::typeof(Distances.evaluate), s::Sinus, x::AbstractVector, y::Abs
     return val, evaluate_pullback
 end
 
-## Adjoints for matrix wrappers
+## Reverse Rules for matrix wrappers
 
 function rrule(::ColVecs, X::AbstractMatrix)
     ColVecs_pullback(Δ::NamedTuple) = (Δ.X,)
@@ -111,20 +113,20 @@ function rrule(::RowVecs, X::AbstractMatrix)
     return RowVecs(X), RowVecs_pullback
 end
 
-@adjoint function Base.map(t::Transform, X::ColVecs)
-    return ZygoteRules.pullback(_map, t, X)
-end
+# function rrule(::typeof(Base.map), t::Transform, X::ColVecs)
+#     return pullback(_map, t, X)
+# end
 
-@adjoint function Base.map(t::Transform, X::RowVecs)
-    return ZygoteRules.pullback(_map, t, X)
-end
+# function rrule(::typeof(Base.map), t::Transform, X::RowVecs)
+#     return pullback(_map, t, X)
+# end
 
-@adjoint function (dist::Distances.SqMahalanobis)(a, b)
-    function SqMahalanobis_pullback(Δ::Real)
-        B_Bᵀ = dist.qmat + transpose(dist.qmat)
-        a_b = a - b
-        δa = (B_Bᵀ * a_b) * Δ
-        return (qmat=(a_b * a_b') * Δ,), δa, -δa
-    end
-    return evaluate(dist, a, b), SqMahalanobis_pullback
-end
+# @adjoint function (dist::Distances.SqMahalanobis)(a, b)
+#     function SqMahalanobis_pullback(Δ::Real)
+#         B_Bᵀ = dist.qmat + transpose(dist.qmat)
+#         a_b = a - b
+#         δa = (B_Bᵀ * a_b) * Δ
+#         return (qmat=(a_b * a_b') * Δ,), δa, -δa
+#     end
+#     return evaluate(dist, a, b), SqMahalanobis_pullback
+# end
