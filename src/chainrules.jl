@@ -139,13 +139,13 @@ function ChainRulesCore.rrule(::Type{<:RowVecs}, X::AbstractMatrix)
     return RowVecs(X), RowVecs_pullback
 end
 
-# function rrule(::typeof(Base.map), t::Transform, X::ColVecs)
-    # return pullback(_map, t, X)
-# end
+ZygoteRules.@adjoint function Base.map(t::Transform, X::ColVecs)
+    return ZygoteRules.pullback(_map, t, X)
+end
 
-# function rrule(::typeof(Base.map), t::Transform, X::RowVecs)
-#     return pullback(_map, t, X)
-# end
+ZygoteRules.@adjoint function Base.map(t::Transform, X::RowVecs)
+    return ZygoteRules.pullback(_map, t, X)
+end
 
 # @adjoint function (dist::Distances.SqMahalanobis)(a, b)
 #     function SqMahalanobis_pullback(Δ::Real)

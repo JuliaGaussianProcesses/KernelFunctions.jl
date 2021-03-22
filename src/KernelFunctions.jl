@@ -60,7 +60,7 @@ using Requires
 using Distances, LinearAlgebra
 using Functors
 using SpecialFunctions: loggamma, besselk, polygamma
-# using ZygoteRules: @adjoint, pullback, ZygoteRules
+using ZygoteRules: ZygoteRules
 using StatsFuns: logtwo, twoπ
 using StatsBase
 using TensorCore
