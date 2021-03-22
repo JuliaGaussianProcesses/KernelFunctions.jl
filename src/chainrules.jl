@@ -1,8 +1,8 @@
 ## Forward Rules
 
-function ChainRulesCore.frule((Δself, Δx, Δy), d::Euclidean, x::AbstractVector, y::AbstractVector)
+function ChainRulesCore.frule((_, Δx, Δy), d::Distances.Euclidean, x, y)
     Δ = x - y
-    D = norm(Δ, 1)
+    D = sqrt(sum(abs2, Δ))
     if iszero(D)
         return D, Zero()
     else
@@ -105,11 +105,12 @@ function ChainRulesCore.rrule(
 end
 
 ## Reverse Rules Sinus
+
 function ChainRulesCore.rrule(::typeof(Distances.evaluate), s::Sinus, x::AbstractVector, y::AbstractVector)
-    d = (x - y)
+    d = x - y
     sind = sinpi.(d)
     val = sum(abs2, sind ./ s.r)
-    gradx = 2π .* cospi.(d) .* sind ./ (s.r .^ 2)
+    gradx = twoπ .* cospi.(d) .* sind ./ (s.r .^ 2)
     function evaluate_pullback(Δ)
         return (r=-2Δ .* abs2.(sind) ./ s.r,), Δ * gradx, -Δ * gradx
     end
@@ -119,6 +120,7 @@ end
 ## Reverse Rules for matrix wrappers
 
 function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
+    ColVecs_pullback(Δ::Composite) = (NO_FIELDS, Δ.X)
     ColVecs_pullback(Δ::NamedTuple) = (Δ.X,)
     ColVecs_pullback(Δ::AbstractMatrix) = (Δ,)
     function ColVecs_pullback(::AbstractVector{<:AbstractVector{<:Real}})
@@ -128,6 +130,7 @@ function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
 end
 
 function ChainRulesCore.rrule(::Type{<:RowVecs}, X::AbstractMatrix)
+    RowVecs_pullback(Δ::Composite) = (NO_FIELDS, Δ.X)
     RowVecs_pullback(Δ::NamedTuple) = (Δ.X,)
     RowVecs_pullback(Δ::AbstractMatrix) = (Δ,)
     function RowVecs_pullback(::AbstractVector{<:AbstractVector{<:Real}})

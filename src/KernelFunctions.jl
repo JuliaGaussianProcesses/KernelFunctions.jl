@@ -55,13 +55,13 @@ export IndependentMOKernel, LatentFactorMOKernel
 export tensor, ⊗
 
 using Compat
-using ChainRulesCore: ChainRulesCore, Zero, NO_FIELDS
+using ChainRulesCore: ChainRulesCore, Composite, Zero, One, DoesNotExist, NO_FIELDS
 using Requires
 using Distances, LinearAlgebra
 using Functors
 using SpecialFunctions: loggamma, besselk, polygamma
 # using ZygoteRules: @adjoint, pullback, ZygoteRules
-using StatsFuns: logtwo
+using StatsFuns: logtwo, twoπ
 using StatsBase
 using TensorCore
 
