@@ -3,12 +3,10 @@
 function ChainRulesCore.frule((_, Δx, Δy), d::Distances.Euclidean, x, y)
     Δ = x - y
     D = sqrt(sum(abs2, Δ))
-    if iszero(D)
-        return D, Zero()
-    else
+    if !iszero(D)
         Δ ./= D
-        return D, dot(Δ, Δx) - dot(Δ, Δy)
     end
+    return D, dot(Δ, Δx) - dot(Δ, Δy)
 end
 
 ## Reverse Rules Delta
