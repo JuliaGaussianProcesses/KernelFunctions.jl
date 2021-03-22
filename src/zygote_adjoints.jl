@@ -44,30 +44,30 @@ function rrule(::typeof(Distances.pairwise),
 )
     P = Distances.pairwise(d, X, Y; dims=dims)
     if dims == 1
-        function pairwise_pullback(Δ)
+        function pairwise_pullback_cols(Δ)
             return NO_FIELDS, Δ * Y, Δ' * X
         end
-        return P, pairwise_pullback
+        return P, pairwise_pullback_cols
     else
-        function pairwise_pullback(Δ)
+        function pairwise_pullback_rows(Δ)
             return NO_FIELDS, Y * Δ', X * Δ
         end
-        return P, pairwise_pullback
+        return P, pairwise_pullback_rows
     end
 end
 
 function rrule(::typeof(Distances.pairwise), d::DotProduct, X::AbstractMatrix; dims=2)
     P = Distances.pairwise(d, X; dims=dims)
     if dims == 1
-        function pairwise_pullback(Δ)
+        function pairwise_pullback_cols(Δ)
             NO_FIELDS, 2 * Δ * X
         end
-        return P, pairwise_pullback
+        return P, pairwise_pullback_cols
     else
-        function pairwise_pullback(Δ)
+        function pairwise_pullback_rows(Δ)
             NO_FIELDS, 2 * X * Δ
         end
-        return P, pairwise_pullback
+        return P, pairwise_pullback_rows
     end
 end
 
@@ -80,19 +80,20 @@ function rrule(::typeof(Distances.colwise), d::DotProduct, X::AbstractMatrix, Y:
 end
 
 ## Adjoints Sinus
-@adjoint function evaluate(s::Sinus, x::AbstractVector, y::AbstractVector)
+function rrule(::typeof(Distances.evaluate), s::Sinus, x::AbstractVector, y::AbstractVector)
     d = (x - y)
     sind = sinpi.(d)
     val = sum(abs2, sind ./ s.r)
     gradx = 2π .* cospi.(d) .* sind ./ (s.r .^ 2)
-    return val, Δ -> begin
-        ((r=-2Δ .* abs2.(sind) ./ s.r,), Δ * gradx, -Δ * gradx)
+    function evaluate_pullback(Δ)
+        return  (r=-2Δ .* abs2.(sind) ./ s.r,), Δ * gradx, -Δ * gradx
     end
+    return val, evaluate_pullback
 end
 
 ## Adjoints for matrix wrappers
 
-function rrule(::typeof(ColVecs), X::AbstractMatrix)
+function rrule(::ColVecs, X::AbstractMatrix)
     ColVecs_pullback(Δ::NamedTuple) = (Δ.X,)
     ColVecs_pullback(Δ::AbstractMatrix) = (Δ,)
     function ColVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
@@ -101,7 +102,7 @@ function rrule(::typeof(ColVecs), X::AbstractMatrix)
     return ColVecs(X), ColVecs_pullback
 end
 
-function rrule(::typeof(RowVecs), X::AbstractMatrix)
+function rrule(::RowVecs, X::AbstractMatrix)
     RowVecs_pullback(Δ::NamedTuple) = (Δ.X,)
     RowVecs_pullback(Δ::AbstractMatrix) = (Δ,)
     function RowVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
