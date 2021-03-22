@@ -1,6 +1,19 @@
+## Forward Rules
+
+function ChainRulesCore.frule((Δself, Δx, Δy), d::Euclidean, x::AbstractVector, y::AbstractVector)
+    Δ = x - y
+    D = norm(Δ, 1)
+    if iszero(D)
+        return D, Zero()
+    else
+        Δ ./= D
+        return D, dot(Δ, Δx) - dot(Δ, Δy)
+    end
+end
+
 ## Reverse Rules Delta
 
-function rrule(::typeof(Distances.evaluate), s::Delta, x::AbstractVector, y::AbstractVector)
+function ChainRulesCore.rrule(::typeof(Distances.evaluate), s::Delta, x::AbstractVector, y::AbstractVector)
     d = evaluate(s, x, y)
     function evaluate_pullback(::Any)
         return NO_FIELDS, Zero(), Zero()
@@ -8,7 +21,7 @@ function rrule(::typeof(Distances.evaluate), s::Delta, x::AbstractVector, y::Abs
     return d, evaluate_pullback
 end
 
-function rrule(
+function ChainRulesCore.rrule(
     ::typeof(Distances.pairwise), d::Delta, X::AbstractMatrix, Y::AbstractMatrix; dims=2
 )
     P = Distances.pairwise(d, X, Y; dims=dims)
@@ -18,7 +31,7 @@ function rrule(
     return P, pairwise_pullback
 end
 
-function rrule(::typeof(Distances.pairwise), d::Delta, X::AbstractMatrix; dims=2)
+function ChainRulesCore.rrule(::typeof(Distances.pairwise), d::Delta, X::AbstractMatrix; dims=2)
     P = Distances.pairwise(d, X; dims=dims)
     function pairwise_pullback(::Any)
         return NO_FIELDS, Zero()
@@ -26,7 +39,7 @@ function rrule(::typeof(Distances.pairwise), d::Delta, X::AbstractMatrix; dims=2
     return P, pairwise_pullback
 end
 
-function rrule(::typeof(Distances.colwise), d::Delta, X::AbstractMatrix, Y::AbstractMatrix)
+function ChainRulesCore.rrule(::typeof(Distances.colwise), d::Delta, X::AbstractMatrix, Y::AbstractMatrix)
     C = Distances.colwise(d, X, Y)
     function colwise_pullback(::AbstractVector)
         return NO_FIELDS, Zero(), Zero()
@@ -35,7 +48,7 @@ function rrule(::typeof(Distances.colwise), d::Delta, X::AbstractMatrix, Y::Abst
 end
 
 ## Reverse Rules DotProduct
-function rrule(
+function ChainRulesCore.rrule(
     ::typeof(Distances.evaluate), s::DotProduct, x::AbstractVector, y::AbstractVector
 )
     d = dot(x, y)
@@ -45,7 +58,7 @@ function rrule(
     return d, evaluate_pullback
 end
 
-function rrule(
+function ChainRulesCore.rrule(
     ::typeof(Distances.pairwise),
     d::DotProduct,
     X::AbstractMatrix,
@@ -66,7 +79,7 @@ function rrule(
     end
 end
 
-function rrule(::typeof(Distances.pairwise), d::DotProduct, X::AbstractMatrix; dims=2)
+function ChainRulesCore.rrule(::typeof(Distances.pairwise), d::DotProduct, X::AbstractMatrix; dims=2)
     P = Distances.pairwise(d, X; dims=dims)
     if dims == 1
         function pairwise_pullback_cols(Δ)
@@ -81,18 +94,18 @@ function rrule(::typeof(Distances.pairwise), d::DotProduct, X::AbstractMatrix; d
     end
 end
 
-function rrule(
+function ChainRulesCore.rrule(
     ::typeof(Distances.colwise), d::DotProduct, X::AbstractMatrix, Y::AbstractMatrix
 )
     C = Distances.colwise(d, X, Y)
     function colwise_pullback(Δ::AbstractVector)
-        return (nothing, Δ' .* Y, Δ' .* X)
+        return (NO_FIELDS, Δ' .* Y, Δ' .* X)
     end
     return C, colwise_pullback
 end
 
 ## Reverse Rules Sinus
-function rrule(::typeof(Distances.evaluate), s::Sinus, x::AbstractVector, y::AbstractVector)
+function ChainRulesCore.rrule(::typeof(Distances.evaluate), s::Sinus, x::AbstractVector, y::AbstractVector)
     d = (x - y)
     sind = sinpi.(d)
     val = sum(abs2, sind ./ s.r)
@@ -105,26 +118,26 @@ end
 
 ## Reverse Rules for matrix wrappers
 
-function rrule(::ColVecs, X::AbstractMatrix)
+function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
     ColVecs_pullback(Δ::NamedTuple) = (Δ.X,)
     ColVecs_pullback(Δ::AbstractMatrix) = (Δ,)
-    function ColVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
+    function ColVecs_pullback(::AbstractVector{<:AbstractVector{<:Real}})
         return throw(error("In slow method"))
     end
     return ColVecs(X), ColVecs_pullback
 end
 
-function rrule(::RowVecs, X::AbstractMatrix)
+function ChainRulesCore.rrule(::Type{<:RowVecs}, X::AbstractMatrix)
     RowVecs_pullback(Δ::NamedTuple) = (Δ.X,)
     RowVecs_pullback(Δ::AbstractMatrix) = (Δ,)
-    function RowVecs_pullback(Δ::AbstractVector{<:AbstractVector{<:Real}})
+    function RowVecs_pullback(::AbstractVector{<:AbstractVector{<:Real}})
         return throw(error("In slow method"))
     end
     return RowVecs(X), RowVecs_pullback
 end
 
 # function rrule(::typeof(Base.map), t::Transform, X::ColVecs)
-#     return pullback(_map, t, X)
+    # return pullback(_map, t, X)
 # end
 
 # function rrule(::typeof(Base.map), t::Transform, X::RowVecs)
