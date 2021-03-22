@@ -1,3 +1,18 @@
+@doc raw"""
+    CoregionMOKernel(kernel::Kernel, B::AbstractMatrix)
+
+Kernel associated with the intrinsic coregionalization model.
+
+# Definition
+
+For inputs ``x, x'`` and output dimensions ``p_x, p_{x'}'``, the kernel is defined as[^ARL]
+```math
+k\big((x, p_x), (x, p_{x'})\big) = [B]_{p_x, p_{x'}} k^{x}\big(x, x'\big),
+```
+where ``B`` is a positive semidefinite matrix of size ``m \times m``, with ``m`` being the number of outputs, and k^{x} is a scalar-valued kernel shared by the latent processes.
+
+[^ARL]: M. Álvarez, L. Rosasco, & N. Lawrence (2012). [Kernels for Vector-Valued Functions: a Review](https://arxiv.org/pdf/1106.6251.pdf).
+"""
 struct CoregionMOKernel{K<:Kernel,T<:AbstractMatrix} <: MOKernel
     kernel::K
     B::T
