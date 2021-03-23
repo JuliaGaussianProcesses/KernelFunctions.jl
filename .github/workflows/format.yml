@@ -1,4 +1,4 @@
-name: Format suggestions
+name: Format check
 
 on:
   pull_request:
@@ -14,7 +14,17 @@ jobs:
       - run: |
           julia  -e 'using Pkg; Pkg.add("JuliaFormatter")'
           julia  -e 'using JuliaFormatter; format("."; verbose=true)'
-      - uses: reviewdog/action-suggester@v1
+      - run: |
+          git diff > diff.txt
+          if [ -s diff.txt ]; then
+            echo 'code is not formatted correctly'
+            exit 1
+          else
+            echo 'code is formatted correctly!'
+            exit 0
+          fi
+      - uses: actions/upload-artifact@v2
+        if: failure()
         with:
-          tool_name: JuliaFormatter
-          fail_on_error: true
+          name: diff-${{ github.event.number }}
+          path: diff.txt
