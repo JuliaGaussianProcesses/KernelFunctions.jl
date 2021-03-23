@@ -37,15 +37,15 @@ function colwise(::PreMetric, x::AbstractVector)
 end
 
 ## The following is a hack for DotProduct and Delta to still work
-function colwise(d::UnionPreMetric, x::ColVecs)
+function colwise(d::Distances.UnionPreMetric, x::ColVecs)
     return Distances.colwise(d, x.X, x.X)
 end
 
-function colwise(d::UnionPreMetric, x::RowVecs)
+function colwise(d::Distances.UnionPreMetric, x::RowVecs)
     return Distances.colwise(d, x.X', x.X')
 end
 
-function colwise(d::UnionPreMetric, x::AbstractVector)
+function colwise(d::Distances.UnionPreMetric, x::AbstractVector)
     return map(d, x, x)
 end
 
