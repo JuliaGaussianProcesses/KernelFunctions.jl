@@ -21,7 +21,7 @@
     compare_gradient(:Zygote, [x, y]) do xy
         KernelFunctions.Sinus(r)(xy[1], xy[2])
     end
-    # compare_gradient(:Zygote, [Q, x, y]) do xy
-    #     evaluate(SqMahalanobis(xy[1]), xy[2], xy[3])
-    # end
+    compare_gradient(:Zygote, [Q, x, y]) do xy
+        SqMahalanobis(xy[1])(xy[2], xy[3])
+    end
 end
