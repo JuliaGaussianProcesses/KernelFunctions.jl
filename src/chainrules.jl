@@ -146,12 +146,13 @@ ZygoteRules.@adjoint function Base.map(t::Transform, X::RowVecs)
     return ZygoteRules.pullback(_map, t, X)
 end
 
-# @adjoint function (dist::Distances.SqMahalanobis)(a, b)
-#     function SqMahalanobis_pullback(Δ::Real)
-#         B_Bᵀ = dist.qmat + transpose(dist.qmat)
-#         a_b = a - b
-#         δa = (B_Bᵀ * a_b) * Δ
-#         return (qmat=(a_b * a_b') * Δ,), δa, -δa
-#     end
-#     return evaluate(dist, a, b), SqMahalanobis_pullback
-# end
+function ChainRulesCore.rrule(dist::Distances.SqMahalanobis, a, b)
+    d = dist(a, b)
+    function SqMahalanobis_pullback(Δ::Real)
+        B_Bᵀ = dist.qmat + transpose(dist.qmat)
+        a_b = a - b
+        δa = (B_Bᵀ * a_b) * Δ
+        return (qmat=(a_b * a_b') * Δ,), δa, -δa
+    end
+    return d, SqMahalanobis_pullback
+end

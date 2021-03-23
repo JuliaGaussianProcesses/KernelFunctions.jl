@@ -12,7 +12,7 @@ struct Delta <: Distances.UnionSemiMetric end
     return a == b
 end
 
-Distances.result_type(::Delta, Ta::Type, Tb::Type) = promote_type(Ta, Tb)
+Distances.result_type(::Delta, Ta::Type, Tb::Type) = Bool
 
 @inline (dist::Delta)(a::AbstractArray, b::AbstractArray) = Distances._evaluate(dist, a, b)
 @inline (dist::Delta)(a::Number, b::Number) = a == b
