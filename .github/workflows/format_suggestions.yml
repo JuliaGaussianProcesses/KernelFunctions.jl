@@ -1,0 +1,62 @@
+name: Suggest formatting
+
+on:
+  workflow_run:
+    workflows: ["Format check"]
+    types: [completed]
+
+jobs:
+  suggest:
+    name: Suggest formatting
+    runs-on: ubuntu-latest
+    if: >
+      ${{ github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - name: Download artifact
+        uses: actions/github-script@v3
+        id: download
+        with:
+          script: |
+            // find the artifact of the workflow that triggered this one
+            var artifacts = await github.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: ${{github.event.workflow_run.id }},
+            });
+            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name.startsWith("diff-")
+            })[0];
+
+            // download the artifact
+            var download = await github.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{github.workspace}}/diff.zip', Buffer.from(download.data));
+
+            // return the number of the underlying PR encoded in the name of the artifact
+            // PRs from forks are not listed under github.event.workflow_run.pull_requests
+            var pr = matchArtifact.name.substring(5));
+            return pr
+          result-encoding: string
+      - name: Extract artifact
+        run: unzip diff.zip
+      - name: Install reviewdog
+        uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+      - name: Run reviewdog
+        env:
+          CI_PULL_REQUEST: ${{ steps.download.outputs.result }}
+          CI_COMMIT: ${{ github.event.workflow_run.head_sha }}
+          CI_REPO_OWNER: ${{ github.event.workflow_run.repository.owner.login }}
+          CI_REPO_NAME: ${{ github.event.workflow_run.repository.name }}
+          CI_REPOSITORY: ${{ github.event.workflow_run.repository }}
+          CI_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          reviewdog -name="Julia Formatter" -f=diff -f.diff.strip=1 -reporter="github-pr-review" < ./diff.txt

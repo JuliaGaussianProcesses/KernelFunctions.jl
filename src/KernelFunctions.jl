@@ -1,8 +1,7 @@
 module KernelFunctions
 
 if !isfile(joinpath(@__DIR__, "update_v0.8.0"))
-    printstyled(
-        stdout,
+    printstyled(stdout,
         """
         WARNING: SqExponentialKernel changed convention in version 0.8.0.
         This kernel now divides the squared distance by 2 to align with standard practice.
