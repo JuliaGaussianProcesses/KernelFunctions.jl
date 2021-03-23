@@ -1,4 +1,4 @@
-struct Delta <: Distances.UnionSemiMetric end
+struct Delta <: Distances.UnionPreMetric end
 
 @inline function Distances._evaluate(::Delta, a::AbstractVector, b::AbstractVector)
     @boundscheck if length(a) != length(b)
