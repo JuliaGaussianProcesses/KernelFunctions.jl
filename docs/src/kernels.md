@@ -133,4 +133,5 @@ KernelTensorProduct
 MOKernel
 IndependentMOKernel
 LatentFactorMOKernel
+CoregionMOKernel
 ```
