@@ -109,15 +109,13 @@ end
 
 ## Reverse Rules Sinus
 
-function ChainRulesCore.rrule(
-    ::typeof(Distances.evaluate), s::Sinus, x::AbstractVector, y::AbstractVector
-)
+function ChainRulesCore.rrule(s::Sinus, x::AbstractVector, y::AbstractVector)
     d = x - y
     sind = sinpi.(d)
     val = sum(abs2, sind ./ s.r)
     gradx = twoπ .* cospi.(d) .* sind ./ (s.r .^ 2)
     function evaluate_pullback(Δ)
-        return NO_FIELDS, (r=-2Δ .* abs2.(sind) ./ s.r,), Δ * gradx, -Δ * gradx
+        return (r=-2Δ .* abs2.(sind) ./ s.r,), Δ * gradx, -Δ * gradx
     end
     return val, evaluate_pullback
 end
@@ -129,7 +127,11 @@ function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
     ColVecs_pullback(Δ::NamedTuple) = (Δ.X,)
     ColVecs_pullback(Δ::AbstractMatrix) = (Δ,)
     function ColVecs_pullback(::AbstractVector{<:AbstractVector{<:Real}})
-        return throw(error("In slow method"))
+        return error(
+            "Pullback on AbstractVector{<:AbstractVector}.\n" *
+            "This might happen if you try to use gradients on the generic `kernelmatrix` or `kernelmatrix_diag`.\n" *
+            "To solve this issue overload `kernelmatrix(_diag)` for your kernel for `ColVecs`",
+        )
     end
     return ColVecs(X), ColVecs_pullback
 end
@@ -139,7 +141,11 @@ function ChainRulesCore.rrule(::Type{<:RowVecs}, X::AbstractMatrix)
     RowVecs_pullback(Δ::NamedTuple) = (Δ.X,)
     RowVecs_pullback(Δ::AbstractMatrix) = (Δ,)
     function RowVecs_pullback(::AbstractVector{<:AbstractVector{<:Real}})
-        return throw(error("In slow method"))
+        return error(
+            "Pullback on AbstractVector{<:AbstractVector}.\n" *
+            "This might happen if you try to use gradients on the generic `kernelmatrix` or `kernelmatrix_diag`.\n" *
+            "To solve this issue overload `kernelmatrix(_diag)` for your kernel for `RowVecs`",
+        )
     end
     return RowVecs(X), RowVecs_pullback
 end
