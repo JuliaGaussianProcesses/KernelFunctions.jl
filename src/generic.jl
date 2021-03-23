@@ -6,4 +6,4 @@ Base.iterate(k::Kernel, ::Any) = nothing
 printshifted(io::IO, o, shift::Int) = print(io, o)
 
 # Fallback implementation of evaluate for `SimpleKernel`s.
-(k::SimpleKernel)(x, y) = kappa(k, evaluate(metric(k), x, y))
+(k::SimpleKernel)(x, y) = kappa(k, metric(k)(x, y))

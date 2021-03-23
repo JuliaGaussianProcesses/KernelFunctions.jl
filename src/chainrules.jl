@@ -11,10 +11,10 @@ end
 
 ## Reverse Rules Delta
 
-function ChainRulesCore.rrule(::typeof(Distances.evaluate), s::Delta, x::AbstractVector, y::AbstractVector)
-    d = evaluate(s, x, y)
+function ChainRulesCore.rrule(dist::Delta, x::AbstractVector, y::AbstractVector)
+    d = dist(x, y)
     function evaluate_pullback(::Any)
-        return NO_FIELDS, NO_FIELDS, Zero(), Zero()
+        return NO_FIELDS, Zero(), Zero()
     end
     return d, evaluate_pullback
 end
@@ -48,11 +48,11 @@ end
 ## Reverse Rules DotProduct
 
 function ChainRulesCore.rrule(
-    ::typeof(Distances.evaluate), s::DotProduct, x::AbstractVector, y::AbstractVector
+    dist::DotProduct, x::AbstractVector, y::AbstractVector
 )
-    d = dot(x, y)
+    d = dist(x, y)
     function evaluate_pullback(Δ)
-        return NO_FIELDS, NO_FIELDS, Δ .* y, Δ .* x
+        return NO_FIELDS, Δ .* y, Δ .* x
     end
     return d, evaluate_pullback
 end
