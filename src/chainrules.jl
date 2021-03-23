@@ -29,7 +29,9 @@ function ChainRulesCore.rrule(
     return P, pairwise_pullback
 end
 
-function ChainRulesCore.rrule(::typeof(Distances.pairwise), d::Delta, X::AbstractMatrix; dims=2)
+function ChainRulesCore.rrule(
+    ::typeof(Distances.pairwise), d::Delta, X::AbstractMatrix; dims=2
+)
     P = Distances.pairwise(d, X; dims=dims)
     function pairwise_pullback(::Any)
         return NO_FIELDS, NO_FIELDS, Zero()
@@ -37,7 +39,9 @@ function ChainRulesCore.rrule(::typeof(Distances.pairwise), d::Delta, X::Abstrac
     return P, pairwise_pullback
 end
 
-function ChainRulesCore.rrule(::typeof(Distances.colwise), d::Delta, X::AbstractMatrix, Y::AbstractMatrix)
+function ChainRulesCore.rrule(
+    ::typeof(Distances.colwise), d::Delta, X::AbstractMatrix, Y::AbstractMatrix
+)
     C = Distances.colwise(d, X, Y)
     function colwise_pullback(::AbstractVector)
         return NO_FIELDS, NO_FIELDS, Zero(), Zero()
@@ -47,9 +51,7 @@ end
 
 ## Reverse Rules DotProduct
 
-function ChainRulesCore.rrule(
-    dist::DotProduct, x::AbstractVector, y::AbstractVector
-)
+function ChainRulesCore.rrule(dist::DotProduct, x::AbstractVector, y::AbstractVector)
     d = dist(x, y)
     function evaluate_pullback(Δ)
         return NO_FIELDS, Δ .* y, Δ .* x
@@ -78,7 +80,9 @@ function ChainRulesCore.rrule(
     end
 end
 
-function ChainRulesCore.rrule(::typeof(Distances.pairwise), d::DotProduct, X::AbstractMatrix; dims=2)
+function ChainRulesCore.rrule(
+    ::typeof(Distances.pairwise), d::DotProduct, X::AbstractMatrix; dims=2
+)
     P = Distances.pairwise(d, X; dims=dims)
     if dims == 1
         function pairwise_pullback_cols(Δ)
@@ -105,7 +109,9 @@ end
 
 ## Reverse Rules Sinus
 
-function ChainRulesCore.rrule(::typeof(Distances.evaluate), s::Sinus, x::AbstractVector, y::AbstractVector)
+function ChainRulesCore.rrule(
+    ::typeof(Distances.evaluate), s::Sinus, x::AbstractVector, y::AbstractVector
+)
     d = x - y
     sind = sinpi.(d)
     val = sum(abs2, sind ./ s.r)
