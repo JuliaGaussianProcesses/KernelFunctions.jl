@@ -72,3 +72,5 @@ function kernelmatrix(κ::GaborKernel, x::AbstractVector, y::AbstractVector)
 end
 
 kernelmatrix_diag(κ::GaborKernel, x::AbstractVector) = kernelmatrix_diag(κ.kernel, x)
+
+kernelmatrix_diag(κ::GaborKernel, x::AbstractVector, y::AbstractVector) = kernelmatrix_diag(κ.kernel, x, y)
