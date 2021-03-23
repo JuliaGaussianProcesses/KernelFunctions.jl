@@ -1,3 +1,4 @@
+# Delta is not following the PreMetric rules since d(x, x) == 1
 struct Delta <: Distances.UnionPreMetric end
 
 @inline function Distances._evaluate(::Delta, a::AbstractVector, b::AbstractVector)

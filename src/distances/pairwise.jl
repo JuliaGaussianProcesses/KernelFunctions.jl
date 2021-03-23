@@ -32,15 +32,20 @@ end
 
 # Also defines the colwise method for abstractvectors
 
-function colwise(d::PreMetric, x::ColVecs)
+function colwise(::PreMetric, x::AbstractVector)
+    return zeros(length(x)) # Valid since d(x,x) == 0 by definition
+end
+
+## The following is a hack for DotProduct and Delta to still work
+function colwise(d::UnionPreMetric, x::ColVecs)
     return Distances.colwise(d, x.X, x.X)
 end
 
-function colwise(d::PreMetric, x::RowVecs)
+function colwise(d::UnionPreMetric, x::RowVecs)
     return Distances.colwise(d, x.X', x.X')
 end
 
-function colwise(d::PreMetric, x::AbstractVector)
+function colwise(d::UnionPreMetric, x::AbstractVector)
     return map(d, x, x)
 end
 

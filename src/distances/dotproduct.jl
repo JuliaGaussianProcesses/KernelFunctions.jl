@@ -1,4 +1,5 @@
-struct DotProduct <: Distances.PreMetric end
+## DotProduct is not following the PreMetric rules since d(x, x) != 0 and d(x, y) >= 0 for all x, y
+struct DotProduct <: Distances.UnionPreMetric end
 
 @inline function Distances._evaluate(::DotProduct, a::AbstractVector, b::AbstractVector)
     @boundscheck if length(a) != length(b)
