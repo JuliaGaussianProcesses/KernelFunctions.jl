@@ -32,8 +32,8 @@ end
 
 # Also defines the colwise method for abstractvectors
 
-function colwise(::PreMetric, x::AbstractVector)
-    return zeros(length(x)) # Valid since d(x,x) == 0 by definition
+function colwise(d::PreMetric, x::AbstractVector)
+    return zeros(Distances.result_type(d, x, x), length(x)) # Valid since d(x,x) == 0 by definition
 end
 
 ## The following is a hack for DotProduct and Delta to still work

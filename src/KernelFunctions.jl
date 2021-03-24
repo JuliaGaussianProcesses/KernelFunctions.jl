@@ -114,6 +114,7 @@ include(joinpath("mokernels", "independent.jl"))
 include(joinpath("mokernels", "slfm.jl"))
 
 include("chainrules.jl")
+include("zygoterules.jl")
 
 include("test_utils.jl")
 
