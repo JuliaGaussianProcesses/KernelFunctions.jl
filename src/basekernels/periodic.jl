@@ -32,7 +32,7 @@ PeriodicKernel(T::DataType, dims::Int=1) = PeriodicKernel(; r=ones(T, dims))
 
 @functor PeriodicKernel
 
-metric(κ::PeriodicKernel) = Sinus(κ.r)
+binary_op(κ::PeriodicKernel) = Sinus(κ.r)
 
 kappa(::PeriodicKernel, d::Real) = exp(-0.5d)
 

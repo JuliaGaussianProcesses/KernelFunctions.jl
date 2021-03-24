@@ -11,7 +11,7 @@ The main goals of this package compared to its predecessors/concurrents in [MLKe
 
 The methodology of how kernels are computed is quite simple and is done in three phases :
 - A `Transform` object is applied sample-wise on every sample
-- The pairwise matrix is computed using [Distances.jl](https://github.com/JuliaStats/Distances.jl) by using a `Metric` proper to each kernel
+- The pairwise matrix is computed using [Distances.jl](https://github.com/JuliaStats/Distances.jl) by using a `BinaryOp` like a `Metric` proper to each kernel
 - The `Kernel` function is applied element-wise on the pairwise matrix
 
 For a quick introduction on how to use it go to [User guide](@ref)

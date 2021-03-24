@@ -9,8 +9,8 @@
         @test kappa(k, x) ≈ x
         @test k(v1, v2) ≈ dot(v1, v2)
         @test kappa(LinearKernel(), x) == kappa(k, x)
-        @test metric(LinearKernel()) == KernelFunctions.DotProduct()
-        @test metric(LinearKernel(; c=c)) == KernelFunctions.DotProduct()
+        @test binary_op(LinearKernel()) == KernelFunctions.DotProduct()
+        @test binary_op(LinearKernel(; c=c)) == KernelFunctions.DotProduct()
         @test repr(k) == "Linear Kernel (c = 0.0)"
 
         # Errors.
@@ -29,10 +29,10 @@
         @test repr(k) == "Polynomial Kernel (c = 0.0, degree = 2)"
 
         # Coherence tests.
-        @test kappa(PolynomialKernel(; degree=1, c=c), x) ≈ kappa(LinearKernel(; c=c), x)
+        @test kappa(PolynomialKernel(d=1.0,c=c),x) ≈ kappa(LinearKernel(c=c),x)
         @test metric(PolynomialKernel()) == KernelFunctions.DotProduct()
-        @test metric(PolynomialKernel(; degree=3)) == KernelFunctions.DotProduct()
-        @test metric(PolynomialKernel(; degree=3, c=c)) == KernelFunctions.DotProduct()
+        @test binary_op(PolynomialKernel(d=3.0)) == KernelFunctions.DotProduct()
+        @test binary_op(PolynomialKernel(d=3.0,c=2.0)) == KernelFunctions.DotProduct()
 
         # Deprecations.
         k = @test_deprecated PolynomialKernel(; d=1)

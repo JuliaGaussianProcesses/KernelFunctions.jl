@@ -67,11 +67,15 @@ using TensorCore
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
 
+abstract type AbstractBinaryOp end
+const BinaryOp = Union{Distances.Metric, AbstractBinaryOp}
+
 include("utils.jl")
-include(joinpath("distances", "pairwise.jl"))
-include(joinpath("distances", "dotproduct.jl"))
-include(joinpath("distances", "delta.jl"))
-include(joinpath("distances", "sinus.jl"))
+
+include(joinpath("binary_op", "abstractbinaryop.jl"))
+include(joinpath("binary_op", "dotproduct.jl"))
+include(joinpath("binary_op", "delta.jl"))
+include(joinpath("binary_op", "sinus.jl"))
 
 include(joinpath("transform", "transform.jl"))
 include(joinpath("transform", "scaletransform.jl"))

@@ -1,4 +1,3 @@
 build/
 site/
-
-#Temp to avoid to many changes
+src/examples/

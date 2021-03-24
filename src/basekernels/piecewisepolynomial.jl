@@ -76,7 +76,7 @@ end
 
 kappa(κ::PiecewisePolynomialKernel, r) = max(1 - r, 0)^κ.alpha * evalpoly(r, κ.coeffs)
 
-metric(::PiecewisePolynomialKernel) = Euclidean()
+binary_op(κ::PiecewisePolynomialKernel) = Euclidean()
 
 function Base.show(io::IO, κ::PiecewisePolynomialKernel{D}) where {D}
     return print(

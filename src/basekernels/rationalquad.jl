@@ -29,7 +29,7 @@ function kappa(κ::RationalQuadraticKernel, d²::T) where {T<:Real}
     return (one(T) + d² / (2 * first(κ.α)))^(-first(κ.α))
 end
 
-metric(::RationalQuadraticKernel) = SqEuclidean()
+binary_op(::RationalQuadraticKernel) = SqEuclidean()
 
 function Base.show(io::IO, κ::RationalQuadraticKernel)
     return print(io, "Rational Quadratic Kernel (α = $(first(κ.α)))")
@@ -70,7 +70,7 @@ function kappa(κ::GammaRationalQuadraticKernel, d::Real)
     return (one(d) + d^first(κ.γ) / first(κ.α))^(-first(κ.α))
 end
 
-metric(::GammaRationalQuadraticKernel) = Euclidean()
+binary_op(::GammaRationalQuadraticKernel) = Euclidean()
 
 function Base.show(io::IO, κ::GammaRationalQuadraticKernel)
     return print(

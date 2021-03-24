@@ -14,6 +14,6 @@ struct CosineKernel <: SimpleKernel end
 
 kappa(::CosineKernel, d::Real) = cospi(d)
 
-metric(::CosineKernel) = Euclidean()
+binary_op(::CosineKernel) = Euclidean()
 
 Base.show(io::IO, ::CosineKernel) = print(io, "Cosine Kernel")

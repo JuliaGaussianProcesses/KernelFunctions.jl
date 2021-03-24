@@ -46,26 +46,26 @@ _mod(x::RowVecs) = vec(sum(abs2, x.X; dims=2))
 
 function kernelmatrix(κ::FBMKernel, x::AbstractVector)
     modx = _mod(x)
-    modxx = pairwise(SqEuclidean(), x)
+    modxx = Distances.pairwise(SqEuclidean(), x)
     return _fbm.(modx, modx', modxx, κ.h)
 end
 
 function kernelmatrix!(K::AbstractMatrix, κ::FBMKernel, x::AbstractVector)
     modx = _mod(x)
-    pairwise!(K, SqEuclidean(), x)
+    Distances.pairwise!(K, SqEuclidean(), x)
     K .= _fbm.(modx, modx', K, κ.h)
     return K
 end
 
 function kernelmatrix(κ::FBMKernel, x::AbstractVector, y::AbstractVector)
-    modxy = pairwise(SqEuclidean(), x, y)
+    modxy = Distances.pairwise(SqEuclidean(), x, y)
     return _fbm.(_mod(x), _mod(y)', modxy, κ.h)
 end
 
 function kernelmatrix!(
     K::AbstractMatrix, κ::FBMKernel, x::AbstractVector, y::AbstractVector
 )
-    pairwise!(K, SqEuclidean(), x, y)
+    Distances.pairwise!(K, SqEuclidean(), x, y)
     K .= _fbm.(_mod(x), _mod(y)', K, κ.h)
     return K
 end
