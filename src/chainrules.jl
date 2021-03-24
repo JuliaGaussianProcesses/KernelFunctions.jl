@@ -68,34 +68,28 @@ function ChainRulesCore.rrule(
     dims=2,
 )
     P = Distances.pairwise(d, X, Y; dims=dims)
-    if dims == 1
-        function pairwise_pullback_cols(Δ::AbstractMatrix)
+    function pairwise_pullback_cols(Δ::AbstractMatrix)
+        if dims == 1
             return NO_FIELDS, NO_FIELDS, Δ * Y, Δ' * X
-        end
-        return P, pairwise_pullback_cols
-    else
-        function pairwise_pullback_rows(Δ::AbstractMatrix)
+        else
             return NO_FIELDS, NO_FIELDS, Y * Δ', X * Δ
         end
-        return P, pairwise_pullback_rows
     end
+    return P, pairwise_pullback_cols
 end
 
 function ChainRulesCore.rrule(
     ::typeof(Distances.pairwise), d::DotProduct, X::AbstractMatrix; dims=2
 )
     P = Distances.pairwise(d, X; dims=dims)
-    if dims == 1
-        function pairwise_pullback_cols(Δ::AbstractMatrix)
+    function pairwise_pullback_cols(Δ::AbstractMatrix)
+        if dims == 1
             return NO_FIELDS, NO_FIELDS, 2 * Δ * X
-        end
-        return P, pairwise_pullback_cols
-    else
-        function pairwise_pullback_rows(Δ::AbstractMatrix)
+        else
             return NO_FIELDS, NO_FIELDS, 2 * X * Δ
         end
-        return P, pairwise_pullback_rows
     end
+    return P, pairwise_pullback_cols
 end
 
 function ChainRulesCore.rrule(
@@ -120,6 +114,19 @@ function ChainRulesCore.rrule(s::Sinus, x::AbstractVector, y::AbstractVector)
         return (r=-2Δ .* abs2_sind_r,), Δ * gradx, -Δ * gradx
     end
     return val, evaluate_pullback
+end
+
+## Reverse Rulse SqMahalanobis
+
+function ChainRulesCore.rrule(dist::Distances.SqMahalanobis, a, b)
+    d = dist(a, b)
+    function SqMahalanobis_pullback(Δ::Real)
+        B_Bᵀ = dist.qmat + transpose(dist.qmat)
+        a_b = a - b
+        δa = @thunk((B_Bᵀ * a_b) * Δ)
+        return (qmat=(a_b * a_b') * Δ,), δa, -δa
+    end
+    return d, SqMahalanobis_pullback
 end
 
 ## Reverse Rules for matrix wrappers
@@ -148,13 +155,3 @@ function ChainRulesCore.rrule(::Type{<:RowVecs}, X::AbstractMatrix)
     return RowVecs(X), RowVecs_pullback
 end
 
-function ChainRulesCore.rrule(dist::Distances.SqMahalanobis, a, b)
-    d = dist(a, b)
-    function SqMahalanobis_pullback(Δ::Real)
-        B_Bᵀ = dist.qmat + transpose(dist.qmat)
-        a_b = a - b
-        δa = @thunk((B_Bᵀ * a_b) * Δ)
-        return (qmat=(a_b * a_b') * Δ,), δa, -δa
-    end
-    return d, SqMahalanobis_pullback
-end
