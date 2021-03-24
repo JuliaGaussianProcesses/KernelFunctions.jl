@@ -1,7 +1,9 @@
 ## Forward Rules
 
 # Note that this is type piracy as the derivative should be NaN for x == y.
-function ChainRulesCore.frule((_, Δx, Δy), d::Distances.Euclidean, x::AbstractVector, y::AbstractVector)
+function ChainRulesCore.frule(
+    (_, Δx, Δy), d::Distances.Euclidean, x::AbstractVector, y::AbstractVector
+)
     Δ = x - y
     D = sqrt(sum(abs2, Δ))
     if !iszero(D)
@@ -118,7 +120,9 @@ end
 
 ## Reverse Rulse SqMahalanobis
 
-function ChainRulesCore.rrule(dist::Distances.SqMahalanobis, a, b)
+function ChainRulesCore.rrule(
+    dist::Distances.SqMahalanobis, a::AbstractVector, b::AbstractVector
+)
     d = dist(a, b)
     function SqMahalanobis_pullback(Δ::Real)
         B_Bᵀ = dist.qmat + transpose(dist.qmat)
