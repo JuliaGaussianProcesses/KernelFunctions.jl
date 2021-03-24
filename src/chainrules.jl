@@ -158,4 +158,3 @@ function ChainRulesCore.rrule(::Type{<:RowVecs}, X::AbstractMatrix)
     end
     return RowVecs(X), RowVecs_pullback
 end
-

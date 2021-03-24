@@ -55,7 +55,7 @@ export IndependentMOKernel, LatentFactorMOKernel
 export tensor, ⊗
 
 using Compat
-using ChainRulesCore: ChainRulesCore, Composite, Zero, One, DoesNotExist, NO_FIELDS
+using ChainRulesCore: ChainRulesCore, Composite, Zero, One, DoesNotExist, NO_FIELDS, @thunk
 using Requires
 using Distances, LinearAlgebra
 using Functors
