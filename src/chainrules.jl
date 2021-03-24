@@ -136,7 +136,7 @@ end
 ## Reverse Rules for matrix wrappers
 
 function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
-    ColVecs_pullback(Δ::Composite{<:ColVecs}) = (NO_FIELDS, Δ.X)
+    ColVecs_pullback(Δ::Composite) = (NO_FIELDS, Δ.X)
     function ColVecs_pullback(::AbstractVector{<:AbstractVector{<:Real}})
         return error(
             "Pullback on AbstractVector{<:AbstractVector}.\n" *
@@ -148,7 +148,7 @@ function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
 end
 
 function ChainRulesCore.rrule(::Type{<:RowVecs}, X::AbstractMatrix)
-    RowVecs_pullback(Δ::Composite{<:RowVecs}) = (NO_FIELDS, Δ.X)
+    RowVecs_pullback(Δ::Composite) = (NO_FIELDS, Δ.X)
     function RowVecs_pullback(::AbstractVector{<:AbstractVector{<:Real}})
         return error(
             "Pullback on AbstractVector{<:AbstractVector}.\n" *
