@@ -128,7 +128,7 @@ function ChainRulesCore.rrule(
         B_Bᵀ = dist.qmat + transpose(dist.qmat)
         a_b = a - b
         δa = @thunk((B_Bᵀ * a_b) * Δ)
-        return (qmat=(a_b * a_b') * Δ,), δa, -δa
+        return (qmat=(a_b * a_b') * Δ,), δa, @thunk(-δa)
     end
     return d, SqMahalanobis_pullback
 end
