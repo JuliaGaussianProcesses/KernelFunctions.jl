@@ -7,16 +7,8 @@
 
     k = PiecewisePolynomialKernel(; degree=degree, dim=D)
     k2 = PiecewisePolynomialKernel{degree}(D)
-    k3 = @test_deprecated PiecewisePolynomialKernel{degree}(maha)
-    k4 = @test_deprecated PiecewisePolynomialKernel(; degree=degree, maha=maha)
-    k5 = @test_deprecated PiecewisePolynomialKernel(; v=degree, dim=D)
-    k6 = @test_deprecated PiecewisePolynomialKernel(; v=degree, maha=maha)
 
     @test k2(v1, v2) == k(v1, v2)
-    @test k3(v1, v2) ≈ k(v1, v2)
-    @test k4(v1, v2) ≈ k(v1, v2)
-    @test k5(v1, v2) ≈ k(v1, v2)
-    @test k6(v1, v2) ≈ k(v1, v2)
 
     @test_throws ErrorException PiecewisePolynomialKernel{4}(maha)
     @test_throws ErrorException PiecewisePolynomialKernel{4}(D)

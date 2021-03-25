@@ -34,10 +34,6 @@
         @test metric(PolynomialKernel(; degree=3)) == KernelFunctions.DotProduct()
         @test metric(PolynomialKernel(; degree=3, c=c)) == KernelFunctions.DotProduct()
 
-        # Deprecations.
-        k = @test_deprecated PolynomialKernel(; d=1)
-        @test k.degree == 1
-
         # Errors.
         @test_throws ArgumentError PolynomialKernel(; d=0)
         @test_throws ArgumentError PolynomialKernel(; degree=0)
