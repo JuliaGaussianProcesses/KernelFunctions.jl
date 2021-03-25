@@ -37,6 +37,10 @@ function kernelmatrix_diag(κ::ScaledKernel, x::AbstractVector)
     return κ.σ² .* kernelmatrix_diag(κ.kernel, x)
 end
 
+function kernelmatrix_diag(κ::ScaledKernel, x::AbstractVector, y::AbstractVector)
+    return κ.σ² .* kernelmatrix_diag(κ.kernel, x, y)
+end
+
 function kernelmatrix!(
     K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector, y::AbstractVector
 )

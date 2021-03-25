@@ -13,6 +13,7 @@ using Zygote: Zygote
 using ForwardDiff: ForwardDiff
 using ReverseDiff: ReverseDiff
 using FiniteDifferences: FiniteDifferences
+using ChainRulesTestUtils
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 
@@ -146,7 +147,8 @@ include("test_utils.jl")
     end
 
     include("generic.jl")
-    include("zygote_adjoints.jl")
+    include("chainrules.jl")
+    include("zygoterules.jl")
 
     @testset "doctests" begin
         DocMeta.setdocmeta!(

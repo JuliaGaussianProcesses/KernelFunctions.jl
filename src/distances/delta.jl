@@ -1,4 +1,5 @@
-struct Delta <: Distances.PreMetric end
+# Delta is not following the PreMetric rules since d(x, x) == 1
+struct Delta <: Distances.UnionPreMetric end
 
 @inline function Distances._evaluate(::Delta, a::AbstractVector, b::AbstractVector)
     @boundscheck if length(a) != length(b)
@@ -12,7 +13,7 @@ struct Delta <: Distances.PreMetric end
     return a == b
 end
 
-Distances.result_type(::Delta, Ta::Type, Tb::Type) = promote_type(Ta, Tb)
+Distances.result_type(::Delta, Ta::Type, Tb::Type) = Bool
 
 @inline (dist::Delta)(a::AbstractArray, b::AbstractArray) = Distances._evaluate(dist, a, b)
 @inline (dist::Delta)(a::Number, b::Number) = a == b

@@ -80,6 +80,12 @@ function kernelmatrix_diag!(K::AbstractVector, κ::TransformedKernel, x::Abstrac
     return kernelmatrix_diag!(K, κ.kernel, _map(κ.transform, x))
 end
 
+function kernelmatrix_diag!(
+    K::AbstractVector, κ::TransformedKernel, x::AbstractVector, y::AbstractVector
+)
+    return kernelmatrix_diag!(K, κ.kernel, _map(κ.transform, x), _map(κ.transform, y))
+end
+
 function kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector)
     return kernelmatrix!(K, kernel(κ), _map(κ.transform, x))
 end
@@ -92,6 +98,10 @@ end
 
 function kernelmatrix_diag(κ::TransformedKernel, x::AbstractVector)
     return kernelmatrix_diag(κ.kernel, _map(κ.transform, x))
+end
+
+function kernelmatrix_diag(κ::TransformedKernel, x::AbstractVector, y::AbstractVector)
+    return kernelmatrix_diag(κ.kernel, _map(κ.transform, x), _map(κ.transform, y))
 end
 
 function kernelmatrix(κ::TransformedKernel, x::AbstractVector)
