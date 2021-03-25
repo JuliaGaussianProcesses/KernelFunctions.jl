@@ -28,7 +28,7 @@ For example, a squared exponential kernel is created by
     ```math
     k(x, x'; P) = \exp{\big(- (x - x')^\top P (x - x')\big)}
     ```
-    for a positive definite matrix $P = Q^\top Q$, is deprecated. Instead you can
+    for a positive definite matrix $P = Q^\top Q$, was removed in 0.9. Instead you can
     use a squared exponential kernel together with a [`LinearTransform`](@ref) of
     the inputs:
     ```julia

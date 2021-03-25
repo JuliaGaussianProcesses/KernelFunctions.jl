@@ -1,18 +1,5 @@
 module KernelFunctions
 
-if !isfile(joinpath(@__DIR__, "update_v0.8.0"))
-    printstyled(
-        stdout,
-        """
-        WARNING: SqExponentialKernel changed convention in version 0.8.0.
-        This kernel now divides the squared distance by 2 to align with standard practice.
-        This warning will be removed in 0.9.0.
-        """;
-        color=Base.info_color(),
-    )
-    touch(joinpath(@__DIR__, "update_v0.8.0"))
-end
-
 export kernelmatrix, kernelmatrix!, kernelmatrix_diag, kernelmatrix_diag!
 export transform
 export duplicate, set! # Helpers
@@ -118,8 +105,6 @@ include("chainrules.jl")
 include("zygoterules.jl")
 
 include("test_utils.jl")
-
-include("deprecated.jl")
 
 function __init__()
     @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin
