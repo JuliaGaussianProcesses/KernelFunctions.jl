@@ -125,10 +125,20 @@ function ChainRulesCore.rrule(
 )
     d = dist(a, b)
     function SqMahalanobis_pullback(Δ::Real)
-        B_Bᵀ = dist.qmat + transpose(dist.qmat)
         a_b = a - b
-        δa = @thunk((B_Bᵀ * a_b) * Δ)
-        return (qmat=(a_b * a_b') * Δ,), δa, @thunk(-δa)
+        ∂qmat = InplaceableThunk(
+            @thunk((a_b * a_b') * Δ),
+            X̄ -> mul!(X̄, a_b, a_b', true, Δ),
+        )
+        ∂a = InplaceableThunk(
+            @thunk((2 * Δ) * dist.qmat * a_b),
+            X̄ -> mul!(X̄, dist.qmat, a_b, true, 2 * Δ),
+        )
+        ∂b = InplaceableThunk(
+            @thunk((-2 * Δ) * dist.qmat * a_b),
+            X̄ -> mul!(X̄, dist.qmat, a_b, true, -2 * Δ),
+        )
+        return Composite{typeof(dist)}(qmat = ∂qmat), ∂a, ∂b
     end
     return d, SqMahalanobis_pullback
 end
