@@ -35,10 +35,8 @@
         @test metric(PolynomialKernel(; degree=3, c=c)) == KernelFunctions.DotProduct()
 
         # Errors.
-        @test_throws ArgumentError PolynomialKernel(; d=0)
         @test_throws ArgumentError PolynomialKernel(; degree=0)
         @test_throws ArgumentError PolynomialKernel(; c=-0.5)
-        @test_throws ErrorException PolynomialKernel(; d=2.5)
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)

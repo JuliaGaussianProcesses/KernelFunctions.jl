@@ -10,7 +10,7 @@
 
     @test k2(v1, v2) == k(v1, v2)
 
-    @test_throws ErrorException PiecewisePolynomialKernel{4}(maha)
+    @test_throws MethodError PiecewisePolynomialKernel{4}(maha)
     @test_throws ErrorException PiecewisePolynomialKernel{4}(D)
     @test_throws ErrorException PiecewisePolynomialKernel{degree}(-1)
     @test_throws ErrorException PiecewisePolynomialKernel()
