@@ -51,6 +51,9 @@ function transform(k::TransformedKernel, t::Transform)
     return TransformedKernel(k.kernel, t ∘ k.transform)
 end
 
+Base.:∘(k::Kernel, t::Transform) = TransformedKernel(k, t)
+Base.:∘(k::TransformedKernel, t::Transform) = TransformedKernel(k.kernel, k.transform ∘ t)
+
 """
     transform(k::Kernel, ρ::Real)
 
