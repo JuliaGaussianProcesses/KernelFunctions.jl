@@ -20,13 +20,9 @@
     @test kernelmatrix(k, x1, x2) ≈ kernelmatrix(k, collect(x1), collect(x2))
     @test kernelmatrix(k, x1, x1) ≈ kernelmatrix(k, x1)
 
-    @test string(k) == "Semi-parametric Latent Factor Multi-Output Kernel"
-    @test repr("text/plain", k) == (
-        "Semi-parametric Latent Factor Multi-Output Kernel\n\tgᵢ: " *
-        "Matern 3/2 Kernel\n\t\tSquared Exponential Kernel\n" *
-        "\t\tFractional Brownian Motion Kernel (h = 0.5)\n\teᵢ: " *
-        "Independent Multi-Output Kernel\n\tSquared Exponential Kernel"
-    )
+    @test repr(k) ==
+          "Semiparametric Latent Factor Multi-Output Kernel " *
+          "(# outputs = $out_dim, # latent processes = 3)"
 
     # AD test
     function test_slfm(A::AbstractMatrix, x1, x2)

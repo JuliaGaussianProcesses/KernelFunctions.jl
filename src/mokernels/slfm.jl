@@ -51,12 +51,14 @@ function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)
 end
 
 function Base.show(io::IO, k::LatentFactorMOKernel)
-    return print(io, "Semi-parametric Latent Factor Multi-Output Kernel")
-end
-
-function Base.show(io::IO, ::MIME"text/plain", k::LatentFactorMOKernel)
-    print(io, "Semi-parametric Latent Factor Multi-Output Kernel\n\tgᵢ: ")
-    join(io, k.g, "\n\t\t")
-    print(io, "\n\teᵢ: ")
-    return join(io, k.e, "\n\t\t")
+    m, Q = size(k.A)
+    return print(
+        io,
+        "Semiparametric Latent Factor Multi-Output Kernel ",
+        "(# outputs = ",
+        m,
+        ", # latent processes = ",
+        Q,
+        ")",
+    )
 end

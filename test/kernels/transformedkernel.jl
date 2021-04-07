@@ -18,7 +18,8 @@
     @test ktard(v1, v2) == k(v .* v1, v .* v2)
     @test transform(kt, s2)(v1, v2) ≈ kt(s2 * v1, s2 * v2)
     @test KernelFunctions.kernel(kt) == k
-    @test repr(kt) == repr(k) * "\n\t- " * repr(ScaleTransform(s))
+    @test repr(kt) == "$k ∘ $(ScaleTransform(s))"
+    @test repr(MIME("text/plain"), kt) == "Kernel with input transformation:\n   $kt"
 
     TestUtils.test_interface(k, Float64)
     test_ADs(x -> transform(SqExponentialKernel(), x[1]), rand(1))# ADs = [:ForwardDiff, :ReverseDiff])

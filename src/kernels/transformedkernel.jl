@@ -67,11 +67,10 @@ transform(k::Kernel, ρ::AbstractVector) = transform(k, ARDTransform(ρ))
 
 kernel(κ) = κ.kernel
 
-Base.show(io::IO, κ::TransformedKernel) = printshifted(io, κ, 0)
-
-function printshifted(io::IO, κ::TransformedKernel, shift::Int)
-    printshifted(io, κ.kernel, shift)
-    return print(io, "\n" * ("\t"^(shift + 1)) * "- $(κ.transform)")
+print_toplevel(io::IO, k::TransformedKernel) = print(io, k.kernel, " ∘ ", k.transform)
+Base.show(io::IO, k::TransformedKernel) = print_nested(io, k)
+function Base.show(io::IO, ::MIME"text/plain", k::TransformedKernel)
+    return print(io, "Kernel with input transformation:\n   ", k)
 end
 
 # Kernel matrix operations

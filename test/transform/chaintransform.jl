@@ -21,7 +21,9 @@
     @test all([t(x[n]) ≈ x′[n] for n in eachindex(x)])
 
     # Verify printing works as expected.
-    @test repr(tp ∘ tf) == "Chain of 2 transforms:\n\t - $(tf) |> $(tp)"
+    @test repr(tp ∘ tf) == "$tp ∘ $tf"
+    @test repr(MIME("text/plain"), tp ∘ tf) ==
+          "Chain of 2 input transformations:\n   $(tp ∘ tf)"
     test_ADs(
         x -> transform(SEKernel(), ScaleTransform(exp(x[1])) ∘ ARDTransform(exp.(x[2:4]))),
         randn(rng, 4),

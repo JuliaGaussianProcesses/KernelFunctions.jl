@@ -46,17 +46,10 @@ end
 set!(t::ChainTransform, θ) = set!.(t.transforms, θ)
 duplicate(t::ChainTransform, θ) = ChainTransform(duplicate.(t.transforms, θ))
 
-Base.show(io::IO, t::ChainTransform) = printshifted(io, t, 0)
-
-function printshifted(io::IO, t::ChainTransform, shift::Int)
-    println(io, "Chain of ", length(t), " transforms:")
-    for _ in 1:(shift + 1)
-        print(io, "\t")
-    end
-    print(io, " - ")
-    printshifted(io, t.transforms[1], shift + 2)
-    for i in 2:length(t)
-        print(io, " |> ")
-        printshifted(io, t.transforms[i], shift + 2)
-    end
+function print_toplevel(io::IO, t::ChainTransform)
+    return join(io, Iterators.reverse(t.transforms), " ∘ ")
+end
+Base.show(io::IO, t::ChainTransform) = print_nested(io, t)
+function Base.show(io::IO, ::MIME"text/plain", t::ChainTransform)
+    return print(io, "Chain of ", length(t), " input transformations:\n   ", t)
 end

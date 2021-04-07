@@ -38,5 +38,5 @@ function kernelmatrix(k::IndependentMOKernel, x::MOInput, y::MOInput)
 end
 
 function Base.show(io::IO, k::IndependentMOKernel)
-    return print(io, string("Independent Multi-Output Kernel\n\t", string(k.kernel)))
+    return print(io, "Independent Multi-Output Kernel (kernel = ", k.kernel, ")")
 end

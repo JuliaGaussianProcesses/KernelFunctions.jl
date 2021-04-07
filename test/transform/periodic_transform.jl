@@ -13,4 +13,6 @@
         @test kernelmatrix(k_eq_periodic, x) ≈ kernelmatrix(k_eq_transform, x)
         # TODO - add interface_tests once #159 is merged.
     end
+
+    @test repr(PeriodicTransform(2.0)) == "Periodic Transform (f = 2.0)"
 end

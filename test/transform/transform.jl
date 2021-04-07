@@ -8,5 +8,6 @@
         @test IdentityTransform()(x) == x
         @test map(IdentityTransform(), x) == x
     end
+    @test repr(IdentityTransform()) == "Identity Transform"
     test_ADs(() -> transform(SEKernel(), IdentityTransform()))
 end

@@ -61,8 +61,10 @@ function kernelmatrix_diag(κ::KernelSum, x::AbstractVector, y::AbstractVector)
     return sum(kernelmatrix_diag(k, x, y) for k in κ.kernels)
 end
 
-function Base.show(io::IO, κ::KernelSum)
-    return printshifted(io, κ, 0)
+print_toplevel(io::IO, k::KernelSum) = join(io, k.kernels, " + ")
+Base.show(io::IO, k::KernelSum) = print_nested(io, k)
+function Base.show(io::IO, ::MIME"text/plain", k::KernelSum)
+    return print(io, "Sum of ", length(k), " kernels:\n   ", k)
 end
 
 function Base.:(==)(x::KernelSum, y::KernelSum)
@@ -70,15 +72,4 @@ function Base.:(==)(x::KernelSum, y::KernelSum)
         length(x.kernels) == length(y.kernels) &&
         all(kx == ky for (kx, ky) in zip(x.kernels, y.kernels))
     )
-end
-
-function printshifted(io::IO, κ::KernelSum, shift::Int)
-    print(io, "Sum of $(length(κ)) kernels:")
-    for k in κ.kernels
-        print(io, "\n")
-        for _ in 1:(shift + 1)
-            print(io, "\t")
-        end
-        printshifted(io, k, shift + 2)
-    end
 end

@@ -8,7 +8,7 @@
     @test k(v1, v2) ≈ exp(-0.5 * sum(abs2, sinpi.(v1 - v2) ./ r))
     @test k(v1, v2) == k(v2, v1)
     @test PeriodicKernel(3)(v1, v2) == PeriodicKernel(; r=ones(3))(v1, v2)
-    @test repr(k) == "Periodic Kernel, length(r) = $(length(r))"
+    @test repr(k) == "Periodic Kernel (length(r) = $(length(r)))"
 
     # Standardised tests.
     TestUtils.test_interface(PeriodicKernel(; r=[0.9]), Vector{Float64})

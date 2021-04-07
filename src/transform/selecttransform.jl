@@ -31,4 +31,6 @@ _map(t::SelectTransform, x::RowVecs) = _wrap(view(x.X, :, t.select), RowVecs)
 _wrap(x::AbstractVector{<:Real}, ::Any) = x
 _wrap(X::AbstractMatrix{<:Real}, ::Type{T}) where {T} = T(X)
 
-Base.show(io::IO, t::SelectTransform) = print(io, "Select Transform (dims: ", t.select, ")")
+function Base.show(io::IO, t::SelectTransform)
+    return print(io, "Select Transform (dims = ", t.select, ")")
+end
