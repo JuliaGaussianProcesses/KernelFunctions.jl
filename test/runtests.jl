@@ -123,6 +123,7 @@ include("test_utils.jl")
         include(joinpath("kernels", "overloads.jl"))
         include(joinpath("kernels", "scaledkernel.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
+        include(joinpath("kernels", "normalizedkernel.jl"))
     end
     @info "Ran tests on Kernel"
 
