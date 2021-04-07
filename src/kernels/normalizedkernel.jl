@@ -12,7 +12,7 @@ kernel ``k`` is defined as
 ```
 
 """
-struct NormalizedKernel{Tk <: Kernel} <: Kernel
+struct NormalizedKernel{Tk<:Kernel} <: Kernel
     kernel::Tk
 end
 
@@ -50,7 +50,9 @@ function kernelmatrix!(K::AbstractMatrix, κ::NormalizedKernel, x::AbstractVecto
     return K
 end
 
-function kernelmatrix_diag!(K::AbstractVector, κ::NormalizedKernel, x::AbstractVector, y::AbstractVector)
+function kernelmatrix_diag!(
+    K::AbstractVector, κ::NormalizedKernel, x::AbstractVector, y::AbstractVector
+)
     kernelmatrix_diag!(K, κ.kernel, x, y)
     K ./= _normalizationmatrix_diag(κ, x, y)
     return K
@@ -64,10 +66,14 @@ end
 
 # Calculate the required normalization factor for each element
 function _normalizationmatrix(κ::NormalizedKernel, x::AbstractVector, y::AbstractVector)
-    return sqrt.(kernelmatrix_diag(κ.kernel, x) .* permutedims(kernelmatrix_diag(κ.kernel, y)))
+    return sqrt.(
+        kernelmatrix_diag(κ.kernel, x) .* permutedims(kernelmatrix_diag(κ.kernel, y))
+    )
 end
 
-function _normalizationmatrix_diag(κ::NormalizedKernel, x::AbstractVector, y::AbstractVector)
+function _normalizationmatrix_diag(
+    κ::NormalizedKernel, x::AbstractVector, y::AbstractVector
+)
     return sqrt.(kernelmatrix_diag(κ.kernel, x) .* kernelmatrix_diag(κ.kernel, y))
 end
 
