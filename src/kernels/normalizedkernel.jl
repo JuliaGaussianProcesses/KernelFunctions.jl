@@ -32,8 +32,7 @@ function kernelmatrix(κ::NormalizedKernel, x::AbstractVector)
 end
 
 function kernelmatrix_diag(κ::NormalizedKernel, x::AbstractVector)
-    xdiag = kernelmatrix_diag(κ.kernel, x)
-    return kernelmatrix_diag(κ.kernel, x) ./ sqrt.(xdiag .* xdiag)
+    return map(one, kernelmatrix_diag(κ.kernel, x))
 end
 
 function kernelmatrix_diag(κ::NormalizedKernel, x::AbstractVector, y::AbstractVector)
@@ -65,11 +64,8 @@ function kernelmatrix_diag!(
     return K
 end
 
-function kernelmatrix_diag!(K::AbstractVector, κ::NormalizedKernel, x::AbstractVector)
-    kernelmatrix_diag!(K, κ.kernel, x)
-    xdiag = kernelmatrix_diag(κ.kernel, x)
-    K ./= sqrt.(xdiag .* xdiag)
-    return K
+function kernelmatrix_diag!(K::AbstractVector, ::NormalizedKernel, ::AbstractVector)
+    return map!(one, K, K)
 end
 
 Base.show(io::IO, κ::NormalizedKernel) = printshifted(io, κ, 0)
