@@ -52,6 +52,7 @@ using ZygoteRules: ZygoteRules
 using StatsFuns: logtwo, twoπ
 using StatsBase
 using TensorCore
+using FillArrays
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
