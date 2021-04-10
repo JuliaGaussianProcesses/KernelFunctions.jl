@@ -27,12 +27,13 @@ function kernelmatrix(κ::NormalizedKernel, x::AbstractVector, y::AbstractVector
 end
 
 function kernelmatrix(κ::NormalizedKernel, x::AbstractVector)
-    xdiag = kernelmatrix_diag(κ.kernel, x)
-    return kernelmatrix(κ.kernel, x) ./ sqrt.(xdiag .* permutedims(xdiag))
+    x_diag = kernelmatrix_diag(κ.kernel, x)
+    return kernelmatrix(κ.kernel, x) ./ sqrt.(x_diag .* permutedims(x_diag))
 end
 
 function kernelmatrix_diag(κ::NormalizedKernel, x::AbstractVector)
-    return map(one, kernelmatrix_diag(κ.kernel, x))
+    first_x = first(x)
+    return fill(κ(first_x, first_x), length(x))
 end
 
 function kernelmatrix_diag(κ::NormalizedKernel, x::AbstractVector, y::AbstractVector)
@@ -51,8 +52,8 @@ end
 
 function kernelmatrix!(K::AbstractMatrix, κ::NormalizedKernel, x::AbstractVector)
     kernelmatrix!(K, κ.kernel, x)
-    xdiag = kernelmatrix_diag(κ.kernel, x)
-    K ./= sqrt.(xdiag .* permutedims(xdiag))
+    x_diag = kernelmatrix_diag(κ.kernel, x)
+    K ./= sqrt.(x_diag .* permutedims(x_diag))
     return K
 end
 
@@ -64,8 +65,9 @@ function kernelmatrix_diag!(
     return K
 end
 
-function kernelmatrix_diag!(K::AbstractVector, ::NormalizedKernel, ::AbstractVector)
-    return map!(one, K, K)
+function kernelmatrix_diag!(K::AbstractVector, κ::NormalizedKernel, x::AbstractVector)
+    first_x = first(x)
+    return fill!(K, κ(first_x, first_x))
 end
 
 Base.show(io::IO, κ::NormalizedKernel) = printshifted(io, κ, 0)
