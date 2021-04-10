@@ -33,7 +33,7 @@ end
 
 function kernelmatrix_diag(κ::NormalizedKernel, x::AbstractVector)
     first_x = first(x)
-    return Fill(κ(first_x, first_x), length(x))
+    return Ones{typeof(κ(first_x, first_x))}(length(x))
 end
 
 function kernelmatrix_diag(κ::NormalizedKernel, x::AbstractVector, y::AbstractVector)
