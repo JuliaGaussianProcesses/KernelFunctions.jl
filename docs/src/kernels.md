@@ -118,9 +118,6 @@ of kernels together.
 
 ```@docs
 TransformedKernel
-transform(::Kernel, ::Transform)
-transform(::Kernel, ::Real)
-transform(::Kernel, ::AbstractVector)
 ScaledKernel
 KernelSum
 KernelProduct
