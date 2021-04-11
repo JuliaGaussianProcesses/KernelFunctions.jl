@@ -39,11 +39,12 @@ export MOInput
 export IndependentMOKernel, LatentFactorMOKernel
 
 # Reexports
-export tensor, ⊗
+export tensor, ⊗, compose
 
 using Compat
 using ChainRulesCore: ChainRulesCore, Composite, Zero, One, DoesNotExist, NO_FIELDS
 using ChainRulesCore: @thunk, InplaceableThunk
+using CompositionsBase
 using Requires
 using Distances, LinearAlgebra
 using Functors
@@ -105,6 +106,8 @@ include("chainrules.jl")
 include("zygoterules.jl")
 
 include("test_utils.jl")
+
+include("deprecations.jl")
 
 function __init__()
     @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin

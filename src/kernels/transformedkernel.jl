@@ -3,9 +3,9 @@
 
 Kernel derived from `k` for which inputs are transformed via a [`Transform`](@ref) `t`.
 
-It is preferred to create kernels with input transformations with [`transform`](@ref)
-instead of  `TransformedKernel` directly since [`transform`](@ref) allows optimized
-implementations for specific kernels and transformations.
+It is preferred to create kernels with input transformations with [`∘`](@ref), or its
+alias [`compose`](@ref), instead of `TransformedKernel` directly since [`∘`](@ref)
+allows optimized implementations for specific kernels and transformations.
 
 # Definition
 
@@ -41,34 +41,8 @@ function _scale(t::ScaleTransform, metric::Union{SqEuclidean,DotProduct}, x, y)
 end
 _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, t(x), t(y))
 
-"""
-    transform(k::Kernel, t::Transform)
-
-Create a [`TransformedKernel`](@ref) for kernel `k` and transform `t`.
-"""
-transform(k::Kernel, t::Transform) = TransformedKernel(k, t)
-function transform(k::TransformedKernel, t::Transform)
-    return TransformedKernel(k.kernel, t ∘ k.transform)
-end
-
 Base.:∘(k::Kernel, t::Transform) = TransformedKernel(k, t)
 Base.:∘(k::TransformedKernel, t::Transform) = TransformedKernel(k.kernel, k.transform ∘ t)
-
-"""
-    transform(k::Kernel, ρ::Real)
-
-Create a [`TransformedKernel`](@ref) for kernel `k` and inverse lengthscale `ρ`.
-"""
-transform(k::Kernel, ρ::Real) = transform(k, ScaleTransform(ρ))
-
-"""
-    transform(k::Kernel, ρ::AbstractVector)
-
-Create a [`TransformedKernel`](@ref) for kernel `k` and inverse lengthscales `ρ`.
-"""
-transform(k::Kernel, ρ::AbstractVector) = transform(k, ARDTransform(ρ))
-
-kernel(κ) = κ.kernel
 
 Base.show(io::IO, κ::TransformedKernel) = printshifted(io, κ, 0)
 
@@ -90,13 +64,13 @@ function kernelmatrix_diag!(
 end
 
 function kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector)
-    return kernelmatrix!(K, kernel(κ), _map(κ.transform, x))
+    return kernelmatrix!(K, κ.kernel, _map(κ.transform, x))
 end
 
 function kernelmatrix!(
     K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector, y::AbstractVector
 )
-    return kernelmatrix!(K, kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
+    return kernelmatrix!(K, κ.kernel, _map(κ.transform, x), _map(κ.transform, y))
 end
 
 function kernelmatrix_diag(κ::TransformedKernel, x::AbstractVector)
@@ -108,9 +82,9 @@ function kernelmatrix_diag(κ::TransformedKernel, x::AbstractVector, y::Abstract
 end
 
 function kernelmatrix(κ::TransformedKernel, x::AbstractVector)
-    return kernelmatrix(kernel(κ), _map(κ.transform, x))
+    return kernelmatrix(κ.kernel, _map(κ.transform, x))
 end
 
 function kernelmatrix(κ::TransformedKernel, x::AbstractVector, y::AbstractVector)
-    return kernelmatrix(kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
+    return kernelmatrix(κ.kernel, _map(κ.transform, x), _map(κ.transform, y))
 end
