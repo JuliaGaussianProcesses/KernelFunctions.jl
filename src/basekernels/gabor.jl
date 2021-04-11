@@ -25,18 +25,22 @@ end
 (κ::GaborKernel)(x, y) = κ.kernel(x, y)
 
 function _gabor(; ell=nothing, p=nothing)
-    if ell === nothing
-        if p === nothing
-            return SqExponentialKernel() * CosineKernel()
-        else
-            return SqExponentialKernel() * transform(CosineKernel(), 1 ./ p)
-        end
-    elseif p === nothing
-        return transform(SqExponentialKernel(), 1 ./ ell) * CosineKernel()
+    ell_transform = if ell === nothing
+        IdentityTransform()
+    elseif ell isa Real
+        ScaleTransform(inv(ell))
     else
-        return transform(SqExponentialKernel(), 1 ./ ell) *
-               transform(CosineKernel(), 1 ./ p)
+        ARDTransform(inv.(ell))
     end
+    p_transform = if p === nothing
+        IdentityTransform()
+    elseif p isa Real
+        ScaleTransform(inv(p))
+    else
+        ARDTransform(inv.(p))
+    end
+
+    return (SqExponentialKernel() ∘ ell_transform) * (CosineKernel() ∘ p_transform)
 end
 
 function Base.getproperty(k::GaborKernel, v::Symbol)

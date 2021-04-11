@@ -3,9 +3,9 @@
 
 Kernel derived from `k` for which inputs are transformed via a [`Transform`](@ref) `t`.
 
-It is preferred to create kernels with input transformations with [`∘`](@ref), or its
-alias [`compose`](@ref), instead of `TransformedKernel` directly since [`∘`](@ref)
-allows optimized implementations for specific kernels and transformations.
+It is preferred to create kernels with input transformations with `∘` or its alias
+`compose` instead of `TransformedKernel` directly since this allows optimized
+implementations for specific kernels and transformations.
 
 # Definition
 

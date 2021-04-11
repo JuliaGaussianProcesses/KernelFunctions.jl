@@ -10,8 +10,8 @@
     k_manual = exp(-sqeuclidean(v1, v2) / (2 * k.ell^2)) * cospi(euclidean(v1, v2) / k.p)
     @test k(v1, v2) ≈ k_manual atol = 1e-5
 
-    lhs_manual = transform(SqExponentialKernel(), 1 / k.ell)(v1, v2)
-    rhs_manual = transform(CosineKernel(), 1 / k.p)(v1, v2)
+    lhs_manual = (SqExponentialKernel() ∘ ScaleTransform(1 / k.ell))(v1, v2)
+    rhs_manual = (CosineKernel() ∘ ScaleTransform(1 / k.p))(v1, v2)
     @test k(v1, v2) ≈ lhs_manual * rhs_manual atol = 1e-5
 
     k = GaborKernel()
