@@ -57,7 +57,8 @@
     test_params(transform(k, LinearTransform(P) ∘ ScaleTransform(s)), (k, [s], P))
     test_params(transform(k, FunctionTransform(c)), (k, c))
 
-    @test (k ∘ (LinearTransform(P') ∘ ScaleTransform(s)))(v1, v2) == ((k ∘ LinearTransform(P')) ∘ ScaleTransform(s))(v1, v2)
+    @test (k ∘ (LinearTransform(P') ∘ ScaleTransform(s)))(v1, v2) ==
+          ((k ∘ LinearTransform(P')) ∘ ScaleTransform(s))(v1, v2)
     test_params(k ∘ LinearTransform(P), (P, k))
     test_params(k ∘ LinearTransform(P) ∘ ScaleTransform(s), ([s], P, k))
     test_params(k ∘ FunctionTransform(c), (c, k))
