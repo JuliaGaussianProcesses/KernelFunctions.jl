@@ -118,6 +118,7 @@ of kernels together.
 
 ```@docs
 TransformedKernel
+∘(::Kernel, ::Transform)
 ScaledKernel
 KernelSum
 KernelProduct

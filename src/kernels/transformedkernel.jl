@@ -3,8 +3,8 @@
 
 Kernel derived from `k` for which inputs are transformed via a [`Transform`](@ref) `t`.
 
-It is preferred to create kernels with input transformations with `∘` or its alias
-`compose` instead of `TransformedKernel` directly since this allows optimized
+It is preferred to create kernels with input transformations with [`∘`](@ref) or its
+alias [`compose`](@ref) instead of `TransformedKernel` directly since this allows optimized
 implementations for specific kernels and transformations.
 
 # Definition
@@ -41,6 +41,17 @@ function _scale(t::ScaleTransform, metric::Union{SqEuclidean,DotProduct}, x, y)
 end
 _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, t(x), t(y))
 
+"""
+    kernel ∘ transform
+    ∘(kernel, transform)
+    compose(kernel, transform)
+
+Compose a `kernel` with a transformation `transform` of its inputs.
+
+If no optimized implementation exists, a [`TransformedKernel`](@ref) is created.
+
+See also: [`TransformedKernel`](@ref)
+"""
 Base.:∘(k::Kernel, t::Transform) = TransformedKernel(k, t)
 Base.:∘(k::TransformedKernel, t::Transform) = TransformedKernel(k.kernel, k.transform ∘ t)
 
