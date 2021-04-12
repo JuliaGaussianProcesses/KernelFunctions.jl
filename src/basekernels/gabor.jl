@@ -27,7 +27,7 @@ end
 
 (κ::GaborKernel)(x, y) = κ.kernel(x, y)
 
-_lengthscale_transform(::Nothing) = IdentitytTransform()
+_lengthscale_transform(::Nothing) = IdentityTransform()
 _lengthscale_transform(x::Real) = ScaleTransform(inv(x))
 _lengthscale_transform(x::AbstractVector) = ARDTransform(map(inv, x))
 
