@@ -50,7 +50,7 @@
 
     test_params((k ∘ ScaleTransform(s)), (k, [s]))
     test_params((k ∘ ARDTransform(v)), (k, v))
-    test_params((k ∘ LinearTransform(P), (k, P))
+    test_params((k ∘ LinearTransform(P)), (k, P))
     test_params((k ∘ (LinearTransform(P) ∘ ScaleTransform(s))), (k, [s], P))
     test_params((k ∘ FunctionTransform(c)), (k, c))
 end
