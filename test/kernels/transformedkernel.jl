@@ -5,7 +5,6 @@
     v2 = rand(rng, 3)
 
     s = rand(rng)
-    s2 = rand(rng)
     v = rand(rng, 3)
     k = SqExponentialKernel()
     kt = TransformedKernel(k, ScaleTransform(s))
@@ -14,14 +13,14 @@
     @test kt(v1, v2) ≈ k(s * v1, s * v2) atol = 1e-5
     @test ktard(v1, v2) == (k ∘ ARDTransform(v))(v1, v2)
     @test ktard(v1, v2) == k(v .* v1, v .* v2)
-    @test (kt ∘ s2)(v1, v2) ≈ kt(s2 * v1, s2 * v2)
     @test repr(kt) == repr(k) * "\n\t- " * repr(ScaleTransform(s))
 
     TestUtils.test_interface(k, Float64)
-    test_ADs(x -> transform(SqExponentialKernel(), x[1]), rand(1))# ADs = [:ForwardDiff, :ReverseDiff])
+    test_ADs(x -> SqExponentialKernel() ∘ ScaleTransform(x[1]), rand(1))
+
     # Test implicit gradients
     @testset "Implicit gradients" begin
-        k = transform(SqExponentialKernel(), 2.0)
+        k = SqExponentialKernel() ∘ ScaleTransform(2.0)
         ps = Flux.params(k)
         X = rand(10, 1)
         x = vec(X)
