@@ -6,6 +6,7 @@
 
     s = rand(rng)
     v = rand(rng, 3)
+    P = rand(rng, 3, 2)
     k = SqExponentialKernel()
     kt = TransformedKernel(k, ScaleTransform(s))
     ktard = TransformedKernel(k, ARDTransform(v))
@@ -13,6 +14,9 @@
     @test kt(v1, v2) ≈ k(s * v1, s * v2) atol = 1e-5
     @test ktard(v1, v2) == (k ∘ ARDTransform(v))(v1, v2)
     @test ktard(v1, v2) == k(v .* v1, v .* v2)
+    @test (k ∘ (LinearTransform(P') ∘ ScaleTransform(s)))(v1, v2) ==
+        ((k ∘ LinearTransform(P')) ∘ ScaleTransform(s))(v1, v2)
+
     @test repr(kt) == repr(k) * "\n\t- " * repr(ScaleTransform(s))
 
     TestUtils.test_interface(k, Float64)
@@ -42,15 +46,11 @@
         @test g1[first(ps)] ≈ g3[first(ps)]
     end
 
-    P = rand(3, 2)
     c = Chain(Dense(3, 2))
 
-    test_params(k ∘ ScaleTransform(s), (k, [s]))
-    test_params(k ∘ ARDTransform(v), (k, v))
-    test_params(k ∘ LinearTransform(P), (k, P))
-    test_params(k ∘ (LinearTransform(P) ∘ ScaleTransform(s)), (k, [s], P))
-    test_params(k ∘ FunctionTransform(c), (k, c))
-
-    @test (k ∘ (LinearTransform(P') ∘ ScaleTransform(s)))(v1, v2) ==
-          ((k ∘ LinearTransform(P')) ∘ ScaleTransform(s))(v1, v2)
+    test_params((k ∘ ScaleTransform(s)), (k, [s]))
+    test_params((k ∘ ARDTransform(v)), (k, v))
+    test_params((k ∘ LinearTransform(P), (k, P))
+    test_params((k ∘ (LinearTransform(P) ∘ ScaleTransform(s))), (k, [s], P))
+    test_params((k ∘ FunctionTransform(c)), (k, c))
 end
