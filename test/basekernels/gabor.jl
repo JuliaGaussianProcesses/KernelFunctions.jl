@@ -17,7 +17,7 @@
     k = GaborKernel()
     @test k.ell ≈ 1.0 atol = 1e-5
     @test k.p ≈ 1.0 atol = 1e-5
-    @test repr(k) == "Gabor Kernel (ell = 1.0, p = 1.0)"
+    @test repr(k) == "Gabor Kernel (ell = 1, p = 1)"
 
     test_interface(k, Vector{Float64})
 
