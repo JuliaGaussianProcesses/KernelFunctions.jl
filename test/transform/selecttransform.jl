@@ -44,7 +44,7 @@
     @test repr(t) == "Select Transform (dims: $(select2))"
     @test repr(ts) == "Select Transform (dims: $(select_symbols2))"
 
-    test_ADs(() -> transform(SEKernel(), SelectTransform([1, 2])))
+    test_ADs(() -> SEKernel() ∘ SelectTransform([1, 2]))
 
     X = randn(rng, (4, 3))
     A = AxisArray(X; row=[:a, :b, :c, :d], col=[:x, :y, :z])
@@ -53,10 +53,10 @@
     Z = randn(rng, (2, 3))
     C = AxisArray(Z; row=[:e, :f], col=[:x, :y, :z])
 
-    tx_row = transform(SEKernel(), SelectTransform([1, 2, 4]))
-    ta_row = transform(SEKernel(), SelectTransform([:a, :b, :d]))
-    tx_col = transform(SEKernel(), SelectTransform([1, 3]))
-    ta_col = transform(SEKernel(), SelectTransform([:x, :z]))
+    tx_row = SEKernel() ∘ SelectTransform([1, 2, 4])
+    ta_row = SEKernel() ∘ SelectTransform([:a, :b, :d])
+    tx_col = SEKernel() ∘ SelectTransform([1, 3])
+    ta_col = SEKernel() ∘ SelectTransform([:x, :z])
 
     @test kernelmatrix(tx_row, X; obsdim=2) ≈ kernelmatrix(ta_row, A; obsdim=2)
     @test kernelmatrix(tx_col, X; obsdim=1) ≈ kernelmatrix(ta_col, A; obsdim=1)
