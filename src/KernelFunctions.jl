@@ -1,19 +1,6 @@
 module KernelFunctions
 
-if !isfile(joinpath(@__DIR__, "update_v0.8.0"))
-    printstyled(
-        stdout,
-        """
-        WARNING: SqExponentialKernel changed convention in version 0.8.0.
-        This kernel now divides the squared distance by 2 to align with standard practice.
-        This warning will be removed in 0.9.0.
-        """;
-        color=Base.info_color(),
-    )
-    touch(joinpath(@__DIR__, "update_v0.8.0"))
-end
-
-export kernelmatrix, kernelmatrix!, kerneldiagmatrix, kerneldiagmatrix!
+export kernelmatrix, kernelmatrix!, kernelmatrix_diag, kernelmatrix_diag!
 export transform
 export duplicate, set! # Helpers
 
@@ -30,7 +17,7 @@ export RationalQuadraticKernel, GammaRationalQuadraticKernel
 export GaborKernel, PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
 export KernelSum, KernelProduct, KernelTensorProduct
-export TransformedKernel, ScaledKernel
+export TransformedKernel, ScaledKernel, NormalizedKernel
 
 export Transform,
     SelectTransform,
@@ -52,18 +39,21 @@ export MOInput
 export IndependentMOKernel, LatentFactorMOKernel
 
 # Reexports
-export tensor, ⊗
+export tensor, ⊗, compose
 
 using Compat
+using ChainRulesCore: ChainRulesCore, Composite, Zero, One, DoesNotExist, NO_FIELDS
+using ChainRulesCore: @thunk, InplaceableThunk
+using CompositionsBase
 using Requires
 using Distances, LinearAlgebra
 using Functors
 using SpecialFunctions: loggamma, besselk, polygamma
-using ZygoteRules: @adjoint, pullback
-using StatsFuns: logtwo
-using InteractiveUtils: subtypes
+using ZygoteRules: ZygoteRules
+using StatsFuns: logtwo, twoπ
 using StatsBase
 using TensorCore
+using FillArrays
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
@@ -100,6 +90,7 @@ include(joinpath("basekernels", "wiener.jl"))
 
 include(joinpath("kernels", "transformedkernel.jl"))
 include(joinpath("kernels", "scaledkernel.jl"))
+include(joinpath("kernels", "normalizedkernel.jl"))
 include(joinpath("matrix", "kernelmatrix.jl"))
 include(joinpath("kernels", "kernelsum.jl"))
 include(joinpath("kernels", "kernelproduct.jl"))
@@ -113,11 +104,12 @@ include(joinpath("mokernels", "moinput.jl"))
 include(joinpath("mokernels", "independent.jl"))
 include(joinpath("mokernels", "slfm.jl"))
 
-include("zygote_adjoints.jl")
+include("chainrules.jl")
+include("zygoterules.jl")
 
 include("test_utils.jl")
 
-include("deprecated.jl")
+include("deprecations.jl")
 
 function __init__()
     @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin

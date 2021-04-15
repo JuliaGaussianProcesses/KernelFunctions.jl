@@ -28,7 +28,7 @@ For example, a squared exponential kernel is created by
     ```math
     k(x, x'; P) = \exp{\big(- (x - x')^\top P (x - x')\big)}
     ```
-    for a positive definite matrix $P = Q^\top Q$, is deprecated. Instead you can
+    for a positive definite matrix $P = Q^\top Q$, was removed in 0.9. Instead you can
     use a squared exponential kernel together with a [`LinearTransform`](@ref) of
     the inputs:
     ```julia
@@ -51,7 +51,7 @@ To evaluate the kernel function on two vectors you simply call the kernel object
 
 ## Creating a kernel matrix
 
-Kernel matrices can be created via the `kernelmatrix` function or `kerneldiagmatrix` for only the diagonal.
+Kernel matrices can be created via the `kernelmatrix` function or `kernelmatrix_diag` for only the diagonal.
 An important argument to give is the data layout of the input `obsdim`. It specifies whether the number of observed data points is along the first dimension (`obsdim=1`, i.e. the matrix shape is number of samples times number of features) or along the second dimension (`obsdim=2`, i.e. the matrix shape is number of features times number of samples), similarly to [Distances.jl](https://github.com/JuliaStats/Distances.jl). If not given explicitly, `obsdim` defaults to `2`.
 For example:
 ```julia

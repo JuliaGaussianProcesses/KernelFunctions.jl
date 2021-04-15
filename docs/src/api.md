@@ -14,8 +14,8 @@ CurrentModule = KernelFunctions
 ```@docs
 kernelmatrix
 kernelmatrix!
-kerneldiagmatrix
-kerneldiagmatrix!
+kernelmatrix_diag
+kernelmatrix_diag!
 kernelpdmat
 nystrom
 ```

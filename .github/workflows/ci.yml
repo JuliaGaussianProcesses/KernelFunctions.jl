@@ -47,23 +47,3 @@ jobs:
         with:
             github-token: ${{ secrets.GITHUB_TOKEN }}
             path-to-lcov: ./lcov.info
-
-  format-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: julia-actions/setup-julia@latest
-        with:
-          version: 1
-      - uses: actions/checkout@v1
-      - name: Install JuliaFormatter and format
-        run: |
-          julia --project=test/ -e 'using Pkg; Pkg.instantiate()'
-          julia --project=test/ -e 'using JuliaFormatter; format(".", verbose=true)'
-      - name: Format check
-        run: |
-          CHANGED="$(git diff --name-only)"
-          if [ ! -z "$CHANGED" ]; then
-            >&2 echo "Some files have not been formatted !!!"
-            echo "$CHANGED"
-            exit 1
-          fi

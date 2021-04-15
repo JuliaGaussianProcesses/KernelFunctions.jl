@@ -50,6 +50,8 @@ end
 
 testfunction(k, A, B, dim) = sum(kernelmatrix(k, A, B; obsdim=dim))
 testfunction(k, A, dim) = sum(kernelmatrix(k, A; obsdim=dim))
+testdiagfunction(k, A, dim) = sum(kernelmatrix_diag(k, A; obsdim=dim))
+testdiagfunction(k, A, B, dim) = sum(kernelmatrix_diag(k, A, B; obsdim=dim))
 
 function test_ADs(
     kernelfunction, args=nothing; ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=[3, 3]
@@ -107,6 +109,21 @@ function test_FiniteDiff(kernelfunction, args=nothing, dims=[3, 3])
                     testfunction(kernelfunction(p), A, B, dim)
                 end
             end
+
+            @test_nowarn gradient(:FiniteDiff, A) do a
+                testdiagfunction(k, a, dim)
+            end
+            @test_nowarn gradient(:FiniteDiff, A) do a
+                testdiagfunction(k, a, B, dim)
+            end
+            @test_nowarn gradient(:FiniteDiff, B) do b
+                testdiagfunction(k, A, b, dim)
+            end
+            if args !== nothing
+                @test_nowarn gradient(:FiniteDiff, args) do p
+                    testdiagfunction(kernelfunction(p), A, B, dim)
+                end
+            end
         end
     end
 end
@@ -157,6 +174,21 @@ function test_AD(AD::Symbol, kernelfunction, args=nothing, dims=[3, 3])
             if !(args === nothing)
                 compare_gradient(AD, args) do p
                     testfunction(kernelfunction(p), A, dim)
+                end
+            end
+
+            compare_gradient(AD, A) do a
+                testdiagfunction(k, a, dim)
+            end
+            compare_gradient(AD, A) do a
+                testdiagfunction(k, a, B, dim)
+            end
+            compare_gradient(AD, B) do b
+                testdiagfunction(k, A, b, dim)
+            end
+            if args !== nothing
+                compare_gradient(AD, args) do p
+                    testdiagfunction(kernelfunction(p), A, dim)
                 end
             end
         end
