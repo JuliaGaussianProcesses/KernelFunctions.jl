@@ -123,6 +123,7 @@ ScaledKernel
 KernelSum
 KernelProduct
 KernelTensorProduct
+NormalizedKernel
 ```
 
 ## Multi-output Kernels

@@ -17,7 +17,7 @@ export RationalQuadraticKernel, GammaRationalQuadraticKernel
 export GaborKernel, PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
 export KernelSum, KernelProduct, KernelTensorProduct
-export TransformedKernel, ScaledKernel
+export TransformedKernel, ScaledKernel, NormalizedKernel
 
 export Transform,
     SelectTransform,
@@ -53,6 +53,7 @@ using ZygoteRules: ZygoteRules
 using StatsFuns: logtwo, twoπ
 using StatsBase
 using TensorCore
+using FillArrays
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
@@ -89,6 +90,7 @@ include(joinpath("basekernels", "wiener.jl"))
 
 include(joinpath("kernels", "transformedkernel.jl"))
 include(joinpath("kernels", "scaledkernel.jl"))
+include(joinpath("kernels", "normalizedkernel.jl"))
 include(joinpath("matrix", "kernelmatrix.jl"))
 include(joinpath("kernels", "kernelsum.jl"))
 include(joinpath("kernels", "kernelproduct.jl"))
