@@ -13,7 +13,6 @@ using Zygote: Zygote
 using ForwardDiff: ForwardDiff
 using ReverseDiff: ReverseDiff
 using FiniteDifferences: FiniteDifferences
-using ChainRulesTestUtils
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 
