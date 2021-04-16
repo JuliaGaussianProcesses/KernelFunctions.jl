@@ -6,17 +6,17 @@
         ωs::AbstractMatrix{<:Real},
     )
 
-where αs are the weights of dimension (A, ), γs is the covariance matrix of
-dimension (D, A) and ωs are the mean vectors and is of dimension (D, A).
-Here, D is input dimension and A is the number of spectral components.
+where `αs` are the weight vector of dimension `A`, `γs` is the sqrt of the covariance matrix of
+dimension `(D, A)` and `ωs` are the concatenated mean vectors of dimension (D, A).
+Here, `D` is input dimension and `A` is the number of spectral components.
 
-`h` is the kernel, which defaults to [`SqExponentialKernel`](@ref) if not specified.
+`h` is the stationary kernel, which defaults to [`SqExponentialKernel`](@ref) if not specified.
 
-Generalised Spectral Mixture kernel function. This family of functions is  dense
+Generalised Spectral Mixture kernel function. This family of functions is dense
 in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
 
 ```math
-   κ(x, y) = αs' (h(-(γs' * t)^2) .* cos(π * ωs' * t), t = x - y
+   κ(x, y) = \sum_k \alpha_k^\top (h(γ_k x, γ_k y) \cos(π \cdot ω_k \odot (x-y)),
 ```
 
 # References:
