@@ -85,19 +85,18 @@ For example, a collection of `Real`-valued inputs which might be straightforward
 
 #### Resolution 1: Specify a convention
 
-One way to resolve these shortcomings can be partly resolved by specifying a convention that everyone adheres to regarding the interpretation of rows vs columns.
-However, it is well-understood that there are a variety of opinions regarding the "correct" convention to use, and picking one tends to annoy people.
-Moreover, new (and experienced) users reguarly have to remind themselves _which_ convention has been chosen.
+One way that these shortcomings can be partly resolved is by specifying a convention that everyone adheres to regarding the interpretation of rows vs columns.
+However, opinions about the choice of convention are often surprisingly-strongly held, and users reguarly have to remind themselves _which_ convention has been chosen.
 While this resolves the ordering problem, and in principle defines the "length" of a collection of inputs, `AbstractMatrix`s already have a `length` defined in Julia, which would generally disagree with our internal notion of `length`.
-This isn't a show-stopper, but it _is_ ugly.
+This isn't a show-stopper, but it isn't an especially clean situation.
 
 There is also the opportunity for some kinds of silent bugs.
 For example, if an input matrix happens to be square because the number of input dimensions is the same as the number of inputs, it would be hard to know whether the correct `kernelmatrix` has been computed.
-This kind of bug seems unlikely, but it would be preferable if it didn't happen.
+This kind of bug seems unlikely, but it exists regardless.
 
 #### Resolution 2: Always specify an `obsdim` argument
 
-Another way to partly resolve these problems is to not commit to a convention, and instead to propagate an argument through the codebase that specifies how the input data is to be interpretted.
+Another way to partly resolve these problems is to not commit to a convention, and instead to propagate some additional information through the codebase that specifies how the input data is to be interpretted.
 For example, a kernel `k` that represents the sum of two other kernels might implement `kernelmatrix` as follows:
 ```julia
 function kernelmatrix(k::KernelSum, x::AbstractMatrix; obsdim=1)
@@ -106,7 +105,7 @@ function kernelmatrix(k::KernelSum, x::AbstractMatrix; obsdim=1)
 end
 ```
 While this prevents this package from having to pre-specify a convention, it doesn't resolve the `length` issue.
-Moreover, it complicated the internals dramatically; in contrast, consider what this function looks like with an `AbstractVector`:
+Moreover, it complicated the internals unnecessarily; in contrast, consider what this function looks like with an `AbstractVector`:
 ```julia
 function kernelmatrix(k::KernelSum, x::AbstractVector)
     return kernelmatrix(k.kernels[1], x) + kernelmatrix(k.kernels[2], x)
