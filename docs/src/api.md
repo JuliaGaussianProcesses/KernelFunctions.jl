@@ -140,6 +140,8 @@ There is no loss of performance.
 A collection of `N` `Real`-valued inputs can be represented by an
 `AbstractVector{<:Real}` of `length` `N`, rather than needing to use an
 `AbstractMatrix{<:Real}` of size either `N x 1` or `1 x N`.
+The same can be said for any other input type `T`, and new subtypes of `AbstractVector` can
+be added if particularly efficient ways exist to store collections of inputs of type `T`.
 
 This approach can lead to clearer user code.
 A user need only wrap their inputs in a `ColVecs` or `RowVecs` once in their code, and this
