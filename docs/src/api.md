@@ -89,13 +89,17 @@ Below we discuss a couple of things that are often done that partly resolve thes
 #### Resolution 1: Specify a convention
 
 One way that these shortcomings can be partly resolved is by specifying a convention that everyone adheres to regarding the interpretation of rows vs columns.
-However, opinions about the choice of convention are often surprisingly-strongly held, and users reguarly have to remind themselves _which_ convention has been chosen.
+However, opinions about the choice of convention are often surprisingly strongly held, and users reguarly have to remind themselves _which_ convention has been chosen.
 While this resolves the ordering problem, and in principle defines the "length" of a collection of inputs, `AbstractMatrix`s already have a `length` defined in Julia, which would generally disagree with our internal notion of `length`.
 This isn't a show-stopper, but it isn't an especially clean situation.
 
 There is also the opportunity for some kinds of silent bugs.
 For example, if an input matrix happens to be square because the number of input dimensions is the same as the number of inputs, it would be hard to know whether the correct `kernelmatrix` has been computed.
 This kind of bug seems unlikely, but it exists regardless.
+
+Finally, suppose that your inputs are some type `T` that is not simply a vector of real numbers, say a graph.
+In this situation, how should a collection of inputs be represented?
+A `N x 1` or `1 x N` matrix is the only obvious candidate, but the addition singular dimension seems somewhat redundant.
 
 #### Resolution 2: Always specify an `obsdim` argument
 
