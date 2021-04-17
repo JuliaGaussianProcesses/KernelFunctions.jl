@@ -57,11 +57,6 @@ As with [`ColVecs`](@ref) and [`RowVecs`](@ref) for multi-dimensional input spac
 
 To understand the advantages of using `AbstractVector`s everywhere to represent collections of inputs, first consider the following properties that it is desirable for a collection of inputs to satisfy.
 
-#### Unambiguously-Defined Length
-
-Knowing the length of a collection of inputs is important.
-For example, a well-defined length guarantees that the size of the output of `kernelmatrix`, and related functions, are predictable.
-
 #### Unique Ordering
 
 There must be a clearly-defined first, second, etc element of an input collection.
@@ -74,6 +69,12 @@ Moreover, ordering guarantees that if you permute the collection of inputs, the 
 There must be no restriction on the domain of the input.
 Collections of `Real`s, vectors, graphs, finite-dimensional domains, or really anything else that you fancy should be straightforwardly representable.
 Moreover, whichever input class is chosen should not prevent optimal performance from being obtained.
+
+#### Unambiguously-Defined Length
+
+Knowing the length of a collection of inputs is important.
+For example, a well-defined length guarantees that the size of the output of `kernelmatrix`, and related functions, are predictable.
+
 
 
 ### AbstractMatrices do not cut it
