@@ -73,7 +73,10 @@ Moreover, whichever input class is chosen should not prevent optimal performance
 #### Unambiguously-Defined Length
 
 Knowing the length of a collection of inputs is important.
-For example, a well-defined length guarantees that the size of the output of `kernelmatrix`, and related functions, are predictable.
+For example, a well-defined length guarantees that the size of the output of `kernelmatrix`,
+and related functions, are predictable.
+It also makes it possible to perform internal error-checking that ensures that e.g. there
+are the same number of inputs in two collections of inputs.
 
 
 
