@@ -161,9 +161,9 @@ argument propagation, the same will be true of other code.
 ### Why we have support for both
 
 In short: many people like matrices, and are familiar with `obsdim`-style keyword
-arguments as they are used elsewhere in the Julia package ecosystem.
+arguments.
 
-However, all internals are implemented using `AbstractVector`s, and the `obsdim` interface
+All internals are implemented using `AbstractVector`s though, and the `obsdim` interface
 is just a thin layer of utility functionality which sits on top of this.
 
 ## Functions
