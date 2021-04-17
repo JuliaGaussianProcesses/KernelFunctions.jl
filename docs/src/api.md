@@ -150,7 +150,7 @@ removed large amounts of keyword argument propagation, the same will be true of 
 
 ### Why we have support for both
 
-In short: people like matrices, and people are familiar with `obsdim`-style keyword
+In short: many people like matrices, and are familiar with `obsdim`-style keyword
 arguments as they are used elsewhere in the Julia package ecosystem.
 
 However, all internals are implemented using `AbstractVector`s, and the `obsdim` interface
