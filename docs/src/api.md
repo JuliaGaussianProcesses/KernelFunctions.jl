@@ -22,8 +22,8 @@ is always true, for some `Kernel` `k`, and `AbstractVector` `x`.
 If each input to your kernel is `Real`-valued, then any `AbstractVector{<:Real}` is a valid representation for a collection of inputs.
 
 
-For multi-dimensional inputs, we recommend store your inputs in a `Matrix{Float64}` and wrap
-said matrix in either a `ColVecs` or `RowVecs`, to make its interpretation clear:
+We recommend that collections of vector-valued inputs are stored in an `Matrix{Float64}` and
+wrapped inside a `ColVecs` or `RowVecs` to make their interpretation clear:
 ```@docs
 ColVecs
 RowVecs
