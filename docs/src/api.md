@@ -111,7 +111,7 @@ function kernelmatrix(k::KernelSum, x::AbstractMatrix; obsdim=1)
         kernelmatrix(k.kernels[2], x; obsdim=obsdim)
 end
 ```
-While this prevents this package from having to pre-specify a convention, it doesn't resolve the `length` issue.
+While this prevents this package from having to pre-specify a convention, it doesn't resolve the `length` issue, or the issue of representing collections of inputs which aren't immediately represented as vectors.
 Moreover, it complicated the internals unnecessarily; in contrast, consider what this function looks like with an `AbstractVector`:
 ```julia
 function kernelmatrix(k::KernelSum, x::AbstractVector)
@@ -119,7 +119,6 @@ function kernelmatrix(k::KernelSum, x::AbstractVector)
 end
 ```
 This code is clearer (less visual noise), and has removed a possible bug -- if the implementer of `kernelmatrix` forgets to pass the `obsdim` kwarg into each subsequent `kernelmatrix` call, it's possible to get the wrong answer.
-
 
 
 ### AbstractVectors 
