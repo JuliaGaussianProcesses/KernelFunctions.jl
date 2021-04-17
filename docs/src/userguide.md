@@ -52,22 +52,45 @@ To evaluate the kernel function on two vectors you simply call the kernel object
 ## Creating a kernel matrix
 
 Kernel matrices can be created via the `kernelmatrix` function or `kernelmatrix_diag` for only the diagonal.
-An important argument to give is the data layout of the input `obsdim`. It specifies whether the number of observed data points is along the first dimension (`obsdim=1`, i.e. the matrix shape is number of samples times number of features) or along the second dimension (`obsdim=2`, i.e. the matrix shape is number of features times number of samples), similarly to [Distances.jl](https://github.com/JuliaStats/Distances.jl). If not given explicitly, `obsdim` defaults to `2`.
-For example:
+For example, for a collection of `10` `Real`-valued inputs:
 ```julia
   k = SqExponentialKernel()
-  A = rand(10, 5)
-  kernelmatrix(k, A, obsdim=1)  # returns a 10x10 matrix
-  kernelmatrix(k, A, obsdim=2)  # returns a 5x5 matrix
-  k(A, obsdim=1)  # Syntactic sugar
+  x = rand(10)
+  kernelmatrix(k, x) # 10x10 matrix
 ```
+If your inputs are multi-dimensional, it is common to represent them as a matrix.
+For example
+```julia
+  X = rand(10, 5)
+```
+However, it is ambiguous whether this represents a collection of 10 5-dimensional row-vectors, or 5 10-dimensional column-vectors.
+Therefore, we require users to provide some more information.
+
+You can write `RowVecs(X)` to declare that `X` contains 10 5-dimensional row-vectors, or `ColVecs(X)` to declare that `X` contains 5 10-dimensional column-vectors, then
+```julia
+  kernelmatrix(k, RowVecs(X))   # returns a 10x10 matrix -- each row of X treated as input
+  kernelmatrix(k, ColVecs(X))   # returns a 5x5 matrix -- each column of X treated as input
+```
+This is the mechanism used throughout KernelFunctions.jl to handle multi-dimensional inputs.
+
+You can also utilise the `obsdim` keyword argument if you prefer:
+```julia
+  kernelmatrix(k, X; obsdim=1)  # same as RowVecs(X)
+  kernelmatrix(k, X; obsdim=2)  # same as ColVecs(X)
+```
+This is similar to the convention used in [Distances.jl](https://github.com/JuliaStats/Distances.jl).
+
+See [Input Types](@ref) for a more thorough discussion of these two approaches.
+
+
 
 We also support specific kernel matrix outputs:
 - For a positive-definite matrix object`PDMat` from [`PDMats.jl`](https://github.com/JuliaStats/PDMats.jl), you can call the following:
 ```julia
   using PDMats
   k = SqExponentialKernel()
-  K = kernelpdmat(k, A, obsdim=1)  # PDMat
+  K = kernelpdmat(k, RowVecs(X))   # PDMat
+  K = kernelpdmat(k, X; obsdim=1)  # PDMat
 ```
 It will create a matrix and in case of bad conditioning will add some diagonal noise until the matrix is considered positive-definite; it will then return a `PDMat` object. For this method to work in your code you need to include `using PDMats` first.
 - For a Kronecker matrix, we rely on [`Kronecker.jl`](https://github.com/MichielStock/Kronecker.jl). Here are two examples:
