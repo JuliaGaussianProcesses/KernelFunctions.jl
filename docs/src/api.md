@@ -65,9 +65,9 @@ For example, a well-defined length guarantees that the size of the output of `ke
 #### Unique Ordering
 
 There must be a clearly-defined first, second, etc element of an input collection.
-For example, if this were not the case, it would not be possible to determine a unique mapping between a collection of inputs and the output of `kernelmatrix`, as it would not be clear what order the rows and columns of the output should be.
+If this were not the case, it would not be possible to determine a unique mapping between a collection of inputs and the output of `kernelmatrix`, as it would not be clear what order the rows and columns of the output should appear in.
 
-Moreover, ordering guarantees that if you permute the collection of inputs, the ordering of the rows and columns of the corresponding `kernelmatrix` are correspondingly permuted.
+Moreover, ordering guarantees that if you permute the collection of inputs, the ordering of the rows and columns of the `kernelmatrix` are correspondingly permuted.
 
 #### Generality
 
@@ -79,6 +79,9 @@ Moreover, whichever input class is chosen should not prevent optimal performance
 ### AbstractMatrices do not cut it
 
 Notably, while `AbstractMatrix`s are often used to represent collections of vector-valued inputs, they do _not_ immediately satisfy these properties as it is unclear whether a matrix of size `P x Q` represents a collection of `P` `Q`-dimensional inputs (each row is an input), or `Q` `P`-dimensional inputs (each column is an input).
+
+Moreover, they occassionally add some aesthetic inconvenience.
+For example, a collection of `Real`-valued inputs which might be straightforwardly represented as an `AbstractVector{<:Real}`, must be reshaped into a matrix.
 
 #### Resolution 1: Specify a convention
 
