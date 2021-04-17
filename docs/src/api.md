@@ -112,7 +112,7 @@ function kernelmatrix(k::KernelSum, x::AbstractMatrix; obsdim=1)
 end
 ```
 While this prevents this package from having to pre-specify a convention, it doesn't resolve the `length` issue, or the issue of representing collections of inputs which aren't immediately represented as vectors.
-Moreover, it complicated the internals unnecessarily; in contrast, consider what this function looks like with an `AbstractVector`:
+Moreover, it complicates the internals; in contrast, consider what this function looks like with an `AbstractVector`:
 ```julia
 function kernelmatrix(k::KernelSum, x::AbstractVector)
     return kernelmatrix(k.kernels[1], x) + kernelmatrix(k.kernels[2], x)
