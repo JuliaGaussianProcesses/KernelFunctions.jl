@@ -130,7 +130,7 @@ equal to the number of inputs.
 
 There is also no loss of performance.
 
-Additionally, approach is arguably leads to clearer user code.
+Additionally, this approach can lead to clearer user code.
 A user need only wrap their inputs in a `ColVecs` or `RowVecs` once in their code, and this
 specification is automatically re-used _everywhere_ in their code.
 The `obsdim` resolution requires that the `obsdim` keyword argument is passed along with the
