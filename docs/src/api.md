@@ -32,25 +32,39 @@ These types are specialised upon when e.g. computing Euclidean distances between
 
 ### Multi-Output Kernels
 
-There are two equally-valid perspectives on multi-output kernels: they can either be treated as matix-valued kernels, or standard kernels on an extended input domain.
-Each of these perspectives are convenient in different circumstances, but the latter is most helpful when building a library of kernels.
+There are two equally-valid perspectives on multi-output kernels: they can either be treated
+as matrix-valued kernels, or standard kernels on an extended input domain.
+Each of these perspectives are convenient in different circumstances, but the latter
+greatly simplifies the incorporation of multi-output kernels KernelFunctions.
 
-More concretely, let `k_mat` be a matrix-valued kernel, mapping pair of inputs of type `T` to matrices of size `P x P`.
-Given `k_mat`, inputs `x` and `y` of type `T`, and integers `p` and `q`, we can always find an equivalent standard kernel `k` mapping from pairs of inputs of type `Tuple{T, Int}` to the `Real`s as follows:
+More concretely, let `k_mat` be a matrix-valued kernel, mapping pairs of inputs of type `T` to matrices of size `P x P`.
+Given inputs `x` and `y` of type `T`, and integers `p` and `q`, we can always find an
+equivalent standard kernel `k` mapping from pairs of inputs of type `Tuple{T, Int}` to the
+`Real`s as follows:
 ```julia
 k((x, p), (y, q)) = k_mat(x, y)[p, q]
 ```
-This ability to treat multi-output kernels as single-output kernels is very helpful, as it means that there is no need to introduce additional concepts into the API of KernelFunctions.jl, just additional kernels!
-This in turn simplifies downstream code as they don't need to "know" about the existence of multi-output kernels in additional to standard kernels. For example, GP libraries built on top of KernelFunctions.jl just need to know about `Kernel`s, and they get multi-output kernels, and hence multi-output GPs, for free.
+This ability to treat multi-output kernels as single-output kernels is very helpful, as it
+means that there is no need to introduce additional concepts into the API of
+KernelFunctions.jl, just additional kernels!
+This in turn simplifies downstream code as they don't need to "know" about the existence of
+multi-output kernels in additional to standard kernels. For example, GP libraries built on
+top of KernelFunctions.jl just need to know about `Kernel`s, and they get multi-output
+kernels, and hence multi-output GPs, for free.
 
-Where there is the need to specialise _implementations_ for multi-output kernels, this is done in a nicely encapsulated way.
-For example, single-output kernels are entirely oblivious to the existence of multi-output kernels.
+Where there is the need to specialise _implementations_ for multi-output kernels, this is
+done in an encapsulated manner -- parts of KernelFunctions that have nothing to do with
+multi-output kernels know _nothing_ about the existance of multi-output kernels.
 
-While the multi-output kernels in KernelFunctions.jl _do_ support collection of inputs of type `Vector{Tuple{T, Int}}`, we provide the `MOInput` type to simplify constructing inputs for situations in which all outputs are observed all of the time:
+Multi-output kernels in KernelFunctions.jl do support collection of inputs of
+type `Vector{Tuple{T, Int}}`, we provide the `MOInput` type to simplify constructing inputs
+for situations in which all outputs are observed all of the time:
 ```@docs
 MOInput
 ```
-As with [`ColVecs`](@ref) and [`RowVecs`](@ref) for multi-dimensional input spaces, this type enables implementations of multi-output kernels to specialise implementations for performance when [`MOInput`](@ref)s are provided.
+As with [`ColVecs`](@ref) and [`RowVecs`](@ref) for vector-valued input spaces, this
+type enables specialised implementations of e.g. [`kernelmatrix`](@ref) for
+[`MOInput`](@ref)s.
 
 
 ## Why AbstractVectors Everywhere?
@@ -165,6 +179,8 @@ A collection of `N` `Real`-valued inputs can be represented by an
 `AbstractMatrix{<:Real}` of size either `N x 1` or `1 x N`.
 The same can be said for any other input type `T`, and new subtypes of `AbstractVector` can
 be added if particularly efficient ways exist to store collections of inputs of type `T`.
+A good example of this in practice using `Tuple{S, Int}`, for some input type `S`, as the
+input type for "multi-output" GPs.
 
 This approach can also lead to clearer user code.
 A user need only wrap their inputs in a `ColVecs` or `RowVecs` once in their code, and this
