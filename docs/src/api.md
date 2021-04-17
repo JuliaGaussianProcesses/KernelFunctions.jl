@@ -20,12 +20,112 @@ kernelpdmat
 nystrom
 ```
 
-## Utilities
+## Input Types
+
+Internally, all input types in KernelFunctions.jl are represented as `AbstractVector`s.
+The length of any such vector is equal to the number of unique input locations represented.
+For example, this means that
+```julia
+size(kernelmatrix(k, x)) == (length(x), length(x))
+```
+is always true, for some `Kernel` `k`, and `AbstractVector` `x`.
+
+If each input to your kernel is `Real`-valued, then any `AbstractVector{<:Real}` is a valid representation for a collection of inputs.
+
+
+For other kinds of input domains, we provide several utilities:
 
 ```@docs
 ColVecs
 RowVecs
 MOInput
+```
+
+## Why AbstractVectors Everywhere?
+
+To understand the advantages of using `AbstractVector`s everywhere to represent collections of inputs, first consider the following properties that it is desirable for a collection of inputs to satisfy.
+
+#### Unambiguously-Defined Length
+
+Knowing the length of a collection of inputs is important.
+For example, a well-defined length guarantees that the size of the output of `kernelmatrix`, and related functions, are predictable.
+
+#### Unique Ordering
+
+There must be a clearly-defined first, second, etc element of an input collection.
+For example, if this were not the case, it would not be possible to determine a unique mapping between a collection of inputs and the output of `kernelmatrix`, as it would not be clear what order the rows and columns of the output should be.
+
+Moreover, ordering guarantees that if you permute the collection of inputs, the ordering of the rows and columns of the corresponding `kernelmatrix` are correspondingly permuted.
+
+#### Generality
+
+There must be no restriction on the domain of the input.
+`Real`s, vectors, graphs, finite-dimensional domains, or really anything else that you fancy should be straightforwardly representable.
+Moreover, whichever input class is chosen should not prevent optimal performance from being obtained.
+
+
+### AbstractMatrices do not cut it
+
+Notably, while `AbstractMatrix`s are often used to represent collections of vector-valued inputs, they do _not_ immediately satisfy these properties as it is unclear whether a matrix of size `P x Q` represents a collection of `P` `Q`-dimensional inputs (each row is an input), or `Q` `P`-dimensional inputs (each column is an input).
+
+#### Resolution 1: Specify a convention
+
+One way to resolve these shortcomings can be partly resolved by specifying a convention that everyone adheres to regarding the interpretation of rows vs columns.
+However, it is well-understood that there are a variety of opinions regarding the "correct" convention to use, and picking one tends to annoy people.
+Moreover, new (and experienced) users reguarly have to remind themselves _which_ convention has been chosen.
+While this resolves the ordering problem, and in principle defines the "length" of a collection of inputs, `AbstractMatrix`s already have a `length` defined in Julia, which would generally disagree with our internal notion of `length`.
+This isn't a show-stopper, but it _is_ ugly.
+
+There is also the opportunity for some kinds of silent bugs.
+For example, if an input matrix happens to be square because the number of input dimensions is the same as the number of inputs, it would be hard to know whether the correct `kernelmatrix` has been computed.
+This kind of bug seems unlikely, but it would be preferable if it didn't happen.
+
+#### Resolution 2: Always specify an `obsdim` argument
+
+Another way to partly resolve these problems is to not commit to a convention, and instead to propagate an argument through the codebase that specifies how the input data is to be interpretted.
+For example, a kernel `k` that represents the sum of two other kernels might implement `kernelmatrix` as follows:
+```julia
+function kernelmatrix(k::KernelSum, x::AbstractMatrix; obsdim=1)
+    return kernelmatrix(k.kernels[1], x; obsdim=obsdim) +
+        kernelmatrix(k.kernels[2], x; obsdim=obsdim)
+end
+```
+While this prevents this package from having to pre-specify a convention, it doesn't resolve the `length` issue.
+Moreover, it complicated the internals dramatically; in contrast, consider what this function looks like with an `AbstractVector`:
+```julia
+function kernelmatrix(k::KernelSum, x::AbstractVector)
+    return kernelmatrix(k.kernels[1], x) + kernelmatrix(k.kernels[2], x)
+end
+```
+This code is clearer (less visual noise), and has removed a possible bug -- if the implementer of `kernelmatrix` forgets to pass the `obsdim` kwarg into each subsequent `kernelmatrix` call, it's possible to get the wrong answer.
+
+
+
+### AbstractVectors 
+
+Requiring all collections of inputs to be `AbstractVector`s resolves all of these problems.
+
+Firstly, the question of how to interpret the columns and rows of a matrix of inputs is resolved. Users _must_ wrap their inputs in either a `ColVecs` or `RowVecs`, both of which have clearly defined semantics.
+
+By design, there is also no discrepancy between the number of inputs in the collection, and the `length` function -- the `length` of a `ColVecs`, `RowVecs`, or `Vector{<:Real}` is equal to the number of inputs.
+
+There is also no loss of performance.
+
+Additionally, approach is arguably leads to clearer user code.
+A user need only wrap their inputs in a `ColVecs` or `RowVecs` once in their code, and this specification is automatically re-used _everywhere_ in their code.
+The `obsdim` resolution requires that the `obsdim` keyword argument is passed along with the data every time that any function involving `kernelmatrix` is used.
+
+There are other aesthetic benefits -- for example a collection of `N` `Real`-valued inputs can be represented by an `AbstractVector{<:Real}` of `length` `N`, rather than needing to use an `AbstractMatrix{<:Real}` of size either `N x 1` or `1 x N`.
+
+
+
+
+
+
+
+## Utilities
+
+```@docs
 NystromFact
 ```
 
