@@ -9,21 +9,10 @@ Pages = ["api.md"]
 CurrentModule = KernelFunctions
 ```
 
-## Functions
-
-```@docs
-kernelmatrix
-kernelmatrix!
-kernelmatrix_diag
-kernelmatrix_diag!
-kernelpdmat
-nystrom
-```
-
 ## Input Types
 
-Internally, all input types in KernelFunctions.jl are represented as `AbstractVector`s.
-The length of any such vector is equal to the number of unique input locations represented.
+All collections of inputs in KernelFunctions.jl are represented as `AbstractVector`s.
+The length of any such `AbstractVector` is equal to the number of inputs in the collection.
 For example, this means that
 ```julia
 size(kernelmatrix(k, x)) == (length(x), length(x))
@@ -139,6 +128,18 @@ A user need only wrap their inputs in a `ColVecs` or `RowVecs` once in their cod
 The `obsdim` resolution requires that the `obsdim` keyword argument is passed along with the data every time that any function involving `kernelmatrix` is used.
 
 There are other aesthetic benefits -- for example a collection of `N` `Real`-valued inputs can be represented by an `AbstractVector{<:Real}` of `length` `N`, rather than needing to use an `AbstractMatrix{<:Real}` of size either `N x 1` or `1 x N`.
+
+
+## Functions
+
+```@docs
+kernelmatrix
+kernelmatrix!
+kernelmatrix_diag
+kernelmatrix_diag!
+kernelpdmat
+nystrom
+```
 
 
 
