@@ -119,17 +119,26 @@ This code is clearer (less visual noise), and has removed a possible bug -- if t
 
 Requiring all collections of inputs to be `AbstractVector`s resolves all of these problems.
 
-Firstly, the question of how to interpret the columns and rows of a matrix of inputs is resolved. Users _must_ wrap their inputs in either a `ColVecs` or `RowVecs`, both of which have clearly defined semantics.
+Firstly, the question of how to interpret the columns and rows of a matrix of inputs is
+resolved.
+Users _must_ wrap their inputs in either a `ColVecs` or `RowVecs`, both of which have
+clearly defined semantics.
 
-By design, there is also no discrepancy between the number of inputs in the collection, and the `length` function -- the `length` of a `ColVecs`, `RowVecs`, or `Vector{<:Real}` is equal to the number of inputs.
+By design, there is also no discrepancy between the number of inputs in the collection, and
+the `length` function -- the `length` of a `ColVecs`, `RowVecs`, or `Vector{<:Real}` is
+equal to the number of inputs.
 
 There is also no loss of performance.
 
 Additionally, approach is arguably leads to clearer user code.
-A user need only wrap their inputs in a `ColVecs` or `RowVecs` once in their code, and this specification is automatically re-used _everywhere_ in their code.
-The `obsdim` resolution requires that the `obsdim` keyword argument is passed along with the data every time that any function involving `kernelmatrix` is used.
+A user need only wrap their inputs in a `ColVecs` or `RowVecs` once in their code, and this
+specification is automatically re-used _everywhere_ in their code.
+The `obsdim` resolution requires that the `obsdim` keyword argument is passed along with the
+data every time that any function involving `kernelmatrix` is used.
 
-There are other aesthetic benefits -- for example a collection of `N` `Real`-valued inputs can be represented by an `AbstractVector{<:Real}` of `length` `N`, rather than needing to use an `AbstractMatrix{<:Real}` of size either `N x 1` or `1 x N`.
+Additionally, a collection of `N` `Real`-valued inputs can be represented by an
+`AbstractVector{<:Real}` of `length` `N`, rather than needing to use an
+`AbstractMatrix{<:Real}` of size either `N x 1` or `1 x N`.
 
 
 
