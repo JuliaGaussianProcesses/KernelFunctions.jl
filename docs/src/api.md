@@ -143,7 +143,7 @@ A collection of `N` `Real`-valued inputs can be represented by an
 The same can be said for any other input type `T`, and new subtypes of `AbstractVector` can
 be added if particularly efficient ways exist to store collections of inputs of type `T`.
 
-This approach can lead to clearer user code.
+This approach can also lead to clearer user code.
 A user need only wrap their inputs in a `ColVecs` or `RowVecs` once in their code, and this
 specification is automatically re-used _everywhere_ in their code.
 Conversely, the `obsdim` resolution requires that the `obsdim` keyword argument is passed
