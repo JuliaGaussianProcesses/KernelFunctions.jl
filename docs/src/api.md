@@ -132,6 +132,15 @@ The `obsdim` resolution requires that the `obsdim` keyword argument is passed al
 There are other aesthetic benefits -- for example a collection of `N` `Real`-valued inputs can be represented by an `AbstractVector{<:Real}` of `length` `N`, rather than needing to use an `AbstractMatrix{<:Real}` of size either `N x 1` or `1 x N`.
 
 
+
+### Why we have support for both
+
+In short: people like matrices, and people are familiar with `obsdim`-style keyword
+arguments as they are used elsewhere in the Julia package ecosystem.
+
+However, all internals are implemented using `AbstractVector`s, and the `obsdim` interface
+is just a thin layer of utility functionality which sits on top of this.
+
 ## Functions
 
 ```@docs
