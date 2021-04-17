@@ -33,13 +33,36 @@ is always true, for some `Kernel` `k`, and `AbstractVector` `x`.
 If each input to your kernel is `Real`-valued, then any `AbstractVector{<:Real}` is a valid representation for a collection of inputs.
 
 
-For other kinds of input domains, we provide several utilities:
-
+For multi-dimensional inputs, we recommend store your inputs in a `Matrix{Float64}` and wrap
+said matrix in either a `ColVecs` or `RowVecs`, to make its interpretation clear:
 ```@docs
 ColVecs
 RowVecs
+```
+These types are specialised upon when e.g. computing Euclidean distances between pairs of elements to ensure good performance.
+
+### Multi-Output Kernels
+
+There are two equally-valid perspectives on multi-output kernels: they can either be treated as matix-valued kernels, or standard kernels on an extended input domain.
+Each of these perspectives are convenient in different circumstances, but the latter is most helpful when building a library of kernels.
+
+More concretely, let `k_mat` be a matrix-valued kernel, mapping pair of inputs of type `T` to matrices of size `P x P`.
+Given `k_mat`, inputs `x` and `y` of type `T`, and integers `p` and `q`, we can always find an equivalent standard kernel `k` mapping from pairs of inputs of type `Tuple{T, Int}` to the `Real`s as follows:
+```julia
+k((x, p), (y, q)) = k_mat(x, y)[p, q]
+```
+This ability to treat multi-output kernels as single-output kernels is very helpful, as it means that there is no need to introduce additional concepts into the API of KernelFunctions.jl, just additional kernels!
+This in turn simplifies downstream code as they don't need to "know" about the existence of multi-output kernels in additional to standard kernels. For example, GP libraries built on top of KernelFunctions.jl just need to know about `Kernel`s, and they get multi-output kernels, and hence multi-output GPs, for free.
+
+Where there is the need to specialise _implementations_ for multi-output kernels, this is done in a nicely encapsulated way.
+For example, single-output kernels are entirely oblivious to the existence of multi-output kernels.
+
+While the multi-output kernels in KernelFunctions.jl _do_ support collection of inputs of type `Vector{Tuple{T, Int}}`, we provide the `MOInput` type to simplify constructing inputs for situations in which all outputs are observed all of the time:
+```@docs
 MOInput
 ```
+As with [`ColVecs`](@ref) and [`RowVecs`](@ref) for multi-dimensional input spaces, this type enables implementations of multi-output kernels to specialise implementations for performance when [`MOInput`](@ref)s are provided.
+
 
 ## Why AbstractVectors Everywhere?
 
