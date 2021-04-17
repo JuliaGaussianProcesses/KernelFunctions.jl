@@ -124,13 +124,12 @@ This code is clearer (less visual noise), and has removed a possible bug -- if t
 ### AbstractVectors 
 
 Requiring all collections of inputs to be `AbstractVector`s resolves all of these problems,
-and ensures that the data is self-describing to the extent that KernelFunctions.jl needs
-this to be the case.
+and ensures that the data is self-describing to the extent that KernelFunctions.jl requires.
 
 Firstly, the question of how to interpret the columns and rows of a matrix of inputs is
 resolved.
-Users _must_ wrap their inputs in either a `ColVecs` or `RowVecs`, both of which have
-clearly defined semantics.
+Users _must_ wrap matrix which represent collections of inputs in either a `ColVecs` or
+`RowVecs`, both of which have clearly defined semantics.
 
 By design, there is also no discrepancy between the number of inputs in the collection, and
 the `length` function -- the `length` of a `ColVecs`, `RowVecs`, or `Vector{<:Real}` is
