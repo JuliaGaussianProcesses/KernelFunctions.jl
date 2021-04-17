@@ -96,8 +96,8 @@ It will create a matrix and in case of bad conditioning will add some diagonal n
 - For a Kronecker matrix, we rely on [`Kronecker.jl`](https://github.com/MichielStock/Kronecker.jl). Here are two examples:
 ```julia
 using Kronecker
-x = range(0, 1, length=10)
-y = range(0, 1, length=50)
+x = range(0, 1; length=10)
+y = range(0, 1; length=50)
 K = kernelkronmat(k, [x, y]) # Kronecker matrix
 K = kernelkronmat(k, x, 5) # Kronecker matrix
 ```
