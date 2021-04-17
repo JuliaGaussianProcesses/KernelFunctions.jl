@@ -82,46 +82,66 @@ are the same number of inputs in two collections of inputs.
 
 ### AbstractMatrices do not cut it
 
-Notably, while `AbstractMatrix`s are often used to represent collections of vector-valued inputs, they do _not_ immediately satisfy these properties as it is unclear whether a matrix of size `P x Q` represents a collection of `P` `Q`-dimensional inputs (each row is an input), or `Q` `P`-dimensional inputs (each column is an input).
+Notably, while `AbstractMatrix`s are often used to represent collections of vector-valued
+inputs, they do _not_ immediately satisfy these properties as it is unclear whether a matrix
+of size `P x Q` represents a collection of `P` `Q`-dimensional inputs (each row is an
+input), or `Q` `P`-dimensional inputs (each column is an input).
 
 Moreover, they occassionally add some aesthetic inconvenience.
-For example, a collection of `Real`-valued inputs which might be straightforwardly represented as an `AbstractVector{<:Real}`, must be reshaped into a matrix.
+For example, a collection of `Real`-valued inputs which might be straightforwardly
+represented as an `AbstractVector{<:Real}`, must be reshaped into a matrix.
 
 Below we discuss a couple of things that are often done that partly resolve these shortcomings.
 
 #### Resolution 1: Specify a convention
 
-One way that these shortcomings can be partly resolved is by specifying a convention that everyone adheres to regarding the interpretation of rows vs columns.
-However, opinions about the choice of convention are often surprisingly strongly held, and users reguarly have to remind themselves _which_ convention has been chosen.
-While this resolves the ordering problem, and in principle defines the "length" of a collection of inputs, `AbstractMatrix`s already have a `length` defined in Julia, which would generally disagree with our internal notion of `length`.
+One way that these shortcomings can be partly resolved is by specifying a convention that
+everyone adheres to regarding the interpretation of rows vs columns.
+However, opinions about the choice of convention are often surprisingly strongly held, and
+users reguarly have to remind themselves _which_ convention has been chosen.
+While this resolves the ordering problem, and in principle defines the "length" of a
+collection of inputs, `AbstractMatrix`s already have a `length` defined in Julia, which
+would generally disagree with our internal notion of `length`.
 This isn't a show-stopper, but it isn't an especially clean situation.
 
 There is also the opportunity for some kinds of silent bugs.
-For example, if an input matrix happens to be square because the number of input dimensions is the same as the number of inputs, it would be hard to know whether the correct `kernelmatrix` has been computed.
+For example, if an input matrix happens to be square because the number of input dimensions
+is the same as the number of inputs, it would be hard to know whether the correct
+`kernelmatrix` has been computed.
 This kind of bug seems unlikely, but it exists regardless.
 
-Finally, suppose that your inputs are some type `T` that is not simply a vector of real numbers, say a graph.
+Finally, suppose that your inputs are some type `T` that is not simply a vector of real
+numbers, say a graph.
 In this situation, how should a collection of inputs be represented?
-A `N x 1` or `1 x N` matrix is the only obvious candidate, but the addition singular dimension seems somewhat redundant.
+A `N x 1` or `1 x N` matrix is the only obvious candidate, but the addition singular
+dimension seems somewhat redundant.
 
 #### Resolution 2: Always specify an `obsdim` argument
 
-Another way to partly resolve these problems is to not commit to a convention, and instead to propagate some additional information through the codebase that specifies how the input data is to be interpretted.
-For example, a kernel `k` that represents the sum of two other kernels might implement `kernelmatrix` as follows:
+Another way to partly resolve these problems is to not commit to a convention, and instead
+to propagate some additional information through the codebase that specifies how the input
+data is to be interpretted.
+For example, a kernel `k` that represents the sum of two other kernels might implement
+`kernelmatrix` as follows:
 ```julia
 function kernelmatrix(k::KernelSum, x::AbstractMatrix; obsdim=1)
     return kernelmatrix(k.kernels[1], x; obsdim=obsdim) +
         kernelmatrix(k.kernels[2], x; obsdim=obsdim)
 end
 ```
-While this prevents this package from having to pre-specify a convention, it doesn't resolve the `length` issue, or the issue of representing collections of inputs which aren't immediately represented as vectors.
-Moreover, it complicates the internals; in contrast, consider what this function looks like with an `AbstractVector`:
+While this prevents this package from having to pre-specify a convention, it doesn't resolve
+the `length` issue, or the issue of representing collections of inputs which aren't
+immediately represented as vectors.
+Moreover, it complicates the internals; in contrast, consider what this function looks like
+with an `AbstractVector`:
 ```julia
 function kernelmatrix(k::KernelSum, x::AbstractVector)
     return kernelmatrix(k.kernels[1], x) + kernelmatrix(k.kernels[2], x)
 end
 ```
-This code is clearer (less visual noise), and has removed a possible bug -- if the implementer of `kernelmatrix` forgets to pass the `obsdim` kwarg into each subsequent `kernelmatrix` call, it's possible to get the wrong answer.
+This code is clearer (less visual noise), and has removed a possible bug -- if the
+implementer of `kernelmatrix` forgets to pass the `obsdim` kwarg into each subsequent
+`kernelmatrix` call, it's possible to get the wrong answer.
 
 
 ### AbstractVectors 
