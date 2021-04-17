@@ -2,6 +2,26 @@
     MOInput(x::AbstractVector, out_dim::Integer)
 
 A data type to accomodate modelling multi-dimensional output data.
+
+`MOInput(x, out_dim)` has length `length(x) * out_dim`.
+
+```julia
+julia> x = [1, 2, 3];
+
+julia> MOInput(x, 2)
+6-element MOInput{Vector{Int64}}:
+ (1, 1)
+ (2, 1)
+ (3, 1)
+ (1, 2)
+ (2, 2)
+ (3, 2)
+```
+
+An `MOInput` represents the vertical concatenation of a 
+
+
+See the docs for a more extensive discussion of this design decision.
 """
 struct MOInput{T<:AbstractVector} <: AbstractVector{Tuple{Any,Int}}
     x::T
