@@ -72,7 +72,7 @@ Moreover, ordering guarantees that if you permute the collection of inputs, the 
 #### Generality
 
 There must be no restriction on the domain of the input.
-`Real`s, vectors, graphs, finite-dimensional domains, or really anything else that you fancy should be straightforwardly representable.
+Collections of `Real`s, vectors, graphs, finite-dimensional domains, or really anything else that you fancy should be straightforwardly representable.
 Moreover, whichever input class is chosen should not prevent optimal performance from being obtained.
 
 
