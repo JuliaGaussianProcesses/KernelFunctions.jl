@@ -141,12 +141,6 @@ kernelpdmat
 nystrom
 ```
 
-
-
-
-
-
-
 ## Utilities
 
 ```@docs
