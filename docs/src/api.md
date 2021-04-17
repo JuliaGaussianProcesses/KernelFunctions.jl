@@ -146,11 +146,14 @@ be added if particularly efficient ways exist to store collections of inputs of 
 This approach can also lead to clearer user code.
 A user need only wrap their inputs in a `ColVecs` or `RowVecs` once in their code, and this
 specification is automatically re-used _everywhere_ in their code.
+In this sense, it is straightforward to write code in such a way that there is one unique
+source of "truth" about the way in which a particular data set should be interpretted.
 Conversely, the `obsdim` resolution requires that the `obsdim` keyword argument is passed
-along with the data every time that any function involving `kernelmatrix` is used.
-This is likely to be especially helpful when writing a substantial amount of code on top of
-KernelFunctions -- in the same way that using `AbstractVector`s inside KernelFunctions.jl
-removed large amounts of keyword argument propagation, the same will be true of other code.
+around with the data _every_ _single_ _time_ that you use it.
+
+The benefits of the `AbstractVector` approach are likely most strongly felt when writing a substantial amount of code on top of KernelFunctions -- in the same way that using
+`AbstractVector`s inside KernelFunctions.jl removes the need for large amounts of keyword
+argument propagation, the same will be true of other code.
 
 
 
