@@ -68,15 +68,15 @@ Therefore, we require users to provide some more information.
 
 You can write `RowVecs(X)` to declare that `X` contains 10 5-dimensional row-vectors, or `ColVecs(X)` to declare that `X` contains 5 10-dimensional column-vectors, then
 ```julia
-  kernelmatrix(k, RowVecs(X))   # returns a 10x10 matrix -- each row of X treated as input
-  kernelmatrix(k, ColVecs(X))   # returns a 5x5 matrix -- each column of X treated as input
+  kernelmatrix(k, RowVecs(X)) # returns a 10x10 matrix -- each row of X treated as input
+  kernelmatrix(k, ColVecs(X)) # returns a 5x5 matrix -- each column of X treated as input
 ```
 This is the mechanism used throughout KernelFunctions.jl to handle multi-dimensional inputs.
 
 You can also utilise the `obsdim` keyword argument if you prefer:
 ```julia
-  kernelmatrix(k, X; obsdim=1)  # same as RowVecs(X)
-  kernelmatrix(k, X; obsdim=2)  # same as ColVecs(X)
+  kernelmatrix(k, X; obsdim=1) # same as RowVecs(X)
+  kernelmatrix(k, X; obsdim=2) # same as ColVecs(X)
 ```
 This is similar to the convention used in [Distances.jl](https://github.com/JuliaStats/Distances.jl).
 
@@ -89,8 +89,8 @@ We also support specific kernel matrix outputs:
 ```julia
   using PDMats
   k = SqExponentialKernel()
-  K = kernelpdmat(k, RowVecs(X))   # PDMat
-  K = kernelpdmat(k, X; obsdim=1)  # PDMat
+  K = kernelpdmat(k, RowVecs(X)) # PDMat
+  K = kernelpdmat(k, X; obsdim=1) # PDMat
 ```
 It will create a matrix and in case of bad conditioning will add some diagonal noise until the matrix is considered positive-definite; it will then return a `PDMat` object. For this method to work in your code you need to include `using PDMats` first.
 - For a Kronecker matrix, we rely on [`Kronecker.jl`](https://github.com/MichielStock/Kronecker.jl). Here are two examples:
@@ -111,8 +111,8 @@ For example:
 ```julia
   k1 = SqExponentialKernel()
   k2 = Matern32Kernel()
-  k = 0.5 * k1 + 0.2 * k2  # KernelSum
-  k = k1 * k2  # KernelProduct
+  k = 0.5 * k1 + 0.2 * k2 # KernelSum
+  k = k1 * k2 # KernelProduct
 ```
 
 ## Kernel parameters
