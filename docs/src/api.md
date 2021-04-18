@@ -57,7 +57,7 @@ done in an encapsulated manner -- parts of KernelFunctions that have nothing to 
 multi-output kernels know _nothing_ about the existance of multi-output kernels.
 
 Multi-output kernels in KernelFunctions.jl do support collection of inputs of
-type `Vector{Tuple{T, Int}}`, we provide the `MOInput` type to simplify constructing inputs
+type `AbstractVector{Tuple{T, Int}}`, we provide the `MOInput` type to simplify constructing inputs
 for situations in which all outputs are observed all of the time:
 ```@docs
 MOInput
