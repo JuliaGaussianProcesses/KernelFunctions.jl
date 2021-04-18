@@ -18,8 +18,9 @@ julia> MOInput(x, 2)
  (3, 2)
 ```
 
-An `MOInput` represents the vertical concatenation of a 
-
+As shown above, an `MOInput` represents a vector of tuples.
+The first `length(x)` elements represents the inputs for the first output, the second
+`length(x)` elements represents the inputs for the second output, etc.
 
 See the docs for a more extensive discussion of this design decision.
 """
