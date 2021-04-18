@@ -67,6 +67,9 @@ As with [`ColVecs`](@ref) and [`RowVecs`](@ref) for vector-valued input spaces, 
 type enables specialised implementations of e.g. [`kernelmatrix`](@ref) for
 [`MOInput`](@ref)s.
 
+See [here](https://arxiv.org/pdf/1106.6251.pdf) for a review of kernels for vector-valued
+functions.
+
 
 ## Why AbstractVectors Everywhere?
 
