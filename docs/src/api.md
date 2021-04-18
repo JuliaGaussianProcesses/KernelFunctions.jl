@@ -116,7 +116,7 @@ Below we discuss a couple of things that are often done that partly resolve thes
 One way that these shortcomings can be partly resolved is by specifying a convention that
 everyone adheres to regarding the interpretation of rows vs columns.
 However, opinions about the choice of convention are often surprisingly strongly held, and
-users reguarly have to remind themselves _which_ convention has been chosen.
+users regularly have to remind themselves _which_ convention has been chosen.
 While this resolves the ordering problem, and in principle defines the "length" of a
 collection of inputs, `AbstractMatrix`s already have a `length` defined in Julia, which
 would generally disagree with our internal notion of `length`.
