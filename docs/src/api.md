@@ -21,7 +21,12 @@ is always true, for some `Kernel` `k`, and `AbstractVector` `x`.
 
 ### Univariate Inputs
 
-If each input to your kernel is `Real`-valued, then any `AbstractVector{<:Real}` is a valid representation for a collection of inputs.
+If each input to your kernel is `Real`-valued, then any `AbstractVector{<:Real}` is a valid
+representation for a collection of inputs.
+More generally, it's completely fine to represent a collection of inputs of type `T` as, for
+example, a `Vector{T}`.
+However, this may not be the most efficient way to represent collection of inputs.
+See [Vector-Valued Inputs](@ref) for an example.
 
 ### Vector-Valued Inputs
 
@@ -33,6 +38,9 @@ ColVecs
 RowVecs
 ```
 These types are specialised upon when e.g. computing Euclidean distances between pairs of elements to ensure good performance.
+The benefit of using this representation, rather a `Vector{Vector{<:Real}}`, is that
+optimised matrix-matrix multiplication functionality can be utilised when computing
+pairwise distances between inputs, which are needed for `kernelmatrix` computation.
 
 ### Inputs for Multiple Outputs
 
