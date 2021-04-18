@@ -35,7 +35,7 @@ These types are specialised upon when e.g. computing Euclidean distances between
 There are two equally-valid perspectives on multi-output kernels: they can either be treated
 as matrix-valued kernels, or standard kernels on an extended input domain.
 Each of these perspectives are convenient in different circumstances, but the latter
-greatly simplifies the incorporation of multi-output kernels KernelFunctions.
+greatly simplifies the incorporation of multi-output kernels in KernelFunctions.
 
 More concretely, let `k_mat` be a matrix-valued kernel, mapping pairs of inputs of type `T` to matrices of size `P x P`.
 Given inputs `x` and `y` of type `T`, and integers `p` and `q`, we can always find an
