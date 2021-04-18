@@ -85,7 +85,7 @@ See [Input Types](@ref) for a more thorough discussion of these two approaches.
 
 
 We also support specific kernel matrix outputs:
-- For a positive-definite matrix object`PDMat` from [`PDMats.jl`](https://github.com/JuliaStats/PDMats.jl), you can call the following:
+- For a positive-definite matrix object of type `PDMat` from [`PDMats.jl`](https://github.com/JuliaStats/PDMats.jl), you can call the following:
 ```julia
   using PDMats
   k = SqExponentialKernel()
