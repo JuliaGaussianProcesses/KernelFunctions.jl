@@ -28,8 +28,8 @@ kernelmatrix!
 
 Calculate the kernel matrix of `x` (and `y`) with respect to kernel `κ`.
 
-    kernelmatrix(κ::Kernel, X; obsdim::Int=2)
-    kernelmatrix(κ::Kernel, X, Y; obsdim::Int=2)
+    kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int=2)
+    kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int=2)
 
 Equivalent to `kernelmatrix(κ, ColVecs(X))` and `kernelmatrix(κ, ColVecs(X), ColVecs(Y))`
 respectively.
