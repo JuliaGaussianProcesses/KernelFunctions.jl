@@ -72,8 +72,8 @@ Calculate the diagonal matrix of `x` with respect to kernel `κ`.
 Calculate the diagonal of `kernelmatrix(κ, x, y)` efficiently.
 Requires that `x` and `y` are the same length.
 
-    kernelmatrix_diag(κ::Kernel, X; obsdim::Int=2)
-    kernelmatrix_diag(κ::Kernel, X, Y; obsdim::Int=2)
+    kernelmatrix_diag(κ::Kernel, X::AbstractMatrix; obsdim::Int=2)
+    kernelmatrix_diag(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int=2)
 
 Equivalent to `kernelmatrix_diag(κ, ColVecs(X))` and
 `kernelmatrix_diag(κ, ColVecs(X), ColVecs(Y))` respectively.
