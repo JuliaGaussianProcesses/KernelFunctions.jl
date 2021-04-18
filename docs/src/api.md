@@ -230,13 +230,13 @@ kernelmatrix
 kernelmatrix!
 kernelmatrix_diag
 kernelmatrix_diag!
-kernelpdmat
-nystrom
 ```
 
 ## Utilities
 
 ```@docs
+kernelpdmat
+nystrom
 NystromFact
 ```
 
