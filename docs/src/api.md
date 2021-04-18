@@ -54,7 +54,7 @@ kernels, and hence multi-output GPs, for free.
 
 Where there is the need to specialise _implementations_ for multi-output kernels, this is
 done in an encapsulated manner -- parts of KernelFunctions that have nothing to do with
-multi-output kernels know _nothing_ about the existance of multi-output kernels.
+multi-output kernels know _nothing_ about the existence of multi-output kernels.
 
 Multi-output kernels in KernelFunctions.jl do support collection of inputs of
 type `AbstractVector{Tuple{T, Int}}`, we provide the `MOInput` type to simplify constructing inputs
