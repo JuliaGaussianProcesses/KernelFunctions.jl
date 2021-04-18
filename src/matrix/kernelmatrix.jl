@@ -5,7 +5,7 @@
 In-place version of [`kernelmatrix`](@ref) where pre-allocated matrix `K` will be
 overwritten with the kernel matrix.
 
-    kernelmatrix!(K::AbstractMatrix, κ::Kernel, X::AbstractMatrix; obsdim::Integer = 2)
+    kernelmatrix!(K::AbstractMatrix, κ::Kernel, X::AbstractMatrix; obsdim::Integer=2)
     kernelmatrix!(
         K::AbstractMatrix,
         κ::Kernel,
