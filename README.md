@@ -19,7 +19,7 @@ The aim is to make the API as model-agnostic as possible while still being user-
 ```julia
 x = range(-3.0, 3.0; length=100)
 
-# Set simple scaling of the data
+# A simple standardised squared-exponential / exponentiated-quadratic kernel.
 k₁ = SqExponentialKernel()
 K₁ = kernelmatrix(k₁, x)
 
