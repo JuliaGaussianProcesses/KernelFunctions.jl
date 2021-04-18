@@ -52,4 +52,4 @@ Directly inspired by the [MLKernels](https://github.com/trthatcher/MLKernels.jl)
 
 ## Issues/Contributing
 
-If you notice a problem or would like to contribute by adding more kernel functions or features please [submit an issue](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl/issues), or open a PR.
+If you notice a problem or would like to contribute by adding more kernel functions or features please [submit an issue](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl/issues), or open a PR (please see the [ColPrac](https://github.com/SciML/ColPrac) contribution guidelines).
