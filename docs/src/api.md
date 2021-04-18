@@ -225,6 +225,7 @@ is just a thin layer of utility functionality which sits on top of this.
 
 ## Functions
 
+The KernelFunctions API comprises the following four functions.
 ```@docs
 kernelmatrix
 kernelmatrix!
@@ -234,6 +235,7 @@ kernelmatrix_diag!
 
 ## Utilities
 
+KernelFunctions also provides some utility functions.
 ```@docs
 kernelpdmat
 nystrom
