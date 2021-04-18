@@ -28,7 +28,7 @@ k₂ = Matern32Kernel() ∘ FunctionTransform(x -> sin.(x))
 K₂ = kernelmatrix(k₂, x)
 
 # Set a matrix premultiplication on the data
-k₃ = PolynomialKernel(c=2.0, degree=2) ∘ LinearTransform(randn(4,1))
+k₃ = PolynomialKernel(; c=2.0, degree=2) ∘ LinearTransform(randn(4, 1))
 K₃ = kernelmatrix(k₃, x)
 
 # Add and sum kernels
