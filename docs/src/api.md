@@ -19,8 +19,11 @@ size(kernelmatrix(k, x)) == (length(x), length(x))
 ```
 is always true, for some `Kernel` `k`, and `AbstractVector` `x`.
 
+### Univariate Inputs
+
 If each input to your kernel is `Real`-valued, then any `AbstractVector{<:Real}` is a valid representation for a collection of inputs.
 
+### Vector-Valued Inputs
 
 We recommend that collections of vector-valued inputs are stored in an
 `AbstractMatrix{<:Real}` when possible, and wrapped inside a `ColVecs` or `RowVecs` to make
@@ -31,7 +34,7 @@ RowVecs
 ```
 These types are specialised upon when e.g. computing Euclidean distances between pairs of elements to ensure good performance.
 
-### Multi-Output Kernels
+### Inputs for Multiple Outputs
 
 There are two equally-valid perspectives on multi-output kernels: they can either be treated
 as matrix-valued kernels, or standard kernels on an extended input domain.
@@ -160,6 +163,9 @@ end
 This code is clearer (less visual noise), and has removed a possible bug -- if the
 implementer of `kernelmatrix` forgets to pass the `obsdim` kwarg into each subsequent
 `kernelmatrix` call, it's possible to get the wrong answer.
+
+This being said, we do support matrix-valued inputs -- see
+[Why we have support for both](@ref).
 
 
 ### AbstractVectors 
