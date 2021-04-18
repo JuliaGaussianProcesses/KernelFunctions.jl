@@ -48,7 +48,7 @@ This ability to treat multi-output kernels as single-output kernels is very help
 means that there is no need to introduce additional concepts into the API of
 KernelFunctions.jl, just additional kernels!
 This in turn simplifies downstream code as they don't need to "know" about the existence of
-multi-output kernels in additional to standard kernels. For example, GP libraries built on
+multi-output kernels in addition to standard kernels. For example, GP libraries built on
 top of KernelFunctions.jl just need to know about `Kernel`s, and they get multi-output
 kernels, and hence multi-output GPs, for free.
 
