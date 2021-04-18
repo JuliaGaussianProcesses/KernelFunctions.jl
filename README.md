@@ -32,7 +32,7 @@ k₃ = PolynomialKernel(; c=2.0, degree=2) ∘ LinearTransform(randn(4, 1))
 K₃ = kernelmatrix(k₃, x)
 
 # Add and sum kernels
-k₄ = 0.5 * SqExponentialKernel() * LinearKernel(c=0.5) + 0.4 * k₂
+k₄ = 0.5 * SqExponentialKernel() * LinearKernel(; c=0.5) + 0.4 * k₂
 K₄ = kernelmatrix(k₄, x)
 
 plot(
