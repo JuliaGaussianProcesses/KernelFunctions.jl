@@ -52,7 +52,7 @@ To evaluate the kernel function on two vectors you simply call the kernel object
 ## Creating a kernel matrix
 
 Kernel matrices can be created via the `kernelmatrix` function or `kernelmatrix_diag` for only the diagonal.
-For example, for a collection of `10` `Real`-valued inputs:
+For example, for a collection of 10 `Real`-valued inputs:
 ```julia
   k = SqExponentialKernel()
   x = rand(10)
