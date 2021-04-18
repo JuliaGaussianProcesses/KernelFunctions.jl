@@ -24,7 +24,7 @@ k₁ = SqExponentialKernel()
 K₁ = kernelmatrix(k₁, x)
 
 # Set a function transformation on the data
-k₂ = Matern32Kernel() ∘ FunctionTransform(x -> sin.(x))
+k₂ = Matern32Kernel() ∘ FunctionTransform(sin)
 K₂ = kernelmatrix(k₂, x)
 
 # Set a matrix premultiplication on the data
