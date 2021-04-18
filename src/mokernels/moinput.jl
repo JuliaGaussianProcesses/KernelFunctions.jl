@@ -5,7 +5,7 @@ A data type to accomodate modelling multi-dimensional output data.
 
 `MOInput(x, out_dim)` has length `length(x) * out_dim`.
 
-```julia
+```jldoctest
 julia> x = [1, 2, 3];
 
 julia> MOInput(x, 2)

@@ -36,7 +36,7 @@ These types are specialised upon when e.g. computing Euclidean distances between
 There are two equally-valid perspectives on multi-output kernels: they can either be treated
 as matrix-valued kernels, or standard kernels on an extended input domain.
 Each of these perspectives are convenient in different circumstances, but the latter
-greatly simplifies the incorporation of multi-output kernels KernelFunctions.
+greatly simplifies the incorporation of multi-output kernels in KernelFunctions.
 
 More concretely, let `k_mat` be a matrix-valued kernel, mapping pairs of inputs of type `T` to matrices of size `P x P`.
 Given inputs `x` and `y` of type `T`, and integers `p` and `q`, we can always find an
@@ -49,7 +49,7 @@ This ability to treat multi-output kernels as single-output kernels is very help
 means that there is no need to introduce additional concepts into the API of
 KernelFunctions.jl, just additional kernels!
 This in turn simplifies downstream code as they don't need to "know" about the existence of
-multi-output kernels in additional to standard kernels. For example, GP libraries built on
+multi-output kernels in addition to standard kernels. For example, GP libraries built on
 top of KernelFunctions.jl just need to know about `Kernel`s, and they get multi-output
 kernels, and hence multi-output GPs, for free.
 
@@ -58,7 +58,7 @@ done in an encapsulated manner -- parts of KernelFunctions that have nothing to 
 multi-output kernels know _nothing_ about the existance of multi-output kernels.
 
 Multi-output kernels in KernelFunctions.jl do support collection of inputs of
-type `Vector{Tuple{T, Int}}`, we provide the `MOInput` type to simplify constructing inputs
+type `AbstractVector{Tuple{T, Int}}`, we provide the `MOInput` type to simplify constructing inputs
 for situations in which all outputs are observed all of the time:
 ```@docs
 MOInput
