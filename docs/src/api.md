@@ -203,7 +203,7 @@ This approach can also lead to clearer user code.
 A user need only wrap their inputs in a `ColVecs` or `RowVecs` once in their code, and this
 specification is automatically re-used _everywhere_ in their code.
 In this sense, it is straightforward to write code in such a way that there is one unique
-source of "truth" about the way in which a particular data set should be interpretted.
+source of "truth" about the way in which a particular data set should be interpreted.
 Conversely, the `obsdim` resolution requires that the `obsdim` keyword argument is passed
 around with the data _every_ _single_ _time_ that you use it.
 
