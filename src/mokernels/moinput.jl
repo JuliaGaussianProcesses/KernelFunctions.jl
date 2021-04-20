@@ -22,7 +22,7 @@ As shown above, an `MOInput` represents a vector of tuples.
 The first `length(x)` elements represent the inputs for the first output, the second
 `length(x)` elements represent the inputs for the second output, etc.
 
-See the docs for a more extensive discussion of this design decision.
+See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
 struct MOInput{T<:AbstractVector} <: AbstractVector{Tuple{Any,Int}}
     x::T
