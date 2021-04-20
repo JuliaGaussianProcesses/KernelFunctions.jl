@@ -1,6 +1,6 @@
 # User guide
 
-## Kernel creation
+## Kernel Creation
 
 To create a kernel object, choose one of the pre-implemented kernels, see [Kernel Functions](@ref), or create your own, see [Creating your own kernel](@ref).
 For example, a squared exponential kernel is created by
@@ -38,7 +38,7 @@ For example, a squared exponential kernel is created by
     inputs to obtain a kernel that is a function of the Mahalanobis distance
     between inputs.
 
-## Using a kernel function
+## Using a Kernel Function
 
 To evaluate the kernel function on two vectors you simply call the kernel object:
 ```julia
@@ -48,7 +48,7 @@ x2 = rand(3)
 k(x1, x2)
 ```
 
-## Creating a kernel matrix
+## Creating a Kernel Matrix
 
 Kernel matrices can be created via the `kernelmatrix` function or `kernelmatrix_diag` for only the diagonal.
 For example, for a collection of 10 `Real`-valued inputs:
@@ -103,7 +103,7 @@ K = kernelkronmat(k, x, 5) # Kronecker matrix
 Make sure that `k` is a kernel compatible with such constructions (with `iskroncompatible(k)`). Both methods will return a Kronecker matrix. For those methods to work in your code you need to include `using Kronecker` first.
 - For a Nystrom approximation: `kernelmatrix(nystrom(k, X, ρ, obsdim=1))` where `ρ` is the fraction of data samples used in the approximation.
 
-## Composite kernels
+## Composite Kernels
 
 Sums and products of kernels are also valid kernels. They can be created via `KernelSum` and `KernelProduct` or using simple operators `+` and `*`.
 For example:
@@ -114,7 +114,7 @@ k = 0.5 * k1 + 0.2 * k2 # KernelSum
 k = k1 * k2 # KernelProduct
 ```
 
-## Kernel parameters
+## Kernel Parameters
 
 What if you want to differentiate through the kernel parameters? This is easy even in a highly nested structure such as:
 ```julia

@@ -108,7 +108,7 @@ are the same number of inputs in two collections of inputs.
 
 
 
-### AbstractMatrices do not cut it
+### AbstractMatrices Do Not Cut It
 
 Notably, while `AbstractMatrix` objects are often used to represent collections of vector-valued
 inputs, they do _not_ immediately satisfy these properties as it is unclear whether a matrix
@@ -144,7 +144,7 @@ In this situation, how should a collection of inputs be represented?
 A `N x 1` or `1 x N` matrix is the only obvious candidate, but the additional singular
 dimension seems somewhat redundant.
 
-#### Resolution 2: Always specify an `obsdim` argument
+#### Resolution 2: Always Specify An `obsdim` Argument
 
 Another way to partly resolve these problems is to not commit to a convention, and instead
 to propagate some additional information through the codebase that specifies how the input
