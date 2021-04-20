@@ -67,8 +67,8 @@ Therefore, we require users to provide some more information.
 
 You can write `RowVecs(X)` to declare that `X` contains 10 5-dimensional row-vectors, or `ColVecs(X)` to declare that `X` contains 5 10-dimensional column-vectors, then
 ```julia
-kernelmatrix(k, RowVecs(X)) # returns a 10x10 matrix -- each row of X treated as input
-kernelmatrix(k, ColVecs(X)) # returns a 5x5 matrix -- each column of X treated as input
+kernelmatrix(k, RowVecs(X))  # returns a 10×10 matrix -- each row of X treated as input
+kernelmatrix(k, ColVecs(X))  # returns a 5×5 matrix -- each column of X treated as input
 ```
 This is the mechanism used throughout KernelFunctions.jl to handle multi-dimensional inputs.
 
