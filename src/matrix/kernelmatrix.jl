@@ -15,7 +15,7 @@ overwritten with the kernel matrix.
     )
 
 Equivalent to `kernelmatrix!(K, κ, ColVecs(X))` and
-`kernelmatrix(K, κ, ColVecs(X), ColVecs(X))` respectively.
+`kernelmatrix(K, κ, ColVecs(X), ColVecs(Y))` respectively.
 Set `obsdim=1` to get `RowVecs`.
 
 See also: [`ColVecs`](@ref), [`RowVecs`](@ref)
