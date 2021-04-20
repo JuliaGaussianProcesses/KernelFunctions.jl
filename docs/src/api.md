@@ -182,7 +182,7 @@ and ensures that the data is self-describing to the extent that KernelFunctions.
 
 Firstly, the question of how to interpret the columns and rows of a matrix of inputs is
 resolved.
-Users _must_ wrap matrix which represent collections of inputs in either a `ColVecs` or
+Users _must_ wrap matrices which represent collections of inputs in either a `ColVecs` or
 `RowVecs`, both of which have clearly defined semantics which are hard to confuse.
 
 By design, there is also no discrepancy between the number of inputs in the collection, and
