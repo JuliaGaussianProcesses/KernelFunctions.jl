@@ -38,7 +38,7 @@ ColVecs
 RowVecs
 ```
 These types are specialised upon when e.g. computing Euclidean distances between pairs of elements to ensure good performance.
-The benefit of using this representation, rather a `Vector{Vector{<:Real}}`, is that
+The benefit of using this representation, rather than using a `Vector{Vector{<:Real}}`, is that
 optimised matrix-matrix multiplication functionality can be utilised when computing
 pairwise distances between inputs, which are needed for `kernelmatrix` computation.
 
