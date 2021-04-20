@@ -207,7 +207,7 @@ source of "truth" about the way in which a particular data set should be interpr
 Conversely, the `obsdim` resolution requires that the `obsdim` keyword argument is passed
 around with the data _every_ _single_ _time_ that you use it.
 
-The benefits of the `AbstractVector` approach are likely most strongly felt when writing a substantial amount of code on top of KernelFunctions -- in the same way that using
+The benefits of the `AbstractVector` approach are likely most strongly felt when writing a substantial amount of code on top of KernelFunctions.jl -- in the same way that using
 `AbstractVector`s inside KernelFunctions.jl removes the need for large amounts of keyword
 argument propagation, the same will be true of other code.
 
