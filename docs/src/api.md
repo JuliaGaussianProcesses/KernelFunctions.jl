@@ -214,7 +214,7 @@ argument propagation, the same will be true of other code.
 
 
 
-### Why we have support for both
+### Why We Have Support for Both
 
 In short: many people like matrices, and are familiar with `obsdim`-style keyword
 arguments.
