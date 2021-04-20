@@ -20,7 +20,7 @@ julia> MOInput(x, 2)
 
 As shown above, an `MOInput` represents a vector of tuples.
 The first `length(x)` elements represent the inputs for the first output, the second
-`length(x)` elements represents the inputs for the second output, etc.
+`length(x)` elements represent the inputs for the second output, etc.
 
 See the docs for a more extensive discussion of this design decision.
 """
