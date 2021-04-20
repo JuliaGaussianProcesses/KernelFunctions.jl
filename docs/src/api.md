@@ -49,7 +49,7 @@ as matrix-valued kernels, or standard kernels on an extended input domain.
 Each of these perspectives are convenient in different circumstances, but the latter
 greatly simplifies the incorporation of multi-output kernels in KernelFunctions.
 
-More concretely, let `k_mat` be a matrix-valued kernel, mapping pairs of inputs of type `T` to matrices of size `P x P`.
+More concretely, let `k_mat` be a matrix-valued kernel, mapping pairs of inputs of type `T` to matrices of size `P x P` to describe the covariance between `P` outputs.
 Given inputs `x` and `y` of type `T`, and integers `p` and `q`, we can always find an
 equivalent standard kernel `k` mapping from pairs of inputs of type `Tuple{T, Int}` to the
 `Real`s as follows:
