@@ -119,7 +119,7 @@ Moreover, they occassionally add some aesthetic inconvenience.
 For example, a collection of `Real`-valued inputs, which might be straightforwardly
 represented as an `AbstractVector{<:Real}`, must be reshaped into a matrix.
 
-Below we discuss a couple of things that are often done that partly resolve these shortcomings.
+There are two commonly used ways to partly resolve these shortcomings:
 
 #### Resolution 1: Specify a convention
 
