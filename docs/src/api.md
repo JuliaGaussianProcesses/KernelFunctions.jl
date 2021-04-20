@@ -110,7 +110,7 @@ are the same number of inputs in two collections of inputs.
 
 ### AbstractMatrices do not cut it
 
-Notably, while `AbstractMatrix`s are often used to represent collections of vector-valued
+Notably, while `AbstractMatrix` objects are often used to represent collections of vector-valued
 inputs, they do _not_ immediately satisfy these properties as it is unclear whether a matrix
 of size `P x Q` represents a collection of `P` `Q`-dimensional inputs (each row is an
 input), or `Q` `P`-dimensional inputs (each column is an input).
