@@ -141,7 +141,7 @@ This kind of bug seems unlikely, but it exists regardless.
 Finally, suppose that your inputs are some type `T` that is not simply a vector of real
 numbers, say a graph.
 In this situation, how should a collection of inputs be represented?
-A `N x 1` or `1 x N` matrix is the only obvious candidate, but the addition singular
+A `N x 1` or `1 x N` matrix is the only obvious candidate, but the additional singular
 dimension seems somewhat redundant.
 
 #### Resolution 2: Always specify an `obsdim` argument
