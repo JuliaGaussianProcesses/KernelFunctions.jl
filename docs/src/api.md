@@ -116,7 +116,7 @@ of size `P x Q` represents a collection of `P` `Q`-dimensional inputs (each row 
 input), or `Q` `P`-dimensional inputs (each column is an input).
 
 Moreover, they occassionally add some aesthetic inconvenience.
-For example, a collection of `Real`-valued inputs which might be straightforwardly
+For example, a collection of `Real`-valued inputs, which might be straightforwardly
 represented as an `AbstractVector{<:Real}`, must be reshaped into a matrix.
 
 Below we discuss a couple of things that are often done that partly resolve these shortcomings.
