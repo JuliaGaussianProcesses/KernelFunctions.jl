@@ -121,7 +121,7 @@ represented as an `AbstractVector{<:Real}`, must be reshaped into a matrix.
 
 There are two commonly used ways to partly resolve these shortcomings:
 
-#### Resolution 1: Specify a convention
+#### Resolution 1: Specify a Convention
 
 One way that these shortcomings can be partly resolved is by specifying a convention that
 everyone adheres to regarding the interpretation of rows vs columns.
