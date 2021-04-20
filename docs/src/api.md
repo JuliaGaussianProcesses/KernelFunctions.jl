@@ -197,7 +197,7 @@ A collection of `N` `Real`-valued inputs can be represented by an
 The same can be said for any other input type `T`, and new subtypes of `AbstractVector` can
 be added if particularly efficient ways exist to store collections of inputs of type `T`.
 A good example of this in practice using `Tuple{S, Int}`, for some input type `S`, as the
-input type for "multi-output" GPs.
+[input type for "multi-output" GPs](@ref Inputs for Multiple Outputs).
 
 This approach can also lead to clearer user code.
 A user need only wrap their inputs in a `ColVecs` or `RowVecs` once in their code, and this
