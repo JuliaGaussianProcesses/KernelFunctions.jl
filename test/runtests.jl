@@ -96,8 +96,6 @@ include("test_utils.jl")
         print(" ")
         include(joinpath("basekernels", "gabor.jl"))
         print(" ")
-        include(joinpath("basekernels", "maha.jl"))
-        print(" ")
         include(joinpath("basekernels", "matern.jl"))
         print(" ")
         include(joinpath("basekernels", "nn.jl"))
@@ -124,6 +122,7 @@ include("test_utils.jl")
         include(joinpath("kernels", "overloads.jl"))
         include(joinpath("kernels", "scaledkernel.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
+        include(joinpath("kernels", "normalizedkernel.jl"))
     end
     @info "Ran tests on Kernel"
 
@@ -146,7 +145,10 @@ include("test_utils.jl")
     end
 
     include("generic.jl")
-    include("zygote_adjoints.jl")
+    include("chainrules.jl")
+    include("zygoterules.jl")
+
+    include("deprecations.jl")
 
     @testset "doctests" begin
         DocMeta.setdocmeta!(

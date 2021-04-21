@@ -27,12 +27,6 @@
         end
     end
 
-    # Deprecations
-    @test TensorProduct === KernelTensorProduct
-    @test TensorProduct(k1, k2) == k1 ⊗ k2
-    @test TensorProduct((k1, k2)) == k1 ⊗ k2
-    @test TensorProduct([k1, k2]) == k1 ⊗ k2
-
     # Standardised tests.
     TestUtils.test_interface(kernel1, ColVecs{Float64})
     TestUtils.test_interface(kernel1, RowVecs{Float64})

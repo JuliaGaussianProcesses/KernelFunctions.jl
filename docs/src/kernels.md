@@ -119,13 +119,12 @@ of kernels together.
 
 ```@docs
 TransformedKernel
-transform(::Kernel, ::Transform)
-transform(::Kernel, ::Real)
-transform(::Kernel, ::AbstractVector)
+∘(::Kernel, ::Transform)
 ScaledKernel
 KernelSum
 KernelProduct
 KernelTensorProduct
+NormalizedKernel
 ```
 
 ## Multi-output Kernels

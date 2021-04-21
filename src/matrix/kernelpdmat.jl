@@ -3,13 +3,20 @@ using .PDMats: PDMat
 export kernelpdmat
 
 """
-    Compute a positive-definite matrix in the form of a `PDMat` matrix see [PDMats.jl](https://github.com/JuliaStats/PDMats.jl)
-    with the cholesky decomposition precomputed.
-    The algorithm recursively tries to add recursively a diagonal nugget until positive
-    definiteness is achieved or that the noise is too big.
+    kernelpdmat(k::Kernel, X::AbstractMatrix; obsdim::Int=2)
+    kernelpdmat(k::Kernel, X::AbstractVector)
+
+Compute a positive-definite matrix in the form of a `PDMat` matrix see [PDMats.jl](https://github.com/JuliaStats/PDMats.jl)
+with the cholesky decomposition precomputed.
+The algorithm recursively tries to add recursively a diagonal nugget until positive
+definiteness is achieved or until the noise is too big.
 """
 function kernelpdmat(κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs)
-    K = kernelmatrix(κ, X; obsdim=obsdim)
+    return kernelpdmat(κ, vec_of_vecs(X; obsdim=obsdim))
+end
+
+function kernelpdmat(κ::Kernel, X::AbstractVector)
+    K = kernelmatrix(κ, X)
     Kmax = maximum(K)
     α = eps(eltype(K))
     while !isposdef(K + α * I) && α < 0.01 * Kmax
@@ -23,8 +30,4 @@ function kernelpdmat(κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs)
         )
     end
     return PDMat(K + α * I)
-end
-
-function kernelpdmat(κ::Kernel, X::AbstractVector{<:Real}; obsdim=defaultobs)
-    return kernelpdmat(κ, reshape(X, 1, :); obsdim=2)
 end

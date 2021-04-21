@@ -40,28 +40,8 @@ struct PiecewisePolynomialKernel{D,C<:Tuple} <: SimpleKernel
     end
 end
 
-# TODO: remove `maha` keyword argument in next breaking release
-function PiecewisePolynomialKernel(; v::Int=-1, degree::Int=0, maha=nothing, dim::Int=-1)
-    if v != -1
-        Base.depwarn(
-            "keyword argument `v` is deprecated, use `degree` instead",
-            :PiecewisePolynomialKernel,
-        )
-        degree = v
-    end
-
-    if maha !== nothing
-        Base.depwarn(
-            "keyword argument `maha` is deprecated, use a `LinearTransform` instead",
-            :PiecewisePolynomialKernel,
-        )
-        dim = size(maha, 1)
-        return transform(
-            PiecewisePolynomialKernel{degree}(dim), LinearTransform(cholesky(maha).U)
-        )
-    else
-        return PiecewisePolynomialKernel{degree}(dim)
-    end
+function PiecewisePolynomialKernel(; degree::Int=0, dim::Int=-1)
+    return PiecewisePolynomialKernel{degree}(dim)
 end
 
 piecewise_polynomial_coefficients(::Val{0}, ::Int) = (1,)

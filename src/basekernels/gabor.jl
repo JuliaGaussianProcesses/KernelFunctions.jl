@@ -14,8 +14,11 @@ k(x, x'; l, p) = \\exp\\bigg(- \\cos\\bigg(\\pi\\sum_{i=1}^d \\frac{x_i - x'_i}{
 """
 struct GaborKernel{K<:Kernel} <: Kernel
     kernel::K
+
     function GaborKernel(; ell=nothing, p=nothing)
-        k = _gabor(; ell=ell, p=p)
+        ell_transform = _lengthscale_transform(ell)
+        p_transform = _lengthscale_transform(p)
+        k = (SqExponentialKernel() ∘ ell_transform) * (CosineKernel() ∘ p_transform)
         return new{typeof(k)}(k)
     end
 end
@@ -24,38 +27,23 @@ end
 
 (κ::GaborKernel)(x, y) = κ.kernel(x, y)
 
-function _gabor(; ell=nothing, p=nothing)
-    if ell === nothing
-        if p === nothing
-            return SqExponentialKernel() * CosineKernel()
-        else
-            return SqExponentialKernel() * transform(CosineKernel(), 1 ./ p)
-        end
-    elseif p === nothing
-        return transform(SqExponentialKernel(), 1 ./ ell) * CosineKernel()
-    else
-        return transform(SqExponentialKernel(), 1 ./ ell) *
-               transform(CosineKernel(), 1 ./ p)
-    end
-end
+_lengthscale_transform(::Nothing) = IdentityTransform()
+_lengthscale_transform(x::Real) = ScaleTransform(inv(x))
+_lengthscale_transform(x::AbstractVector) = ARDTransform(map(inv, x))
+
+_lengthscale(::IdentityTransform) = 1
+_lengthscale(t::ScaleTransform) = inv(first(t.s))
+_lengthscale(t::ARDTransform) = map(inv, t.v)
 
 function Base.getproperty(k::GaborKernel, v::Symbol)
     if v == :kernel
         return getfield(k, v)
     elseif v == :ell
-        kernel1 = k.kernel.kernels[1]
-        if kernel1 isa TransformedKernel
-            return 1 ./ kernel1.transform.s[1]
-        else
-            return 1.0
-        end
+        ell_transform = k.kernel.kernels[1].transform
+        return _lengthscale(ell_transform)
     elseif v == :p
-        kernel2 = k.kernel.kernels[2]
-        if kernel2 isa TransformedKernel
-            return 1 ./ kernel2.transform.s[1]
-        else
-            return 1.0
-        end
+        p_transform = k.kernel.kernels[2].transform
+        return _lengthscale(p_transform)
     else
         error("Invalid Property")
     end
@@ -71,4 +59,8 @@ function kernelmatrix(κ::GaborKernel, x::AbstractVector, y::AbstractVector)
     return kernelmatrix(κ.kernel, x, y)
 end
 
-kerneldiagmatrix(κ::GaborKernel, x::AbstractVector) = kerneldiagmatrix(κ.kernel, x)
+kernelmatrix_diag(κ::GaborKernel, x::AbstractVector) = kernelmatrix_diag(κ.kernel, x)
+
+function kernelmatrix_diag(κ::GaborKernel, x::AbstractVector, y::AbstractVector)
+    return kernelmatrix_diag(κ.kernel, x, y)
+end
