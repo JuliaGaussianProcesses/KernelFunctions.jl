@@ -87,17 +87,32 @@ k(x, x'; \\alpha, \\gamma) = \\bigg(1 + \\frac{\\|x - x'\\|_2^{\\gamma}}{\\alpha
 
 The [`GammaExponentialKernel`](@ref) is recovered in the limit as ``\\alpha \\to \\infty``.
 
+!!! warning
+    The default value of parameter `γ` will be changed to `1.0` in the next breaking release
+    of KernelFunctions.
+
 See also: [`RationalKernel`](@ref), [`RationalQuadraticKernel`](@ref)
 """
 struct GammaRationalKernel{Tα<:Real,Tγ<:Real} <: SimpleKernel
     α::Vector{Tα}
     γ::Vector{Tγ}
-    function GammaRationalKernel(;
-        alpha::Real=2.0, gamma::Real=2.0, α::Real=alpha, γ::Real=gamma
-    )
+    # function GammaRationalKernel(;
+    #     alpha::Real=2.0, gamma::Real=1.0, α::Real=alpha, γ::Real=gamma
+    # )
+    function GammaRationalKernel(; alpha::Real=2.0, gamma=nothing, α::Real=alpha, γ=gamma)
+        γ2 = if γ === nothing
+            Base.depwarn(
+                "the default value of parameter `γ` of the `GammaRationalKernel` will " *
+                "be changed to `1.0` in the next breaking release of KernelFunctions",
+                :GammaRationalKernel,
+            )
+            2.0
+        else
+            γ
+        end
         @check_args(GammaRationalKernel, α, α > zero(α), "α > 0")
-        @check_args(GammaRationalKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
-        return new{typeof(α),typeof(γ)}([α], [γ])
+        @check_args(GammaRationalKernel, γ2, zero(γ2) < γ2 ≤ 2, "γ ∈ (0, 2]")
+        return new{typeof(α),typeof(γ2)}([α], [γ2])
     end
 end
 

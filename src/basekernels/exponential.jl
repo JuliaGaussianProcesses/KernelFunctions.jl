@@ -98,15 +98,30 @@ For inputs ``x, x' \\in \\mathbb{R}^d``, the γ-exponential kernel[^RW] with par
 k(x, x'; \\gamma) = \\exp\\big(- \\|x - x'\\|_2^{\\gamma}\\big).
 ```
 
+!!! warning
+    The default value of parameter `γ` will be changed to `1.0` in the next breaking release
+    of KernelFunctions.
+
 See also: [`ExponentialKernel`](@ref), [`SqExponentialKernel`](@ref)
 
 [^RW]: C. E. Rasmussen & C. K. I. Williams (2006). Gaussian Processes for Machine Learning.
 """
 struct GammaExponentialKernel{Tγ<:Real} <: SimpleKernel
     γ::Vector{Tγ}
-    function GammaExponentialKernel(; gamma::Real=2.0, γ::Real=gamma)
-        @check_args(GammaExponentialKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
-        return new{typeof(γ)}([γ])
+    # function GammaExponentialKernel(; gamma::Real=1.0, γ::Real=gamma)
+    function GammaExponentialKernel(; gamma=nothing, γ=gamma)
+        γ2 = if γ === nothing
+            Base.depwarn(
+                "the default value of parameter `γ` of the `GammaExponentialKernel` will " *
+                "be changed to `1.0` in the next breaking release of KernelFunctions",
+                :GammaExponentialKernel,
+            )
+            2.0
+        else
+            γ
+        end
+        @check_args(GammaExponentialKernel, γ2, zero(γ2) < γ2 ≤ 2, "γ ∈ (0, 2]")
+        return new{typeof(γ2)}([γ2])
     end
 end
 
