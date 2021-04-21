@@ -84,7 +84,7 @@ include(joinpath("basekernels", "nn.jl"))
 include(joinpath("basekernels", "periodic.jl"))
 include(joinpath("basekernels", "piecewisepolynomial.jl"))
 include(joinpath("basekernels", "polynomial.jl"))
-include(joinpath("basekernels", "rationalquad.jl"))
+include(joinpath("basekernels", "rational.jl"))
 include(joinpath("basekernels", "sm.jl"))
 include(joinpath("basekernels", "wiener.jl"))
 

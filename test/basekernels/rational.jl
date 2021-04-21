@@ -1,4 +1,4 @@
-@testset "rationalquad" begin
+@testset "rational.jl" begin
     rng = MersenneTwister(123456)
     x = rand(rng) * 2
     v1 = rand(rng, 3)
@@ -86,7 +86,7 @@
             )
         end
 
-        @testset "GammaRational(γ=1) ≈ Exponential with rescaled inputs for large α" begin
+        @testset "GammaRational(γ=1) ≈ Exponential for large α" begin
             v1 = randn(4)
             v2 = randn(4)
             @test isapprox(
