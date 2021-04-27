@@ -88,11 +88,12 @@ LinearKernel
 PolynomialKernel
 ```
 
-### Rational Quadratic Kernels
+### Rational Kernels
 
 ```@docs
+RationalKernel
 RationalQuadraticKernel
-GammaRationalQuadraticKernel
+GammaRationalKernel
 ```
 
 ### Spectral Mixture Kernels
