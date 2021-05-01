@@ -140,3 +140,33 @@ arguments.
 
 All internals are implemented using `AbstractVector`s though, and the `obsdim` interface
 is just a thin layer of utility functionality which sits on top of this.
+
+
+
+
+
+## [Kernels for Multiple-Outputs](@id inputs_for_multiple_outputs)
+
+There are two equally-valid perspectives on multi-output kernels: they can either be treated
+as matrix-valued kernels, or standard kernels on an extended input domain.
+Each of these perspectives are convenient in different circumstances, but the latter
+greatly simplifies the incorporation of multi-output kernels in KernelFunctions.
+
+More concretely, let `k_mat` be a matrix-valued kernel, mapping pairs of inputs of type `T` to matrices of size `P x P` to describe the covariance between `P` outputs.
+Given inputs `x` and `y` of type `T`, and integers `p` and `q`, we can always find an
+equivalent standard kernel `k` mapping from pairs of inputs of type `Tuple{T, Int}` to the
+`Real`s as follows:
+```julia
+k((x, p), (y, q)) = k_mat(x, y)[p, q]
+```
+This ability to treat multi-output kernels as single-output kernels is very helpful, as it
+means that there is no need to introduce additional concepts into the API of
+KernelFunctions.jl, just additional kernels!
+This in turn simplifies downstream code as they don't need to "know" about the existence of
+multi-output kernels in addition to standard kernels. For example, GP libraries built on
+top of KernelFunctions.jl just need to know about `Kernel`s, and they get multi-output
+kernels, and hence multi-output GPs, for free.
+
+Where there is the need to specialise _implementations_ for multi-output kernels, this is
+done in an encapsulated manner -- parts of KernelFunctions that have nothing to do with
+multi-output kernels know _nothing_ about the existence of multi-output kernels.
