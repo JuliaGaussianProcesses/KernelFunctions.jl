@@ -7,7 +7,7 @@ using .Flux: softplus, @functor
 
 
 # Linear layer, perform linear transformation to input array
-# x₁ = W * x₀
+# x₁ = softplus.(W) * x₀
 struct LinearLayer{T, MT<:AbstractArray{T}}
     W::MT
 end
@@ -55,11 +55,23 @@ function Base.show(io::IO, layer::Primitive)
     print(io, ")")
 end
 
+"""
+    NeuralKernelNetwork(primitives, nn)
 
-# Neural Kernel Network, since kernel space ( stationary kernel ) is closed under linear combination 
-# ( with positive coefficient ) and element-wise multiplication, we can use a neural network like structure
-# to build composite kernels. This type contains a `Primitive` layer which holds basic kerenls and a specialised
-# nerual network architecture to perform kernel composition. It should function like a normal `Stheno` kernel.
+Constructs a Neural Kernel Network (NKN) [1].
+
+`primitives` are the based kernels, combined by `nn`.
+
+```julia
+k1 = 0.6 * (SEKernel() ∘ ScaleTransform(0.5))
+k2 = 0.4 * (Matern32Kernel() ∘ ScaleTransform(0.1))
+primitives = Primitive(k1, k2)
+nkn = NeuralKernelNetwork(primitives, Chain(LinearLayer(2, 2), product))
+```
+
+[1] - Sun, Shengyang, et al. "Differentiable compositional kernel learning for Gaussian
+    processes." International Conference on Machine Learning. PMLR, 2018.
+"""
 struct NeuralKernelNetwork{PT, NNT} <: Kernel
     primitives::PT
     nn::NNT
