@@ -118,6 +118,9 @@ function __init__()
     @require PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150" begin
         include(joinpath("matrix", "kernelpdmat.jl"))
     end
+    @require Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c" begin
+        include(joinpath("kernels", "neuralkernelnetwork.jl"))
+    end
 end
 
 end
