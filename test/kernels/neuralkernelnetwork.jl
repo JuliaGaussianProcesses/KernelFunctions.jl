@@ -1,5 +1,4 @@
 @testset "neural_kernel_network" begin
-
     rng, N, N′, D = MersenneTwister(123456), 5, 6, 2
     x0 = collect(range(-2.0, 2.0; length=N)) .+ 1e-3 .* randn(rng, N)
     x1 = collect(range(-1.7, 2.3; length=N)) .+ 1e-3 .* randn(rng, N)
@@ -32,7 +31,6 @@
         primitives = Primitive(k1, k2)
 
         @testset "LinearLayer" begin
-
             # Specify linear NKN and equivalent composite kernel.
             weights = rand(rng, 1, 2)
             nkn_add_kernel = NeuralKernelNetwork(primitives, LinearLayer(weights))
@@ -40,11 +38,13 @@
 
             # Vector input.
             @test kernelmatrix_diag(nkn_add_kernel, x0) ≈ kernelmatrix_diag(sum_k, x0)
-            @test kernelmatrix_diag(nkn_add_kernel, x0, x1) ≈ kernelmatrix_diag(sum_k, x0, x1)
+            @test kernelmatrix_diag(nkn_add_kernel, x0, x1) ≈
+                kernelmatrix_diag(sum_k, x0, x1)
 
             # ColVecs input.
             @test kernelmatrix_diag(nkn_add_kernel, X0) ≈ kernelmatrix_diag(sum_k, X0)
-            @test kernelmatrix_diag(nkn_add_kernel, X0, X1) ≈ kernelmatrix_diag(sum_k, X0, X1)
+            @test kernelmatrix_diag(nkn_add_kernel, X0, X1) ≈
+                kernelmatrix_diag(sum_k, X0, X1)
         end
         @testset "product" begin
             nkn_prod_kernel = NeuralKernelNetwork(primitives, product)

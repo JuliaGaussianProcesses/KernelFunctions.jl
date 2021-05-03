@@ -4,11 +4,9 @@ export LinearLayer, product, Primitive, NeuralKernelNetwork
 using .Flux
 using .Flux: softplus, @functor
 
-
-
 # Linear layer, perform linear transformation to input array
 # x₁ = softplus.(W) * x₀
-struct LinearLayer{T, MT<:AbstractArray{T}}
+struct LinearLayer{T,MT<:AbstractArray{T}}
     W::MT
 end
 @functor LinearLayer
@@ -19,7 +17,6 @@ function Base.show(io::IO, layer::LinearLayer)
     print(io, "LinearLayer(", size(layer.W, 2), ", ", size(layer.W, 1), ")")
 end
 
-
 # Product function, given an 2d array whose size is M×N, product layer will
 # multiply every m neighboring rows of the array elementwisely to obtain
 # an new array of size (M÷m)×N
@@ -29,7 +26,6 @@ function product(x, step=2)
     new_x = reshape(x, step, m÷step, n)
     return .*([new_x[i, :, :] for i in 1:step]...)
 end
-
 
 # Primitive layer, mainly act as a container to hold basic kernels for the neural kernel network
 struct Primitive{T}
@@ -43,11 +39,13 @@ _cat_kernel_array(x) = vcat([reshape(x[i], 1, :) for i in 1:length(x)]...)
 
 # NOTE, though we implement `ew` & `pw` function for Primitive, it isn't a subtype of Kernel
 # type, I do this because it will facilitate writing NeuralKernelNetwork
-ew(p::Primitive, x) = _cat_kernel_array(map(k->kernelmatrix_diag(k, x), p.kernels))
-pw(p::Primitive, x) = _cat_kernel_array(map(k->kernelmatrix(k, x), p.kernels))
+ew(p::Primitive, x) = _cat_kernel_array(map(k -> kernelmatrix_diag(k, x), p.kernels))
+pw(p::Primitive, x) = _cat_kernel_array(map(k -> kernelmatrix(k, x), p.kernels))
 
-ew(p::Primitive, x, x′) = _cat_kernel_array(map(k->kernelmatrix_diag(k, x, x′), p.kernels))
-pw(p::Primitive, x, x′) = _cat_kernel_array(map(k->kernelmatrix(k, x, x′), p.kernels))
+function ew(p::Primitive, x, x′)
+    return _cat_kernel_array(map(k -> kernelmatrix_diag(k, x, x′), p.kernels))
+end
+pw(p::Primitive, x, x′) = _cat_kernel_array(map(k -> kernelmatrix(k, x, x′), p.kernels))
 
 function Base.show(io::IO, layer::Primitive)
     print(io, "Primitive(")
@@ -72,7 +70,7 @@ nkn = NeuralKernelNetwork(primitives, Chain(LinearLayer(2, 2), product))
 [1] - Sun, Shengyang, et al. "Differentiable compositional kernel learning for Gaussian
     processes." International Conference on Machine Learning. PMLR, 2018.
 """
-struct NeuralKernelNetwork{PT, NNT} <: Kernel
+struct NeuralKernelNetwork{PT,NNT} <: Kernel
     primitives::PT
     nn::NNT
 end
@@ -110,16 +108,19 @@ function kernelmatrix!(K::AbstractMatrix, nkn::NeuralKernelNetwork, x::AbstractV
     return K
 end
 
-function kernelmatrix_diag!(K::AbstractVector, nkn::NeuralKernelNetwork, x::AbstractVector, x′::AbstractVector)
+function kernelmatrix_diag!(
+    K::AbstractVector, nkn::NeuralKernelNetwork, x::AbstractVector, x′::AbstractVector,
+)
     K .= kernelmatrix_diag(nkn, x, x′)
     return K
 end
 
-function kernelmatrix!(K::AbstractMatrix, nkn::NeuralKernelNetwork, x::AbstractVector, x′::AbstractVector)
+function kernelmatrix!(
+    K::AbstractMatrix, nkn::NeuralKernelNetwork, x::AbstractVector, x′::AbstractVector,
+)
     K .= kernelmatrix(nkn, x, x′)
     return K
 end
-
 
 function Base.show(io::IO, kernel::NeuralKernelNetwork)
     print(io, "NeuralKernelNetwork(")
