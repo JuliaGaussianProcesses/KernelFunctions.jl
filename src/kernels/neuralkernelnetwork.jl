@@ -27,7 +27,7 @@ function product(x, step=2)
     m, n = size(x)
     m % step == 0 || error("the first dimension of inputs must be multiple of step")
     new_x = reshape(x, step, m÷step, n)
-    .*([new_x[i, :, :] for i in 1:step]...)
+    return .*([new_x[i, :, :] for i in 1:step]...)
 end
 
 
