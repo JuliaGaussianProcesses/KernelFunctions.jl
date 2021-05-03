@@ -4,6 +4,7 @@ using Distances
 using Documenter
 using Kronecker: Kronecker
 using LinearAlgebra
+using LogExpFunctions
 using PDMats
 using Random
 using SpecialFunctions
