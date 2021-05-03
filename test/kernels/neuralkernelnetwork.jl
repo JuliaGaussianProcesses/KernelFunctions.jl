@@ -9,8 +9,6 @@
     X1 = ColVecs(randn(rng, D, N))
     X2 = ColVecs(randn(rng, D, N′))
 
-    ȳ, Ȳ, Ȳ_sq = randn(rng, N), randn(rng, N, N′), randn(rng, N, N)
-
     # Most of the NeuralKernelNetwork tests are currently broken.
     @testset "general test" begin
 
