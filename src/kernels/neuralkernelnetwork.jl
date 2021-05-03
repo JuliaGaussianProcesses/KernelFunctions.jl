@@ -10,7 +10,7 @@ LinearLayer(in_dim, out_dim) = LinearLayer(randn(out_dim, in_dim))
 (lin::LinearLayer)(x) = softplus.(lin.W) * x
 
 function Base.show(io::IO, layer::LinearLayer)
-    print(io, "LinearLayer(", size(layer.W, 2), ", ", size(layer.W, 1), ")")
+    return print(io, "LinearLayer(", size(layer.W, 2), ", ", size(layer.W, 1), ")")
 end
 
 # Product function, given an 2d array whose size is M×N, product layer will
@@ -19,7 +19,7 @@ end
 function product(x, step=2)
     m, n = size(x)
     m % step == 0 || error("the first dimension of inputs must be multiple of step")
-    new_x = reshape(x, step, m÷step, n)
+    new_x = reshape(x, step, m ÷ step, n)
     return .*([new_x[i, :, :] for i in 1:step]...)
 end
 
@@ -46,7 +46,7 @@ pw(p::Primitive, x, x′) = _cat_kernel_array(map(k -> kernelmatrix(k, x, x′),
 function Base.show(io::IO, layer::Primitive)
     print(io, "Primitive(")
     join(io, layer.kernels, ", ")
-    print(io, ")")
+    return print(io, ")")
 end
 
 """
@@ -112,7 +112,7 @@ function kernelmatrix_diag!(
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix, nkn::NeuralKernelNetwork, x::AbstractVector, x′::AbstractVector,
+    K::AbstractMatrix, nkn::NeuralKernelNetwork, x::AbstractVector, x′::AbstractVector
 )
     K .= kernelmatrix(nkn, x, x′)
     return K
