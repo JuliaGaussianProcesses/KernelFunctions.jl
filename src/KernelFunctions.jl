@@ -45,15 +45,16 @@ using Compat
 using ChainRulesCore: ChainRulesCore, Composite, Zero, One, DoesNotExist, NO_FIELDS
 using ChainRulesCore: @thunk, InplaceableThunk
 using CompositionsBase
-using Requires
-using Distances, LinearAlgebra
+using Distances
+using FillArrays
 using Functors
+using LinearAlgebra
+using Requires
 using SpecialFunctions: loggamma, besselk, polygamma
-using ZygoteRules: ZygoteRules
 using StatsFuns: logtwo, twoπ
 using StatsBase
 using TensorCore
-using FillArrays
+using ZygoteRules: ZygoteRules
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
@@ -96,6 +97,7 @@ include(joinpath("kernels", "kernelsum.jl"))
 include(joinpath("kernels", "kernelproduct.jl"))
 include(joinpath("kernels", "kerneltensorproduct.jl"))
 include(joinpath("kernels", "overloads.jl"))
+include(joinpath("kernels", "neuralkernelnetwork.jl"))
 include(joinpath("approximations", "nystrom.jl"))
 include("generic.jl")
 
@@ -117,9 +119,6 @@ function __init__()
     end
     @require PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150" begin
         include(joinpath("matrix", "kernelpdmat.jl"))
-    end
-    @require Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c" begin
-        include(joinpath("kernels", "neuralkernelnetwork.jl"))
     end
 end
 

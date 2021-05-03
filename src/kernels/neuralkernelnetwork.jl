@@ -1,8 +1,4 @@
-import KernelFunctions: kernelmatrix, kernelmatrix_diag
 export LinearLayer, product, Primitive, NeuralKernelNetwork
-
-using .Flux
-using .Flux: softplus, @functor
 
 # Linear layer, perform linear transformation to input array
 # x₁ = softplus.(W) * x₀
