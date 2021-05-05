@@ -36,7 +36,8 @@ using KernelFunctions: NeuralKernelNetwork, LinearLayer, product, Primitive
             # Specify linear NKN and equivalent composite kernel.
             weights = rand(rng, 1, 2)
             nkn_add_kernel = NeuralKernelNetwork(primitives, LinearLayer(weights))
-            sum_k = LogExpFunctions.softplus(weights[1]) * k1 +
+            sum_k =
+                LogExpFunctions.softplus(weights[1]) * k1 +
                 LogExpFunctions.softplus(weights[2]) * k2
 
             # Vector input.

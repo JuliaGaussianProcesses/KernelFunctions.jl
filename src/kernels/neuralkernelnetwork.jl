@@ -105,7 +105,7 @@ function kernelmatrix!(K::AbstractMatrix, nkn::NeuralKernelNetwork, x::AbstractV
 end
 
 function kernelmatrix_diag!(
-    K::AbstractVector, nkn::NeuralKernelNetwork, x::AbstractVector, x′::AbstractVector,
+    K::AbstractVector, nkn::NeuralKernelNetwork, x::AbstractVector, x′::AbstractVector
 )
     K .= kernelmatrix_diag(nkn, x, x′)
     return K
@@ -121,5 +121,5 @@ end
 function Base.show(io::IO, kernel::NeuralKernelNetwork)
     print(io, "NeuralKernelNetwork(")
     join(io, [kernel.primitives, kernel.nn], ", ")
-    print(io, ")")
+    return print(io, ")")
 end
