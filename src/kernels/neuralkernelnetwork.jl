@@ -1,12 +1,12 @@
-export LinearLayer, product, Primitive, NeuralKernelNetwork
-
 # Linear layer, perform linear transformation to input array
 # x₁ = softplus.(W) * x₀
 struct LinearLayer{T,MT<:AbstractArray{T}}
     W::MT
 end
 @functor LinearLayer
+
 LinearLayer(in_dim, out_dim) = LinearLayer(randn(out_dim, in_dim))
+
 (lin::LinearLayer)(x) = softplus.(lin.W) * x
 
 function Base.show(io::IO, layer::LinearLayer)

@@ -1,3 +1,5 @@
+using KernelFunctions: NeuralKernelNetwork, LinearLayer, product, Primitive
+
 @testset "neural_kernel_network" begin
     rng, N, N′, D = MersenneTwister(123456), 5, 6, 2
     x0 = collect(range(-2.0, 2.0; length=N)) .+ 1e-3 .* randn(rng, N)
