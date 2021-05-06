@@ -31,6 +31,7 @@ export Transform,
 
 export NystromFact, nystrom
 
+export gaborkernel
 export spectral_mixture_kernel, spectral_mixture_product_kernel
 
 export ColVecs, RowVecs
@@ -73,6 +74,7 @@ include(joinpath("transform", "functiontransform.jl"))
 include(joinpath("transform", "selecttransform.jl"))
 include(joinpath("transform", "chaintransform.jl"))
 include(joinpath("transform", "periodic_transform.jl"))
+include(joinpath("kernels", "transformedkernel.jl"))
 
 include(joinpath("basekernels", "constant.jl"))
 include(joinpath("basekernels", "cosine.jl"))
@@ -89,7 +91,6 @@ include(joinpath("basekernels", "rational.jl"))
 include(joinpath("basekernels", "sm.jl"))
 include(joinpath("basekernels", "wiener.jl"))
 
-include(joinpath("kernels", "transformedkernel.jl"))
 include(joinpath("kernels", "scaledkernel.jl"))
 include(joinpath("kernels", "normalizedkernel.jl"))
 include(joinpath("matrix", "kernelmatrix.jl"))
