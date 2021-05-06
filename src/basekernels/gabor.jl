@@ -8,8 +8,8 @@ Gabor kernel with lengthscale `ell` and period `p`.
 For inputs ``x, x' \\in \\mathbb{R}^d``, the Gabor kernel with lengthscale ``l_i > 0``
 and period ``p_i > 0`` is defined as
 ```math
-k(x, x'; l, p) = \\exp\\bigg(- \\cos\\bigg(\\pi\\sum_{i=1}^d \\frac{x_i - x'_i}{p_i}\\bigg)
-                             \\sum_{i=1}^d \\frac{(x_i - x'_i)^2}{l_i^2}\\bigg).
+k(x, x'; l, p) = \\exp\\bigg(- \\sum_{i=1}^d \\frac{(x_i - x'_i)^2}{2l_i^2}\\bigg)
+                 \\cos\\bigg(\\pi \\bigg(\\sum_{i=1}^d \\frac{(x_i - x'_i)^2}{p_i^2} \\bigg)^{1/2}\\bigg).
 ```
 """
 struct GaborKernel{K<:Kernel} <: Kernel
