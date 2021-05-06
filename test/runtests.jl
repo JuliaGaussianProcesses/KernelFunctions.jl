@@ -4,6 +4,7 @@ using Distances
 using Documenter
 using Kronecker: Kronecker
 using LinearAlgebra
+using LogExpFunctions
 using PDMats
 using Random
 using SpecialFunctions
@@ -123,6 +124,7 @@ include("test_utils.jl")
         include(joinpath("kernels", "scaledkernel.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
         include(joinpath("kernels", "normalizedkernel.jl"))
+        include(joinpath("kernels", "neuralkernelnetwork.jl"))
     end
     @info "Ran tests on Kernel"
 
