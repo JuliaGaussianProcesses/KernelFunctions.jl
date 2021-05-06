@@ -1,13 +1,16 @@
 """
-    gaborkernel(; sqexponential_transform=IdentityTransform(), cosine_tranform=IdentityTransform())
+    gaborkernel(;
+        sqexponential_transform=IdentityTransform(), cosine_tranform=IdentityTransform()
+    )
 
-Construct a Gabor kernel with input transformations `sqexponential_transform` and
-`cosine_transform` of the underlying squared exponential and cosine kernel, respectively.
+Construct a Gabor kernel with transformations `sqexponential_transform` and
+`cosine_transform` of the inputs of the underlying squared exponential and cosine kernel,
+respectively.
 
 # Definition
 
-For inputs ``x, x' \\in \\mathbb{R}^d``, the Gabor kernel with transformations `f`
-and `g` of the inputs to the squared exponential and cosine kernel, respectively,
+For inputs ``x, x' \\in \\mathbb{R}^d``, the Gabor kernel with transformations ``f``
+and ``g`` of the inputs to the squared exponential and cosine kernel, respectively,
 is defined as
 ```math
 k(x, x'; f, g) = \\exp\\bigg(- \\frac{\\| f(x) - f(x')\\|_2^2}{2}\\bigg)
