@@ -33,6 +33,7 @@ makedocs(;
         "create_kernel.md",
         "API" => "api.md",
         "Examples" => "example.md",
+        "Design" => "design.md",
     ],
     strict=true,
     checkdocs=:exports,
