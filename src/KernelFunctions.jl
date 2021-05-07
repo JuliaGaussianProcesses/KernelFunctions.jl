@@ -1,7 +1,6 @@
 module KernelFunctions
 
 export kernelmatrix, kernelmatrix!, kernelmatrix_diag, kernelmatrix_diag!
-export transform
 export duplicate, set! # Helpers
 
 export Kernel, MOKernel
@@ -14,7 +13,7 @@ export FBMKernel
 export MaternKernel, Matern12Kernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalKernel, RationalQuadraticKernel, GammaRationalKernel
-export GaborKernel, PiecewisePolynomialKernel
+export PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
 export KernelSum, KernelProduct, KernelTensorProduct
 export TransformedKernel, ScaledKernel, NormalizedKernel
@@ -111,8 +110,6 @@ include("chainrules.jl")
 include("zygoterules.jl")
 
 include("test_utils.jl")
-
-include("deprecations.jl")
 
 function __init__()
     @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin

@@ -12,8 +12,7 @@ For example, a squared exponential kernel is created by
     Instead of having lengthscale(s) for each kernel we use [`Transform`](@ref) objects which act on the inputs before passing them to the kernel. Note that the transforms such as [`ScaleTransform`](@ref) and [`ARDTransform`](@ref) _multiply_ the input by a scale factor, which corresponds to the _inverse_ of the lengthscale.
     For example, a lengthscale of 0.5 is equivalent to premultiplying the input by 2.0, and you can create the corresponding kernel as follows:
     ```julia
-      k = transform(SqExponentialKernel(), ScaleTransform(2.0))
-      k = transform(SqExponentialKernel(), 2.0)  # implicitly constructs a ScaleTransform(2.0)
+      k = SqExponentialKernel() ∘ ScaleTransform(2.0)
     ```
     Check the [Input Transforms](@ref input_transforms) page for more details.
 
@@ -32,7 +31,7 @@ For example, a squared exponential kernel is created by
     use a squared exponential kernel together with a [`LinearTransform`](@ref) of
     the inputs:
     ```julia
-    k = transform(SqExponentialKernel(), LinearTransform(sqrt(2) .* Q))
+    k = SqExponentialKernel() ∘ LinearTransform(sqrt(2) .* Q)
     ```
     Analogously, you can combine other kernels such as the
     [`PiecewisePolynomialKernel`](@ref) with a [`LinearTransform`](@ref) of the
@@ -96,10 +95,10 @@ For example:
 
 What if you want to differentiate through the kernel parameters? This is easy even in a highly nested structure such as:
 ```julia
-  k = transform(
-        0.5 * SqExponentialKernel() * Matern12Kernel()
-      + 0.2 * (transform(LinearKernel(), 2.0) + PolynomialKernel()),
-      [0.1, 0.5])
+k = (
+    0.5 * SqExponentialKernel() * Matern12Kernel()
+    + 0.2 * (LinearKernel() ∘ ScaleTransform(2.0)) + PolynomialKernel()
+) ∘ ARDTransform([0.1, 0.5])
 ```
 One can access the named tuple of trainable parameters via `Functors.functor` from `Functors.jl`.
 This means that in practice you can implicitly optimize the kernel parameters by calling:

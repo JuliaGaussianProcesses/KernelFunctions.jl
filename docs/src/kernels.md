@@ -51,7 +51,6 @@ FBMKernel
 
 ```@docs
 gaborkernel
-GaborKernel
 ```
 
 ### Matérn Kernels

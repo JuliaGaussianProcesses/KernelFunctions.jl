@@ -28,8 +28,8 @@ using KernelFunctions: NeuralKernelNetwork, LinearLayer, product, Primitive
         rng = MersenneTwister(123456)
 
         # Specify primitives.
-        k1 = rand(rng) * transform(SEKernel(), randn(rng))
-        k2 = rand(rng) * transform(Matern32Kernel(), randn(rng))
+        k1 = rand(rng) * (SEKernel() ∘ ScaleTransform(randn(rng)))
+        k2 = rand(rng) * (Matern32Kernel() ∘ ScaleTransform(randn(rng)))
         primitives = Primitive(k1, k2)
 
         @testset "LinearLayer" begin

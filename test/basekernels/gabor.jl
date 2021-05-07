@@ -32,21 +32,4 @@
         ),
         [ell, p],
     )
-
-    # deprecated `GaborKernel`
-    k2 = @test_deprecated GaborKernel(; ell=ell, p=p)
-    @test k2.ell ≈ ell atol = 1e-5
-    @test k2.p ≈ p atol = 1e-5
-    @test k2(v1, v2) ≈ k(v1, v2)
-
-    k3 = @test_deprecated GaborKernel()
-    @test k3.ell ≈ 1.0 atol = 1e-5
-    @test k3.p ≈ 1.0 atol = 1e-5
-    @test repr(k3) == "Gabor Kernel (ell = 1, p = 1)"
-
-    test_interface(k3, Vector{Float64})
-
-    test_ADs(x -> GaborKernel(; ell=x[1], p=x[2]), [ell, p]; ADs=[:Zygote])
-
-    # Tests are also failing randomly for ForwardDiff and ReverseDiff but randomly
 end
