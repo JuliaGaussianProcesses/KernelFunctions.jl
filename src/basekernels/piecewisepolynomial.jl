@@ -1,13 +1,13 @@
 @doc raw"""
-    PiecewisePolynomialKernel(; degree::Int=0, dim::Int)
-    PiecewisePolynomialKernel{degree}(dim::Int)
+    PiecewisePolynomialKernel(; dim::Int, degree::Int=0, metric=Euclidean())
+    PiecewisePolynomialKernel{degree}(; dim::Int, metric=Euclidean())
 
 Piecewise polynomial kernel of degree `degree` for inputs of dimension `dim` with support in
-the unit ball.
+the unit ball with respect to the `metric`.
 
 # Definition
 
-For inputs ``x, x' \in \mathbb{R}^d`` of dimension ``d``, the piecewise polynomial kernel
+For inputs ``x, x'`` of dimension ``d``, the piecewise polynomial kernel
 of degree ``v \in \{0,1,2,3\}`` is defined as
 ```math
 k(x, x'; v) = \max(1 - \|x - x'\|, 0)^{\alpha(v,d)} f_{v,d}(\|x - x'\|),
@@ -27,21 +27,22 @@ where ``j = \lfloor \frac{d}{2}\rfloor + v + 1``.
 The kernel is ``2v`` times continuously differentiable and the corresponding Gaussian
 process is hence ``v`` times mean-square differentiable.
 """
-struct PiecewisePolynomialKernel{D,C<:Tuple} <: SimpleKernel
+struct PiecewisePolynomialKernel{D,C<:Tuple,M} <: SimpleKernel
     alpha::Int
     coeffs::C
+    metric::M
 
-    function PiecewisePolynomialKernel{D}(dim::Int) where {D}
+    function PiecewisePolynomialKernel{D}(; dim::Int, metric=Euclidean()) where {D}
         dim > 0 || error("number of dimensions has to be positive")
         j = div(dim, 2) + D + 1
         alpha = j + D
         coeffs = piecewise_polynomial_coefficients(Val(D), j)
-        return new{D,typeof(coeffs)}(alpha, coeffs)
+        return new{D,typeof(coeffs),typeof(metric)}(alpha, coeffs, metric)
     end
 end
 
-function PiecewisePolynomialKernel(; degree::Int=0, dim::Int=-1)
-    return PiecewisePolynomialKernel{degree}(dim)
+function PiecewisePolynomialKernel(; degree::Int=0, kwargs...)
+    return PiecewisePolynomialKernel{degree}(; kwargs...)
 end
 
 piecewise_polynomial_coefficients(::Val{0}, ::Int) = (1,)
@@ -56,7 +57,7 @@ end
 
 kappa(κ::PiecewisePolynomialKernel, r) = max(1 - r, 0)^κ.alpha * evalpoly(r, κ.coeffs)
 
-metric(::PiecewisePolynomialKernel) = Euclidean()
+metric(k::PiecewisePolynomialKernel) = k.metric
 
 function Base.show(io::IO, κ::PiecewisePolynomialKernel{D}) where {D}
     return print(
@@ -65,6 +66,8 @@ function Base.show(io::IO, κ::PiecewisePolynomialKernel{D}) where {D}
         D,
         ", ⌊dim/2⌋ = ",
         κ.alpha - 1 - 2 * D,
+        ", metric = ",
+        κ.metric,
         ")",
     )
 end

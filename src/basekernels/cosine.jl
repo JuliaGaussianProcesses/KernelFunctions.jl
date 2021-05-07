@@ -1,19 +1,25 @@
 """
-    CosineKernel()
+    CosineKernel(; metric=Euclidean())
 
-Cosine kernel.
+Cosine kernel with respect to the `metric`.
 
 # Definition
 
-For inputs ``x, x' \\in \\mathbb{R}^d``, the cosine kernel is defined as
+For inputs ``x, x'``, the cosine kernel is defined as
 ```math
-k(x, x') = \\cos(\\pi \\|x-x'\\|_2).
+k(x, x') = \\cos(\\pi \\|x-x'\\|).
 ```
 """
-struct CosineKernel <: SimpleKernel end
+struct CosineKernel{M} <: SimpleKernel
+    metric::M
+
+    function CosineKernel(; metric=Euclidean())
+        return new{typeof(metric)}(metric)
+    end
+end
 
 kappa(::CosineKernel, d::Real) = cospi(d)
 
-metric(::CosineKernel) = Euclidean()
+metric(k::CosineKernel) = k.metric
 
-Base.show(io::IO, ::CosineKernel) = print(io, "Cosine Kernel")
+Base.show(io::IO, k::CosineKernel) = print(io, "Cosine Kernel (metric = ", k.metric, ")")

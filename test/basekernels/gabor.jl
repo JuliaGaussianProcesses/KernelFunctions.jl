@@ -9,8 +9,8 @@
     )
     @test k isa KernelProduct{
         <:Tuple{
-            TransformedKernel{SqExponentialKernel,<:ScaleTransform},
-            TransformedKernel{CosineKernel,<:ScaleTransform},
+            TransformedKernel{<:SqExponentialKernel,<:ScaleTransform},
+            TransformedKernel{<:CosineKernel,<:ScaleTransform},
         },
     }
     @test k.kernels[1].transform.s[1] == inv(ell)
@@ -23,7 +23,7 @@
     rhs_manual = (CosineKernel() ∘ ScaleTransform(1 / p))(v1, v2)
     @test lhs_manual * rhs_manual ≈ k(v1, v2) atol = 1e-5
 
-    @test gaborkernel() isa KernelProduct{Tuple{SqExponentialKernel,CosineKernel}}
+    @test gaborkernel() isa KernelProduct{<:Tuple{<:SqExponentialKernel,<:CosineKernel}}
 
     test_ADs(
         x -> gaborkernel(;
