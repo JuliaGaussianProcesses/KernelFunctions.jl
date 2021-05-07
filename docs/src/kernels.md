@@ -50,6 +50,7 @@ FBMKernel
 ### Gabor Kernel
 
 ```@docs
+gaborkernel
 GaborKernel
 ```
 
