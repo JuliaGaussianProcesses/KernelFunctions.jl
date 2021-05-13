@@ -5,9 +5,9 @@ Cosine kernel with respect to the `metric`.
 
 # Definition
 
-For inputs ``x, x'``, the cosine kernel is defined as
+For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the cosine kernel is defined as
 ```math
-k(x, x') = \\cos(\\pi \\|x-x'\\|).
+k(x, x') = \\cos(\\pi d(x, x')).
 ```
 """
 struct CosineKernel{M} <: SimpleKernel

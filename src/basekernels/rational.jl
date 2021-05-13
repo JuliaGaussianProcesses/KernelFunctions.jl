@@ -44,10 +44,10 @@ Rational-quadratic kernel with respect to the `metric` and with shape parameter 
 
 # Definition
 
-For inputs ``x, x'``, the rational-quadratic kernel with shape parameter
-``\\alpha > 0`` is defined as
+For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the rational-quadratic kernel with
+shape parameter ``\\alpha > 0`` is defined as
 ```math
-k(x, x'; \\alpha) = \\bigg(1 + \\frac{\\|x - x'\\|^2}{2\\alpha}\\bigg)^{-\\alpha}.
+k(x, x'; \\alpha) = \\bigg(1 + \\frac{d(x, x')^2}{2\\alpha}\\bigg)^{-\\alpha}.
 ```
 
 The [`SqExponentialKernel`](@ref) is recovered in the limit as ``\\alpha \\to \\infty``.
@@ -89,10 +89,10 @@ end
 
 # Definition
 
-For inputs ``x, x'``, the γ-rational kernel with shape parameters ``\\alpha > 0`` and
-``\\gamma \\in (0, 2]`` is defined as
+For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the γ-rational kernel with shape
+parameters ``\\alpha > 0`` and ``\\gamma \\in (0, 2]`` is defined as
 ```math
-k(x, x'; \\alpha, \\gamma) = \\bigg(1 + \\frac{\\|x - x'\\|^{\\gamma}}{\\alpha}\\bigg)^{-\\alpha}.
+k(x, x'; \\alpha, \\gamma) = \\bigg(1 + \\frac{d(x, x')^{\\gamma}}{\\alpha}\\bigg)^{-\\alpha}.
 ```
 
 The [`GammaExponentialKernel`](@ref) is recovered in the limit as ``\\alpha \\to \\infty``.

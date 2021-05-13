@@ -5,9 +5,10 @@ Squared exponential kernel with respect to the `metric`.
 
 # Definition
 
-For inputs ``x, x'``, the squared exponential kernel is defined as
+For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the squared exponential kernel is
+defined as
 ```math
-k(x, x') = \\exp\\bigg(- \\frac{\\|x - x'\\|^2}{2}\\bigg).
+k(x, x') = \\exp\\bigg(- \\frac{d(x, x')^2}{2}\\bigg).
 ```
 
 See also: [`GammaExponentialKernel`](@ref)
@@ -62,9 +63,9 @@ Exponential kernel with respect to the `metric`.
 
 # Definition
 
-For inputs ``x, x'``, the exponential kernel is defined as
+For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the exponential kernel is defined as
 ```math
-k(x, x') = \\exp\\big(- \\|x - x'\\|\\big).
+k(x, x') = \\exp\\big(- d(x, x')\\big).
 ```
 
 See also: [`GammaExponentialKernel`](@ref)
@@ -110,10 +111,11 @@ const Matern12Kernel = ExponentialKernel
 
 # Definition
 
-For inputs ``x, x'``, the γ-exponential kernel[^RW] with parameter ``\\gamma \\in (0, 2]``
+For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the γ-exponential kernel[^RW] with
+parameter ``\\gamma \\in (0, 2]``
 is defined as
 ```math
-k(x, x'; \\gamma) = \\exp\\big(- \\|x - x'\\|^{\\gamma}\\big).
+k(x, x'; \\gamma) = \\exp\\big(- d(x, x')^{\\gamma}\\big).
 ```
 
 See also: [`ExponentialKernel`](@ref), [`SqExponentialKernel`](@ref)
