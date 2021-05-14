@@ -49,6 +49,7 @@ shape parameter ``\\alpha > 0`` is defined as
 ```math
 k(x, x'; \\alpha) = \\bigg(1 + \\frac{d(x, x')^2}{2\\alpha}\\bigg)^{-\\alpha}.
 ```
+By default, ``d`` is the Euclidean metric ``d(x, x') = \|x - x'\|_2``.
 
 The [`SqExponentialKernel`](@ref) is recovered in the limit as ``\\alpha \\to \\infty``.
 
@@ -94,6 +95,7 @@ parameters ``\\alpha > 0`` and ``\\gamma \\in (0, 2]`` is defined as
 ```math
 k(x, x'; \\alpha, \\gamma) = \\bigg(1 + \\frac{d(x, x')^{\\gamma}}{\\alpha}\\bigg)^{-\\alpha}.
 ```
+By default, ``d`` is the Euclidean metric ``d(x, x') = \|x - x'\|_2``.
 
 The [`GammaExponentialKernel`](@ref) is recovered in the limit as ``\\alpha \\to \\infty``.
 

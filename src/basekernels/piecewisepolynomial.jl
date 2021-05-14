@@ -23,6 +23,7 @@ f_{3,m}(r) &= 1 + (j + 3) r + \big((6 j^2 + 36j + 45) / 15\big) r^2 + \big((j^3 
 \end{aligned}
 ```
 where ``j = \lfloor \frac{m}{2}\rfloor + v + 1``.
+By default, ``d`` is the Euclidean metric ``d(x, x') = \|x - x'\|_2``.
 
 The kernel is ``2v`` times continuously differentiable and the corresponding Gaussian
 process is hence ``v`` times mean-square differentiable.
