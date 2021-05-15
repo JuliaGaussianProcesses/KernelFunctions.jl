@@ -1,26 +1,38 @@
 """
-    SqExponentialKernel()
+    SqExponentialKernel(; metric=Euclidean())
 
-Squared exponential kernel.
+Squared exponential kernel with respect to the `metric`.
 
 # Definition
 
-For inputs ``x, x' \\in \\mathbb{R}^d``, the squared exponential kernel is defined as
+For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the squared exponential kernel is
+defined as
 ```math
-k(x, x') = \\exp\\bigg(- \\frac{\\|x - x'\\|_2^2}{2}\\bigg).
+k(x, x') = \\exp\\bigg(- \\frac{d(x, x')^2}{2}\\bigg).
 ```
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 
 See also: [`GammaExponentialKernel`](@ref)
 """
-struct SqExponentialKernel <: SimpleKernel end
+struct SqExponentialKernel{M} <: SimpleKernel
+    metric::M
 
-kappa(::SqExponentialKernel, d²::Real) = exp(-d² / 2)
+    function SqExponentialKernel(; metric=Euclidean())
+        return new{typeof(metric)}(metric)
+    end
+end
 
-metric(::SqExponentialKernel) = SqEuclidean()
+kappa(::SqExponentialKernel, d::Real) = exp(-d^2 / 2)
+kappa(::SqExponentialKernel{<:Euclidean}, d²::Real) = exp(-d² / 2)
+
+metric(k::SqExponentialKernel) = k.metric
+metric(::SqExponentialKernel{<:Euclidean}) = SqEuclidean()
 
 iskroncompatible(::SqExponentialKernel) = true
 
-Base.show(io::IO, ::SqExponentialKernel) = print(io, "Squared Exponential Kernel")
+function Base.show(io::IO, k::SqExponentialKernel)
+    return print(io, "Squared Exponential Kernel (metric = ", k.metric, ")")
+end
 
 ## Aliases ##
 
@@ -46,28 +58,37 @@ Alias of [`SqExponentialKernel`](@ref).
 const SEKernel = SqExponentialKernel
 
 """
-    ExponentialKernel()
+    ExponentialKernel(; metric=Euclidean())
 
-Exponential kernel.
+Exponential kernel with respect to the `metric`.
 
 # Definition
 
-For inputs ``x, x' \\in \\mathbb{R}^d``, the exponential kernel is defined as
+For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the exponential kernel is defined as
 ```math
-k(x, x') = \\exp\\big(- \\|x - x'\\|_2\\big).
+k(x, x') = \\exp\\big(- d(x, x')\\big).
 ```
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 
 See also: [`GammaExponentialKernel`](@ref)
 """
-struct ExponentialKernel <: SimpleKernel end
+struct ExponentialKernel{M} <: SimpleKernel
+    metric::M
+
+    function ExponentialKernel(; metric=Euclidean())
+        return new{typeof(metric)}(metric)
+    end
+end
 
 kappa(::ExponentialKernel, d::Real) = exp(-d)
 
-metric(::ExponentialKernel) = Euclidean()
+metric(k::ExponentialKernel) = k.metric
 
 iskroncompatible(::ExponentialKernel) = true
 
-Base.show(io::IO, ::ExponentialKernel) = print(io, "Exponential Kernel")
+function Base.show(io::IO, k::ExponentialKernel)
+    return print(io, "Exponential Kernel (metric = ", k.metric, ")")
+end
 
 ## Aliases ##
 
@@ -86,42 +107,31 @@ Alias of [`ExponentialKernel`](@ref).
 const Matern12Kernel = ExponentialKernel
 
 """
-    GammaExponentialKernel(; γ::Real=2.0)
+    GammaExponentialKernel(; γ::Real=1.0, metric=Euclidean())
 
-γ-exponential kernel with parameter `γ`.
+γ-exponential kernel with respect to the `metric` and with parameter `γ`.
 
 # Definition
 
-For inputs ``x, x' \\in \\mathbb{R}^d``, the γ-exponential kernel[^RW] with parameter
-``\\gamma \\in (0, 2]`` is defined as
+For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the γ-exponential kernel[^RW] with
+parameter ``\\gamma \\in (0, 2]``
+is defined as
 ```math
-k(x, x'; \\gamma) = \\exp\\big(- \\|x - x'\\|_2^{\\gamma}\\big).
+k(x, x'; \\gamma) = \\exp\\big(- d(x, x')^{\\gamma}\\big).
 ```
-
-!!! warning
-    The default value of parameter `γ` will be changed to `1.0` in the next breaking release
-    of KernelFunctions.
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 
 See also: [`ExponentialKernel`](@ref), [`SqExponentialKernel`](@ref)
 
 [^RW]: C. E. Rasmussen & C. K. I. Williams (2006). Gaussian Processes for Machine Learning.
 """
-struct GammaExponentialKernel{Tγ<:Real} <: SimpleKernel
+struct GammaExponentialKernel{Tγ<:Real,M} <: SimpleKernel
     γ::Vector{Tγ}
-    # function GammaExponentialKernel(; gamma::Real=1.0, γ::Real=gamma)
-    function GammaExponentialKernel(; gamma=nothing, γ=gamma)
-        γ2 = if γ === nothing
-            Base.depwarn(
-                "the default value of parameter `γ` of the `GammaExponentialKernel` will " *
-                "be changed to `1.0` in the next breaking release of KernelFunctions",
-                :GammaExponentialKernel,
-            )
-            2.0
-        else
-            γ
-        end
-        @check_args(GammaExponentialKernel, γ2, zero(γ2) < γ2 ≤ 2, "γ ∈ (0, 2]")
-        return new{typeof(γ2)}([γ2])
+    metric::M
+
+    function GammaExponentialKernel(; gamma::Real=1.0, γ::Real=gamma, metric=Euclidean())
+        @check_args(GammaExponentialKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
+        return new{typeof(γ),typeof(metric)}([γ], metric)
     end
 end
 
@@ -129,10 +139,12 @@ end
 
 kappa(κ::GammaExponentialKernel, d::Real) = exp(-d^first(κ.γ))
 
-metric(::GammaExponentialKernel) = Euclidean()
+metric(k::GammaExponentialKernel) = k.metric
 
 iskroncompatible(::GammaExponentialKernel) = true
 
 function Base.show(io::IO, κ::GammaExponentialKernel)
-    return print(io, "Gamma Exponential Kernel (γ = ", first(κ.γ), ")")
+    return print(
+        io, "Gamma Exponential Kernel (γ = ", first(κ.γ), ", metric = ", κ.metric, ")"
+    )
 end

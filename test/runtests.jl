@@ -150,8 +150,6 @@ include("test_utils.jl")
     include("chainrules.jl")
     include("zygoterules.jl")
 
-    include("deprecations.jl")
-
     @testset "doctests" begin
         DocMeta.setdocmeta!(
             KernelFunctions,
