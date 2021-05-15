@@ -10,7 +10,7 @@ defined as
 ```math
 k(x, x') = \\exp\\bigg(- \\frac{d(x, x')^2}{2}\\bigg).
 ```
-By default, ``d`` is the Euclidean metric ``d(x, x') = \|x - x'\|_2``.
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 
 See also: [`GammaExponentialKernel`](@ref)
 """
@@ -68,7 +68,7 @@ For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the exponential kernel is
 ```math
 k(x, x') = \\exp\\big(- d(x, x')\\big).
 ```
-By default, ``d`` is the Euclidean metric ``d(x, x') = \|x - x'\|_2``.
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 
 See also: [`GammaExponentialKernel`](@ref)
 """
@@ -119,7 +119,7 @@ is defined as
 ```math
 k(x, x'; \\gamma) = \\exp\\big(- d(x, x')^{\\gamma}\\big).
 ```
-By default, ``d`` is the Euclidean metric ``d(x, x') = \|x - x'\|_2``.
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 
 See also: [`ExponentialKernel`](@ref), [`SqExponentialKernel`](@ref)
 

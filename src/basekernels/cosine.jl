@@ -9,7 +9,7 @@ For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the cosine kernel is defi
 ```math
 k(x, x') = \\cos(\\pi d(x, x')).
 ```
-By default, ``d`` is the Euclidean metric ``d(x, x') = \|x - x'\|_2``.
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 """
 struct CosineKernel{M} <: SimpleKernel
     metric::M

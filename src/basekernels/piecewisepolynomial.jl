@@ -7,7 +7,7 @@ the unit ball with respect to the `metric`.
 
 # Definition
 
-For inputs ``x, x'`` of dimension ``m`` and metric ``d(\\cdot, \\cdot)``, the piecewise
+For inputs ``x, x'`` of dimension ``m`` and metric ``d(\cdot, \cdot)``, the piecewise
 polynomial kernel of degree ``v \in \{0,1,2,3\}`` is defined as
 ```math
 k(x, x'; v) = \max(1 - d(x, x'), 0)^{\alpha(v,m)} f_{v,m}(d(x, x')),

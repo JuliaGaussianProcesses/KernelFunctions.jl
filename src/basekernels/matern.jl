@@ -12,7 +12,7 @@ k(x,x';\\nu) = \\frac{2^{1-\\nu}}{\\Gamma(\\nu)}\\big(\\sqrt{2\\nu} d(x, x')\\bi
 ```
 where ``\\Gamma`` is the Gamma function and ``K_{\\nu}`` is the modified Bessel function of
 the second kind of order ``\\nu``.
-By default, ``d`` is the Euclidean metric ``d(x, x') = \|x - x'\|_2``.
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 
 A Gaussian process with a Matérn kernel is ``\\lceil \\nu \\rceil - 1``-times
 differentiable in the mean-square sense.
@@ -61,7 +61,7 @@ For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the Matérn kernel of ord
 ```math
 k(x, x') = \\big(1 + \\sqrt{3} d(x, x') \\big) \\exp\\big(- \\sqrt{3} d(x, x') \\big).
 ```
-By default, ``d`` is the Euclidean metric ``d(x, x') = \|x - x'\|_2``.
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 
 See also: [`MaternKernel`](@ref)
 """
@@ -94,7 +94,7 @@ given by
 k(x, x') = \\bigg(1 + \\sqrt{5} d(x, x') + \\frac{5}{3} d(x, x')^2\\bigg)
            \\exp\\big(- \\sqrt{5} d(x, x') \\big).
 ```
-By default, ``d`` is the Euclidean metric ``d(x, x') = \|x - x'\|_2``.
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 
 See also: [`MaternKernel`](@ref)
 """
