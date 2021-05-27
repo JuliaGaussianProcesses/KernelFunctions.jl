@@ -19,10 +19,14 @@ struct RationalKernel{Tα<:Real,M} <: SimpleKernel
     α::Vector{Tα}
     metric::M
 
-    function RationalKernel(; alpha::Real=2.0, α::Real=alpha, metric=Euclidean())
+    function RationalKernel(α::Real, metric)
         @check_args(RationalKernel, α, α > zero(α), "α > 0")
         return new{typeof(α),typeof(metric)}([α], metric)
     end
+end
+
+function RationalKernel(; alpha::Real=2.0, α::Real=alpha, metric=Euclidean())
+    return RationalKernel(α, metric)
 end
 
 @functor RationalKernel

@@ -13,11 +13,9 @@ By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 """
 struct CosineKernel{M} <: SimpleKernel
     metric::M
-
-    function CosineKernel(; metric=Euclidean())
-        return new{typeof(metric)}(metric)
-    end
 end
+
+CosineKernel(; metric=Euclidean()) = CosineKernel(metric)
 
 kappa(::CosineKernel, d::Real) = cospi(d)
 

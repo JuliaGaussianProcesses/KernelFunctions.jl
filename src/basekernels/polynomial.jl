@@ -16,11 +16,13 @@ See also: [`PolynomialKernel`](@ref)
 struct LinearKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
 
-    function LinearKernel(; c::Real=0.0)
+    function LinearKernel(c::Real)
         @check_args(LinearKernel, c, c >= zero(c), "c ≥ 0")
         return new{typeof(c)}([c])
     end
 end
+
+LinearKernel(; c::Real=0.0) = LinearKernel(c)
 
 @functor LinearKernel
 
