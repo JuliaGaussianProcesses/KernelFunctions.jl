@@ -6,7 +6,7 @@
     @test length(k) == 2
     @test string(k) == (
         "Product of 2 kernels:\n\tLinear Kernel (c = 0.0)\n\tSquared " *
-        "Exponential Kernel"
+        "Exponential Kernel (metric = Euclidean(0.0))"
     )
 
     # Standardised tests.

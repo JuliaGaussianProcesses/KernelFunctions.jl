@@ -57,6 +57,10 @@ function kernelmatrix_diag(κ::KernelSum, x::AbstractVector)
     return sum(kernelmatrix_diag(k, x) for k in κ.kernels)
 end
 
+function kernelmatrix_diag(κ::KernelSum, x::AbstractVector, y::AbstractVector)
+    return sum(kernelmatrix_diag(k, x, y) for k in κ.kernels)
+end
+
 function Base.show(io::IO, κ::KernelSum)
     return printshifted(io, κ, 0)
 end

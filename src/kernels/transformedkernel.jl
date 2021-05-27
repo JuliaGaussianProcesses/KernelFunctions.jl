@@ -3,17 +3,11 @@
 
 Kernel derived from `k` for which inputs are transformed via a [`Transform`](@ref) `t`.
 
-It is preferred to create kernels with input transformations with [`transform`](@ref)
-instead of  `TransformedKernel` directly since [`transform`](@ref) allows optimized
-implementations for specific kernels and transformations.
+The preferred way to create kernels with input transformations is to use the composition
+operator [`∘`](@ref) or its alias `compose` instead of `TransformedKernel` directly since
+this allows optimized implementations for specific kernels and transformations.
 
-# Definition
-
-For inputs ``x, x'``, the transformed kernel ``\\widetilde{k}`` derived from kernel ``k`` by
-input transformation ``t`` is defined as
-```math
-\\widetilde{k}(x, x'; k, t) = k\\big(t(x), t(x')\\big).
-```
+See also: [`∘`](@ref)
 """
 struct TransformedKernel{Tk<:Kernel,Tr<:Transform} <: Kernel
     kernel::Tk
@@ -42,30 +36,41 @@ end
 _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, t(x), t(y))
 
 """
-    transform(k::Kernel, t::Transform)
+    kernel ∘ transform
+    ∘(kernel, transform)
+    compose(kernel, transform)
 
-Create a [`TransformedKernel`](@ref) for kernel `k` and transform `t`.
+Compose a `kernel` with a transformation `transform` of its inputs.
+
+The prefix forms support chains of multiple transformations:
+`∘(kernel, transform1, transform2) = kernel ∘ transform1 ∘ transform2`.
+
+# Definition
+
+For inputs ``x, x'``, the transformed kernel ``\\widetilde{k}`` derived from kernel ``k`` by
+input transformation ``t`` is defined as
+```math
+\\widetilde{k}(x, x'; k, t) = k\\big(t(x), t(x')\\big).
+```
+
+# Examples
+
+```jldoctest
+julia> (SqExponentialKernel() ∘ ScaleTransform(0.5))(0, 2) == exp(-0.5)
+true
+
+julia> ∘(ExponentialKernel(), ScaleTransform(2), ScaleTransform(0.5))(1, 2) == exp(-1)
+true
+```
+
+See also: [`TransformedKernel`](@ref)
 """
-transform(k::Kernel, t::Transform) = TransformedKernel(k, t)
-function transform(k::TransformedKernel, t::Transform)
-    return TransformedKernel(k.kernel, t ∘ k.transform)
-end
+Base.:∘(k::Kernel, t::Transform) = TransformedKernel(k, t)
+Base.:∘(k::TransformedKernel, t::Transform) = TransformedKernel(k.kernel, k.transform ∘ t)
 
-"""
-    transform(k::Kernel, ρ::Real)
-
-Create a [`TransformedKernel`](@ref) for kernel `k` and inverse lengthscale `ρ`.
-"""
-transform(k::Kernel, ρ::Real) = transform(k, ScaleTransform(ρ))
-
-"""
-    transform(k::Kernel, ρ::AbstractVector)
-
-Create a [`TransformedKernel`](@ref) for kernel `k` and inverse lengthscales `ρ`.
-"""
-transform(k::Kernel, ρ::AbstractVector) = transform(k, ARDTransform(ρ))
-
-kernel(κ) = κ.kernel
+# Simplify kernels with identity transformation of the inputs
+Base.:∘(k::Kernel, ::IdentityTransform) = k
+Base.:∘(k::TransformedKernel, ::IdentityTransform) = k
 
 Base.show(io::IO, κ::TransformedKernel) = printshifted(io, κ, 0)
 
@@ -80,24 +85,34 @@ function kernelmatrix_diag!(K::AbstractVector, κ::TransformedKernel, x::Abstrac
     return kernelmatrix_diag!(K, κ.kernel, _map(κ.transform, x))
 end
 
+function kernelmatrix_diag!(
+    K::AbstractVector, κ::TransformedKernel, x::AbstractVector, y::AbstractVector
+)
+    return kernelmatrix_diag!(K, κ.kernel, _map(κ.transform, x), _map(κ.transform, y))
+end
+
 function kernelmatrix!(K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector)
-    return kernelmatrix!(K, kernel(κ), _map(κ.transform, x))
+    return kernelmatrix!(K, κ.kernel, _map(κ.transform, x))
 end
 
 function kernelmatrix!(
     K::AbstractMatrix, κ::TransformedKernel, x::AbstractVector, y::AbstractVector
 )
-    return kernelmatrix!(K, kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
+    return kernelmatrix!(K, κ.kernel, _map(κ.transform, x), _map(κ.transform, y))
 end
 
 function kernelmatrix_diag(κ::TransformedKernel, x::AbstractVector)
     return kernelmatrix_diag(κ.kernel, _map(κ.transform, x))
 end
 
+function kernelmatrix_diag(κ::TransformedKernel, x::AbstractVector, y::AbstractVector)
+    return kernelmatrix_diag(κ.kernel, _map(κ.transform, x), _map(κ.transform, y))
+end
+
 function kernelmatrix(κ::TransformedKernel, x::AbstractVector)
-    return kernelmatrix(kernel(κ), _map(κ.transform, x))
+    return kernelmatrix(κ.kernel, _map(κ.transform, x))
 end
 
 function kernelmatrix(κ::TransformedKernel, x::AbstractVector, y::AbstractVector)
-    return kernelmatrix(kernel(κ), _map(κ.transform, x), _map(κ.transform, y))
+    return kernelmatrix(κ.kernel, _map(κ.transform, x), _map(κ.transform, y))
 end
