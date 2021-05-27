@@ -31,6 +31,6 @@ function (k::CoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
     return k.B[px, py] * k.kernel(x, y)
 end
 
-function Base.show(io::IO, k::CoregionMOKernel)
+function Base.show(io::IO, ::CoregionMOKernel)
     return print(io, "Coregion Multi-Output Kernel")
 end
