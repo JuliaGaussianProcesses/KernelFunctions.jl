@@ -23,11 +23,13 @@ struct MaternKernel{Tν<:Real,M} <: SimpleKernel
     ν::Vector{Tν}
     metric::M
 
-    function MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean())
+    function MaternKernel(ν::Real, metric)
         @check_args(MaternKernel, ν, ν > zero(ν), "ν > 0")
         return new{typeof(ν),typeof(metric)}([ν], metric)
     end
 end
+
+MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν, metric)
 
 @functor MaternKernel
 
@@ -67,11 +69,9 @@ See also: [`MaternKernel`](@ref)
 """
 struct Matern32Kernel{M} <: SimpleKernel
     metric::M
-
-    function Matern32Kernel(; metric=Euclidean())
-        return new{typeof(metric)}(metric)
-    end
 end
+
+Matern32Kernel(; metric=Euclidean()) = Matern32Kernel(metric)
 
 kappa(::Matern32Kernel, d::Real) = (1 + sqrt(3) * d) * exp(-sqrt(3) * d)
 
@@ -100,11 +100,9 @@ See also: [`MaternKernel`](@ref)
 """
 struct Matern52Kernel{M} <: SimpleKernel
     metric::M
-
-    function Matern52Kernel(; metric=Euclidean())
-        return new{typeof(metric)}(metric)
-    end
 end
+
+Matern52Kernel(; metric=Euclidean()) = Matern52Kernel(metric)
 
 kappa(::Matern52Kernel, d::Real) = (1 + sqrt(5) * d + 5 * d^2 / 3) * exp(-sqrt(5) * d)
 

@@ -16,11 +16,9 @@ See also: [`GammaExponentialKernel`](@ref)
 """
 struct SqExponentialKernel{M} <: SimpleKernel
     metric::M
-
-    function SqExponentialKernel(; metric=Euclidean())
-        return new{typeof(metric)}(metric)
-    end
 end
+
+SqExponentialKernel(; metric=Euclidean()) = SqExponentialKernel(metric)
 
 kappa(::SqExponentialKernel, d::Real) = exp(-d^2 / 2)
 kappa(::SqExponentialKernel{<:Euclidean}, d²::Real) = exp(-d² / 2)
@@ -74,11 +72,9 @@ See also: [`GammaExponentialKernel`](@ref)
 """
 struct ExponentialKernel{M} <: SimpleKernel
     metric::M
-
-    function ExponentialKernel(; metric=Euclidean())
-        return new{typeof(metric)}(metric)
-    end
 end
+
+ExponentialKernel(; metric=Euclidean()) = ExponentialKernel(metric)
 
 kappa(::ExponentialKernel, d::Real) = exp(-d)
 
@@ -129,10 +125,14 @@ struct GammaExponentialKernel{Tγ<:Real,M} <: SimpleKernel
     γ::Vector{Tγ}
     metric::M
 
-    function GammaExponentialKernel(; gamma::Real=1.0, γ::Real=gamma, metric=Euclidean())
+    function GammaExponentialKernel(gamma::Real, metric)
         @check_args(GammaExponentialKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
         return new{typeof(γ),typeof(metric)}([γ], metric)
     end
+end
+
+function GammaExponentialKernel(; gamma::Real=1.0, γ::Real=gamma, metric=Euclidean())
+    return GammaExponentialKernel(γ, metric)
 end
 
 @functor GammaExponentialKernel
