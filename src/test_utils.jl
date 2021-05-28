@@ -102,9 +102,9 @@ function test_interface(
 ) where {T<:Real}
     return test_interface(
         k,
-        [(randn(rng, T), rand(1:dim_out)) for i in 1:51],
-        [(randn(rng, T), rand(1:dim_out)) for i in 1:51],
-        [(randn(rng, T), rand(1:dim_out)) for i in 1:50];
+        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:51],
+        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:51],
+        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:50];
         kwargs...
     )
 end
