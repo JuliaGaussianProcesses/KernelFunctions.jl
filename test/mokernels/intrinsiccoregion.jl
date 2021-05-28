@@ -1,4 +1,4 @@
-@testset "coregion" begin
+@testset "intrinsiccoregion" begin
     rng = MersenneTwister(123)
 
     n_obs = 3
@@ -7,20 +7,20 @@
     rank = 1
 
     A = randn(out_dim, rank)
-    B = A * transpose(A)
+    B = A * transpose(A) + Diagonal(randn(out_dim))
 
     X = [(rand(in_dim), rand(1:out_dim)) for i in 1:n_obs]
 
     kernel = ExponentialKernel()
-    coregionkernel = CoregionMOKernel(kernel, B)
+    icoregionkernel = IntrinsicCoregionMOKernel(kernel, B)
 
-    @test coregionkernel isa CoregionMOKernel
-    @test coregionkernel isa MOKernel
-    @test coregionkernel isa Kernel
-    @test coregionkernel(X[1], X[1]) isa Real
-    @test coregionkernel(X[1], X[1]) ≈ B[X[1][2], X[1][2]] * kernel(X[1][1], X[1][1])
+    @test icoregionkernel isa IntrinsicCoregionMOKernel
+    @test icoregionkernel isa MOKernel
+    @test icoregionkernel isa Kernel
+    @test icoregionkernel(X[1], X[1]) isa Real
+    @test icoregionkernel(X[1], X[1]) ≈ B[X[1][2], X[1][2]] * kernel(X[1][1], X[1][1])
 
-    @test kernelmatrix(coregionkernel, X, X) ≈ kernelmatrix(coregionkernel, X)
+    KernelFunctions.TestUtils.test_interface(icoregionkernel, Vector{Tuple{Float64,Int}})
 
-    @test string(coregionkernel) == "Coregion Multi-Output Kernel"
+    @test string(coregionkernel) == "Intrinsic Coregion Multi-Output Kernel"
 end
