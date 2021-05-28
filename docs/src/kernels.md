@@ -133,5 +133,5 @@ NormalizedKernel
 MOKernel
 IndependentMOKernel
 LatentFactorMOKernel
-CoregionMOKernel
+IntrinsicCoregionMOKernel
 ```

@@ -139,7 +139,7 @@ include("test_utils.jl")
         include(joinpath("mokernels", "moinput.jl"))
         include(joinpath("mokernels", "independent.jl"))
         include(joinpath("mokernels", "slfm.jl"))
-        include(joinpath("mokernels", "coregion.jl"))
+        include(joinpath("mokernels", "intrinsiccoregion.jl"))
     end
     @info "Ran tests on Multi-Output Kernels"
 
