@@ -133,6 +133,47 @@ function test_FiniteDiff(kernelfunction, args=nothing, dims=[3, 3])
     end
 end
 
+function test_FiniteDiff(kernelfunction<:MOKernel, args, n_obs=3, dim_in=2, dim_out=2)
+    # Init arguments :
+    k = kernelfunction(args)
+
+    rng = MersenneTwister(42)
+    @testset "FiniteDifferences" begin
+        ## Testing Kernel Functions
+        x = (rand(rng, n_obs), rand(rng, 1:dim_out))
+        y = (rand(rng, n_obs), rand(rng, 1:dim_out))
+
+        @test_nowarn gradient(:FiniteDiff, x) do x
+            k(x, y)
+        end
+
+        ## Testing Kernel Matrices
+
+        A = [(randn(rng, dim_in), rand(rng, 1:dim_out)) for i in 1:n_obs]
+        B = [(randn(rng, dim_in), rand(rng, 1:dim_out)) for i in 1:n_obs]
+
+        @test_nowarn gradient(:FiniteDiff, A) do a
+            testfunction(k, a)
+        end
+        @test_nowarn gradient(:FiniteDiff, A) do a
+            testfunction(k, a, B)
+        end
+        @test_nowarn gradient(:FiniteDiff, B) do b
+            testfunction(k, A, b)
+        end
+
+        @test_nowarn gradient(:FiniteDiff, A) do a
+            testdiagfunction(k, a)
+        end
+        @test_nowarn gradient(:FiniteDiff, A) do a
+            testdiagfunction(k, a, B)
+        end
+        @test_nowarn gradient(:FiniteDiff, B) do b
+            testdiagfunction(k, A, b)
+        end
+    end
+end
+
 function test_AD(AD::Symbol, kernelfunction, args=nothing, dims=[3, 3])
     @testset "$(AD)" begin
         # Test kappa function
