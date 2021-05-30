@@ -76,8 +76,7 @@ Base.getindex(D::ColVecs, i::CartesianIndex{1}) = view(D.X, :, i)
 Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
 Base.setindex!(D::ColVecs, v::AbstractVector, i) = setindex!(D.X, v, :, i)
 
-Base.vcat(a::ColVecs, b::ColVecs) = ColVecs(vcat(a.X, b.X))
-Base.vcat(a::ColVecs, b::AbstractMatrix) = ColVecs(vcat(a.X, b))
+Base.vcat(a::ColVecs, b::ColVecs) = ColVecs(hcat(a.X, b.X))
 
 dim(x::ColVecs) = size(x.X, 1)
 
