@@ -23,6 +23,8 @@
         @test getindex(DX, :) == ColVecs(X)
         @test eachindex(DX) == 1:N
         @test first(DX) == X[:, 1]
+        @inferred vcat(DX, DX)
+        @test typeof(DX) == typeof(vcat(DX, DX))
         DX[2] = v
         @test DX[2] == v
         @test X[:, 2] == v
@@ -62,6 +64,8 @@
         @test getindex(DX, :) == RowVecs(X)
         @test eachindex(DX) == 1:D
         @test first(DX) == X[1, :]
+        @inferred vcat(DX, DX)
+        @test typeof(DX) == typeof(vcat(DX, DX))
         DX[2] = w
         @test DX[2] == w
         @test X[2, :] == w
