@@ -53,6 +53,11 @@ testfunction(k, A, dim) = sum(kernelmatrix(k, A; obsdim=dim))
 testdiagfunction(k, A, dim) = sum(kernelmatrix_diag(k, A; obsdim=dim))
 testdiagfunction(k, A, B, dim) = sum(kernelmatrix_diag(k, A, B; obsdim=dim))
 
+testfunction(k::MOKernel, A, B) = sum(kernelmatrix(k, A, B))
+testfunction(k::MOKernel, A) = sum(kernelmatrix(k, A))
+testdiagfunction(k::MOKernel, A) = sum(kernelmatrix_diag(k, A))
+testdiagfunction(k::MOKernel, A, B) = sum(kernelmatrix_diag(k, A, B))
+
 function test_ADs(
     kernelfunction, args=nothing; ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=[3, 3]
 )
