@@ -133,15 +133,15 @@ function test_FiniteDiff(kernelfunction, args=nothing, dims=[3, 3])
     end
 end
 
-function test_FiniteDiff(kernelfunction<:MOKernel, args, n_obs=3, dim_in=2, dim_out=2)
+function test_FiniteDiff(kernelfunction<:MOKernel, args, dims=(in=3, out=3, obs=3))
     # Init arguments :
     k = kernelfunction(args)
 
     rng = MersenneTwister(42)
     @testset "FiniteDifferences" begin
         ## Testing Kernel Functions
-        x = (rand(rng, n_obs), rand(rng, 1:dim_out))
-        y = (rand(rng, n_obs), rand(rng, 1:dim_out))
+        x = (rand(rng, dims.obs), rand(rng, 1:dims.out))
+        y = (rand(rng, dims.obs), rand(rng, 1:dims.out))
 
         @test_nowarn gradient(:FiniteDiff, x) do x
             k(x, y)
@@ -149,8 +149,8 @@ function test_FiniteDiff(kernelfunction<:MOKernel, args, n_obs=3, dim_in=2, dim_
 
         ## Testing Kernel Matrices
 
-        A = [(randn(rng, dim_in), rand(rng, 1:dim_out)) for i in 1:n_obs]
-        B = [(randn(rng, dim_in), rand(rng, 1:dim_out)) for i in 1:n_obs]
+        A = [(randn(rng, dims.in), rand(rng, 1:dims.out)) for i in 1:dims.obs]
+        B = [(randn(rng, dims.in), rand(rng, 1:dims.out)) for i in 1:dims.obs]
 
         @test_nowarn gradient(:FiniteDiff, A) do a
             testfunction(k, a)
