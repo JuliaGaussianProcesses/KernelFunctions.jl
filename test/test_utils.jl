@@ -156,7 +156,7 @@ function test_FiniteDiff(kernelfunction, args=nothing, dims=[3, 3])
     end
 end
 
-function test_FiniteDiff(kernelfunction<:MOKernel, args, dims=(in=3, out=3, obs=3))
+function test_FiniteDiff(kernelfunction::Type{<:MOKernel}, args, dims=(in=3, out=2, obs=3))
     # Init arguments :
     k = kernelfunction(args)
 
