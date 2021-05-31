@@ -3,11 +3,11 @@
 
     dims = (in=3, out=2, obs=3)
     rank = 1
-    
+
     A = randn(dims.out, rank)
     B = A * transpose(A) + Diagonal(rand(dims.out))
 
-    X = [(rand(dims.in), rand(1:dims.out)) for i in 1:dims.obs]
+    X = [(rand(dims.in), rand(1:dims.out)) for i in 1:(dims.obs)]
 
     kernel = ExponentialKernel()
     icoregionkernel = IntrinsicCoregionMOKernel(kernel, B)
@@ -18,7 +18,10 @@
     @test icoregionkernel(X[1], X[1]) isa Real
     @test icoregionkernel(X[1], X[1]) ≈ B[X[1][2], X[1][2]] * kernel(X[1][1], X[1][1])
 
-    KernelFunctions.TestUtils.test_interface(icoregionkernel, Vector{Tuple{Float64,Int}}, dim_out=dims.out)
+    KernelFunctions.TestUtils.test_interface(
+        icoregionkernel, Vector{Tuple{Float64,Int}}, dim_out=dims.out
+    )
+
     test_ADs(IntrinsicCoregionMOKernel, (kernel, B), dims=dims)
 
     @test string(coregionkernel) == "Intrinsic Coregion Multi-Output Kernel"
