@@ -158,7 +158,7 @@ end
 
 function test_FiniteDiff(kernelfunction::Type{<:MOKernel}, args, dims=(in=3, out=2, obs=3))
     # Init arguments :
-    k = kernelfunction(args)
+    k = kernelfunction(args...)
 
     rng = MersenneTwister(42)
     @testset "FiniteDifferences" begin
