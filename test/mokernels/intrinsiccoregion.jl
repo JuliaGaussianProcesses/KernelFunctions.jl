@@ -7,7 +7,7 @@
     rank = 1
 
     A = randn(out_dim, rank)
-    B = A * transpose(A) + Diagonal(randn(out_dim))
+    B = A * transpose(A) + Diagonal(rand(out_dim))
 
     X = [(rand(in_dim), rand(1:out_dim)) for i in 1:n_obs]
 
