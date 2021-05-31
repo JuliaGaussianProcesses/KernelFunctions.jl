@@ -48,6 +48,18 @@ function compare_gradient(f, AD::Symbol, args)
     @test grad_AD ≈ grad_FD atol = 1e-8 rtol = 1e-5
 end
 
+function compare_gradient(f, AD::Symbol, args::Vector{Tuple{T,Int}}) where {T}
+    grad_AD = first.(gradient(f, AD, args))
+    grad_FD = first.(gradient(f, :FiniteDiff, args))
+    @test grad_AD ≈ grad_FD atol = 1e-8 rtol = 1e-5
+end
+
+function compare_gradient(f, AD::Symbol, args::Tuple{T,Int}) where {T}
+    grad_AD = first(gradient(f, AD, args))
+    grad_FD = first(gradient(f, :FiniteDiff, args))
+    @test grad_AD ≈ grad_FD atol = 1e-8 rtol = 1e-5
+end
+
 testfunction(k, A, B, dim) = sum(kernelmatrix(k, A, B; obsdim=dim))
 testfunction(k, A, dim) = sum(kernelmatrix(k, A; obsdim=dim))
 testdiagfunction(k, A, dim) = sum(kernelmatrix_diag(k, A; obsdim=dim))
