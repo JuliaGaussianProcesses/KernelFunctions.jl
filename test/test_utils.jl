@@ -252,3 +252,48 @@ function test_AD(AD::Symbol, kernelfunction, args=nothing, dims=[3, 3])
         end
     end
 end
+
+function test_AD(AD::Symbol, kernelfunction::Type{<:MOKernel}, args, dims=(in=3, out=2, obs=3))
+    @testset "$(AD)" begin
+        # Test kappa function
+        k = kernelfunction(args...)
+
+        rng = MersenneTwister(42)
+
+        # Testing kernel evaluations
+        x = (rand(rng, dims.obs), rand(rng, 1:dims.out))
+        y = (rand(rng, dims.obs), rand(rng, 1:dims.out))
+
+        compare_gradient(AD, x) do x
+            k(x, y)
+        end
+        compare_gradient(AD, y) do y
+            k(x, y)
+        end
+
+        # Testing kernel matrices
+        A = [(randn(rng, dims.in), rand(rng, 1:dims.out)) for i in 1:dims.obs]
+        B = [(randn(rng, dims.in), rand(rng, 1:dims.out)) for i in 1:dims.obs]
+
+        compare_gradient(AD, A) do a
+            testfunction(k, a)
+        end
+        compare_gradient(AD, A) do a
+            testfunction(k, a, B)
+        end
+        compare_gradient(AD, B) do b
+            testfunction(k, A, b)
+        end
+
+        compare_gradient(AD, A) do a
+            testdiagfunction(k, a)
+        end
+        compare_gradient(AD, A) do a
+            testdiagfunction(k, a, B)
+        end
+        compare_gradient(AD, B) do b
+            testdiagfunction(k, A, b)
+        end
+    end
+end
+
