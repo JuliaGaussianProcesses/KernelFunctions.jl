@@ -81,6 +81,17 @@ function test_ADs(
     end
 end
 
+function test_ADs(
+    kernelfunction::Type{<:MOKernel}, args; ADs=[:Zygote], dims=(in=3, out=2, obs=3)
+)
+    test_fd = test_FiniteDiff(kernelfunction, args, dims)
+    if !test_fd.anynonpass
+        for AD in ADs
+            test_AD(AD, kernelfunction, args, dims)
+        end
+    end
+end
+
 function test_FiniteDiff(kernelfunction, args=nothing, dims=[3, 3])
     # Init arguments :
     k = if args === nothing
