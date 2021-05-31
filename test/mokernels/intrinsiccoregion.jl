@@ -1,15 +1,13 @@
 @testset "intrinsiccoregion" begin
     rng = MersenneTwister(123)
 
-    n_obs = 3
-    in_dim = 2
-    out_dim = 2
+    dims = (in=3, out=2, obs=3)
     rank = 1
+    
+    A = randn(dims.out, rank)
+    B = A * transpose(A) + Diagonal(rand(dims.out))
 
-    A = randn(out_dim, rank)
-    B = A * transpose(A) + Diagonal(rand(out_dim))
-
-    X = [(rand(in_dim), rand(1:out_dim)) for i in 1:n_obs]
+    X = [(rand(dims.in), rand(1:dims.out)) for i in 1:dims.obs]
 
     kernel = ExponentialKernel()
     icoregionkernel = IntrinsicCoregionMOKernel(kernel, B)
