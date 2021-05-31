@@ -163,8 +163,8 @@ function test_FiniteDiff(kernelfunction::Type{<:MOKernel}, args, dims=(in=3, out
     rng = MersenneTwister(42)
     @testset "FiniteDifferences" begin
         ## Testing Kernel Functions
-        x = (rand(rng, dims.obs), rand(rng, 1:(dims.out)))
-        y = (rand(rng, dims.obs), rand(rng, 1:(dims.out)))
+        x = (rand(rng, dims.in), rand(rng, 1:(dims.out)))
+        y = (rand(rng, dims.in), rand(rng, 1:(dims.out)))
 
         @test_nowarn gradient(:FiniteDiff, x) do x
             k(x, y)
@@ -274,8 +274,8 @@ function test_AD(
         rng = MersenneTwister(42)
 
         # Testing kernel evaluations
-        x = (rand(rng, dims.obs), rand(rng, 1:(dims.out)))
-        y = (rand(rng, dims.obs), rand(rng, 1:(dims.out)))
+        x = (rand(rng, dims.in), rand(rng, 1:(dims.out)))
+        y = (rand(rng, dims.in), rand(rng, 1:(dims.out)))
 
         compare_gradient(AD, x) do x
             k(x, y)
