@@ -18,7 +18,7 @@
     @test icoregionkernel(X[1], X[1]) isa Real
     @test icoregionkernel(X[1], X[1]) ≈ B[X[1][2], X[1][2]] * kernel(X[1][1], X[1][1])
 
-    KernelFunctions.TestUtils.test_interface(icoregionkernel, Vector{Tuple{Float64,Int}}, dim_out=out_dim)
+    KernelFunctions.TestUtils.test_interface(icoregionkernel, Vector{Tuple{Float64,Int}}, dim_out=dims.out)
 
     @test string(coregionkernel) == "Intrinsic Coregion Multi-Output Kernel"
 end
