@@ -20,7 +20,12 @@ struct IntrinsicCoregionMOKernel{K<:Kernel,T<:AbstractMatrix} <: MOKernel
     B::T
 
     function IntrinsicCoregionMOKernel{K,T}(kernel::K, B::T) where {K,T}
-        @check_args(IntrinsicCoregionMOKernel, B, eigmin(B) >= 0, "B has to be positive semi-definite")
+        @check_args(
+            IntrinsicCoregionMOKernel,
+            B,
+            eigmin(B) >= 0,
+            "B has to be positive semi-definite"
+        )
         return new{K,T}(kernel, B)
     end
 end
@@ -34,5 +39,7 @@ function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{
 end
 
 function Base.show(io::IO, k::IntrinsicCoregionMOKernel)
-    return print(io, "Intrinsic Coregion Kernel: ", k.kernel, " with ", size(k.B, 1), " outputs")
+    return print(
+        io, "Intrinsic Coregion Kernel: ", k.kernel, " with ", size(k.B, 1), " outputs"
+    )
 end

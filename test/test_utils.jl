@@ -164,7 +164,7 @@ function test_FiniteDiff(kernelfunction::Type{<:MOKernel}, args, dims=(in=3, out
             A = tuple.(eachcol(a), last.(A))
             testfunction(k, A, B)
         end
-        @test_nowarn gradient(:FiniteDiff,  reduce(hcat, first.(B))) do b
+        @test_nowarn gradient(:FiniteDiff, reduce(hcat, first.(B))) do b
             B = tuple.(eachcol(b), last.(B))
             testfunction(k, A, B)
         end
@@ -177,7 +177,7 @@ function test_FiniteDiff(kernelfunction::Type{<:MOKernel}, args, dims=(in=3, out
             A = tuple.(eachcol(a), last.(A))
             testdiagfunction(k, A, B)
         end
-        @test_nowarn gradient(:FiniteDiff,  reduce(hcat, first.(B))) do b
+        @test_nowarn gradient(:FiniteDiff, reduce(hcat, first.(B))) do b
             B = tuple.(eachcol(b), last.(B))
             testdiagfunction(k, A, B)
         end
