@@ -48,18 +48,6 @@ function compare_gradient(f, AD::Symbol, args)
     @test grad_AD ≈ grad_FD atol = 1e-8 rtol = 1e-5
 end
 
-function compare_gradient(f, AD::Symbol, args::Vector{Tuple{T,Int}}) where {T}
-    grad_AD = first.(gradient(f, AD, args))
-    grad_FD = first.(gradient(f, :FiniteDiff, args))
-    @test grad_AD ≈ grad_FD atol = 1e-8 rtol = 1e-5
-end
-
-function compare_gradient(f, AD::Symbol, args::Tuple{T,Int}) where {T}
-    grad_AD = first(gradient(f, AD, args))
-    grad_FD = first(gradient(f, :FiniteDiff, args))
-    @test grad_AD ≈ grad_FD atol = 1e-8 rtol = 1e-5
-end
-
 testfunction(k, A, B, dim) = sum(kernelmatrix(k, A, B; obsdim=dim))
 testfunction(k, A, dim) = sum(kernelmatrix(k, A; obsdim=dim))
 testdiagfunction(k, A, dim) = sum(kernelmatrix_diag(k, A; obsdim=dim))
@@ -81,16 +69,9 @@ function test_ADs(
     end
 end
 
-function test_ADs(
-    kernelfunction::Type{<:MOKernel}, args; ADs=[:Zygote], dims=(in=3, out=2, obs=3)
-)
-    test_fd = test_FiniteDiff(kernelfunction, args, dims)
-    if !test_fd.anynonpass
-        for AD in ADs
-            test_AD(AD, kernelfunction, args, dims)
-        end
-    end
-end
+test_ADs(kernelfunction::Type{<:MOKernel}, args, ADs, dims) = test_ADs(
+    kernelfunction, args=nothing;
+    ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=(in=3, out=2, obs=3))
 
 function test_FiniteDiff(kernelfunction, args=nothing, dims=[3, 3])
     # Init arguments :
@@ -166,8 +147,10 @@ function test_FiniteDiff(kernelfunction::Type{<:MOKernel}, args, dims=(in=3, out
         x = (rand(rng, dims.in), rand(rng, 1:(dims.out)))
         y = (rand(rng, dims.in), rand(rng, 1:(dims.out)))
 
-        @test_nowarn gradient(:FiniteDiff, x) do x
-            k(x, y)
+        x_out_idx = x[2]
+
+        @test_nowarn gradient(:FiniteDiff, x[1]) do x
+            k((x, x_out_idx), y)
         end
 
         ## Testing Kernel Matrices
@@ -175,24 +158,27 @@ function test_FiniteDiff(kernelfunction::Type{<:MOKernel}, args, dims=(in=3, out
         A = [(randn(rng, dims.in), rand(rng, 1:(dims.out))) for i in 1:(dims.obs)]
         B = [(randn(rng, dims.in), rand(rng, 1:(dims.out))) for i in 1:(dims.obs)]
 
-        @test_nowarn gradient(:FiniteDiff, A) do a
-            testfunction(k, a)
+        A_out_idxs = last.(A)
+        B_out_idxs = last.(B)
+
+        @test_nowarn gradient(:FiniteDiff, first.(A)) do a
+            testfunction(k, tuple.(a, A_out_idxs))
         end
-        @test_nowarn gradient(:FiniteDiff, A) do a
-            testfunction(k, a, B)
+        @test_nowarn gradient(:FiniteDiff, first.(A)) do a
+            testfunction(k, tuple.(a, A_out_idxs), B)
         end
-        @test_nowarn gradient(:FiniteDiff, B) do b
-            testfunction(k, A, b)
+        @test_nowarn gradient(:FiniteDiff, first.(B)) do b
+            testfunction(k, A, tuple.(b, B_out_idxs))
         end
 
-        @test_nowarn gradient(:FiniteDiff, A) do a
-            testdiagfunction(k, a)
+        @test_nowarn gradient(:FiniteDiff, first.(A)) do a
+            testdiagfunction(k, tuple.(a, A_out_idxs))
         end
-        @test_nowarn gradient(:FiniteDiff, A) do a
-            testdiagfunction(k, a, B)
+        @test_nowarn gradient(:FiniteDiff, first.(A)) do a
+            testdiagfunction(k, tuple.(a, A_out_idxs), B)
         end
-        @test_nowarn gradient(:FiniteDiff, B) do b
-            testdiagfunction(k, A, b)
+        @test_nowarn gradient(:FiniteDiff, first.(B)) do b
+            testdiagfunction(k, A, tuple.(b, B_out_idxs))
         end
     end
 end
@@ -277,36 +263,58 @@ function test_AD(
         x = (rand(rng, dims.in), rand(rng, 1:(dims.out)))
         y = (rand(rng, dims.in), rand(rng, 1:(dims.out)))
 
-        compare_gradient(AD, x) do x
-            k(x, y)
+        x_out_idx = x[2]
+        y_out_idx = y[2]
+
+        compare_gradient(AD, x[1]) do x
+            k((x, x_out_idx), y)
         end
-        compare_gradient(AD, y) do y
-            k(x, y)
+        compare_gradient(AD, y[1]) do y
+            k(x, (y, y_out_idx))
         end
 
         # Testing kernel matrices
         A = [(randn(rng, dims.in), rand(rng, 1:(dims.out))) for i in 1:(dims.obs)]
         B = [(randn(rng, dims.in), rand(rng, 1:(dims.out))) for i in 1:(dims.obs)]
 
-        compare_gradient(AD, A) do a
-            testfunction(k, a)
-        end
-        compare_gradient(AD, A) do a
-            testfunction(k, a, B)
-        end
-        compare_gradient(AD, B) do b
-            testfunction(k, A, b)
-        end
+        A_out_idxs = last.(A)
+        B_out_idxs = last.(B)
 
-        compare_gradient(AD, A) do a
-            testdiagfunction(k, a)
+        compare_gradient(AD, hcat(first.(A)...)) do a
+            matrix = hcat(first.(A)...)
+            vector_of_vectors = [matrix[:,i] for i in 1:size(matrix,2)]
+            input = tuple.(vector_of_vectors, A_out_idxs)
+            testfunction(k, input)
         end
-        compare_gradient(AD, A) do a
-            testdiagfunction(k, a, B)
+        compare_gradient(AD, hcat(first.(A)...)) do a
+            matrix = hcat(first.(A)...)
+            vector_of_vectors = [matrix[:,i] for i in 1:size(matrix,2)]
+            input = tuple.(vector_of_vectors, A_out_idxs)
+            testfunction(k, input, B)
         end
-        compare_gradient(AD, B) do b
-            testdiagfunction(k, A, b)
+        compare_gradient(AD, hcat(first.(B)...)) do b
+            matrix = hcat(first.(B)...)
+            vector_of_vectors = [matrix[:,i] for i in 1:size(matrix,2)]
+            input = tuple.(vector_of_vectors, B_out_idxs)
+            testfunction(k, A, input)
+        end
+        compare_gradient(AD, hcat(first.(A)...)) do a
+            matrix = hcat(first.(A)...)
+            vector_of_vectors = [matrix[:,i] for i in 1:size(matrix,2)]
+            input = tuple.(vector_of_vectors, A_out_idxs)
+            testdiagfunction(k, input)
+        end
+        compare_gradient(AD, hcat(first.(A)...)) do a
+            matrix = hcat(first.(A)...)
+            vector_of_vectors = [matrix[:,i] for i in 1:size(matrix,2)]
+            input = tuple.(vector_of_vectors, A_out_idxs)
+            testdiagfunction(k, input, B)
+        end
+        compare_gradient(AD, hcat(first.(B)...)) do b
+            matrix = hcat(first.(B)...)
+            vector_of_vectors = [matrix[:,i] for i in 1:size(matrix,2)]
+            input = tuple.(vector_of_vectors, B_out_idxs)
+            testdiagfunction(k, A, input)
         end
     end
 end
-
