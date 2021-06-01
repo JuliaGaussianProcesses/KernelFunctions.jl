@@ -31,6 +31,6 @@ function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{
     return k.B[px, py] * k.kernel(x, y)
 end
 
-function Base.show(io::IO, ::IntrinsicCoregionMOKernel)
-    return print(io, "Intrinsic Coregion Multi-Output Kernel")
+function Base.show(io::IO, k::IntrinsicCoregionMOKernel)
+    return print(io, "Intrinsic Coregion Kernel: ", k.kernel, " with ", size(k.B, 1), " outputs")
 end
