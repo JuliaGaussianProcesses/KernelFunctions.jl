@@ -71,7 +71,7 @@ end
 
 function test_ADs(
     k::MOKernel; ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=(in=3, out=2, obs=3)
-    )
+)
     test_fd = test_FiniteDiff(k, dims)
     if !test_fd.anynonpass
         for AD in ADs
@@ -255,9 +255,7 @@ function test_AD(AD::Symbol, kernelfunction, args=nothing, dims=[3, 3])
     end
 end
 
-function test_AD(
-    AD::Symbol, k::MOKernel, dims=(in=3, out=2, obs=3)
-    )
+function test_AD(AD::Symbol, k::MOKernel, dims=(in=3, out=2, obs=3))
     @testset "$(AD)" begin
         rng = MersenneTwister(42)
 
