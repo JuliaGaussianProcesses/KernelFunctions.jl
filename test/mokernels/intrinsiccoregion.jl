@@ -15,6 +15,8 @@
     @test icoregionkernel isa IntrinsicCoregionMOKernel
     @test icoregionkernel isa MOKernel
     @test icoregionkernel isa Kernel
+    @test icoregionkernel.B == B
+    @test icoregionkernel.kernel == kernel
     @test icoregionkernel(X[1], X[1]) isa Real
     @test icoregionkernel(X[1], X[1]) ≈ B[X[1][2], X[1][2]] * kernel(X[1][1], X[1][1])
     @test icoregionkernel(X[1], X[end]) ≈ B[X[1][2], X[end][2]] * kernel(X[1][1], X[end][1])
