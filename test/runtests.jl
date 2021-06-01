@@ -52,7 +52,7 @@ using KernelFunctions.TestUtils: test_interface
 @info "Packages Loaded"
 
 include("test_utils.jl")
-include("finitedifferences.jl")
+# include("finitedifferences.jl")
 
 @testset "KernelFunctions" begin
     include("utils.jl")
