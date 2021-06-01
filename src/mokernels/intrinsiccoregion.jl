@@ -5,7 +5,7 @@ Kernel associated with the intrinsic coregionalization model.
 
 # Definition
 
-For inputs ``x, x'`` and output dimensions ``p_x, p_{x'}'``, the kernel is defined as[^ARL]
+For inputs ``x, x'`` and output dimensions ``p, p'``, the kernel is defined as[^ARL]
 ```math
 k\big((x, p_x), (x', p_{x'}); B, \tilde{k}\big) = [B]_{p_x, p_{x'}} \tilde{k}\big(x, x'\big),
 ```
