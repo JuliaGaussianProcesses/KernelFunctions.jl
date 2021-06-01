@@ -24,5 +24,5 @@
 
     test_ADs(IntrinsicCoregionMOKernel, (kernel, B), dims=dims)
 
-    @test string(coregionkernel) == "Intrinsic Coregion Multi-Output Kernel"
+    @test string(icoregionkernel) == "Intrinsic Coregion Multi-Output Kernel"
 end
