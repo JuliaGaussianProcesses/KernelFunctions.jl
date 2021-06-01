@@ -69,9 +69,16 @@ function test_ADs(
     end
 end
 
-test_ADs(kernelfunction::Type{<:MOKernel}, args, ADs, dims) = test_ADs(
-    kernelfunction, args=nothing;
-    ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=(in=3, out=2, obs=3))
+function test_ADs(
+    k::MOKernel; ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=(in=3, out=2, obs=3)
+    )
+    test_fd = test_FiniteDiff(k, dims)
+    if !test_fd.anynonpass
+        for AD in ADs
+            test_AD(AD, k, dims)
+        end
+    end
+end
 
 function test_FiniteDiff(kernelfunction, args=nothing, dims=[3, 3])
     # Init arguments :
@@ -137,10 +144,7 @@ function test_FiniteDiff(kernelfunction, args=nothing, dims=[3, 3])
     end
 end
 
-function test_FiniteDiff(kernelfunction::Type{<:MOKernel}, args, dims=(in=3, out=2, obs=3))
-    # Init arguments :
-    k = kernelfunction(args...)
-
+function test_FiniteDiff(k::MOKernel, dims=(in=3, out=2, obs=3))
     rng = MersenneTwister(42)
     @testset "FiniteDifferences" begin
         ## Testing Kernel Functions
@@ -252,12 +256,9 @@ function test_AD(AD::Symbol, kernelfunction, args=nothing, dims=[3, 3])
 end
 
 function test_AD(
-    AD::Symbol, kernelfunction::Type{<:MOKernel}, args, dims=(in=3, out=2, obs=3)
+    AD::Symbol, k::MOKernel, dims=(in=3, out=2, obs=3)
     )
     @testset "$(AD)" begin
-        # Test kappa function
-        k = kernelfunction(args...)
-
         rng = MersenneTwister(42)
 
         # Testing kernel evaluations

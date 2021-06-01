@@ -10,7 +10,7 @@
     X = [(rand(dims.in), rand(1:(dims.out))) for i in 1:(dims.obs)]
 
     kernel = SqExponentialKernel()
-    icoregionkernel = IntrinsicCoregionMOKernel(kernel, B)
+    icoregionkernel = IntrinsicCoregionMOKernel(kernel=kernel, B=B)
 
     @test icoregionkernel.B == B
     @test icoregionkernel.kernel == kernel
