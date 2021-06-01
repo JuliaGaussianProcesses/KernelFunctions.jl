@@ -25,7 +25,7 @@ struct IntrinsicCoregionMOKernel{K<:Kernel,T<:AbstractMatrix} <: MOKernel
     end
 end
 
-function IntrinsicCoregionMOKernel(kernel::Kernel, B::AbstractMatrix)
+function IntrinsicCoregionMOKernel(; kernel::Kernel, B::AbstractMatrix)
     return IntrinsicCoregionMOKernel{typeof(kernel),typeof(B)}(kernel, B)
 end
 
