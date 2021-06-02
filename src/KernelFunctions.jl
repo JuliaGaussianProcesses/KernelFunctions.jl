@@ -42,7 +42,7 @@ export IndependentMOKernel, LatentFactorMOKernel, IntrinsicCoregionMOKernel
 export tensor, ⊗, compose
 
 using Compat
-using ChainRulesCore: ChainRulesCore, Tangent, ZeroTangent, One, DoesNotExist, NoTangent
+using ChainRulesCore: ChainRulesCore, Tangent, ZeroTangent, NoTangent
 using ChainRulesCore: @thunk, InplaceableThunk
 using CompositionsBase
 using Distances
