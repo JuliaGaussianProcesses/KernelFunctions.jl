@@ -76,6 +76,8 @@ Base.getindex(D::ColVecs, i::CartesianIndex{1}) = view(D.X, :, i)
 Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
 Base.setindex!(D::ColVecs, v::AbstractVector, i) = setindex!(D.X, v, :, i)
 
+Base.vcat(a::ColVecs, b::ColVecs) = ColVecs(hcat(a.X, b.X))
+
 dim(x::ColVecs) = size(x.X, 1)
 
 pairwise(d::PreMetric, x::ColVecs) = Distances.pairwise(d, x.X; dims=2)
@@ -143,6 +145,8 @@ Base.getindex(D::RowVecs, i::Int) = view(D.X, i, :)
 Base.getindex(D::RowVecs, i::CartesianIndex{1}) = view(D.X, i, :)
 Base.getindex(D::RowVecs, i) = RowVecs(view(D.X, i, :))
 Base.setindex!(D::RowVecs, v::AbstractVector, i) = setindex!(D.X, v, i, :)
+
+Base.vcat(a::RowVecs, b::RowVecs) = RowVecs(vcat(a.X, b.X))
 
 dim(x::RowVecs) = size(x.X, 2)
 
