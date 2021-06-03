@@ -36,13 +36,13 @@ export spectral_mixture_kernel, spectral_mixture_product_kernel
 export ColVecs, RowVecs
 
 export MOInput
-export IndependentMOKernel, LatentFactorMOKernel
+export IndependentMOKernel, LatentFactorMOKernel, IntrinsicCoregionMOKernel
 
 # Reexports
 export tensor, ⊗, compose
 
 using Compat
-using ChainRulesCore: ChainRulesCore, Composite, Zero, One, DoesNotExist, NO_FIELDS
+using ChainRulesCore: ChainRulesCore, Tangent, ZeroTangent, NoTangent
 using ChainRulesCore: @thunk, InplaceableThunk
 using CompositionsBase
 using Distances
@@ -105,6 +105,7 @@ include(joinpath("mokernels", "mokernel.jl"))
 include(joinpath("mokernels", "moinput.jl"))
 include(joinpath("mokernels", "independent.jl"))
 include(joinpath("mokernels", "slfm.jl"))
+include(joinpath("mokernels", "intrinsiccoregion.jl"))
 
 include("chainrules.jl")
 include("zygoterules.jl")

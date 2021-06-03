@@ -98,6 +98,18 @@ function test_interface(
 end
 
 function test_interface(
+    rng::AbstractRNG, k::MOKernel, ::Type{Vector{Tuple{T,Int}}}; dim_out=1, kwargs...
+) where {T<:Real}
+    return test_interface(
+        k,
+        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:51],
+        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:51],
+        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:50];
+        kwargs...,
+    )
+end
+
+function test_interface(
     rng::AbstractRNG, k::Kernel, ::Type{<:ColVecs{T}}; dim_in=2, kwargs...
 ) where {T<:Real}
     return test_interface(
