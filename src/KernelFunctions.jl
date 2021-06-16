@@ -106,6 +106,7 @@ include(joinpath("mokernels", "moinput.jl"))
 include(joinpath("mokernels", "independent.jl"))
 include(joinpath("mokernels", "slfm.jl"))
 include(joinpath("mokernels", "intrinsiccoregion.jl"))
+include(joinpath("mokernels", "lmm.jl"))
 
 include("chainrules.jl")
 include("zygoterules.jl")
