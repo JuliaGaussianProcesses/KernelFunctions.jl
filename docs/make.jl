@@ -18,6 +18,7 @@ end
 for filepath in readdir(EXAMPLES_SRC; join=true)
     endswith(filepath, ".jl") || continue
     Literate.markdown(filepath, EXAMPLES_OUT; documenter=true)
+    Literate.notebook(filepath, EXAMPLES_OUT; documenter=true)
 end
 
 DocMeta.setdocmeta!(
@@ -45,18 +46,15 @@ makedocs(;
         "theory.md",
         "create_kernel.md",
         "API" => "api.md",
-        "Examples" => [
-            "Kernel Ridge Regression" => "examples/kernel_ridge_regression.md",
-            "Training kernel parameters" => "examples/train_kernel_parameters.md",
-            "Gaussian process priors" => "examples/gaussianprocesspriors.md",
-            "SVM" => "examples/svm.md",
-            "Deep Kernel Learning" => "examples/deepkernellearning.md",
-        ],
         "Kernel Functions" => "kernels.md",
         "Input Transforms" => "transform.md",
         "Metrics" => "metrics.md",
         "Theory" => "theory.md",
         "Custom Kernels" => "create_kernel.md",
+        "Examples" =>
+            joinpath.(
+                "examples", filter(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT))
+            ),
     ],
     strict=true,
     checkdocs=:exports,
