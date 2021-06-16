@@ -20,7 +20,7 @@ function f(x, k, λ)
            inv(kernelmatrix(k, X; obsdim=1) + exp(λ[1]) * I) *
            y
 end # Optimal prediction f
-svmloss(y, ŷ) = ŷ -> sum(maximum.(0.0, 1 - y * ŷ)) - λ * norm(ŷ)(f(X, k, λ)) # Total svm loss with regularisation
-pred = f(Xgrid, k, λ) #Compute prediction on a grid
+svmloss(y, ŷ, λ) = ŷ -> sum(maximum.(0.0, 1 - y * ŷ)) - λ * norm(ŷ)(f(X, k, λ)) # Total svm loss with regularisation
+pred = f(Xgrid, k, 0.1) #Compute prediction on a grid
 contourf(xgrid, xgrid, pred)
 scatter!(eachcol(X)...; color=y, lab="data")
