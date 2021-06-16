@@ -10,6 +10,11 @@ using KernelFunctions
 
 const EXAMPLES_SRC = joinpath(@__DIR__, "..", "examples")
 const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
+const BLACKLIST = [
+    "deepkernellearning",
+    "kernelridgeregression",
+    "svm",
+]
 
 if ispath(EXAMPLES_OUT)
     rm(EXAMPLES_OUT; recursive=true)
@@ -17,6 +22,7 @@ end
 
 for filepath in readdir(EXAMPLES_SRC; join=true)
     endswith(filepath, ".jl") || continue
+    any([occursin(blacklistname, filepath) for blacklistname in BLACKLIST]) && continue
     Literate.markdown(filepath, EXAMPLES_OUT; documenter=true)
     Literate.notebook(filepath, EXAMPLES_OUT; documenter=true)
 end
