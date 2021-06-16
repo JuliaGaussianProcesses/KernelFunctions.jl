@@ -15,12 +15,9 @@ if ispath(EXAMPLES_OUT)
     rm(EXAMPLES_OUT; recursive=true)
 end
 
-for filename in readdir(EXAMPLES_SRC)
-    endswith(filename, ".jl") || continue
-    name = splitext(filename)[1]
-    Literate.markdown(
-        joinpath(EXAMPLES_SRC, filename), EXAMPLES_OUT; name=name, documenter=true
-    )
+for filepath in readdir(EXAMPLES_SRC; join=true)
+    endswith(filepath, ".jl") || continue
+    Literate.markdown(filepath, EXAMPLES_OUT; documenter=true)
 end
 
 DocMeta.setdocmeta!(
@@ -36,9 +33,9 @@ DocMeta.setdocmeta!(
 )
 
 makedocs(;
-    sitename="KernelFunctions",
-    format=Documenter.HTML(),
     modules=[KernelFunctions],
+    sitename="KernelFunctions.jl",
+    format=Documenter.HTML(),
     pages=[
         "Home" => "index.md",
         "userguide.md",
