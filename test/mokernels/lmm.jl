@@ -1,0 +1,48 @@
+@testset "lmm" begin
+    rng = MersenneTwister(123)
+    FDM = FiniteDifferences.central_fdm(5, 1)
+    N = 10
+    in_dim = 3
+    out_dim = 6
+    x1 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
+    x2 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
+    H = rand(6,4)
+
+    k = NaiveLMMMOKernel(
+        [Matern32Kernel(), SqExponentialKernel(), FBMKernel(), Matern32Kernel()],
+        H,
+        0.5
+    )
+    @test k isa NaiveLMMMOKernel
+    @test k isa MOKernel
+    @test k isa Kernel
+    @test k(x1[1], x2[1]) isa Real
+
+    # @test kernelmatrix(k, x1, x2) ≈ kernelmatrix(k, collect(x1), collect(x2))
+    # @test kernelmatrix(k, x1, x1) ≈ kernelmatrix(k, x1)
+
+    @test string(k) == "Linear Mixing Model Multi-Output Kernel (naive implementation)"
+    @test repr("text/plain", k) == (
+        "Linear Mixing Model Multi-Output Kernel (naive implementation)\n" *
+        "\tkernels (K): Matern 3/2 Kernel (metric = Euclidean(0.0))\n" *
+        "\t\tSquared Exponential Kernel (metric = Euclidean(0.0))\n" *
+        "\t\tFractional Brownian Motion Kernel (h = 0.5)\n" *
+        "\t\tMatern 3/2 Kernel (metric = Euclidean(0.0))"
+    )
+
+    # # AD test
+    # function test_naiveLMM(H::AbstractMatrix, x1, x2)
+    #     k = NaiveLMMMOKernel(
+    #         [Matern32Kernel(), SqExponentialKernel(), FBMKernel()],
+    #         H,
+    #         0.5
+    #     )
+    #     return k((x1, 1), (x2, 1))
+    # end
+
+    # a = rand()
+    # @test all(
+    #     FiniteDifferences.j′vp(FDM, test_naiveLMM, a, k.H, x1[1][1], x2[1][1]) .≈
+    #     Zygote.pullback(test_naiveLMM, k.H, x1[1][1], x2[1][1])[2](a),
+    # )
+end
