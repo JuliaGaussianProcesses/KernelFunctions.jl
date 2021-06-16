@@ -57,10 +57,10 @@ makedocs(;
         "Metrics" => "metrics.md",
         "Theory" => "theory.md",
         "Custom Kernels" => "create_kernel.md",
-        "Examples" =>
-            joinpath.(
-                "examples", filter(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT))
-            ),
+        # "Examples" =>
+        #     joinpath.(
+        #         "examples", filter(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT))
+        #     ),
     ],
     strict=true,
     checkdocs=:exports,
