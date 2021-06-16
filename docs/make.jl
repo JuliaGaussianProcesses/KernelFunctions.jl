@@ -52,11 +52,6 @@ makedocs(;
         "theory.md",
         "create_kernel.md",
         "API" => "api.md",
-        "Kernel Functions" => "kernels.md",
-        "Input Transforms" => "transform.md",
-        "Metrics" => "metrics.md",
-        "Theory" => "theory.md",
-        "Custom Kernels" => "create_kernel.md",
         # "Examples" =>
         #     joinpath.(
         #         "examples", filter(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT))
