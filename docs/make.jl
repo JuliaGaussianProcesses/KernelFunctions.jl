@@ -10,11 +10,7 @@ using KernelFunctions
 
 const EXAMPLES_SRC = joinpath(@__DIR__, "..", "examples")
 const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
-const BLACKLIST = [
-    "deepkernellearning",
-    "kernelridgeregression",
-    "svm",
-]
+const BLACKLIST = ["deepkernellearning", "kernelridgeregression", "svm"]
 
 if ispath(EXAMPLES_OUT)
     rm(EXAMPLES_OUT; recursive=true)
