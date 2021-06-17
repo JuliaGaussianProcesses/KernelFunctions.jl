@@ -7,14 +7,15 @@ Kernel associated with the linear mixing model.
 
 For inputs ``x, x'`` and output dimensions ``p_x, p_{x'}'``, the kernel is defined as[^BPTHST]
 ```math
-k\big((x, p_x), (x, p_{x'})\big) = H_{p_{x}}k_{simple}(x, x')H_{p_{x'}}
+k\big((x, p_x), (x, p_{x'})\big) = H_{p_{x}}K(x, x')H_{p_{x'}}
 ```
-where ``k_1, \ldots, k_m`` are ``m`` kernels, one for each latent process, ``H`` is a
+where ``K(x, x') = Diag(k_1(x, x'), ..., k_m(x, x'))`` with zero off-diagonal entries.
+``k_1, \ldots, k_m`` are ``m`` kernels, one for each latent process, ``H`` is a
 mixing matrix of ``m`` basis vectors spanning the output space, and ``σ²`` is noise.
 
 [^BPTHST]: Wessel P. Bruinsma, Eric Perim, Will Tebbutt, J. Scott Hosking, Arno Solin, Richard E. Turner (2020). [Scalable Exact Inference in Multi-Output Gaussian Processes](https://arxiv.org/pdf/1911.06287.pdf).
 """
-struct NaiveLMMMOKernel{Tk<:Union{Kernel, Vector{<:Kernel}}, Th<:AbstractMatrix, F<:Float64} <: MOKernel
+struct NaiveLMMMOKernel{Tk<:AbstractVector{<:Kernel}, Th<:AbstractMatrix, F<:Float64} <: MOKernel
     K::Tk
     H::Th
     σ²::F
@@ -22,10 +23,10 @@ struct NaiveLMMMOKernel{Tk<:Union{Kernel, Vector{<:Kernel}}, Th<:AbstractMatrix,
     function NaiveLMMMOKernel(k::SimpleKernel, H::AbstractMatrix, σ²)
         σ² >= 0 || error("`σ²` must be positive")
         m = size(H,2)
-        K = [k for i in 1:m]
+        K = fill(k, m)
         return new{typeof(K),typeof(H),typeof(σ²)}(K,H,σ²)
     end
-    function NaiveLMMMOKernel(K::Vector{<:Kernel}, H::AbstractMatrix, σ²)
+    function NaiveLMMMOKernel(K::AbstractVector{<:Kernel}, H::AbstractMatrix, σ²)
         σ² >= 0 || error("`σ²` must be positive")
         return new{typeof(K),typeof(H),typeof(σ²)}(K,H,σ²)
     end
@@ -40,7 +41,7 @@ function (κ::NaiveLMMMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int}
     for i in 1:m
         K[i, i] = κ.K[i](x, y)
     end
-    return H[px,:]' * K * H[py,:]
+    return H[px,:]' * K * H[py,:] + σ²
 end
 
 # not optimized at all
