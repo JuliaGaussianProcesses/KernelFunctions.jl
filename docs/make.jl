@@ -56,6 +56,7 @@ makedocs(;
         "theory.md",
         "create_kernel.md",
         "API" => "api.md",
+        "Design" => "design.md",
         "Examples" =>
             joinpath.(
                 "examples", filter(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT))
