@@ -12,9 +12,7 @@ const PACKAGE_DIR = joinpath(@__DIR__, "..")
 const EXAMPLES_SRC = joinpath(PACKAGE_DIR, "examples")
 const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
 const BLACKLIST = [
-    "deep-kernel-learning",
-    "kernel-ridge-regression",
-    "support-vector-machine",
+    "deep-kernel-learning", "kernel-ridge-regression", "support-vector-machine"
 ]
 
 ispath(EXAMPLES_OUT) && rm(EXAMPLES_OUT; recursive=true)
