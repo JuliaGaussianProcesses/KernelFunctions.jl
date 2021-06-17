@@ -16,5 +16,7 @@
     @test k(x1[1], x1[1]) isa Real
     @test kernelmatrix(k, x1) isa Matrix
 
-    @test string(k) == "Independent Multi-Output Kernel\n\tSquared Exponential Kernel"
+    @test string(k) ==
+          "Independent Multi-Output Kernel\n" *
+          "\tSquared Exponential Kernel (metric = Euclidean(0.0))"
 end

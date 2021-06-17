@@ -57,6 +57,10 @@ function kernelmatrix_diag(κ::KernelProduct, x::AbstractVector)
     return reduce(hadamard, kernelmatrix_diag(k, x) for k in κ.kernels)
 end
 
+function kernelmatrix_diag(κ::KernelProduct, x::AbstractVector, y::AbstractVector)
+    return reduce(hadamard, kernelmatrix_diag(k, x, y) for k in κ.kernels)
+end
+
 function Base.show(io::IO, κ::KernelProduct)
     return printshifted(io, κ, 0)
 end

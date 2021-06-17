@@ -15,7 +15,9 @@
     @test kernel1.kernels === (k1, k2) === KernelTensorProduct((k1, k2)).kernels
     @test length(kernel1) == length(kernel2) == 2
     @test string(kernel1) == (
-        "Tensor product of 2 kernels:\n\tSquared Exponential Kernel\n\tExponential Kernel"
+        "Tensor product of 2 kernels:\n" *
+        "\tSquared Exponential Kernel (metric = Euclidean(0.0))\n" *
+        "\tExponential Kernel (metric = Euclidean(0.0))"
     )
     @test_throws DimensionMismatch kernel1(rand(3), rand(3))
 
@@ -26,12 +28,6 @@
             @test kernel1(x, y) == kernel2(x, y) == val
         end
     end
-
-    # Deprecations
-    @test TensorProduct === KernelTensorProduct
-    @test TensorProduct(k1, k2) == k1 ⊗ k2
-    @test TensorProduct((k1, k2)) == k1 ⊗ k2
-    @test TensorProduct([k1, k2]) == k1 ⊗ k2
 
     # Standardised tests.
     TestUtils.test_interface(kernel1, ColVecs{Float64})

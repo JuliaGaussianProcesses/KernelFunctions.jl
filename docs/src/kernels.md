@@ -50,7 +50,7 @@ FBMKernel
 ### Gabor Kernel
 
 ```@docs
-GaborKernel
+gaborkernel
 ```
 
 ### Matérn Kernels
@@ -88,11 +88,12 @@ LinearKernel
 PolynomialKernel
 ```
 
-### Rational Quadratic Kernels
+### Rational Kernels
 
 ```@docs
+RationalKernel
 RationalQuadraticKernel
-GammaRationalQuadraticKernel
+GammaRationalKernel
 ```
 
 ### Spectral Mixture Kernels
@@ -118,13 +119,12 @@ of kernels together.
 
 ```@docs
 TransformedKernel
-transform(::Kernel, ::Transform)
-transform(::Kernel, ::Real)
-transform(::Kernel, ::AbstractVector)
+∘(::Kernel, ::Transform)
 ScaledKernel
 KernelSum
 KernelProduct
 KernelTensorProduct
+NormalizedKernel
 ```
 
 ## Multi-output Kernels
@@ -133,4 +133,5 @@ KernelTensorProduct
 MOKernel
 IndependentMOKernel
 LatentFactorMOKernel
+IntrinsicCoregionMOKernel
 ```

@@ -123,6 +123,11 @@ function kernelmatrix_diag(k::KernelTensorProduct, x::AbstractVector)
     return mapreduce(kernelmatrix_diag, hadamard, k.kernels, slices(x))
 end
 
+function kernelmatrix_diag(k::KernelTensorProduct, x::AbstractVector, y::AbstractVector)
+    validate_domain(k, x)
+    return mapreduce(kernelmatrix_diag, hadamard, k.kernels, slices(x), slices(y))
+end
+
 Base.show(io::IO, kernel::KernelTensorProduct) = printshifted(io, kernel, 0)
 
 function Base.:(==)(x::KernelTensorProduct, y::KernelTensorProduct)

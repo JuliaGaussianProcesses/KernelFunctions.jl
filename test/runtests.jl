@@ -4,6 +4,7 @@ using Distances
 using Documenter
 using Kronecker: Kronecker
 using LinearAlgebra
+using LogExpFunctions
 using PDMats
 using Random
 using SpecialFunctions
@@ -96,8 +97,6 @@ include("test_utils.jl")
         print(" ")
         include(joinpath("basekernels", "gabor.jl"))
         print(" ")
-        include(joinpath("basekernels", "maha.jl"))
-        print(" ")
         include(joinpath("basekernels", "matern.jl"))
         print(" ")
         include(joinpath("basekernels", "nn.jl"))
@@ -108,7 +107,7 @@ include("test_utils.jl")
         print(" ")
         include(joinpath("basekernels", "polynomial.jl"))
         print(" ")
-        include(joinpath("basekernels", "rationalquad.jl"))
+        include(joinpath("basekernels", "rational.jl"))
         print(" ")
         include(joinpath("basekernels", "sm.jl"))
         print(" ")
@@ -124,6 +123,8 @@ include("test_utils.jl")
         include(joinpath("kernels", "overloads.jl"))
         include(joinpath("kernels", "scaledkernel.jl"))
         include(joinpath("kernels", "transformedkernel.jl"))
+        include(joinpath("kernels", "normalizedkernel.jl"))
+        include(joinpath("kernels", "neuralkernelnetwork.jl"))
     end
     @info "Ran tests on Kernel"
 
@@ -138,6 +139,7 @@ include("test_utils.jl")
         include(joinpath("mokernels", "moinput.jl"))
         include(joinpath("mokernels", "independent.jl"))
         include(joinpath("mokernels", "slfm.jl"))
+        include(joinpath("mokernels", "intrinsiccoregion.jl"))
     end
     @info "Ran tests on Multi-Output Kernels"
 
@@ -146,7 +148,8 @@ include("test_utils.jl")
     end
 
     include("generic.jl")
-    include("zygote_adjoints.jl")
+    include("chainrules.jl")
+    include("zygoterules.jl")
 
     @testset "doctests" begin
         DocMeta.setdocmeta!(
@@ -160,6 +163,13 @@ include("test_utils.jl")
             end;
             recursive=true,
         )
-        doctest(KernelFunctions)
+        doctest(
+            KernelFunctions;
+            doctestfilters=[
+                r"{([a-zA-Z0-9]+,\s?)+[a-zA-Z0-9]+}",
+                r"(Array{[a-zA-Z0-9]+,\s?1}|Vector{[a-zA-Z0-9]+})",
+                r"(Array{[a-zA-Z0-9]+,\s?2}|Matrix{[a-zA-Z0-9]+})",
+            ],
+        )
     end
 end
