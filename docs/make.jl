@@ -8,19 +8,28 @@ end
 
 using KernelFunctions
 
-const EXAMPLES_SRC = joinpath(@__DIR__, "..", "examples")
+const PACKAGE_DIR = joinpath(@__DIR__, "..")
+const EXAMPLES_SRC = joinpath(PACKAGE_DIR, "examples")
 const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
-const BLACKLIST = ["deepkernellearning", "kernelridgeregression", "svm"]
+const BLACKLIST = [
+    "deep-kernel-learning",
+    "kernel-ridge-regression",
+    "support-vector-machine",
+]
 
 if ispath(EXAMPLES_OUT)
     rm(EXAMPLES_OUT; recursive=true)
 end
 
-for filepath in readdir(EXAMPLES_SRC; join=true)
-    endswith(filepath, ".jl") || continue
-    any([occursin(blacklistname, filepath) for blacklistname in BLACKLIST]) && continue
-    Literate.markdown(filepath, EXAMPLES_OUT; documenter=true)
-    Literate.notebook(filepath, EXAMPLES_OUT; documenter=true)
+for exampledir in readdir(EXAMPLES_SRC; join=true)
+    any([occursin(blacklistname, exampledir) for blacklistname in BLACKLIST]) && continue
+    Pkg.activate(exampledir) do
+        Pkg.develop(path=PACKAGE_DIR)
+        Pkg.instantiate()
+        filepath = joinpath(exampledir, "script.jl")
+        Literate.markdown(filepath, EXAMPLES_OUT; documenter=true)
+        Literate.notebook(filepath, EXAMPLES_OUT; documenter=true)
+    end
 end
 
 DocMeta.setdocmeta!(

@@ -1,12 +1,11 @@
 [deps]
-Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
 KernelFunctions = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
-MLDataUtils = "cc2ba9b6-d476-5e6d-8eaf-a92d5412d41d"
 PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150"
-Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [compat]
 Documenter = "0.27"
