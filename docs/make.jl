@@ -21,7 +21,7 @@ mkpath(EXAMPLES_OUT)
 for exampledir in readdir(EXAMPLES_SRC; join=true)
     any([occursin(blacklistname, exampledir) for blacklistname in BLACKLIST]) && continue
     Pkg.activate(exampledir) do
-        Pkg.develop(path=PACKAGE_DIR)
+        Pkg.develop(; path=PACKAGE_DIR)
         Pkg.instantiate()
         filepath = joinpath(exampledir, "script.jl")
         Literate.markdown(filepath, EXAMPLES_OUT; documenter=true)
@@ -56,7 +56,8 @@ makedocs(;
         "API" => "api.md",
         "Examples" =>
             joinpath.(
-                "examples", filter(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT))
+                "examples",
+                filter(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT)),
             ),
     ],
     strict=true,
