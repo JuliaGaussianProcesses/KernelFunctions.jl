@@ -12,9 +12,7 @@ const PACKAGE_DIR = joinpath(@__DIR__, "..")
 const EXAMPLES_SRC = joinpath(PACKAGE_DIR, "examples")
 const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
 const BLACKLIST = [
-    "deep-kernel-learning",
-    "kernel-ridge-regression",
-    "support-vector-machine",
+    "deep-kernel-learning", "kernel-ridge-regression", "support-vector-machine"
 ]
 
 ispath(EXAMPLES_OUT) && rm(EXAMPLES_OUT; recursive=true)
@@ -23,7 +21,7 @@ mkpath(EXAMPLES_OUT)
 for exampledir in readdir(EXAMPLES_SRC; join=true)
     any([occursin(blacklistname, exampledir) for blacklistname in BLACKLIST]) && continue
     Pkg.activate(exampledir) do
-        Pkg.develop(path=PACKAGE_DIR)
+        Pkg.develop(; path=PACKAGE_DIR)
         Pkg.instantiate()
         filepath = joinpath(exampledir, "script.jl")
         Literate.markdown(filepath, EXAMPLES_OUT; documenter=true)
@@ -59,7 +57,8 @@ makedocs(;
         "Design" => "design.md",
         "Examples" =>
             joinpath.(
-                "examples", filter(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT))
+                "examples",
+                filter(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT)),
             ),
     ],
     strict=true,
