@@ -17,9 +17,8 @@ const BLACKLIST = [
     "support-vector-machine",
 ]
 
-if ispath(EXAMPLES_OUT)
-    rm(EXAMPLES_OUT; recursive=true)
-end
+ispath(EXAMPLES_OUT) && rm(EXAMPLES_OUT; recursive=true)
+mkpath(EXAMPLES_OUT)
 
 for exampledir in readdir(EXAMPLES_SRC; join=true)
     any([occursin(blacklistname, exampledir) for blacklistname in BLACKLIST]) && continue
@@ -57,10 +56,10 @@ makedocs(;
         "theory.md",
         "create_kernel.md",
         "API" => "api.md",
-        # "Examples" =>
-        #     joinpath.(
-        #         "examples", filter(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT))
-        #     ),
+        "Examples" =>
+            joinpath.(
+                "examples", filter(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT))
+            ),
     ],
     strict=true,
     checkdocs=:exports,
