@@ -10,8 +10,7 @@
 
     k = NaiveLMMMOKernel(
         [Matern32Kernel(), SqExponentialKernel(), FBMKernel(), Matern32Kernel()],
-        H,
-        0.5
+        H
     )
     @test k isa NaiveLMMMOKernel
     @test k isa MOKernel
