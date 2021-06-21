@@ -17,7 +17,7 @@ x_test = range(xmin, xmax; length=300)
 x, y = noisy_function(sinc, x; noise=0.1)
 X = reshape(x, :, 1)
 X_test = reshape(x_test, :, 1)
-k = SqExponentialKernel(1.0)#+Matern32Kernel(2.0)
+k = SqExponentialKernel() + Matern32Kernel() ∘ ScaleTransform(2.0)
 λ = [-1.0]
 function f(x, k, λ)
     return kernelmatrix(k, x, X; obsdim=1) *

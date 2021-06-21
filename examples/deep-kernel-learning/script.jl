@@ -11,7 +11,7 @@ Flux.@functor Matern32Kernel
 Flux.@functor FunctionTransform
 
 neuralnet = Chain(Dense(1, 3), Dense(3, 2))
-k = SqExponentialKernel(FunctionTransform(neuralnet))
+k = SqExponentialKernel() ∘ FunctionTransform(neuralnet)
 xmin = -3;
 xmax = 3;
 x = range(xmin, xmax; length=100)
