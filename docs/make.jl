@@ -26,7 +26,7 @@ function preprocess(content)
                      #md #
                      #md # ```@setup @__NAME__
                      #md # using Pkg: Pkg
-                     #md # Pkg.activate("$(INPUT)/@__NAME__")
+                     #md # Pkg.activate("$(EXAMPLES_SRC)/@__NAME__")
                      #md # Pkg.instantiate()
                      #md # ```
                      #
