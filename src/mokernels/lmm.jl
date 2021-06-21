@@ -10,7 +10,8 @@ For inputs ``x, x'`` and output dimensions ``p_x, p_{x'}'``, the kernel is defin
 k\big((x, p_x), (x, p_{x'})\big) = H_{p_{x}}K(x, x')H_{p_{x'}}
 ```
 where ``K(x, x') = Diag(k_1(x, x'), ..., k_m(x, x'))`` with zero off-diagonal entries.
-``H_{p_{x}}`` is the ``p_x``-th column of ``H`` and
+``H_{p_{x}}`` is the ``p_x``-th column (`p_x`-th output) of ``H \in \mathbb{R}^{m \times p}``
+representing ``m`` basis vectors for the ``p`` dimensional output space of ``f``.
 ``k_1, \ldots, k_m`` are ``m`` kernels, one for each latent process, ``H`` is a
 mixing matrix of ``m`` basis vectors spanning the output space.
 
@@ -19,16 +20,9 @@ mixing matrix of ``m`` basis vectors spanning the output space.
 struct NaiveLMMMOKernel{Tk<:AbstractVector{<:Kernel}, Th<:AbstractMatrix} <: MOKernel
     K::Tk
     H::Th
-    # if just a simple kernel is provided, we construct the MO kernel
-    function NaiveLMMMOKernel(k::SimpleKernel, H::AbstractMatrix)
-        m = size(H,2)
-        K = fill(k, m)
-        return new{typeof(K),typeof(H)}(K,H)
-    end
-    function NaiveLMMMOKernel(K::AbstractVector{<:Kernel}, H::AbstractMatrix)
-        return new{typeof(K),typeof(H)}(K,H)
-    end
 end
+
+NaiveLMMMOKernel(k::Kernel, H::AbstractMatrix) = NaiveLMMMOKernel(Fill(k, size(H, 1)), H)
 
 function (κ::NaiveLMMMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
     (px > size(κ.H, 2) || py > size(κ.H, 2) || px < 1 || py < 1) &&
