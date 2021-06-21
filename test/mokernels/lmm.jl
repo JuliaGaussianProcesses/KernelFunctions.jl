@@ -6,7 +6,7 @@
     out_dim = 6
     x1 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
     x2 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
-    H = rand(6,4)
+    H = rand(4,6)
 
     k = NaiveLMMMOKernel(
         [Matern32Kernel(), SqExponentialKernel(), FBMKernel(), Matern32Kernel()],
@@ -16,9 +16,6 @@
     @test k isa MOKernel
     @test k isa Kernel
     @test k(x1[1], x2[1]) isa Real
-
-    # @test kernelmatrix(k, x1, x2) ≈ kernelmatrix(k, collect(x1), collect(x2))
-    # @test kernelmatrix(k, x1, x1) ≈ kernelmatrix(k, x1)
 
     @test string(k) == "Linear Mixing Model Multi-Output Kernel (naive implementation)"
     @test repr("text/plain", k) == (
