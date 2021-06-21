@@ -17,14 +17,33 @@ const BLACKLIST = ["deep-kernel-learning", "kernel-ridge-regression"]
 ispath(EXAMPLES_OUT) && rm(EXAMPLES_OUT; recursive=true)
 mkpath(EXAMPLES_OUT)
 
+# preprocessor for Literate example scripts:
+#  - add Documenter @setup snippet that activates each example's own project environment
+function preprocess(content)
+    sub = SubstitutionString(
+        """
+\\0
+#
+#md #
+#md # ```@setup @__NAME__
+#md # using Pkg: Pkg
+#md # Pkg.activate("$(INPUT)/@__NAME__")
+#md # Pkg.instantiate()
+#md # ```
+#
+        """,
+    )
+    return replace(content, r"^# # [^\n]*"m => sub; count=1)
+end
+
 for example in readdir(EXAMPLES_SRC)
     any([occursin(blacklisted, example) for blacklisted in BLACKLIST]) && continue
     Pkg.activate(joinpath(EXAMPLES_SRC, example)) do
         Pkg.develop(; path=PACKAGE_DIR)
         Pkg.instantiate()
         filepath = joinpath(EXAMPLES_SRC, example, "script.jl")
-        Literate.markdown(filepath, EXAMPLES_OUT; name=example, documenter=true)
-        Literate.notebook(filepath, EXAMPLES_OUT; name=example, documenter=true)
+        Literate.markdown(filepath, EXAMPLES_OUT; name=example, documenter=true, preprocess=preprocess)
+        Literate.notebook(filepath, EXAMPLES_OUT; name=example, documenter=true, preprocess=preprocess)
     end
 end
 
