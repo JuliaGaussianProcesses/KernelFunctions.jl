@@ -25,7 +25,7 @@ To actually build the docs, run
 ```bash
 julia --project=. make.jl
 ```
-The built docs will be underneath build/
+The built docs will be underneath build/, and are best viewed in a browser.
 
 # How to contribute to the docs
 
