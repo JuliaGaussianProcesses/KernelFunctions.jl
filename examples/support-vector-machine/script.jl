@@ -1,3 +1,4 @@
+# # Support Vector Machine
 using KernelFunctions
 using Distributions, LinearAlgebra
 using Plots
