@@ -11,7 +11,7 @@ X = zeros(N, 2)
 X[y .== 1, :] = rand(MvNormal(μ[:, 1], I), count(y .== 1))'  # Attribute samples from class 1
 X[y .== -1, :] = rand(MvNormal(μ[:, 2], I), count(y .== -1))'  # Attribute samples from class 2
 
-k = SqExponentialKernel(2.0)  # Create kernel function
+k = SqExponentialKernel()  # Create kernel function
 function f(x, k, λ)
     return kernelmatrix(k, x, X; obsdim=1) *
            inv(kernelmatrix(k, X; obsdim=1) + exp(λ[1]) * I) *
