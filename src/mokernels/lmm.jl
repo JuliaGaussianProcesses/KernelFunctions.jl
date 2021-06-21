@@ -27,7 +27,7 @@ NaiveLMMMOKernel(k::Kernel, H::AbstractMatrix) = NaiveLMMMOKernel(Fill(k, size(H
 function (κ::NaiveLMMMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
     (px > size(κ.H, 2) || py > size(κ.H, 2) || px < 1 || py < 1) &&
     error("`px` and `py` must be within the range of the number of outputs")
-    return sum(H[i, px] * κ.K[i](x, y) * H[i, py] for i in 1:length(κ.K))
+    return sum(κ.H[i, px] * κ.K[i](x, y) * κ.H[i, py] for i in 1:length(κ.K))
 end
 
 function Base.show(io::IO, k::NaiveLMMMOKernel)

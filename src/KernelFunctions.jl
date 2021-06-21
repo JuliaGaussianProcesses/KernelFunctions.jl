@@ -36,7 +36,10 @@ export spectral_mixture_kernel, spectral_mixture_product_kernel
 export ColVecs, RowVecs
 
 export MOInput
-export IndependentMOKernel, LatentFactorMOKernel, IntrinsicCoregionMOKernel
+export IndependentMOKernel,
+    LatentFactorMOKernel,
+    IntrinsicCoregionMOKernel,
+    NaiveLMMMOKernel
 
 # Reexports
 export tensor, ⊗, compose

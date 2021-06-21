@@ -27,18 +27,17 @@
     )
 
     # # AD test
-    # function test_naiveLMM(H::AbstractMatrix, x1, x2)
-    #     k = NaiveLMMMOKernel(
-    #         [Matern32Kernel(), SqExponentialKernel(), FBMKernel()],
-    #         H,
-    #         0.5
-    #     )
-    #     return k((x1, 1), (x2, 1))
-    # end
+    function test_naiveLMM(H::AbstractMatrix, x1, x2)
+        k = NaiveLMMMOKernel(
+            [Matern32Kernel(), SqExponentialKernel(), FBMKernel()],
+            H
+        )
+        return k((x1, 1), (x2, 1))
+    end
 
-    # a = rand()
-    # @test all(
-    #     FiniteDifferences.j′vp(FDM, test_naiveLMM, a, k.H, x1[1][1], x2[1][1]) .≈
-    #     Zygote.pullback(test_naiveLMM, k.H, x1[1][1], x2[1][1])[2](a),
-    # )
+    a = rand()
+    @test all(
+        FiniteDifferences.j′vp(FDM, test_naiveLMM, a, k.H, x1[1][1], x2[1][1]) .≈
+        Zygote.pullback(test_naiveLMM, k.H, x1[1][1], x2[1][1])[2](a),
+    )
 end
