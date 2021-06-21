@@ -18,7 +18,7 @@ ispath(EXAMPLES_OUT) && rm(EXAMPLES_OUT; recursive=true)
 mkpath(EXAMPLES_OUT)
 
 for example in readdir(EXAMPLES_SRC)
-    any([occursin(blacklistname, exampledir) for blacklistname in BLACKLIST]) && continue
+    any([occursin(blacklisted, example) for blacklisted in BLACKLIST]) && continue
     Pkg.activate(joinpath(EXAMPLES_SRC, example)) do
         Pkg.develop(; path=PACKAGE_DIR)
         Pkg.instantiate()
