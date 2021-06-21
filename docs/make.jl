@@ -17,14 +17,14 @@ const BLACKLIST = ["deep-kernel-learning", "kernel-ridge-regression"]
 ispath(EXAMPLES_OUT) && rm(EXAMPLES_OUT; recursive=true)
 mkpath(EXAMPLES_OUT)
 
-for exampledir in readdir(EXAMPLES_SRC; join=true)
+for example in readdir(EXAMPLES_SRC)
     any([occursin(blacklistname, exampledir) for blacklistname in BLACKLIST]) && continue
-    Pkg.activate(exampledir) do
+    Pkg.activate(joinpath(EXAMPLES_SRC, example)) do
         Pkg.develop(; path=PACKAGE_DIR)
         Pkg.instantiate()
-        filepath = joinpath(exampledir, "script.jl")
-        Literate.markdown(filepath, EXAMPLES_OUT; documenter=true)
-        Literate.notebook(filepath, EXAMPLES_OUT; documenter=true)
+        filepath = joinpath(EXAMPLES_SRC, example, "script.jl")
+        Literate.markdown(filepath, EXAMPLES_OUT; name=example, documenter=true)
+        Literate.notebook(filepath, EXAMPLES_OUT; name=example, documenter=true)
     end
 end
 
