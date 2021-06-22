@@ -34,7 +34,10 @@ function Base.show(io::IO, k::NaiveLMMMOKernel)
     return print(io, "Linear Mixing Model Multi-Output Kernel (naive implementation)")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", k::NaiveLMMMOKernel)
-    print(io, "Linear Mixing Model Multi-Output Kernel (naive implementation)\n\tkernels (K): ")
-    return join(io, k.K, "\n\t\t")
+function Base.show(io::IO, mime::MIME"text/plain", k::NaiveLMMMOKernel)
+    print(io, "Linear Mixing Model Multi-Output Kernel (naive implementation). Kernels:")
+    for k in k.K
+        print(io, "\n\t")
+        show(io, mime, k)
+    end
 end

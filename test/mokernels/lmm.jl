@@ -19,11 +19,11 @@
 
     @test string(k) == "Linear Mixing Model Multi-Output Kernel (naive implementation)"
     @test repr("text/plain", k) == (
-        "Linear Mixing Model Multi-Output Kernel (naive implementation)\n" *
-        "\tkernels (K): Matern 3/2 Kernel (metric = Euclidean(0.0))\n" *
-        "\t\tSquared Exponential Kernel (metric = Euclidean(0.0))\n" *
-        "\t\tFractional Brownian Motion Kernel (h = 0.5)\n" *
-        "\t\tMatern 3/2 Kernel (metric = Euclidean(0.0))"
+        "Linear Mixing Model Multi-Output Kernel (naive implementation). Kernels:\n" *
+        "\tMatern 3/2 Kernel (metric = Euclidean(0.0))\n" *
+        "\tSquared Exponential Kernel (metric = Euclidean(0.0))\n" *
+        "\tFractional Brownian Motion Kernel (h = 0.5)\n" *
+        "\tMatern 3/2 Kernel (metric = Euclidean(0.0))"
     )
 
     # # AD test
