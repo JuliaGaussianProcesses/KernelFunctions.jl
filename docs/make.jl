@@ -44,7 +44,7 @@ for example in readdir(EXAMPLES_SRC)
             filepath, EXAMPLES_OUT; name=example, documenter=true, preprocess=preprocess
         )
         Literate.notebook(
-            filepath, EXAMPLES_OUT; name=example, documenter=true, preprocess=preprocess
+            filepath, EXAMPLES_OUT; name=example, documenter=true, preprocess=preprocess, execute=false
         )
     end
 end
