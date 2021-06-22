@@ -26,7 +26,7 @@ function f(x, k, λ)
            y
 end
 f(X, k, 1.0)
-loss(k, λ) = ŷ -> sum(y - ŷ) / length(y) + exp(λ[1]) * norm(ŷ)(f(X, k, λ))
+loss(k, λ) = (ŷ -> sum(y - ŷ) / length(y) + exp(λ[1]) * norm(ŷ))(f(X, k, λ))
 loss(k, λ)
 ps = Flux.params(k)
 push!(ps, λ)
