@@ -26,6 +26,23 @@
         "\tMatern 3/2 Kernel (metric = Euclidean(0.0))"
     )
 
+    k = NaiveLMMMOKernel(
+        Matern32Kernel(),
+        H
+    )
+
+    @test length(k.K) == 4
+    for kernel in k.K @test isa(kernel, Matern32Kernel) end
+
+    @test string(k) == "Linear Mixing Model Multi-Output Kernel (naive implementation)"
+    @test repr("text/plain", k) == (
+        "Linear Mixing Model Multi-Output Kernel (naive implementation). Kernels:\n" *
+        "\tMatern 3/2 Kernel (metric = Euclidean(0.0))\n" *
+        "\tMatern 3/2 Kernel (metric = Euclidean(0.0))\n" *
+        "\tMatern 3/2 Kernel (metric = Euclidean(0.0))\n" *
+        "\tMatern 3/2 Kernel (metric = Euclidean(0.0))"
+    )
+
     # # AD test
     function test_naiveLMM(H::AbstractMatrix, x1, x2)
         k = NaiveLMMMOKernel(
