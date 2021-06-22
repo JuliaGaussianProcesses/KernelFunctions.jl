@@ -27,34 +27,21 @@
     )
 
     k = NaiveLMMMOKernel(
-        Matern32Kernel(),
+        SEKernel(),
         H
     )
 
     @test length(k.K) == 4
-    for kernel in k.K @test isa(kernel, Matern32Kernel) end
+    for kernel in k.K @test isa(kernel, SEKernel) end
 
     @test string(k) == "Linear Mixing Model Multi-Output Kernel (naive implementation)"
     @test repr("text/plain", k) == (
         "Linear Mixing Model Multi-Output Kernel (naive implementation). Kernels:\n" *
-        "\tMatern 3/2 Kernel (metric = Euclidean(0.0))\n" *
-        "\tMatern 3/2 Kernel (metric = Euclidean(0.0))\n" *
-        "\tMatern 3/2 Kernel (metric = Euclidean(0.0))\n" *
-        "\tMatern 3/2 Kernel (metric = Euclidean(0.0))"
+        "\tSquared Exponential Kernel (metric = Euclidean(0.0))\n" *
+        "\tSquared Exponential Kernel (metric = Euclidean(0.0))\n" *
+        "\tSquared Exponential Kernel (metric = Euclidean(0.0))\n" *
+        "\tSquared Exponential Kernel (metric = Euclidean(0.0))"
     )
 
-    # # AD test
-    function test_naiveLMM(H::AbstractMatrix, x1, x2)
-        k = NaiveLMMMOKernel(
-            [Matern32Kernel(), SqExponentialKernel(), FBMKernel()],
-            H
-        )
-        return k((x1, 1), (x2, 1))
-    end
-
-    a = rand()
-    @test all(
-        FiniteDifferences.j′vp(FDM, test_naiveLMM, a, k.H, x1[1][1], x2[1][1]) .≈
-        Zygote.pullback(test_naiveLMM, k.H, x1[1][1], x2[1][1])[2](a),
-    )
+    test_ADs(k)
 end
