@@ -8,11 +8,11 @@
     x2 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
     H = rand(4,6)
 
-    k = NaiveLMMMOKernel(
+    k = NaiveLinearMixingModelKernel(
         [Matern32Kernel(), SqExponentialKernel(), FBMKernel(), Matern32Kernel()],
         H
     )
-    @test k isa NaiveLMMMOKernel
+    @test k isa NaiveLinearMixingModelKernel
     @test k isa MOKernel
     @test k isa Kernel
     @test k(x1[1], x2[1]) isa Real
@@ -26,7 +26,7 @@
         "\tMatern 3/2 Kernel (metric = Euclidean(0.0))"
     )
 
-    k = NaiveLMMMOKernel(
+    k = NaiveLinearMixingModelKernel(
         SEKernel(),
         H
     )

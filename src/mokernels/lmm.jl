@@ -1,5 +1,5 @@
 @doc raw"""
-    NaiveLMMMOKernel(g, e::MOKernel, A::AbstractMatrix)
+    NaiveLinearMixingModelKernel(g, e::MOKernel, A::AbstractMatrix)
 
 Kernel associated with the linear mixing model.
 
@@ -17,24 +17,24 @@ mixing matrix of ``m`` basis vectors spanning the output space.
 
 [^BPTHST]: Wessel P. Bruinsma, Eric Perim, Will Tebbutt, J. Scott Hosking, Arno Solin, Richard E. Turner (2020). [Scalable Exact Inference in Multi-Output Gaussian Processes](https://arxiv.org/pdf/1911.06287.pdf).
 """
-struct NaiveLMMMOKernel{Tk<:AbstractVector{<:Kernel}, Th<:AbstractMatrix} <: MOKernel
+struct NaiveLinearMixingModelKernel{Tk<:AbstractVector{<:Kernel}, Th<:AbstractMatrix} <: MOKernel
     K::Tk
     H::Th
 end
 
-NaiveLMMMOKernel(k::Kernel, H::AbstractMatrix) = NaiveLMMMOKernel(Fill(k, size(H, 1)), H)
+NaiveLinearMixingModelKernel(k::Kernel, H::AbstractMatrix) = NaiveLinearMixingModelKernel(Fill(k, size(H, 1)), H)
 
-function (κ::NaiveLMMMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
+function (κ::NaiveLinearMixingModelKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
     (px > size(κ.H, 2) || py > size(κ.H, 2) || px < 1 || py < 1) &&
     error("`px` and `py` must be within the range of the number of outputs")
     return sum(κ.H[i, px] * κ.K[i](x, y) * κ.H[i, py] for i in 1:length(κ.K))
 end
 
-function Base.show(io::IO, k::NaiveLMMMOKernel)
+function Base.show(io::IO, k::NaiveLinearMixingModelKernel)
     return print(io, "Linear Mixing Model Multi-Output Kernel (naive implementation)")
 end
 
-function Base.show(io::IO, mime::MIME"text/plain", k::NaiveLMMMOKernel)
+function Base.show(io::IO, mime::MIME"text/plain", k::NaiveLinearMixingModelKernel)
     print(io, "Linear Mixing Model Multi-Output Kernel (naive implementation). Kernels:")
     for k in k.K
         print(io, "\n\t")
