@@ -68,5 +68,4 @@ end
 #
 
 l = @layout grid(10, 1)
-plot(plots...; layout=l)
-plot!(; size=(300, 1500))
+plot(plots...; layout=l, size=(300, 1500))
