@@ -134,4 +134,6 @@ MOKernel
 IndependentMOKernel
 LatentFactorMOKernel
 IntrinsicCoregionMOKernel
+LinearMixingModelKernel
+LMMKernel
 ```
