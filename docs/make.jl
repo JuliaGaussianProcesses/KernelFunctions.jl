@@ -36,10 +36,12 @@ end
 
 for example in readdir(EXAMPLES_SRC)
     example ∈ BLACKLIST && continue
-    Pkg.activate(joinpath(EXAMPLES_SRC, example)) do
+    exampledir = joinpath(EXAMPLES_SRC, example)
+    isdir(exampledir) || continue
+    Pkg.activate(exampledir) do
         Pkg.develop(; path=PACKAGE_DIR)
         Pkg.instantiate()
-        filepath = joinpath(EXAMPLES_SRC, example, "script.jl")
+        filepath = joinpath(exampledir, "script.jl")
         Literate.markdown(
             filepath, EXAMPLES_OUT; name=example, documenter=true, preprocess=preprocess
         )
