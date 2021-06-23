@@ -1,4 +1,8 @@
 # # Support Vector Machine
+#
+# !!! warning
+#     This example is under construction
+
 using KernelFunctions
 using Distributions, LinearAlgebra
 using Plots
