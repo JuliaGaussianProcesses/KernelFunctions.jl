@@ -17,44 +17,30 @@ const BLACKLIST = ["deep-kernel-learning", "support-vector-machine"]
 ispath(EXAMPLES_OUT) && rm(EXAMPLES_OUT; recursive=true)
 mkpath(EXAMPLES_OUT)
 
-# preprocessor for Literate example scripts:
-#  - add Documenter @setup snippet that activates each example's own project environment
-function preprocess(content)
-    sub = SubstitutionString("""
-                     \\0
-                     #
-                     #md #
-                     #md # ```@setup @__NAME__
-                     #md # using Pkg: Pkg
-                     #md # Pkg.activate("$(EXAMPLES_SRC)/@__NAME__")
-                     #md # Pkg.instantiate()
-                     #md # ```
-                     #
-                             """)
-    return replace(content, r"^# # [^\n]*"m => sub; count=1)
-end
-
+cmd = Base.julia_cmd()
 for example in readdir(EXAMPLES_SRC)
     example ∈ BLACKLIST && continue
     exampledir = joinpath(EXAMPLES_SRC, example)
     isdir(exampledir) || continue
-    Pkg.activate(exampledir) do
-        Pkg.develop(; path=PACKAGE_DIR)
-        Pkg.instantiate()
-        filepath = joinpath(exampledir, "script.jl")
-        Literate.markdown(
-            filepath, EXAMPLES_OUT; name=example, documenter=true, preprocess=preprocess
-        )
-        Literate.notebook(
-            filepath,
-            EXAMPLES_OUT;
-            name=example,
-            documenter=true,
-            preprocess=preprocess,
-            execute=false,
-        )
-    end
+    filepath = joinpath(exampledir, "script.jl")
+    @show code = """using Literate; Literate.markdown("script.jl", "$(EXAMPLES_OUT)"; name=example, documenter=true, execute=true)"""
+    run(addenv(`$(cmd) -e $(code)`, Dict("JULIA_LOAD_PATH" => exampledir)))
+    Literate.notebook(
+        filepath,
+        EXAMPLES_OUT;
+        name=example,
+        documenter=true,
+        execute=false,
+    )
 end
+#    Pkg.activate(exampledir) do
+#        Pkg.develop(; path=PACKAGE_DIR)
+#        Pkg.instantiate()
+#        filepath = joinpath(exampledir, "script.jl")
+#        Literate.markdown(
+#            filepath, EXAMPLES_OUT; name=example, documenter=true, preprocess=preprocess
+#        )
+
 
 DocMeta.setdocmeta!(
     KernelFunctions,
