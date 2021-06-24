@@ -24,6 +24,8 @@ for example in readdir(EXAMPLES_SRC)
     isdir(exampledir) || continue
     filepath = joinpath(exampledir, "script.jl")
     @show code = """
+        import Pkg
+        Pkg.instantiate()
         using Literate
         Literate.markdown("$(filepath)", "$(EXAMPLES_OUT)"; name="$(example)", documenter=true, execute=true)
     """
