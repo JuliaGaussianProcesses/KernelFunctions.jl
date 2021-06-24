@@ -28,13 +28,7 @@ for example in readdir(EXAMPLES_SRC)
         Literate.markdown("$(filepath)", "$(EXAMPLES_OUT)"; name="$(example)", documenter=true, execute=true)
     """
     run(`$(cmd) --project=$(exampledir) -e $(code)`)
-    Literate.notebook(
-        filepath,
-        EXAMPLES_OUT;
-        name=example,
-        documenter=true,
-        execute=false,
-    )
+    Literate.notebook(filepath, EXAMPLES_OUT; name=example, documenter=true, execute=false)
 end
 #    Pkg.activate(exampledir) do
 #        Pkg.develop(; path=PACKAGE_DIR)
@@ -43,7 +37,6 @@ end
 #        Literate.markdown(
 #            filepath, EXAMPLES_OUT; name=example, documenter=true, preprocess=preprocess
 #        )
-
 
 DocMeta.setdocmeta!(
     KernelFunctions,
