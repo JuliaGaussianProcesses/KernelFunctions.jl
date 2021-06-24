@@ -23,8 +23,11 @@ for example in readdir(EXAMPLES_SRC)
     exampledir = joinpath(EXAMPLES_SRC, example)
     isdir(exampledir) || continue
     filepath = joinpath(exampledir, "script.jl")
-    @show code = """using Literate; Literate.markdown("script.jl", "$(EXAMPLES_OUT)"; name=example, documenter=true, execute=true)"""
-    run(addenv(`$(cmd) -e $(code)`, Dict("JULIA_LOAD_PATH" => exampledir)))
+    @show code = """
+        using Literate
+        Literate.markdown("$(filepath)", "$(EXAMPLES_OUT)"; name="$(example)", documenter=true, execute=true)
+    """
+    run(`$(cmd) --project=$(exampledir) -e $(code)`)
     Literate.notebook(
         filepath,
         EXAMPLES_OUT;
