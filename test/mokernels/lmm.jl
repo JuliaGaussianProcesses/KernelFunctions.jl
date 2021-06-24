@@ -6,11 +6,10 @@
     out_dim = 6
     x1 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
     x2 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
-    H = rand(4,6)
+    H = rand(4, 6)
 
     k = LinearMixingModelKernel(
-        [Matern32Kernel(), SqExponentialKernel(), FBMKernel(), Matern32Kernel()],
-        H
+        [Matern32Kernel(), SqExponentialKernel(), FBMKernel(), Matern32Kernel()], H
     )
     @test k isa LinearMixingModelKernel
     @test k isa MOKernel
@@ -26,16 +25,15 @@
         "\tMatern 3/2 Kernel (metric = Euclidean(0.0))"
     )
 
-    k = LMMKernel(
-        SEKernel(),
-        H
-    )
+    k = LMMKernel(SEKernel(), H)
 
     @test k isa LMMKernel
     @test k isa MOKernel
     @test k isa Kernel
     @test length(k.K) == 4
-    for kernel in k.K @test isa(kernel, SEKernel) end
+    for kernel in k.K
+        @test isa(kernel, SEKernel)
+    end
 
     @test string(k) == "Linear Mixing Model Multi-Output Kernel"
     @test repr("text/plain", k) == (
