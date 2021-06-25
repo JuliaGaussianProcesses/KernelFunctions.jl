@@ -39,7 +39,7 @@ export MOInput
 export IndependentMOKernel,
     LatentFactorMOKernel,
     IntrinsicCoregionMOKernel,
-    LinearMixingModelKernel, LMMKernel
+    LinearMixingModelKernel
 
 # Reexports
 export tensor, ⊗, compose

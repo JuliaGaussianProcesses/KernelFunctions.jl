@@ -25,9 +25,9 @@
         "\tMatern 3/2 Kernel (metric = Euclidean(0.0))"
     )
 
-    k = LMMKernel(SEKernel(), H)
+    k = LinearMixingModelKernel(SEKernel(), H)
 
-    @test k isa LMMKernel
+    @test k isa LinearMixingModelKernel
     @test k isa MOKernel
     @test k isa Kernel
     @test length(k.K) == 4

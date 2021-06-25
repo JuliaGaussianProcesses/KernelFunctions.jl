@@ -41,12 +41,3 @@ function Base.show(io::IO, mime::MIME"text/plain", k::LinearMixingModelKernel)
         show(io, mime, k)
     end
 end
-
-## Aliases ##
-
-"""
-    LMMKernel()
-
-Alias of [`LinearMixingModelKernel`](@ref).
-"""
-const LMMKernel = LinearMixingModelKernel
