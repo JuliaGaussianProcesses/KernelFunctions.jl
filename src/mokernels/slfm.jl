@@ -33,7 +33,7 @@ function (κ::LatentFactorMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,
     return cov_f + κ.e((x, px), (y, py))
 end
 
-function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)
+function kernelmatrix(k::LatentFactorMOKernel, x::IsotopicMOInputs, y::IsotopicMOInputs)
     x.out_dim == y.out_dim || error("`x` and `y` should have the same output dimension")
     x.out_dim == size(k.A, 1) ||
         error("Kernel not compatible with the given multi-output inputs")

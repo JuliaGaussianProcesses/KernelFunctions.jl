@@ -1,12 +1,12 @@
 """
-    MOInput
+    IsotopicMOInputs
 
 An abstract type to accomodate modelling multi-dimensional output data. There are two
 subtypes that each specify a unique ordering of the dimensions.
 
 See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
-abstract type MOInput <: AbstractVector{Tuple{Any,Int}} end
+abstract type IsotopicMOInputs <: AbstractVector{Tuple{T,Int}} end
 
 """
     IsotopicByFeatures(x::AbstractVector, out_dim::Integer)
@@ -31,9 +31,19 @@ The first `length(x)` elements represent the inputs for the first output, the se
 `length(x)` elements represent the inputs for the second output, etc.
 """
 
-struct IsotopicByFeatures{T<:AbstractVector} <: MOInput
+struct IsotopicByFeatures{S,T<:AbstractVector{S}} <: IsotopicMOInputs{S}
     x::T
-    out_dim::Integer
+    out_dim::Int
+end
+
+function Base.getindex(inp::IsotopicByFeatures, ind::Integer)
+    if ind > 0
+        out_dim = (ind - 1) % inp.out_dim + 1
+        ind = Int(round((ind - 1) ÷ inp.out_dim) + 1)
+        return (inp.x[ind], out_dim::Int)
+    else
+        throw(BoundsError(string("Trying to access at ", ind)))
+    end
 end
 
 """
@@ -59,33 +69,26 @@ The first `out_dim` elements represent all outputs for the first input, the seco
 `out_dim` elements represent the outputs for the second input, etc.
 """
 
-struct IsotopicByOutputs{T<:AbstractVector} <: MOInput
+struct IsotopicByOutputs{S,T<:AbstractVector{S}} <: IsotopicMOInputs{S}
     x::T
-    out_dim::Integer
+    out_dim::Int
 end
 
-Base.length(inp::MOInput) = inp.out_dim * length(inp.x)
+Base.length(inp::IsotopicMOInputs) = inp.out_dim * length(inp.x)
 
-Base.size(inp::MOInput, d) = d::Integer == 1 ? inp.out_dim * size(inp.x, 1) : 1
-Base.size(inp::MOInput) = (inp.out_dim * size(inp.x, 1),)
+Base.size(inp::IsotopicMOInputs, d) = d::Integer == 1 ? inp.out_dim * size(inp.x, 1) : 1
+Base.size(inp::IsotopicMOInputs) = (inp.out_dim * size(inp.x, 1),)
 
-Base.lastindex(inp::MOInput) = length(inp)
-Base.firstindex(inp::MOInput) = 1
+Base.lastindex(inp::IsotopicMOInputs) = length(inp)
+Base.firstindex(inp::IsotopicMOInputs) = 1
 
-function Base.getindex(inp::MOInput, ind::Integer)
+function Base.getindex(inp::IsotopicByOutputs, ind::Integer)
     if ind > 0
-        if inp isa IsotopicByOutputs
-            out_dim = ind ÷ length(inp.x) + 1
-            ind = ind % length(inp.x)
-            if ind == 0
-                ind = length(inp.x)
-                out_dim -= 1
-            end
-        elseif inp isa IsotopicByFeatures
-            out_dim = (ind - 1) % inp.out_dim + 1
-            ind = Int(round((ind - 1) ÷ inp.out_dim) + 1)
-        else
-            throw(TypeError(string("Trying to access at ", ind)))
+        out_dim = ind ÷ length(inp.x) + 1
+        ind = ind % length(inp.x)
+        if ind == 0
+            ind = length(inp.x)
+            out_dim -= 1
         end
         return (inp.x[ind], out_dim::Int)
     else
@@ -93,7 +96,7 @@ function Base.getindex(inp::MOInput, ind::Integer)
     end
 end
 
-Base.iterate(inp::MOInput) = (inp[1], 1)
-function Base.iterate(inp::MOInput, state)
+Base.iterate(inp::IsotopicMOInputs) = (inp[1], 1)
+function Base.iterate(inp::IsotopicMOInputs, state)
     return (state < length(inp)) ? (inp[state + 1], state + 1) : nothing
 end

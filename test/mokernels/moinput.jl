@@ -2,7 +2,7 @@
     x = [rand(5) for _ in 1:4]
     mgpi_bo = IsotopicByOutputs(x, 3)
 
-    @test mgpi_bo isa MOInput
+    @test mgpi_bo isa IsotopicMOInputs
     @test length(mgpi_bo) == 12
     @test size(mgpi_bo) == (12,)
     @test size(mgpi_bo, 1) == 12
@@ -20,7 +20,7 @@
 
     mgpi_bf = IsotopicByFeatures(x, 3)
 
-    @test mgpi_bf isa MOInput
+    @test mgpi_bf isa IsotopicMOInputs
     @test length(mgpi_bf) == 12
     @test size(mgpi_bf) == (12,)
     @test size(mgpi_bf, 1) == 12

@@ -35,7 +35,7 @@ export spectral_mixture_kernel, spectral_mixture_product_kernel
 
 export ColVecs, RowVecs
 
-export MOInput, IsotopicByFeatures, IsotopicByOutputs
+export IsotopicMOInputs, IsotopicByFeatures, IsotopicByOutputs
 export IndependentMOKernel, LatentFactorMOKernel, IntrinsicCoregionMOKernel
 
 # Reexports

@@ -60,11 +60,11 @@ The type of collections of inputs for multi-output GPs is therefore `AbstractVec
 
 KernelFunctions.jl provides the following type or situations in which all outputs are observed all of the time:
 ```@docs
-MOInput
+IsotopicMOInputs
 ```
 As with [`ColVecs`](@ref) and [`RowVecs`](@ref) for vector-valued input spaces, this
 type enables specialised implementations of e.g. [`kernelmatrix`](@ref) for
-[`MOInput`](@ref)s in some situations.
+[`IsotopicMOInputs`](@ref)s in some situations.
 
 To find out more about the background, read this [review of kernels for vector-valued functions](https://arxiv.org/pdf/1106.6251.pdf).
 
