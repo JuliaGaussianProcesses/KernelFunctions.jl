@@ -87,7 +87,7 @@ Abstraction is then used to ensure that efficiency is retained, `ColVecs` and `R
 being the most obvious examples of this.
 
 Concretely:
-1. For `Real`-valued inputs, a `Vector{<:Real}` is fine.
+1. For `Real`-valued inputs (scalars), a `Vector{<:Real}` is fine.
 1. For vector-valued inputs, consider a `ColVecs` or `RowVecs`.
 1. For a new input type, simply represent collections of inputs of this type as an `AbstractVector`.
 
