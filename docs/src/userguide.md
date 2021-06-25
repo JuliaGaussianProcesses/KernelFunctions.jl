@@ -81,8 +81,7 @@ kernelmatrix(k, X; obsdim=2) # same as ColVecs(X)
 This is similar to the convention used in [Distances.jl](https://github.com/JuliaStats/Distances.jl).
 
 ### So what type should I use to represent a collection of inputs?
-The central assumption made by KernelFunctions.jl is that all collections of inputs of
-length `N` are represented by `AbstractVector`s of length `N`.
+The central assumption made by KernelFunctions.jl is that all collections of `N` inputs are represented by `AbstractVector`s of length `N`.
 Abstraction is then used to ensure that efficiency is retained, `ColVecs` and `RowVecs`
 being the most obvious examples of this.
 
