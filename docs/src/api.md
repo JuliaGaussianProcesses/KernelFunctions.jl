@@ -58,13 +58,16 @@ For an explanation of this design choice, see [the design notes on multi-output 
 An input to a multi-output `Kernel` should be a `Tuple{T, Int}`, whose first element specifies a location in the domain of the multi-output GP, and whose second element specifies which output the inputs corresponds to.
 The type of collections of inputs for multi-output GPs is therefore `AbstractVector{<:Tuple{T, Int}}`.
 
-KernelFunctions.jl provides the following type or situations in which all outputs are observed all of the time:
+KernelFunctions.jl provides the following types for situations in which all outputs are observed all of the time:
 ```@docs
-IsotopicMOInputs
+IsotopicByFeatures
+IsotopicByOutputs
 ```
-As with [`ColVecs`](@ref) and [`RowVecs`](@ref) for vector-valued input spaces, this
-type enables specialised implementations of e.g. [`kernelmatrix`](@ref) for
-[`IsotopicMOInputs`](@ref)s in some situations.
+For[`IsotopicByFeatures`](@ref) i
+
+As with [`ColVecs`](@ref) and [`RowVecs`](@ref) for vector-valued input spaces, these
+types enables specialised implementations of e.g. [`kernelmatrix`](@ref) for
+[`MOKernel`](@ref)s in some situations.
 
 To find out more about the background, read this [review of kernels for vector-valued functions](https://arxiv.org/pdf/1106.6251.pdf).
 
