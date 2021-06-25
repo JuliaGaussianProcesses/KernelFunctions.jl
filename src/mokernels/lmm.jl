@@ -17,12 +17,14 @@ mixing matrix of ``m`` basis vectors spanning the output space.
 
 [^BPTHST]: Wessel P. Bruinsma, Eric Perim, Will Tebbutt, J. Scott Hosking, Arno Solin, Richard E. Turner (2020). [Scalable Exact Inference in Multi-Output Gaussian Processes](https://arxiv.org/pdf/1911.06287.pdf).
 """
-struct LinearMixingModelKernel{Tk<:AbstractVector{<:Kernel}, Th<:AbstractMatrix} <: MOKernel
+struct LinearMixingModelKernel{Tk<:AbstractVector{<:Kernel},Th<:AbstractMatrix} <: MOKernel
     K::Tk
     H::Th
 end
 
-LinearMixingModelKernel(k::Kernel, H::AbstractMatrix) = LinearMixingModelKernel(Fill(k, size(H, 1)), H)
+function LinearMixingModelKernel(k::Kernel, H::AbstractMatrix)
+    return LinearMixingModelKernel(Fill(k, size(H, 1)), H)
+end
 
 function (κ::LinearMixingModelKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
     (px > size(κ.H, 2) || py > size(κ.H, 2) || px < 1 || py < 1) &&

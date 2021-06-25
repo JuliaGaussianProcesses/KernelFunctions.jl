@@ -37,9 +37,7 @@ export ColVecs, RowVecs
 
 export MOInput
 export IndependentMOKernel,
-    LatentFactorMOKernel,
-    IntrinsicCoregionMOKernel,
-    LinearMixingModelKernel
+    LatentFactorMOKernel, IntrinsicCoregionMOKernel, LinearMixingModelKernel
 
 # Reexports
 export tensor, ⊗, compose
