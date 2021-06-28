@@ -15,6 +15,10 @@ using Literate: Literate
 function preprocess(content)
     sub = SubstitutionString(
         """
+#md # ```@meta
+#md # EditURL = "@__REPO_ROOT_URL__/examples/@__NAME__/script.jl"
+#md # ```
+#md
 \\0
 #
 #md # [![](https://img.shields.io/badge/show-nbviewer-579ACA.svg)](@__NBVIEWER_ROOT_URL__/examples/@__NAME__.ipynb)
