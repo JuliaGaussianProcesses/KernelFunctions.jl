@@ -31,12 +31,9 @@ for example in readdir(EXAMPLES_SRC)
         using Literate
         Literate.markdown("$(filepath)", "$(EXAMPLES_OUT)"; name="$(example)", documenter=true, execute=true)
     """
-    run(
-        addenv(
-            `$(cmd) --project=$(exampledir) -e $(code)`,
-            Dict("JULIA_LOAD_PATH" => load_path),
-        ),
-    )
+    withenv(Dict("JULIA_LOAD_PATH" => load_path)) do
+        run(`$(cmd) --project=$(exampledir) -e $(code)`)
+    end
     Literate.notebook(filepath, EXAMPLES_OUT; name=example, documenter=true, execute=false)
 end
 #    Pkg.activate(exampledir) do
