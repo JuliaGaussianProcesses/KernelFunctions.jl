@@ -76,8 +76,3 @@ function Base.getindex(inp::IsotopicByFeatures, ind::Integer)
 end
 
 Base.size(inp::IsotopicMOInputs) = (inp.out_dim * length(inp.x),)
-
-Base.iterate(inp::IsotopicMOInputs) = (inp[1], 1)
-function Base.iterate(inp::IsotopicMOInputs, state)
-    return (state < length(inp)) ? (inp[state + 1], state + 1) : nothing
-end
