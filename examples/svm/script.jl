@@ -7,6 +7,10 @@ using Plots
 using LinearAlgebra
 using Random
 
+## Set plotting theme
+theme(:wong)
+
+## Set seed
 Random.seed!(1234);
 
 # Number of samples:
@@ -29,10 +33,9 @@ k = SqExponentialKernel() ∘ ScaleTransform(2.0)
 
 # Optimal prediction:
 function f(x, X, k, λ)
-    return kernelmatrix(k, x, X) / (kernelmatrix(k, X) + exp(λ) * I) *  y
+    return kernelmatrix(k, x, X) / (kernelmatrix(k, X) + exp(λ) * I) * y
 end
 
 # Compute prediction on a grid:
-pred = f(Xgrid, ColVecs(X), k, 0.1)
-contourf(xgrid, xgrid, pred)
+contourf(xgrid, xgrid, f(Xgrid, ColVecs(X), k, 0.1))
 scatter!(X[1, :], X[2, :]; color=y, lab="data", widen=false)
