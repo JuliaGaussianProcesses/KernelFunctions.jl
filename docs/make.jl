@@ -32,7 +32,7 @@ for example in readdir(EXAMPLES_SRC)
         Literate.markdown("$(filepath)", "$(EXAMPLES_OUT)"; name="$(example)", documenter=true, execute=true)
         Literate.notebook("$(filepath)", "$(EXAMPLES_OUT)"; name="$(example)", documenter=true, execute=true)
     """
-    withenv(JULIA_LOAD_PATH" => load_path) do
+    withenv("JULIA_LOAD_PATH" => load_path) do
         run(`$(cmd) --project=$(exampledir) -e $(code)`)
     end
 end
