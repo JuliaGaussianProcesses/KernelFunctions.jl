@@ -62,31 +62,20 @@ end
 const IsotopicMOInputs = Union{IsotopicByFeatures, IsotopicByOutputs}
 
 function Base.getindex(inp::IsotopicByOutputs, ind::Integer)
-    if ind > 0
-        out_dim = ind ÷ length(inp.x) + 1
-        ind = ind % length(inp.x)
-        if ind == 0
-            ind = length(inp.x)
-            out_dim -= 1
-        end
-        return (inp.x[ind], out_dim::Int)
-    else
-        throw(BoundsError(string("Trying to access at ", ind)))
-    end
+    @boundscheck checkbounds(inp, ind)
+    output_index, feature_index = fldmod1(ind, length(inp.x))
+    feature = @inbounds inp.x[feature_index]
+    return feature, output_index
 end
 
 function Base.getindex(inp::IsotopicByFeatures, ind::Integer)
-    if ind > 0
-        out_dim = (ind - 1) % inp.out_dim + 1
-        ind = (ind - 1) ÷ inp.out_dim + 1
-        return (inp.x[ind], out_dim::Int)
-    else
-        throw(BoundsError(string("Trying to access at ", ind)))
-    end
+    @boundscheck checkbounds(inp, ind)
+    feature_index, output_index = fldmod1(ind, inp.out_dim)
+    feature = @inbounds inp.x[feature_index]
+    return feature, output_index
 end
 
-Base.size(inp::IsotopicMOInputs) = (inp.out_dim * size(inp.x, 1),)
-
+Base.size(inp::IsotopicMOInputs) = (inp.out_dim * length(inp.x),)
 
 Base.iterate(inp::IsotopicMOInputs) = (inp[1], 1)
 function Base.iterate(inp::IsotopicMOInputs, state)
