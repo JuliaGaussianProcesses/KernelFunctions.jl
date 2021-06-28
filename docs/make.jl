@@ -78,7 +78,6 @@ makedocs(;
         "kernels.md",
         "transform.md",
         "metrics.md",
-        "theory.md",
         "create_kernel.md",
         "API" => "api.md",
         "Design" => "design.md",
