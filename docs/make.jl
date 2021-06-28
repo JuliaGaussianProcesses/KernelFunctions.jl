@@ -49,7 +49,7 @@ DocMeta.setdocmeta!(
 )
 
 makedocs(;
-    sitename="KernelFunctions",
+    sitename="KernelFunctions.jl",
     format=Documenter.HTML(),
     modules=[KernelFunctions],
     pages=[

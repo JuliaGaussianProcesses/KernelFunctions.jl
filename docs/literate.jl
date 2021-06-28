@@ -30,7 +30,7 @@ function preprocess(content)
 # [Julia source file](@__REPO_ROOT_URL__/examples/@__NAME__/script.jl).
 # The corresponding
 #md # notebook can be viewed in [nbviewer](@__NBVIEWER_ROOT_URL__/examples/@__NAME__.ipynb).
-#nb # HTML output can be viewed [here](https://devmotion.github.io/CalibrationErrors.jl/dev/examples/@__NAME__/).
+#nb # HTML output can be viewed [here](https://juliagaussianprocesses.github.io/KernelFunctions.jl/dev/examples/@__NAME__/).
 #
         """,
     )
