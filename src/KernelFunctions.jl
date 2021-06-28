@@ -36,7 +36,8 @@ export spectral_mixture_kernel, spectral_mixture_product_kernel
 export ColVecs, RowVecs
 
 export IsotopicByFeatures, IsotopicByOutputs
-export IndependentMOKernel, LatentFactorMOKernel, IntrinsicCoregionMOKernel
+export IndependentMOKernel,
+    LatentFactorMOKernel, IntrinsicCoregionMOKernel, LinearMixingModelKernel
 
 # Reexports
 export tensor, ⊗, compose
@@ -106,6 +107,7 @@ include(joinpath("mokernels", "moinput.jl"))
 include(joinpath("mokernels", "independent.jl"))
 include(joinpath("mokernels", "slfm.jl"))
 include(joinpath("mokernels", "intrinsiccoregion.jl"))
+include(joinpath("mokernels", "lmm.jl"))
 
 include("chainrules.jl")
 include("zygoterules.jl")
