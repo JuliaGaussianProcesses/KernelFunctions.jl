@@ -24,8 +24,8 @@ xmax = 3;
 x = range(xmin, xmax; length=100)
 x_test = range(xmin, xmax; length=300)
 x, y = noisy_function(sinc, x; noise=0.1)
-X = reshape(x, :, 1)
-X_test = reshape(x_test, :, 1)
+X = ColVecs(reshape(x, :, 1))
+X_test = ColVecs(reshape(x_test, :, 1))
 #md nothing #hide
 
 # Set up kernel and regularisation parameter
@@ -36,11 +36,7 @@ k = SqExponentialKernel() + Matern32Kernel() ∘ ScaleTransform(2.0)
 
 #
 
-function f(x, k, λ)
-    return kernelmatrix(k, x, X; obsdim=1) *
-           inv(kernelmatrix(k, X; obsdim=1) + exp(λ[1]) * I) *
-           y
-end
+f(x, k, λ) = kernelmatrix(k, x, X) / (kernelmatrix(k, X) + exp(λ) * I) * y
 f(X, k, 1.0)
 
 #
