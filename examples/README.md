@@ -24,7 +24,9 @@ julia> Literate.markdown("script.jl", "output_directory")
 julia> Literate.notebook("script.jl", "output_directory")
 ```
 or run
-`julia --project=. ../../docs/literate.jl script.jl output_directory`.
+```shell
+julia docs/literate.jl examples/myexample/script.jl output_directory
+```
 
 ## Add a new example
 
