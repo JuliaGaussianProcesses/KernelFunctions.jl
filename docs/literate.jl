@@ -8,6 +8,7 @@ const OUTDIR = ARGS[2]
 # Activate environment
 using Pkg: Pkg
 Pkg.activate(dirname(SCRIPTJL))
+Pkg.add("Literate"; preserve=Pkg.PRESERVE_ALL)
 Pkg.instantiate()
 using Literate: Literate
 
