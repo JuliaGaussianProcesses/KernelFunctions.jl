@@ -38,25 +38,20 @@ function preprocess(content)
     return replace(content, r"^# # [^\n]*"m => sub; count=1)
 end
 
-try
-    # Convert to markdown and notebook
-    Literate.markdown(
-        SCRIPTJL,
-        OUTDIR;
-        name=basename(dirname(SCRIPTJL)),
-        documenter=false,
-        execute=true,
-        preprocess=preprocess,
-    )
-    Literate.notebook(
-        SCRIPTJL,
-        OUTDIR;
-        name=basename(dirname(SCRIPTJL)),
-        documenter=false,
-        execute=true,
-        preprocess=preprocess,
-    )
-catch e
-    # add script path to error message
-    throw(LoadError(SCRIPTJL, 0, e))
-end
+# Convert to markdown and notebook
+Literate.markdown(
+    SCRIPTJL,
+    OUTDIR;
+    name=basename(dirname(SCRIPTJL)),
+    documenter=false,
+    execute=true,
+    preprocess=preprocess,
+)
+Literate.notebook(
+    SCRIPTJL,
+    OUTDIR;
+    name=basename(dirname(SCRIPTJL)),
+    documenter=false,
+    execute=true,
+    preprocess=preprocess,
+)
