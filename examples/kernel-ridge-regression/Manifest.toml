@@ -401,7 +401,7 @@ version = "0.8.4"
 
 [[KernelFunctions]]
 deps = ["ChainRulesCore", "Compat", "CompositionsBase", "Distances", "FillArrays", "Functors", "LinearAlgebra", "Random", "Requires", "SpecialFunctions", "StatsBase", "StatsFuns", "TensorCore", "Test", "ZygoteRules"]
-path = "/u/10/johnt1/unix/JuliaCode/KernelFunctions.jl/docs/.."
+path = "../.."
 uuid = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
 version = "0.10.6"
 
