@@ -1,61 +1,39 @@
+# run examples
+const EXAMPLES_SRC = joinpath(@__DIR__, "..", "examples")
+const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
+const LITERATEJL = joinpath(@__DIR__, "literate.jl")
+
+# Always rerun examples
+ispath(EXAMPLES_OUT) && rm(EXAMPLES_OUT; recursive=true)
+mkpath(EXAMPLES_OUT)
+
+# Run examples asynchronously
+processes = map(filter!(isdir, readdir(EXAMPLES_SRC; join=true))) do example
+    scriptjl = joinpath(example, "script.jl")
+    return run(
+        pipeline(
+            `$(Base.julia_cmd()) $LITERATEJL $scriptjl $EXAMPLES_OUT`;
+            stdin=devnull,
+            stdout=devnull,
+            stderr=stderr,
+        );
+        wait=false,
+    )::Base.Process
+end
+
+# Check that all examples were run successfully
+isempty(processes) || success(processes) || error("some examples were not run successfully")
+
+# Build documentation
+using KernelFunctions
 using Documenter
-using Literate
-using Pkg
 
 # Print `@debug` statements (https://github.com/JuliaDocs/Documenter.jl/issues/955)
 if haskey(ENV, "GITHUB_ACTIONS")
     ENV["JULIA_DEBUG"] = "Documenter"
 end
 
-using KernelFunctions
-
-const PACKAGE_DIR = joinpath(@__DIR__, "..")
-const EXAMPLES_SRC = joinpath(PACKAGE_DIR, "examples")
-const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
-const BLACKLIST = ["deep-kernel-learning", "support-vector-machine"]
-
-ispath(EXAMPLES_OUT) && rm(EXAMPLES_OUT; recursive=true)
-mkpath(EXAMPLES_OUT)
-
-# preprocessor for Literate example scripts:
-#  - add Documenter @setup snippet that activates each example's own project environment
-function preprocess(content)
-    sub = SubstitutionString("""
-                     \\0
-                     #
-                     #md #
-                     #md # ```@setup @__NAME__
-                     #md # using Pkg: Pkg
-                     #md # Pkg.activate("$(EXAMPLES_SRC)/@__NAME__")
-                     #md # Pkg.instantiate()
-                     #md # ```
-                     #
-                             """)
-    return replace(content, r"^# # [^\n]*"m => sub; count=1)
-end
-
-for example in readdir(EXAMPLES_SRC)
-    example ∈ BLACKLIST && continue
-    exampledir = joinpath(EXAMPLES_SRC, example)
-    isdir(exampledir) || continue
-    Pkg.activate(exampledir) do
-        Pkg.develop(; path=PACKAGE_DIR)
-        Pkg.instantiate()
-        filepath = joinpath(exampledir, "script.jl")
-        Literate.markdown(
-            filepath, EXAMPLES_OUT; name=example, documenter=true, preprocess=preprocess
-        )
-        Literate.notebook(
-            filepath,
-            EXAMPLES_OUT;
-            name=example,
-            documenter=true,
-            preprocess=preprocess,
-            execute=false,
-        )
-    end
-end
-
+# Doctest setup
 DocMeta.setdocmeta!(
     KernelFunctions,
     :DocTestSetup,
@@ -69,9 +47,9 @@ DocMeta.setdocmeta!(
 )
 
 makedocs(;
-    modules=[KernelFunctions],
     sitename="KernelFunctions.jl",
     format=Documenter.HTML(),
+    modules=[KernelFunctions],
     pages=[
         "Home" => "index.md",
         "userguide.md",
@@ -82,10 +60,9 @@ makedocs(;
         "API" => "api.md",
         "Design" => "design.md",
         "Examples" =>
-            joinpath.(
-                "examples",
-                filter(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT)),
-            ),
+            map(filter!(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT))) do x
+                return joinpath("examples", x)
+            end,
     ],
     strict=true,
     checkdocs=:exports,
