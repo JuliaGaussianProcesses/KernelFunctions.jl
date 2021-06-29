@@ -1,4 +1,4 @@
-# run examples
+### Process examples
 const EXAMPLES_SRC = joinpath(@__DIR__, "..", "examples")
 const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
 const LITERATEJL = joinpath(@__DIR__, "literate.jl")
@@ -24,9 +24,11 @@ end
 # Check that all examples were run successfully
 isempty(processes) || success(processes) || error("some examples were not run successfully")
 
-# Build documentation
-using KernelFunctions
+### Build documentation
 using Documenter
+
+using KernelFunctions
+using PDMats, Kronecker  # we have to load all optional packages to generate the full API documentation
 
 # Print `@debug` statements (https://github.com/JuliaDocs/Documenter.jl/issues/955)
 if haskey(ENV, "GITHUB_ACTIONS")
@@ -38,10 +40,8 @@ DocMeta.setdocmeta!(
     KernelFunctions,
     :DocTestSetup,
     quote
-        using PDMats
-        using Kronecker
         using KernelFunctions
-    end; # we have to load all optional packages to generate the full API documentation
+    end;  # we have to load all packages used (implicitly) within jldoctest blocks in the API docstrings
     recursive=true,
 )
 

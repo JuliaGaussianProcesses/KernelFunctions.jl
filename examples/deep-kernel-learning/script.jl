@@ -29,14 +29,14 @@ xmax = 3;
 x = range(xmin, xmax; length=100)
 x_test = rand(Uniform(xmin, xmax), 200)
 x, y = noisy_function(sinc, x; noise=0.1)
-X = ColVecs(reshape(x, :, 1))
-X_test = ColVecs(reshape(x_test, :, 1))
+X = RowVecs(reshape(x, :, 1))
+X_test = RowVecs(reshape(x_test, :, 1))
 λ = [0.1]
 #md nothing #hide
 
 #
 
-f(x, k, λ) = kernelmatrix(k, x, X) / (kernelmatrix(k, X) + exp(λ) * I) * y
+f(x, k, λ) = kernelmatrix(k, x, X) / (kernelmatrix(k, X) + exp(λ[1]) * I) * y
 f(X, k, 1.0)
 
 #
