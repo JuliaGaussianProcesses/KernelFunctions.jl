@@ -32,9 +32,7 @@ Xgrid = ColVecs(mapreduce(collect, hcat, Iterators.product(xgrid, xgrid)));
 k = SqExponentialKernel() ∘ ScaleTransform(2.0)
 
 # Optimal prediction:
-function f(x, X, k, λ)
-    return kernelmatrix(k, x, X) / (kernelmatrix(k, X) + exp(λ) * I) * y
-end
+f(x, X, k, λ) = kernelmatrix(k, x, X) / (kernelmatrix(k, X) + exp(λ) * I) * y
 
 # Compute prediction on a grid:
 contourf(xgrid, xgrid, f(Xgrid, ColVecs(X), k, 0.1))
