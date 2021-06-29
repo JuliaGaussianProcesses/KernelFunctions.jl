@@ -1,26 +1,39 @@
+# # Support vector machine
+
 using KernelFunctions
-using MLDataUtils
-using Zygote
-using Flux
-using Distributions, LinearAlgebra
+using Distributions
 using Plots
 
-N = 100 #Number of samples
-μ = randn(2, 2) # Random Centers
-xgrid = range(-3, 3; length=100) # Create a grid
-Xgrid = hcat(collect.(Iterators.product(xgrid, xgrid))...)' #Combine into a 2D grid
-y = rand([-1, 1], N) # Select randomly between the two classes
-X = zeros(N, 2)
-X[y .== 1, :] = rand(MvNormal(μ[:, 1], I), count(y .== 1))' #Attribute samples from class 1
-X[y .== -1, :] = rand(MvNormal(μ[:, 2], I), count(y .== -1))' # Attribute samples from class 2
+using LinearAlgebra
+using Random
 
-k = SqExponentialKernel(2.0) # Create kernel function
-function f(x, k, λ)
-    return kernelmatrix(k, x, X; obsdim=1) *
-           inv(kernelmatrix(k, X; obsdim=1) + exp(λ[1]) * I) *
-           y
-end # Optimal prediction f
-svmloss(y, ŷ) = ŷ -> sum(maximum.(0.0, 1 - y * ŷ)) - λ * norm(ŷ)(f(X, k, λ)) # Total svm loss with regularisation
-pred = f(Xgrid, k, λ) #Compute prediction on a grid
-contourf(xgrid, xgrid, pred)
-scatter!(eachcol(X)...; color=y, lab="data")
+## Set plotting theme
+theme(:wong)
+
+## Set seed
+Random.seed!(1234);
+
+# Number of samples:
+N = 100;
+
+# Select randomly between two classes:
+y = rand([-1, 1], N);
+
+# Random attributes for both classes:
+X = Matrix{Float64}(undef, 2, N)
+rand!(MvNormal(randn(2), I), view(X, :, y .== 1))
+rand!(MvNormal(randn(2), I), view(X, :, y .== -1));
+
+# Create a 2D grid:
+xgrid = range(floor(Int, minimum(X)), ceil(Int, maximum(X)); length=100)
+Xgrid = ColVecs(mapreduce(collect, hcat, Iterators.product(xgrid, xgrid)));
+
+# Create kernel function:
+k = SqExponentialKernel() ∘ ScaleTransform(2.0)
+
+# Optimal prediction:
+f(x, X, k, λ) = kernelmatrix(k, x, X) / (kernelmatrix(k, X) + exp(λ) * I) * y
+
+# Compute prediction on a grid:
+contourf(xgrid, xgrid, f(Xgrid, ColVecs(X), k, 0.1))
+scatter!(X[1, :], X[2, :]; color=y, lab="data", widen=false)
