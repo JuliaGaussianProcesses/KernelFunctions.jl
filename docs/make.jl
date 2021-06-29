@@ -41,7 +41,7 @@ DocMeta.setdocmeta!(
         using PDMats
         using Kronecker
         using KernelFunctions
-    end; # we load all optional packages to generate the full API documentation
+    end; # we have to load all optional packages to generate the full API documentation
     recursive=true,
 )
 

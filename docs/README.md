@@ -1,41 +1,47 @@
 # How to build the docs locally
 
-Assuming you are in this (docs/) directory:
+If you just want to modify or add an example, you can [build just the example](../examples/README.md) without having to build the full documentation locally.
 
-## Setup
+If you want to build the documentation, navigate to this (docs/) directory and open a Julia REPL.
 
-First, make sure the docs dependencies are installed:
-```bash
-julia --project=. -e 'using Pkg; Pkg.instantiate()'
-```
-This will use the last *released* KernelFunctions.jl for building the docs. 
+## Instantiation
 
-If instead you want to reflect the *local* state of the Git repository in your built docs, next change the dependency to the development version:
-```bash
-julia --project=. -e "using Pkg; Pkg.develop(path=\"/path/to/KernelFunctions.jl/\")"
+First activate the documentation environment:
+```julia
+julia> ] activate .
 ```
-In a bash-like shell on Unix, you can also use the following command from the docs/ directory to get the absolute path:
-```bash
-julia --project=. -e "using Pkg; Pkg.develop(path=\"$(readlink -f ..)\")"
-```
+Alternatively, you can start Julia with `julia --project=.`.
 
-You can undo the pinning to the local path that was created by `Pkg.develop` through running
-```bash
-julia --project=. -e 'using Pkg; Pkg.free("KernelFunctions")'
+Then install all packages:
+```julia
+julia> ] instantiate
 ```
+By default, this will use the development version of KernelFunctions in the parent directory.
 
 ## Build
 
-To actually build the docs, run
-```bash
-julia --project=. make.jl
-```
-The built docs will be underneath build/, and are best viewed in a browser.
-
-If you want to iteratively edit and view the docs, it will be faster to re-run from within the same Julia REPL:
+To build the documentation, run (after activating the documentation environment)
 ```julia
 julia> include("make.jl")
 ```
+You can speed up the process if you do not execute the examples and comment out the
+relevant sections in `docs/make.jl`.
+
+The output is in the `docs/build/` directory and best viewed in a browser.
+The documentation uses pretty URLs which can be a hindrance if you browse the documentation locally.
+The [Documenter documentation](https://juliadocs.github.io/Documenter.jl/stable/man/guide/#Building-an-Empty-Document) suggests that
+
+> You can run a local web server out of the `docs/build` directory. One way to accomplish
+> this is to install the [LiveServer](https://github.com/tlienart/LiveServer.jl) Julia
+> package. You can then start the server with `julia -e 'using LiveServer; serve(dir="docs/build")'`.
+> Alternatively, if you have Python installed, you can start one with
+> `python3 -m http.server --bind localhost` (or `python -m SimpleHTTPServer` with Python 2).
+
+If you make any changes, you can run
+```julia
+julia> include("make.jl")
+```
+again to rebuild the documentation.
 
 # How to contribute to the docs
 
