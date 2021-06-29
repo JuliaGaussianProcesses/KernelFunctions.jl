@@ -18,11 +18,11 @@ processes = map(filter!(isdir, readdir(EXAMPLES_SRC; join=true))) do example
             stderr=stderr,
         );
         wait=false,
-    )
+    )::Base.Process
 end
 
 # Check that all examples were run successfully
-success(processes) || error("some examples were not run successfully")
+isempty(processes) || success(processes) || error("some examples were not run successfully")
 
 # Build documentation
 using KernelFunctions
