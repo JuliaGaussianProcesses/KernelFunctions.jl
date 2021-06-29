@@ -31,5 +31,14 @@ or run
 Create a new subdirectory in here, and put your code in a file called `script.jl` so that it will get picked up by the automatic docs build.
 
 Every example uses a separate project environment. Therefore you should also create a new
-project environment in the directory of the example that contains all packages required by your script. Note that you must also include both the `KernelFunctions` and the `Literate` packages. Make sure to both
-commit the `Project.toml` and a `Manifest.toml` file.
+project environment in the directory of the example that contains all packages required by your script.
+Note that the dependencies of your example must include the `Literate` package.
+From a Julia REPL started in your example script's directory, you can run
+```julia
+julia> ] activate .
+julia> ] add Literate
+julia> ] add KernelFunctions
+julia> # add any other example-specific dependencies
+```
+to generate the project files.
+Make sure to commit both the `Project.toml` and the `Manifest.toml` file when you want to contribute your example in a pull request.
