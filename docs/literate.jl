@@ -8,7 +8,7 @@ const OUTDIR = ARGS[2]
 # Activate environment
 using Pkg: Pkg
 Pkg.activate(dirname(SCRIPTJL))
-Pkg.add("Literate"; preserve=Pkg.PRESERVE_ALL)
+# Note that each example's Project.toml must include Literate as a dependency
 Pkg.instantiate()
 using Literate: Literate
 
