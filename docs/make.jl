@@ -38,11 +38,10 @@ DocMeta.setdocmeta!(
     KernelFunctions,
     :DocTestSetup,
     quote
+        using PDMats
+        using Kronecker
         using KernelFunctions
-        using LinearAlgebra
-        using Random
-        using PDMats: PDMats
-    end;
+    end; # we load all optional packages to generate the full API documentation
     recursive=true,
 )
 
