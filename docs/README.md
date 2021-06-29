@@ -44,7 +44,7 @@ julia> include("make.jl")
 ```bash
 julia --project=. -e 'using Pkg; Pkg.add("NewDependency")'
 ```
-and commit the changes to Project.toml
+and commit the changes to Project.toml and Manifest.toml.
 
 
 ## To add examples
