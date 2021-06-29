@@ -22,9 +22,7 @@ processes = map(filter!(isdir, readdir(EXAMPLES_SRC; join=true))) do example
 end
 
 # Check that all examples were run successfully
-if !all(success, processes)
-    error("some examples were not run successfully")
-end
+success(processes) || error("some examples were not run successfully")
 
 # Build documentation
 using KernelFunctions
