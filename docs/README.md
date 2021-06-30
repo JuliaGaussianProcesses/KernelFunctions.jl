@@ -47,7 +47,12 @@ again to rebuild the documentation.
 
 ## To add additional docs dependencies
 
-```bash
+To add additional dependencies, run (after activating the documentation environment)
+```julia
+julia> ] add NewDependency
+```
+or, as a shell one-liner:
+```shell
 julia --project=. -e 'using Pkg; Pkg.add("NewDependency")'
 ```
 and commit the changes to Project.toml and Manifest.toml.

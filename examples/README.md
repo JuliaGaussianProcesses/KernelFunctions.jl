@@ -16,7 +16,8 @@ Afterwards simply run
 ```julia
 julia> include("script.jl")
 ```
-
+In particular when editing an example, it can be convenient to (re-)run only some parts of
+an example. Many editors with Julia support such as VSCode, Juno, and Emacs support the evaluation of individual lines or code chunks.
 You can convert them to markdown and Jupyter notebook formats, respectively, by executing
 ```julia
 julia> using Literate
