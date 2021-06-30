@@ -1,7 +1,7 @@
 """
     IsotopicByFeatures(x::AbstractVector, out_dim::Integer)
 
-`IsotopicByFeatures(x, out_dim)` has length `length(x) * out_dim`.
+`IsotopicByFeatures(x, out_dim)` has length `out_dim * length(x)`.
 
 ```jldoctest
 julia> x = [1, 2, 3];
@@ -9,19 +9,18 @@ julia> x = [1, 2, 3];
 julia> IsotopicByFeatures(x, 2)
 6-element IsotopicByFeatures{Vector{Int64}}:
  (1, 1)
- (2, 1)
- (3, 1)
  (1, 2)
+ (2, 1)
  (2, 2)
+ (3, 1)
  (3, 2)
 ```
 
-An abstract type to accomodate modelling multi-dimensional output data. There are two
-subtypes that each specify a unique ordering of the dimensions.
+Accomodates modelling multi-dimensional output data.
 
 As shown above, an `IsotopicByFeatures` represents a vector of tuples.
-The first `length(x)` elements represent the inputs for the first output, the second
-`length(x)` elements represent the inputs for the second output, etc.
+The first `out_dim` elements represent all outputs for the first input, the second
+`out_dim` elements represent the outputs for the second input, etc.
 
 See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
@@ -34,7 +33,7 @@ end
 """
     IsotopicByOutputs(x::AbstractVector, out_dim::Integer)
 
-`IsotopicByOutputs(x, out_dim)` has length `out_dim * length(x)`.
+`IsotopicByOutputs(x, out_dim)` has length `length(x) * out_dim`.
 
 ```jldoctest
 julia> x = [1, 2, 3];
@@ -42,16 +41,18 @@ julia> x = [1, 2, 3];
 julia> IsotopicByOutputs(x, 2)
 6-element IsotopicByOutputs{Vector{Int64}}:
  (1, 1)
- (1, 2)
  (2, 1)
- (2, 2)
  (3, 1)
+ (1, 2)
+ (2, 2)
  (3, 2)
 ```
 
+Accomodates modelling multi-dimensional output data.
+
 As shown above, an `IsotopicByOutputs` represents a vector of tuples.
-The first `out_dim` elements represent all outputs for the first input, the second
-`out_dim` elements represent the outputs for the second input, etc.
+The first `length(x)` elements represent the inputs for the first output, the second
+`length(x)` elements represent the inputs for the second output, etc.
 """
 
 struct IsotopicByOutputs{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{T,Int}}

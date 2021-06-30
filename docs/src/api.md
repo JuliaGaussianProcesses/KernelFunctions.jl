@@ -66,8 +66,8 @@ IsotopicByOutputs
 For[`IsotopicByFeatures`](@ref) i
 
 As with [`ColVecs`](@ref) and [`RowVecs`](@ref) for vector-valued input spaces, these
-types enables specialised implementations of e.g. [`kernelmatrix`](@ref) for
-[`MOKernel`](@ref)s in some situations.
+types enable specialised implementations of e.g. [`kernelmatrix`](@ref) for certain
+[`MOKernel`](@ref)s.
 
 To find out more about the background, read this [review of kernels for vector-valued functions](https://arxiv.org/pdf/1106.6251.pdf).
 
