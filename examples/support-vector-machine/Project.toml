@@ -8,7 +8,6 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 [compat]
 Distributions = "0.25"
 KernelFunctions = "0.10"
-LinearAlgebra = "3"
 Literate = "2"
 Plots = "1"
 julia = "1.3"
