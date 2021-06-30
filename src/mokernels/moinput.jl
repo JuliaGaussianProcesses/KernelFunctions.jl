@@ -7,7 +7,7 @@
 julia> x = [1, 2, 3];
 
 julia> IsotopicByFeatures(x, 2)
-6-element IsotopicByFeatures{Vector{Int64}}:
+6-element IsotopicByFeatures{Int64, Vector{Int64}}:
  (1, 1)
  (1, 2)
  (2, 1)
@@ -16,7 +16,7 @@ julia> IsotopicByFeatures(x, 2)
  (3, 2)
 ```
 
-Accomodates modelling multi-dimensional output data.
+Accommodates modelling multi-dimensional output data where all outputs are always observed.
 
 As shown above, an `IsotopicByFeatures` represents a vector of tuples.
 The first `out_dim` elements represent all outputs for the first input, the second
@@ -24,7 +24,6 @@ The first `out_dim` elements represent all outputs for the first input, the seco
 
 See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
-
 struct IsotopicByFeatures{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{S,Int}}
     x::T
     out_dim::Int
@@ -39,7 +38,7 @@ end
 julia> x = [1, 2, 3];
 
 julia> IsotopicByOutputs(x, 2)
-6-element IsotopicByOutputs{Vector{Int64}}:
+6-element IsotopicByOutputs{Int64, Vector{Int64}}:
  (1, 1)
  (2, 1)
  (3, 1)
@@ -48,13 +47,12 @@ julia> IsotopicByOutputs(x, 2)
  (3, 2)
 ```
 
-Accomodates modelling multi-dimensional output data.
+Accommodates modelling multi-dimensional output data where all outputs are always observed.
 
 As shown above, an `IsotopicByOutputs` represents a vector of tuples.
 The first `length(x)` elements represent the inputs for the first output, the second
 `length(x)` elements represent the inputs for the second output, etc.
 """
-
 struct IsotopicByOutputs{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{S,Int}}
     x::T
     out_dim::Int
