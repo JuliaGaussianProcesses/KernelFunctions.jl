@@ -38,10 +38,11 @@ function preprocess(content)
 end
 
 # Convert to markdown and notebook
+name = basename(dirname(realpath(SCRIPTJL)))
 Literate.markdown(
     SCRIPTJL,
     OUTDIR;
-    name=basename(dirname(SCRIPTJL)),
+    name=name,
     documenter=false,
     execute=true,
     preprocess=preprocess,
@@ -49,7 +50,7 @@ Literate.markdown(
 Literate.notebook(
     SCRIPTJL,
     OUTDIR;
-    name=basename(dirname(SCRIPTJL)),
+    name=name,
     documenter=false,
     execute=true,
     preprocess=preprocess,
