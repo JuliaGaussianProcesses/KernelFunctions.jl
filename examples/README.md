@@ -17,17 +17,20 @@ Afterwards simply run
 julia> include("script.jl")
 ```
 In particular when editing an example, it can be convenient to (re-)run only some parts of
-an example. Many editors with Julia support such as VSCode, Juno, and Emacs support the evaluation of individual lines or code chunks.
-You can convert them to markdown and Jupyter notebook formats, respectively, by executing
+an example.
+Many editors with Julia support such as VSCode, Juno, and Emacs support the evaluation of individual lines or code chunks.
+
+You can convert a notebook to markdown and Jupyter notebook formats, respectively, by executing
 ```julia
 julia> using Literate
 julia> Literate.markdown("script.jl", "output_directory")
 julia> Literate.notebook("script.jl", "output_directory")
 ```
-or run
+(see the [Literate.jl docs](https://fredrikekre.github.io/Literate.jl/v2/) for additional options) or run
 ```shell
 julia docs/literate.jl examples/myexample/script.jl output_directory
 ```
+which also executes the code and generates embedded plots etc. in the same way as in building the KernelFunctions documentation.
 
 ## Add a new example
 
