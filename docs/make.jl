@@ -27,7 +27,6 @@ isempty(processes) || success(processes) || error("some examples were not run su
 # Build documentation
 using KernelFunctions
 using Documenter
-using Literate
 
 # Print `@debug` statements (https://github.com/JuliaDocs/Documenter.jl/issues/955)
 if haskey(ENV, "GITHUB_ACTIONS")
