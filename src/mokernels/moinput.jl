@@ -25,7 +25,7 @@ The first `out_dim` elements represent all outputs for the first input, the seco
 See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
 
-struct IsotopicByFeatures{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{T,Int}}
+struct IsotopicByFeatures{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{S,Int}}
     x::T
     out_dim::Int
 end
@@ -55,12 +55,12 @@ The first `length(x)` elements represent the inputs for the first output, the se
 `length(x)` elements represent the inputs for the second output, etc.
 """
 
-struct IsotopicByOutputs{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{T,Int}}
+struct IsotopicByOutputs{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{S,Int}}
     x::T
     out_dim::Int
 end
 
-const IsotopicMOInputs = Union{IsotopicByFeatures, IsotopicByOutputs}
+const IsotopicMOInputs = Union{IsotopicByFeatures,IsotopicByOutputs}
 
 function Base.getindex(inp::IsotopicByOutputs, ind::Integer)
     @boundscheck checkbounds(inp, ind)

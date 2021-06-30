@@ -1,8 +1,13 @@
 @testset "moinput" begin
     x = [rand(5) for _ in 1:4]
+    type_1 =  AbstractVector{Tuple{Vector{Float64},Int}}
+    type_2 = AbstractVector{Tuple{AbstractVector{Vector{Float64}},Int}}
 
     @testset "isotopicbyoutputs" begin
         mgpi_bo = IsotopicByOutputs(x, 3)
+
+        @test isa(mgpi_bo, type_1) == true
+        @test isa(mgpi_bo, type_2) == false
 
         @test length(mgpi_bo) == 12
         @test size(mgpi_bo) == (12,)
@@ -20,6 +25,9 @@
 
     @testset "isotopicbyfeatures" begin
         mgpi_bf = IsotopicByFeatures(x, 3)
+
+        @test isa(mgpi_bf, type_1) == true
+        @test isa(mgpi_bf, type_2) == false
 
         @test length(mgpi_bf) == 12
         @test size(mgpi_bf) == (12,)
