@@ -40,18 +40,8 @@ end
 # Convert to markdown and notebook
 name = basename(dirname(realpath(SCRIPTJL)))
 Literate.markdown(
-    SCRIPTJL,
-    OUTDIR;
-    name=name,
-    documenter=false,
-    execute=true,
-    preprocess=preprocess,
+    SCRIPTJL, OUTDIR; name=name, documenter=false, execute=true, preprocess=preprocess
 )
 Literate.notebook(
-    SCRIPTJL,
-    OUTDIR;
-    name=name,
-    documenter=false,
-    execute=true,
-    preprocess=preprocess,
+    SCRIPTJL, OUTDIR; name=name, documenter=false, execute=true, preprocess=preprocess
 )
