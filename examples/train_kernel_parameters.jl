@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # # Kernel Ridge Regression
 
 # ## We load KernelFunctions and some other packages
@@ -44,8 +43,7 @@ kernelcall(θ) = transform(
 function f(x, x_train, y_train, θ)
     k = kernelcall(θ[1:3])
     return kernelmatrix(k, x, x_train) *
-           inv(kernelmatrix(k, x_train) + exp(θ[4]) * I) *
-           y_train
+           ((kernelmatrix(k, x_train) + exp(θ[4]) * I) \ y_train)
 end
 
 # We look how the prediction looks like
@@ -70,14 +68,13 @@ loss(log.(ones(4)))
 
 # ## Training the model
 
-θ = vcat(log.([1.0, 0.0, 0.01]), log(0.001)) # Initial vector
+θ = log.([1.0, 0.0, 0.01, 0.001]) # Initial vector
 anim = Animation()
 opt = Optimise.ADAGrad(0.5)
 for i in 1:30
-    grads = ForwardDiff.gradient(x -> loss(x), θ) # We compute the gradients given the kernel parameters and regularization
-    Δ = Optimise.apply!(opt, θ, grads)
-    θ .-= Δ # We apply a simple Gradient descent algorithm
-    p = scatter(
+    grads = ForwardDiff.gradient(loss, θ) # We compute the gradients given the kernel parameters and regularization
+    Optimise.update!(opt, θ, grads)
+    scatter(
         x_train, y_train; lab="data", title="i = $(i), Loss = $(round(loss(θ), digits = 4))"
     )
     plot!(x_test, sinc; lab="true function")

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # # Kernel Ridge Regression
 #
 # Building on linear regression, we can fit non-linear data sets by introducing a feature space. In a higher-dimensional feature space, we can overfit the data; ridge regression introduces regularization to avoid this. In this notebook we show how we can use KernelFunctions.jl for *kernel* ridge regression.
@@ -31,17 +30,17 @@ plot(x_test, y_test; label=raw"$f(x)$")
 scatter!(x_train, y_train; label="observations")
 
 # For training inputs $\mathrm{X}=(\mathbf{x}_n)_{n=1}^N$ and observations $\mathbf{y}=(y_n)_{n=1}^N$, the linear regression weights $\mathbf{w}$ using the least-squares estimator are given by
-# $$
+# ```math
 # \mathbf{w} = (\mathrm{X}^\top \mathrm{X})^{-1} \mathrm{X}^\top \mathbf{y}
-# $$
+# ```
 # We predict at test inputs $\mathbf{x}_*$ using
-# $$
+# ```math
 # \hat{y}_* = \mathbf{x}_*^\top \mathbf{w}
-# $$
+# ```
 # This is implemented by `linear_regression`:
 
-function linear_regression(X::AbstractVecOrMat, y::AbstractVector, Xstar::AbstractVecOrMat)
-    weights = inv(X' * X) * X' * y
+function linear_regression(X, y, Xstar)
+    weights = (X' * X) \ (X' * y)
     return Xstar * weights
 end
 
@@ -62,9 +61,8 @@ function featurized_fit_and_plot(degree)
     X = featurize_poly(x_train; degree=degree)
     Xstar = featurize_poly(x_test; degree=degree)
     y_pred = linear_regression(X, y_train, Xstar)
-    scatter(x_train, y_train; label=nothing)
-    p = plot!(x_test, y_pred; label=nothing, title="fit of order $degree")
-    return p
+    scatter(x_train, y_train; legend=false, title="fit of order $degree")
+    return plot!(x_test, y_pred)
 end
 
 plot([featurized_fit_and_plot(degree) for degree in 1:4]...)
@@ -85,15 +83,13 @@ featurized_fit_and_plot(18)
 # \mathbf{w} = (\mathrm{X}^\top \mathrm{X} + \lambda \mathbb{1})^{-1} \mathrm{X}^\top \mathbf{y}
 # $$
 # As before, we predict at test inputs $\mathbf{x}_*$ using
-# $$
+# ```math
 # \hat{y}_* = \mathbf{x}_*^\top \mathbf{w}
-# $$
+# ```
 # This is implemented by `ridge_regression`:
 
-function ridge_regression(
-    X::AbstractVecOrMat, y::AbstractVector, Xstar::AbstractVecOrMat, lambda::Float64
-)
-    weights = inv(X' * X + lambda * I) * X' * y
+function ridge_regression(X, y, Xstar, lambda)
+    weights = (X' * X + lambda * I) \ (X' * y)
     return Xstar * weights
 end
 
@@ -101,9 +97,8 @@ function regularized_fit_and_plot(degree, lambda)
     X = featurize_poly(x_train; degree=degree)
     Xstar = featurize_poly(x_test; degree=degree)
     y_pred = ridge_regression(X, y_train, Xstar, lambda)
-    scatter(x_train, y_train; label=nothing)
-    p = plot!(x_test, y_pred; label=nothing, title=string(raw"$\lambda=", lambda, raw"$"))
-    return p
+    scatter(x_train, y_train; legend=false, title="\$\\lambda=$lambda\$")
+    return plot!(x_test, y_pred)
 end
 
 plot([regularized_fit_and_plot(18, lambda) for lambda in [1e-4, 1e-2, 0.1, 10]]...)
@@ -124,23 +119,17 @@ plot([regularized_fit_and_plot(18, lambda) for lambda in [1e-4, 1e-2, 0.1, 10]].
 # \mathbf{w} = \mathrm{X}^\top (\mathrm{K} + \lambda \mathbb{1})^{-1} \mathbf{y}
 # $$
 # And the prediction yields another inner product,
-# $$
+# ```math
 # \hat{y}_* = \mathbf{x}_*^\top \mathbf{w} = \langle \mathbf{x}_*, \mathbf{w} \rangle = \mathbf{k}_* (\mathrm{K} + \lambda \mathbb{1})^{-1} \mathbf{y}
-# $$
+# ```
 # where $(\mathbf{k}_*)_n = k(x_*, x_n)$.
 #
 # This is implemented by `kernel_ridge_regression`:
 
-function kernel_ridge_regression(
-    k::Kernel,
-    X::AbstractVecOrMat,
-    y::AbstractVector,
-    Xstar::AbstractVecOrMat,
-    lambda::Float64,
-)
+function kernel_ridge_regression(k, X, y, Xstar, lambda)
     K = kernelmatrix(k, X)
     kstar = kernelmatrix(k, Xstar, X)
-    return kstar * inv(K + lambda * I) * y
+    return kstar * ((K + lambda * I) \ y)
 end
 
 # Now, instead of explicitly constructing features, we can simply pass in a `PolynomialKernel` object:

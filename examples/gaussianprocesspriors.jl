@@ -4,16 +4,16 @@
 # The kernels defined in this package can also be used to specify the
 # covariance of a Gaussian process prior.
 # A Gaussian process (GP) is defined by its mean function $m(\cdot)$ and its covariance function or kernel $k(\cdot, \cdot')$:
-# $$
-#   f \sim \mathcal{GP}(m(\cdot), k(\cdot, \cdot')
-# $$
+# ```math
+#   f \sim \mathcal{GP}\big(m(\cdot), k(\cdot, \cdot')\big)
+# ```
 # The function values of the GP at a finite number of points $X = \{x_n\}_{n=1}^N$ follow a multivariate normal distribution with mean vector $\mathbf{m}$ and covariance matrix $\mathrm{K}$, where
-# $$
-# \begin{align}
+# ```math
+# \begin{aligned}
 #   \mathbf{m}_i &= m(x_i) \\
 #   \mathrm{K}_{i,j} &= k(x_i, x_j)
-# \end{align}
-# $$
+# \end{aligned}
+# ```
 # where $1 \le i, j \le N$.
 #
 # In this notebook we show samples from zero-mean GPs with different kernels.
