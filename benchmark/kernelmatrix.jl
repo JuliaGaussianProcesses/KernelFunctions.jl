@@ -32,8 +32,8 @@ for k in kernelnames
             $(kernels[k][kt]), $X; obsdim=1
         )
         # SUITE["KernelFunctions"][k][kt]["k!(X)"] = @benchmarkable KernelFunctions.kernelmatrix!(KX,$(kernels[k][kt]),$X) setup=(KX=copy($KX))
-        # SUITE["KernelFunctions"][k][kt]["kdiag(X)"] = @benchmarkable KernelFunctions.kerneldiagmatrix($(kernels[k][kt]),$X)
-        # SUITE["KernelFunctions"][k][kt]["kdiag!(X)"] = @benchmarkable KernelFunctions.kerneldiagmatrix!(kX,$(kernels[k][kt]),$X) setup=(kX=copy($kX))
+        # SUITE["KernelFunctions"][k][kt]["kdiag(X)"] = @benchmarkable KernelFunctions.kernelmatrix_diag($(kernels[k][kt]),$X)
+        # SUITE["KernelFunctions"][k][kt]["kdiag!(X)"] = @benchmarkable KernelFunctions.kernelmatrix_diag!(kX,$(kernels[k][kt]),$X) setup=(kX=copy($kX))
     end
 end
 # results = run(SUITE)

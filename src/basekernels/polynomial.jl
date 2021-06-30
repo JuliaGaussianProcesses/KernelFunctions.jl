@@ -16,11 +16,13 @@ See also: [`PolynomialKernel`](@ref)
 struct LinearKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
 
-    function LinearKernel(; c::Real=0.0)
+    function LinearKernel(c::Real)
         @check_args(LinearKernel, c, c >= zero(c), "c ≥ 0")
         return new{typeof(c)}([c])
     end
 end
+
+LinearKernel(; c::Real=0.0) = LinearKernel(c)
 
 @functor LinearKernel
 
@@ -56,15 +58,7 @@ struct PolynomialKernel{Tc<:Real} <: SimpleKernel
     end
 end
 
-function PolynomialKernel(; d::Real=-1, degree::Int=2, c::Real=0.0)
-    if d != -1
-        Base.depwarn(
-            "keyword argument `d` is deprecated, use `degree` instead",
-            :PiecewisePolynomialKernel,
-        )
-        isinteger(d) || error("polynomial degree has to be an integer")
-        degree::Int = convert(Int, d)
-    end
+function PolynomialKernel(; degree::Int=2, c::Real=0.0)
     return PolynomialKernel{typeof(c)}(degree, [c])
 end
 

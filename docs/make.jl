@@ -1,3 +1,31 @@
+# run examples
+const EXAMPLES_SRC = joinpath(@__DIR__, "..", "examples")
+const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
+const LITERATEJL = joinpath(@__DIR__, "literate.jl")
+
+# Always rerun examples
+ispath(EXAMPLES_OUT) && rm(EXAMPLES_OUT; recursive=true)
+mkpath(EXAMPLES_OUT)
+
+# Run examples asynchronously
+processes = map(filter!(isdir, readdir(EXAMPLES_SRC; join=true))) do example
+    scriptjl = joinpath(example, "script.jl")
+    return run(
+        pipeline(
+            `$(Base.julia_cmd()) $LITERATEJL $scriptjl $EXAMPLES_OUT`;
+            stdin=devnull,
+            stdout=devnull,
+            stderr=stderr,
+        );
+        wait=false,
+    )::Base.Process
+end
+
+# Check that all examples were run successfully
+isempty(processes) || success(processes) || error("some examples were not run successfully")
+
+# Build documentation
+using KernelFunctions
 using Documenter
 using Literate
 
@@ -6,23 +34,7 @@ if haskey(ENV, "GITHUB_ACTIONS")
     ENV["JULIA_DEBUG"] = "Documenter"
 end
 
-using KernelFunctions
-
-const EXAMPLES_SRC = joinpath(@__DIR__, "..", "examples")
-const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
-
-if ispath(EXAMPLES_OUT)
-    rm(EXAMPLES_OUT; recursive=true)
-end
-
-for filename in readdir(EXAMPLES_SRC)
-    endswith(filename, ".jl") || continue
-    name = splitext(filename)[1]
-    Literate.markdown(
-        joinpath(EXAMPLES_SRC, filename), EXAMPLES_OUT; name=name, documenter=true
-    )
-end
-
+# Doctest setup
 DocMeta.setdocmeta!(
     KernelFunctions,
     :DocTestSetup,
@@ -36,7 +48,7 @@ DocMeta.setdocmeta!(
 )
 
 makedocs(;
-    sitename="KernelFunctions",
+    sitename="KernelFunctions.jl",
     format=Documenter.HTML(),
     modules=[KernelFunctions],
     pages=[
@@ -45,24 +57,21 @@ makedocs(;
         "kernels.md",
         "transform.md",
         "metrics.md",
-        "theory.md",
         "create_kernel.md",
         "API" => "api.md",
-        "Examples" => [
-            "Kernel Ridge Regression" => "examples/kernel_ridge_regression.md",
-            "Training kernel parameters" => "examples/train_kernel_parameters.md",
-            "Gaussian process priors" => "examples/gaussianprocesspriors.md",
-            "SVM" => "examples/svm.md",
-            "Deep Kernel Learning" => "examples/deepkernellearning.md",
-        ],
-        "Kernel Functions" => "kernels.md",
-        "Input Transforms" => "transform.md",
-        "Metrics" => "metrics.md",
-        "Theory" => "theory.md",
-        "Custom Kernels" => "create_kernel.md",
+        "Design" => "design.md",
+        "Examples" =>
+            map(filter!(filename -> endswith(filename, ".md"), readdir(EXAMPLES_OUT))) do x
+                return joinpath("examples", x)
+            end,
     ],
     strict=true,
     checkdocs=:exports,
+    doctestfilters=[
+        r"{([a-zA-Z0-9]+,\s?)+[a-zA-Z0-9]+}",
+        r"(Array{[a-zA-Z0-9]+,\s?1}|Vector{[a-zA-Z0-9]+})",
+        r"(Array{[a-zA-Z0-9]+,\s?2}|Matrix{[a-zA-Z0-9]+})",
+    ],
 )
 
 deploydocs(;
