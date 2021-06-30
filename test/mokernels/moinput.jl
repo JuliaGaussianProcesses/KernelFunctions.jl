@@ -1,6 +1,6 @@
 @testset "moinput" begin
     x = [rand(5) for _ in 1:4]
-    type_1 =  AbstractVector{Tuple{Vector{Float64},Int}}
+    type_1 = AbstractVector{Tuple{Vector{Float64},Int}}
     type_2 = AbstractVector{Tuple{AbstractVector{Vector{Float64}},Int}}
 
     @testset "isotopicbyoutputs" begin
