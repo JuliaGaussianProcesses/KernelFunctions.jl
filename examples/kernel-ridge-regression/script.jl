@@ -139,7 +139,7 @@ function kernelized_fit_and_plot(kernel, lambda=1e-4)
     if kernel isa PolynomialKernel
         title = string("order ", kernel.degree)
     else
-        title = string(kernel)
+        title = string(nameof(typeof(kernel)))
     end
     scatter(x_train, y_train; label=nothing)
     p = plot!(
