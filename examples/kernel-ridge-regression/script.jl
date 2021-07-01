@@ -42,7 +42,7 @@ scatter!(x_train, y_train; label="observations")
 function linear_regression(X, y, Xstar)
     weights = (X' * X) \ (X' * y)
     return Xstar * weights
-end
+end;
 
 # A linear regression fit to the above data set:
 
@@ -75,13 +75,13 @@ featurized_fit_and_plot(18)
 
 # To counteract this unwanted behaviour, we can introduce regularization. This leads to *ridge regression* with $L_2$ regularization of the weights ([Tikhonov regularization](https://en.wikipedia.org/wiki/Tikhonov_regularization)).
 # Instead of the weights in linear regression,
-# $$
+# ```math
 # \mathbf{w} = (\mathrm{X}^\top \mathrm{X})^{-1} \mathrm{X}^\top \mathbf{y}
-# $$
+# ```
 # we introduce the ridge parameter $\lambda$:
-# $$
+# ```math
 # \mathbf{w} = (\mathrm{X}^\top \mathrm{X} + \lambda \mathbb{1})^{-1} \mathrm{X}^\top \mathbf{y}
-# $$
+# ```
 # As before, we predict at test inputs $\mathbf{x}_*$ using
 # ```math
 # \hat{y}_* = \mathbf{x}_*^\top \mathbf{w}
@@ -106,18 +106,18 @@ plot([regularized_fit_and_plot(18, lambda) for lambda in [1e-4, 1e-2, 0.1, 10]].
 # Instead of constructing the feature matrix explicitly, we can use *kernels* to replace inner products of feature vectors with a kernel evaluation: $\langle \phi(x), \phi(x') \rangle = k(x, x')$ or $\mathrm{X} \mathrm{X}^\top = \mathrm{K}$, where $\mathrm{K}_{ij} = k(x_i, x_j)$.
 #
 # To apply this "kernel trick" to ridge regression, we can rewrite the ridge estimate for the weights
-# $$
+# ```math
 # \mathbf{w} = (\mathrm{X}^\top \mathrm{X} + \lambda \mathbb{1})^{-1} \mathrm{X}^\top \mathbf{y}
-# $$
+# ```
 # using the [matrix inversion lemma](https://tlienart.github.io/pub/csml/mtheory/matinvlem.html#basic_lemmas)
 # as
-# $$
+# ```math
 # \mathbf{w} = \mathrm{X}^\top (\mathrm{X} \mathrm{X}^\top + \lambda \mathbb{1})^{-1} \mathbf{y}
-# $$
+# ```
 # where we can now replace the inner product with the kernel matrix,
-# $$
+# ```math
 # \mathbf{w} = \mathrm{X}^\top (\mathrm{K} + \lambda \mathbb{1})^{-1} \mathbf{y}
-# $$
+# ```
 # And the prediction yields another inner product,
 # ```math
 # \hat{y}_* = \mathbf{x}_*^\top \mathbf{w} = \langle \mathbf{x}_*, \mathbf{w} \rangle = \mathbf{k}_* (\mathrm{K} + \lambda \mathbb{1})^{-1} \mathbf{y}
@@ -130,7 +130,7 @@ function kernel_ridge_regression(k, X, y, Xstar, lambda)
     K = kernelmatrix(k, X)
     kstar = kernelmatrix(k, Xstar, X)
     return kstar * ((K + lambda * I) \ y)
-end
+end;
 
 # Now, instead of explicitly constructing features, we can simply pass in a `PolynomialKernel` object:
 
