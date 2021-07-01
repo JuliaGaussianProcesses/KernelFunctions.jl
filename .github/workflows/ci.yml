@@ -6,7 +6,7 @@ on:
   pull_request:
 jobs:
   test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ matrix.group }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.version == 'nightly' }}
     strategy:
@@ -22,6 +22,13 @@ jobs:
           - windows-latest
         arch:
           - x64
+        group:
+          - 'Transform'
+          - 'BaseKernels'
+          - 'Kernels'
+          - 'Matrix'
+          - 'MultiOutput'
+          - 'Others'
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
@@ -40,9 +47,14 @@ jobs:
             ${{ runner.os }}-
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
+        with:
+          coverage: ${{ matrix.coverage }} || false
+        env:
+          GROUP: ${{ matrix.group }}
       - uses: julia-actions/julia-processcoverage@v1
+        if: matrix.coverage
       - name: Send coverage
-        if: matrix.version == '1' && matrix.os == 'ubuntu-latest'
+        if: matrix.coverage
         uses: coverallsapp/github-action@master
         with:
             github-token: ${{ secrets.GITHUB_TOKEN }}
