@@ -6,7 +6,7 @@ on:
   pull_request:
 jobs:
   test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ matrix.group }}
+    name: Julia ${{ matrix.version }} - ${{ matrix.group }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.version == 'nightly' }}
     strategy:
@@ -18,8 +18,6 @@ jobs:
           - 'nightly'
         os:
           - ubuntu-latest
-          - macOS-latest
-          - windows-latest
         arch:
           - x64
         group:
@@ -48,13 +46,13 @@ jobs:
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
         with:
-          coverage: ${{ matrix.coverage }} || false
+          coverage: ${{ matrix.version == '1' && matrix.os == 'ubuntu-latest' }}
         env:
           GROUP: ${{ matrix.group }}
       - uses: julia-actions/julia-processcoverage@v1
-        if: matrix.coverage
+        if: matrix.version == '1' && matrix.os == 'ubuntu-latest'
       - name: Send coverage
-        if: matrix.coverage
+        if: matrix.version == '1' && matrix.os == 'ubuntu-latest'
         uses: coverallsapp/github-action@master
         with:
             github-token: ${{ secrets.GITHUB_TOKEN }}
