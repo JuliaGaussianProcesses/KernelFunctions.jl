@@ -75,3 +75,10 @@ function Base.getindex(inp::IsotopicByFeatures, ind::Integer)
 end
 
 Base.size(inp::IsotopicMOInputs) = (inp.out_dim * length(inp.x),)
+
+"""
+    MOInput
+
+Alias of [`IsotopicByOutputs`](@ref).
+"""
+const MOInput = IsotopicByOutputs
