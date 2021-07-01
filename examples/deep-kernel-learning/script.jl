@@ -1,68 +1,78 @@
-# # Deep Kernel Learning
-#
-# !!! warning
-#     This example is under construction
-
-# Setup
-
+# # Deep Kernel Learning with Flux
+# ## Package loading
+# We use a couple of useful packages to plot and optimize
+# the different hyper-parameters
 using KernelFunctions
-using MLDataUtils
-using Zygote
 using Flux
 using Distributions, LinearAlgebra
 using Plots
+using ProgressMeter
+using AbstractGPs
+pyplot();
+default(; legendfontsize=15.0, linewidth=3.0);
 
-Flux.@functor SqExponentialKernel
-Flux.@functor KernelSum
-Flux.@functor Matern32Kernel
-Flux.@functor FunctionTransform
-
-# set up a kernel with a neural network feature extractor:
-
-neuralnet = Chain(Dense(1, 3), Dense(3, 2))
-k = SqExponentialKernel() ∘ FunctionTransform(neuralnet)
-
-# Generate date
-
+# ## Data creation
+# We create a simple 1D Problem with very different variations
 xmin = -3;
-xmax = 3;
-x = range(xmin, xmax; length=100)
-x_test = rand(Uniform(xmin, xmax), 200)
-x, y = noisy_function(sinc, x; noise=0.1)
-X = RowVecs(reshape(x, :, 1))
-X_test = RowVecs(reshape(x_test, :, 1))
-λ = [0.1]
-#md nothing #hide
+xmax = 3; # Limits
+N = 150
+noise = 0.01
+x_train = collect(eachrow(rand(Uniform(xmin, xmax), N))) # Training dataset
+target_f(x) = sinc(abs(x)^abs(x)) # We use sinc with a highly varying value
+target_f(x::AbstractArray) = target_f(first(x))
+y_train = target_f.(x_train) + randn(N) * noise
+x_test = collect(eachrow(range(xmin, xmax; length=200))) # Testing dataset
+spectral_mixture_kernel()
+# ## Model definition
+# We create a neural net with 2 layers and 10 units each
+# The data is passed through the NN before being used in the kernel
+neuralnet = Chain(Dense(1, 20), Dense(20, 30), Dense(30, 5))
+# We use two cases :
+# - The Squared Exponential Kernel
+k = transform(SqExponentialKernel(), FunctionTransform(neuralnet))
 
-#
+# We use AbstractGPs.jl to define our model
+gpprior = GP(k) # GP Prior
+fx = AbstractGPs.FiniteGP(gpprior, x_train, noise) # Prior on f
+fp = posterior(fx, y_train) # Posterior of f
 
-f(x, k, λ) = kernelmatrix(k, x, X) / (kernelmatrix(k, X) + exp(λ[1]) * I) * y
-f(X, k, 1.0)
+# This compute the log evidence of `y`,
+# which is going to be used as the objective
+loss(y) = -logpdf(fx, y)
 
-#
+@info "Init Loss = $(loss(y_train))"
 
-loss(k, λ) = (ŷ -> sum(y - ŷ) / length(y) + exp(λ[1]) * norm(ŷ))(f(X, k, λ))
-loss(k, λ)
-
-#
-
+# Flux will automatically extract all the parameters of the kernel
 ps = Flux.params(k)
-# push!(ps,λ)
-opt = Flux.Momentum(1.0)
-#md nothing #hide
 
-#
-
-plots = []
-for i in 1:10
-    grads = Zygote.gradient(() -> loss(k, λ), ps)
+# We show the initial prediction with the untrained model
+p_init = Plots.plot(
+    vcat(x_test...), target_f; lab="true f", title="Loss = $(loss(y_train))"
+)
+Plots.scatter!(vcat(x_train...), y_train; lab="data")
+pred = marginals(fp(x_test))
+Plots.plot!(vcat(x_test...), mean.(pred); ribbon=std.(pred), lab="Prediction")
+# ## Training
+anim = Animation()
+nmax = 1000
+opt = Flux.ADAM(0.1)
+@showprogress for i in 1:nmax
+    global grads = gradient(ps) do
+        loss(y_train)
+    end
     Flux.Optimise.update!(opt, ps, grads)
-    p = Plots.scatter(x, y; lab="data", title="Loss = $(loss(k,λ))")
-    Plots.plot!(x, f(X, k, λ); lab="Prediction", lw=3.0)
-    push!(plots, p)
+    if i % 100 == 0
+        @info "$i/$nmax"
+        L = loss(y_train)
+        # @info "Loss = $L"
+        p = Plots.plot(
+            vcat(x_test...), target_f; lab="true f", title="Loss = $(loss(y_train))"
+        )
+        p = Plots.scatter!(vcat(x_train...), y_train; lab="data")
+        pred = marginals(posterior(fx, y_train)(x_test))
+        Plots.plot!(vcat(x_test...), mean.(pred); ribbon=std.(pred), lab="Prediction")
+        frame(anim)
+        display(p)
+    end
 end
-
-#
-
-l = @layout grid(10, 1)
-plot(plots...; layout=l, size=(300, 1500))
+gif(anim; fps=5)
