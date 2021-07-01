@@ -32,10 +32,7 @@ plot!(x_test, sinc; lab="true function")
 # To train the kernel parameters via ForwardDiff.jl
 # we need to create a function creating a kernel from an array
 
-kernelcall(θ) = transform(
-    exp(θ[1]) * SqExponentialKernel(),# + exp(θ[2]) * Matern32Kernel(),
-    exp(θ[3]),
-)
+kernelcall(θ) = (exp(θ[1]) * SqExponentialKernel() + exp(θ[2]) * Matern32Kernel()) ∘ ScaleTransform(exp(θ[3]))
 
 # From theory we know the prediction for a test set x given
 # the kernel parameters and normalization constant
