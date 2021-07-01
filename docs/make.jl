@@ -13,7 +13,7 @@ let script = "using Pkg; Pkg.activate(ARGS[1]); Pkg.instantiate()"
             error(
                 "project environment of example ",
                 basename(example),
-                " could not be instantiated"
+                " could not be instantiated",
             )
         end
     end
