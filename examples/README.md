@@ -28,7 +28,7 @@ julia> Literate.notebook("script.jl", "output_directory")
 ```
 (see the [Literate.jl docs](https://fredrikekre.github.io/Literate.jl/v2/) for additional options) or run
 ```shell
-julia docs/literate.jl examples/myexample/script.jl output_directory
+julia docs/literate.jl myexample output_directory
 ```
 which also executes the code and generates embedded plots etc. in the same way as in building the KernelFunctions documentation.
 
