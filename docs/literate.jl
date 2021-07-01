@@ -10,7 +10,7 @@ const OUTDIR = ARGS[2]
 using Pkg: Pkg
 const EXAMPLEPATH = joinpath(@__DIR__, "..", "examples", EXAMPLE)
 Pkg.activate(EXAMPLEPATH)
-
+Pkg.instantiate()
 using Literate: Literate
 
 # Add link to nbviewer below the first heading of level 1
