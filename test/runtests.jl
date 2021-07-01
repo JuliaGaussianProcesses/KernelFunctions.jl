@@ -126,15 +126,6 @@ include("test_utils.jl")
         @info "Ran tests on Kernel"
     end
 
-    if GROUP == "All" || GROUP == "Matrix"
-        @testset "matrix" begin
-            include(joinpath("matrix", "kernelmatrix.jl"))
-            include(joinpath("matrix", "kernelkroneckermat.jl"))
-            include(joinpath("matrix", "kernelpdmat.jl"))
-        end
-        @info "Ran tests on matrix"
-    end
-
     if GROUP == "All" || GROUP == "MultiOutput"
         @testset "multi_output" begin
             include(joinpath("mokernels", "moinput.jl"))
@@ -156,6 +147,15 @@ include("test_utils.jl")
             include(joinpath("distances", "sinus.jl"))
         end
         @info "Ran tests on Distances"
+
+        if GROUP == "All" || GROUP == "Matrix"
+            @testset "matrix" begin
+                include(joinpath("matrix", "kernelmatrix.jl"))
+                include(joinpath("matrix", "kernelkroneckermat.jl"))
+                include(joinpath("matrix", "kernelpdmat.jl"))
+            end
+            @info "Ran tests on matrix"
+        end
 
         @testset "approximations" begin
             include(joinpath("approximations", "nystrom.jl"))

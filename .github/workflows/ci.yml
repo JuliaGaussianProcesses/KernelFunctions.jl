@@ -24,7 +24,6 @@ jobs:
           - 'Transform'
           - 'BaseKernels'
           - 'Kernels'
-          - 'Matrix'
           - 'MultiOutput'
           - 'Others'
     steps:
