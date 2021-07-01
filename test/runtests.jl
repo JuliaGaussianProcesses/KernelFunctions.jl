@@ -19,7 +19,9 @@ using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 
 using KernelFunctions.TestUtils: test_interface
 
-const GROUP = get(ENV, "GROUP", "All")
+# The GROUP is used to run different sets of tests in parallel on the GitHub Actions CI.
+# If you want to introduce a new group, ensure you also add it to .github/workflows/ci.yml
+const GROUP = get(ENV, "GROUP", "")
 
 # Writing tests:
 # 1. The file structure of the test should match precisely the file structure of src.
@@ -56,7 +58,7 @@ const GROUP = get(ENV, "GROUP", "All")
 include("test_utils.jl")
 
 @testset "KernelFunctions" begin
-    if GROUP == "All" || GROUP == "Transform"
+    if GROUP == "" || GROUP == "Transform"
         @testset "transform" begin
             include(joinpath("transform", "transform.jl"))
             print(" ")
@@ -78,7 +80,7 @@ include("test_utils.jl")
         @info "Ran tests on Transform"
     end
 
-    if GROUP == "All" || GROUP == "BaseKernels"
+    if GROUP == "" || GROUP == "BaseKernels"
         @testset "basekernels" begin
             include(joinpath("basekernels", "constant.jl"))
             print(" ")
@@ -112,7 +114,7 @@ include("test_utils.jl")
         @info "Ran tests on BaseKernel"
     end
 
-    if GROUP == "All" || GROUP == "Kernels"
+    if GROUP == "" || GROUP == "Kernels"
         @testset "kernels" begin
             include(joinpath("kernels", "kernelproduct.jl"))
             include(joinpath("kernels", "kernelsum.jl"))
@@ -126,7 +128,7 @@ include("test_utils.jl")
         @info "Ran tests on Kernel"
     end
 
-    if GROUP == "All" || GROUP == "MultiOutput"
+    if GROUP == "" || GROUP == "MultiOutput"
         @testset "multi_output" begin
             include(joinpath("mokernels", "moinput.jl"))
             include(joinpath("mokernels", "independent.jl"))
@@ -137,7 +139,7 @@ include("test_utils.jl")
         @info "Ran tests on Multi-Output Kernels"
     end
 
-    if GROUP == "All" || GROUP == "Others"
+    if GROUP == "" || GROUP == "Others"
         include("utils.jl")
 
         @testset "distances" begin
@@ -148,14 +150,12 @@ include("test_utils.jl")
         end
         @info "Ran tests on Distances"
 
-        if GROUP == "All" || GROUP == "Matrix"
-            @testset "matrix" begin
-                include(joinpath("matrix", "kernelmatrix.jl"))
-                include(joinpath("matrix", "kernelkroneckermat.jl"))
-                include(joinpath("matrix", "kernelpdmat.jl"))
-            end
-            @info "Ran tests on matrix"
+        @testset "matrix" begin
+            include(joinpath("matrix", "kernelmatrix.jl"))
+            include(joinpath("matrix", "kernelkroneckermat.jl"))
+            include(joinpath("matrix", "kernelpdmat.jl"))
         end
+        @info "Ran tests on matrix"
 
         @testset "approximations" begin
             include(joinpath("approximations", "nystrom.jl"))
