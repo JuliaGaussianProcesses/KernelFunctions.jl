@@ -8,7 +8,6 @@ using Distributions, LinearAlgebra
 using Plots
 using ProgressMeter
 using AbstractGPs
-pyplot();
 default(; legendfontsize=15.0, linewidth=3.0);
 
 # ## Data creation
