@@ -104,7 +104,7 @@ end;
 # We can now visualize a kernel and show samples from
 # a Gaussian process with a given kernel:
 
-plot(visualize(SqExponentialKernel()), size=(600, 220))
+plot(visualize(SqExponentialKernel()); size=(600, 220))
 
 ##
 
