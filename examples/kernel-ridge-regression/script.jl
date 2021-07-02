@@ -9,12 +9,12 @@ using Distributions
 
 ## Plotting
 using Plots;
-default(; lw=2.0, legendfontsize=15.0);
+default(; lw=2.0, legendfontsize=11.0);
 
 using Random: seed!
 seed!(42);
 
-# ## From linear regression to ridge regression
+# ## Toy data
 # Here we use a one-dimensional toy problem. We generate data using the fourth-order polynomial $f(x) = (x+4)(x+1)(x-1)(x-3)$:
 
 f_truth(x) = (x + 4) * (x + 1) * (x - 1) * (x - 3)
@@ -29,6 +29,7 @@ y_test = f_truth.(x_test)
 plot(x_test, y_test; label=raw"$f(x)$")
 scatter!(x_train, y_train; label="observations")
 
+# ## Linear regression
 # For training inputs $\mathrm{X}=(\mathbf{x}_n)_{n=1}^N$ and observations $\mathbf{y}=(y_n)_{n=1}^N$, the linear regression weights $\mathbf{w}$ using the least-squares estimator are given by
 # ```math
 # \mathbf{w} = (\mathrm{X}^\top \mathrm{X})^{-1} \mathrm{X}^\top \mathbf{y}
@@ -50,6 +51,7 @@ y_pred = linear_regression(x_train, y_train, x_test)
 scatter(x_train, y_train; label="observations")
 plot!(x_test, y_pred; label="linear fit")
 
+# ## Featurization
 # We can improve the fit by including additional features, i.e. generalizing to $\mathrm{X} = (\phi(x_n))_{n=1}^N$, where $\phi(x)$ constructs a feature vector for each input $x$. Here we include powers of the input, $\phi(x) = (1, x, x^2, \dots, x^d)$:
 
 function featurize_poly(x; degree=1)
@@ -73,6 +75,7 @@ plot([featurized_fit_and_plot(degree) for degree in 1:4]...)
 
 featurized_fit_and_plot(18)
 
+# ## Ridge regression
 # To counteract this unwanted behaviour, we can introduce regularization. This leads to *ridge regression* with $L_2$ regularization of the weights ([Tikhonov regularization](https://en.wikipedia.org/wiki/Tikhonov_regularization)).
 # Instead of the weights in linear regression,
 # ```math
@@ -103,6 +106,7 @@ end
 
 plot([regularized_fit_and_plot(18, lambda) for lambda in [1e-4, 1e-2, 0.1, 10]]...)
 
+# ## Kernel ridge regression
 # Instead of constructing the feature matrix explicitly, we can use *kernels* to replace inner products of feature vectors with a kernel evaluation: $\langle \phi(x), \phi(x') \rangle = k(x, x')$ or $\mathrm{X} \mathrm{X}^\top = \mathrm{K}$, where $\mathrm{K}_{ij} = k(x_i, x_j)$.
 #
 # To apply this "kernel trick" to ridge regression, we can rewrite the ridge estimate for the weights
