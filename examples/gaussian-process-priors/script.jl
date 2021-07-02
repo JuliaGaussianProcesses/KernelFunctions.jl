@@ -101,4 +101,8 @@ visualize(SqExponentialKernel())
 # This also allows us to compare different kernels:
 
 kernel_classes = [Matern12Kernel, Matern32Kernel, Matern52Kernel, SqExponentialKernel]
-plot([visualize(k()) for k in kernel_classes]..., layout = (length(kernel_classes), 1), size=(600, 1000))
+plot(
+    [visualize(k()) for k in kernel_classes]...;
+    layout=(length(kernel_classes), 1),
+    size=(600, 1000),
+)
