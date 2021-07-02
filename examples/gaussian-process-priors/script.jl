@@ -15,6 +15,8 @@ default(; lw=1.0, legendfontsize=15.0)
 using Random: seed!
 seed!(42); # reproducibility
 
+##
+
 # ## Evaluation at finite set of points
 #
 # The function values $\mathbf{f} = \{f(x_n)\}_{n=1}^N$ of the GP at a finite number $N$ of points $X = \{x_n\}_{n=1}^N$ follow a multivariate normal distribution $\mathbf{f} \sim \mathcal{MVN}(\mathbf{m}, \mathrm{K})$ with mean vector $\mathbf{m}$ and covariance matrix $\mathrm{K}$, where
@@ -32,6 +34,8 @@ xlim = (-5, 5)
 X = collect(range(xlim...; length=num_inputs));
 
 # Given a kernel `k`, we can compute the kernel matrix as `K = kernelmatrix(k, X)`.`
+
+##
 
 # ## Random samples
 #
@@ -51,6 +55,8 @@ function mvn_sample(K)
     f = L.L * v
     return f
 end;
+
+##
 
 # ## Visualization
 # We now define a function that visualizes a kernel for us.
@@ -93,10 +99,14 @@ function visualize(k::Kernel; xref=0.0)
     return plot(p_kernel_2d, p_kernel_cut, p_samples; layout=(1, 3), xlabel=raw"$x$")
 end;
 
+##
+
 # We can now visualize a kernel and show samples from
 # a Gaussian process with a given kernel:
 
-visualize(SqExponentialKernel())
+plot(visualize(SqExponentialKernel()), size=(600, 220))
+
+##
 
 # ## Kernel comparison
 # This also allows us to compare different kernels:
