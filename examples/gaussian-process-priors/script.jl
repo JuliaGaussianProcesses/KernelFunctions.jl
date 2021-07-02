@@ -98,6 +98,7 @@ end;
 
 visualize(SqExponentialKernel())
 
+# ## Kernel comparison
 # This also allows us to compare different kernels:
 
 kernel_classes = [Matern12Kernel, Matern32Kernel, Matern52Kernel, SqExponentialKernel]
