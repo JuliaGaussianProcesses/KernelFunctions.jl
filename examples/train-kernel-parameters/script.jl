@@ -68,7 +68,7 @@ loss(log.(ones(4)))
 
 # ## Training the model
 
-θ = log.([1.0, 0.0, 0.01, 0.001]) # Initial vector
+θ = log.([1.0, 0.1, 0.01, 0.001]) # Initial vector
 anim = Animation()
 opt = Optimise.ADAGrad(0.5)
 for i in 1:30
