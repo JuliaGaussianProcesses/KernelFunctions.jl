@@ -55,13 +55,13 @@ scatter!(getindex.(x[y .== -1], 1), getindex.(x[y .== -1], 2); label="y = 2")
 
 # Create kernel function:
 k = SqExponentialKernel() ∘ ScaleTransform(2.0)
-λ = 1.0 # Regularization parameter
+λ = 1.0; # Regularization parameter
 
 # ### Predictor
 # We create a function to return the optimal prediction for a test data `x_new`
 
 # Optimal prediction:
-f(x, X, y, k, λ) = kernelmatrix(k, x, X) / (kernelmatrix(k, X) + λ * I) * y
+f(x, X, y, k, λ) = kernelmatrix(k, x, X) / (kernelmatrix(k, X) + λ * I) * y;
 # f(x, X, y, k, λ) = kernelmatrix(k, x, X) * ((kernelmatrix(k, X) + λ * I) \ y)
 
 # ### Loss
@@ -71,14 +71,14 @@ hingeloss(y, ŷ) = maximum(zero(ŷ), 1 - y * ŷ) # hingeloss function
 function reg_hingeloss(k, x, y, λ)
     ŷ = f(x, x, y, k, λ)
     return sum(hingeloss.(y, ŷ)) - λ * norm(ŷ) # Total svm loss with regularisation
-end
+end;
 
 # ### Testing the trained model
 # We create a 2D grid based on the maximum values of the data
 
 N_test = 100 # Size of the grid
 xgrid = range(extrema(vcat(x...)) .* 1.1...; length=N_test) # Create a 1D grid
-xgrid_v = vec(collect.(Iterators.product(xgrid, xgrid))) #Combine into a 2D grid
+xgrid_v = vec(collect.(Iterators.product(xgrid, xgrid))); # Combine into a 2D grid
 
 # We predict the value of y on this grid on plot it against the data
 
