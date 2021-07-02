@@ -11,7 +11,7 @@
 ## Load required packages
 using KernelFunctions, LinearAlgebra
 using Plots
-default(; lw = 1.0, legendfontsize = 15.0)
+default(; lw=1.0, legendfontsize=15.0)
 using Random: seed!
 seed!(42); # reproducibility
 
@@ -29,7 +29,7 @@ seed!(42); # reproducibility
 # We can visualize the infinite-dimensional GP by evaluating it on a fine grid to approximate the dense real line:
 num_inputs = 101
 xlim = (-5, 5)
-X = collect(range(xlim...; length = num_inputs));
+X = collect(range(xlim...; length=num_inputs));
 
 # Given a kernel `k`, we can compute the kernel matrix as `K = kernelmatrix(k, X)`.`
 
@@ -55,42 +55,42 @@ end;
 # ## Visualization
 # We now define a function that visualizes a kernel for us.
 
-function visualize(k::Kernel; xref = 0.0)
+function visualize(k::Kernel; xref=0.0)
     K = kernelmatrix(k, X)
     f = mvn_sample(K)
 
     p_kernel_2d = heatmap(
         K;
-        yflip = true,
-        colorbar = false,
-        ylabel = string(nameof(typeof(k))),
-        framestyle = :none,
+        yflip=true,
+        colorbar=false,
+        ylabel=string(nameof(typeof(k))),
+        framestyle=:none,
         #color=:blues,
-        vlim = (0, 1),
-        title = raw"$k(x, x')$",
+        vlim=(0, 1),
+        title=raw"$k(x, x')$",
     )
 
     p_kernel_cut = plot(
         X,
         k.(X, xref);
-        title = string(raw"$k(x, ", xref, raw")$"),
-        xlim = xlim,
-        xticks = (xlim, xlim),
-        label = nothing,
+        title=string(raw"$k(x, ", xref, raw")$"),
+        xlim=xlim,
+        xticks=(xlim, xlim),
+        label=nothing,
     )
 
     p_samples = plot(
         X,
         f;
-        c = "blue",
-        title = raw"$f(x)$",
-        ylim = (-3, 3),
-        xlim = xlim,
-        xticks = (xlim, xlim),
-        label = nothing,
+        c="blue",
+        title=raw"$f(x)$",
+        ylim=(-3, 3),
+        xlim=xlim,
+        xticks=(xlim, xlim),
+        label=nothing,
     )
 
-    return plot(p_kernel_2d, p_kernel_cut, p_samples; layout = (1, 3), xlabel = raw"$x$")
+    return plot(p_kernel_2d, p_kernel_cut, p_samples; layout=(1, 3), xlabel=raw"$x$")
 end;
 
 # We can now visualize a kernel and show samples from
