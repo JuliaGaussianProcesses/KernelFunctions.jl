@@ -4,8 +4,8 @@
     N = 10
     in_dim = 3
     out_dim = 6
-    x1 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
-    x2 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
+    x1 = isotopic_by_outputs([rand(rng, in_dim) for _ in 1:N], out_dim)
+    x2 = isotopic_by_outputs([rand(rng, in_dim) for _ in 1:N], out_dim)
     H = rand(4, 6)
 
     k = LinearMixingModelKernel(

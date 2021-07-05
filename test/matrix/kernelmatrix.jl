@@ -142,8 +142,8 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
     end
 
     @testset "Multi Output Kernels" begin
-        x = IsotopicByOutputs([rand(5) for _ in 1:4], 3)
-        y = IsotopicByOutputs([rand(5) for _ in 1:4], 3)
+        x = KernelFunctions.IsotopicByOutputs([rand(5) for _ in 1:4], 3)
+        y = KernelFunctions.IsotopicByOutputs([rand(5) for _ in 1:4], 3)
 
         k = IndependentMOKernel(GaussianKernel())
         @test kernelmatrix(k, x, y) == k.(collect(x), permutedims(collect(y)))

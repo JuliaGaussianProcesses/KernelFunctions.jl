@@ -63,7 +63,12 @@ KernelFunctions.jl provides the following types for situations in which all outp
 IsotopicByFeatures
 IsotopicByOutputs
 ```
-For[`IsotopicByFeatures`](@ref) i
+
+To create objects of these types, the following helper functions can be used:
+```@docs
+isotopic_by_features
+isotopic_by_outputs
+```
 
 As with [`ColVecs`](@ref) and [`RowVecs`](@ref) for vector-valued input spaces, these
 types enable specialised implementations of e.g. [`kernelmatrix`](@ref) for certain
