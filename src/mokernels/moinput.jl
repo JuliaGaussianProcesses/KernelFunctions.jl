@@ -6,8 +6,8 @@
 ```jldoctest
 julia> x = [1, 2, 3];
 
-julia> IsotopicByFeatures(x, 2)
-6-element IsotopicByFeatures{Int64, Vector{Int64}}:
+julia> KernelFunctions.IsotopicByFeatures(x, 2)
+6-element KernelFunctions.IsotopicByFeatures{Int64, Vector{Int64}}:
  (1, 1)
  (1, 2)
  (2, 1)
@@ -37,8 +37,8 @@ end
 ```jldoctest
 julia> x = [1, 2, 3];
 
-julia> IsotopicByOutputs(x, 2)
-6-element IsotopicByOutputs{Int64, Vector{Int64}}:
+julia> KernelFunctions.IsotopicByOutputs(x, 2)
+6-element KernelFunctions.IsotopicByOutputs{Int64, Vector{Int64}}:
  (1, 1)
  (2, 1)
  (3, 1)
@@ -82,3 +82,31 @@ Base.size(inp::IsotopicMOInputs) = (inp.out_dim * length(inp.x),)
 Alias of [`IsotopicByOutputs`](@ref).
 """
 const MOInput = IsotopicByOutputs
+
+"""
+    isotopic_by_outputs(x::AbstractVector, out_dim::Integer)
+
+Helper function to construct [`IsotopicByOutputs`](@ref).
+
+```jldoctest isotopic_by_outputs
+julia> x = [1, 2, 3];
+
+julia> isotopic_by_outputs(x, 2) == KernelFunctions.IsotopicByOutputs(x, 2)
+true
+```
+"""
+const isotopic_by_outputs = IsotopicByOutputs
+
+"""
+    isotopic_by_features(x::AbstractVector, out_dim::Integer)
+
+Helper function to construct [`IsotopicByFeatures`](@ref).
+
+```jldoctest isotopic_by_features
+julia> x = [1, 2, 3];
+
+julia> isotopic_by_features(x, 2) == KernelFunctions.IsotopicByFeatures(x, 2)
+true
+```
+"""
+const isotopic_by_features = IsotopicByFeatures
