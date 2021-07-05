@@ -6,7 +6,7 @@ on:
   pull_request:
 jobs:
   test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    name: Julia ${{ matrix.version }} - ${{ matrix.group }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.version == 'nightly' }}
     strategy:
@@ -18,10 +18,14 @@ jobs:
           - 'nightly'
         os:
           - ubuntu-latest
-          - macOS-latest
-          - windows-latest
         arch:
           - x64
+        group:
+          - 'Transform'
+          - 'BaseKernels'
+          - 'Kernels'
+          - 'MultiOutput'
+          - 'Others'
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
@@ -40,10 +44,26 @@ jobs:
             ${{ runner.os }}-
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
+        with:
+          coverage: ${{ matrix.version == '1' && matrix.os == 'ubuntu-latest' }}
+        env:
+          GROUP: ${{ matrix.group }}
       - uses: julia-actions/julia-processcoverage@v1
-      - name: Send coverage
+        if: matrix.version == '1' && matrix.os == 'ubuntu-latest'
+      - name: Coveralls parallel
         if: matrix.version == '1' && matrix.os == 'ubuntu-latest'
         uses: coverallsapp/github-action@master
         with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            path-to-lcov: ./lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./lcov.info
+          flag-name: run-${{ matrix.group }}
+          parallel: true
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send coverage
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true

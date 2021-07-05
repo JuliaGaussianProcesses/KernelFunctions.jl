@@ -1,5 +1,11 @@
 # This file is machine-generated - editing it directly is not advised
 
+[[AbstractFFTs]]
+deps = ["LinearAlgebra"]
+git-tree-sha1 = "485ee0867925449198280d4af84bdb46a2a404d0"
+uuid = "621f4979-c628-5d54-868e-fcf4e3e8185c"
+version = "1.0.1"
+
 [[ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
 
@@ -67,9 +73,9 @@ version = "0.8.5"
 
 [[Documenter]]
 deps = ["Base64", "Dates", "DocStringExtensions", "IOCapture", "InteractiveUtils", "JSON", "LibGit2", "Logging", "Markdown", "REPL", "Test", "Unicode"]
-git-tree-sha1 = "621850838b3e74dd6dd047b5432d2e976877104e"
+git-tree-sha1 = "47f13b6305ab195edb73c86815962d84e31b0f48"
 uuid = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-version = "0.27.2"
+version = "0.27.3"
 
 [[Downloads]]
 deps = ["ArgTools", "LibCURL", "NetworkOptions"]
@@ -77,9 +83,9 @@ uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays"]
-git-tree-sha1 = "31939159aeb8ffad1d4d8ee44d07f8558273120a"
+git-tree-sha1 = "a603e79b71bb3c1efdb58f0ee32286efe2d1a255"
 uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
-version = "0.11.7"
+version = "0.11.8"
 
 [[Functors]]
 deps = ["MacroTools"]
@@ -114,6 +120,12 @@ deps = ["ChainRulesCore", "Compat", "CompositionsBase", "Distances", "FillArrays
 path = ".."
 uuid = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
 version = "0.11.0"
+
+[[Kronecker]]
+deps = ["FillArrays", "LinearAlgebra", "NamedDims", "SparseArrays", "StatsBase"]
+git-tree-sha1 = "90e082a267982069e624ea0f825d324c86a01b4e"
+uuid = "2c470bb0-bcc8-11e8-3dad-c9649493f05e"
+version = "0.4.3"
 
 [[LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
@@ -172,6 +184,12 @@ uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
+
+[[NamedDims]]
+deps = ["AbstractFFTs", "LinearAlgebra", "Pkg", "Requires", "Statistics"]
+git-tree-sha1 = "572b7af3ee53328eec29392d3b133804925595a1"
+uuid = "356022a1-0364-5f58-8944-0da4b18d706f"
+version = "0.2.34"
 
 [[NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"

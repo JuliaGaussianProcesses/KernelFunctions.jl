@@ -1,37 +1,46 @@
-# run examples
-const EXAMPLES_SRC = joinpath(@__DIR__, "..", "examples")
-const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
-const LITERATEJL = joinpath(@__DIR__, "literate.jl")
-
+### Process examples
 # Always rerun examples
+const EXAMPLES_OUT = joinpath(@__DIR__, "src", "examples")
 ispath(EXAMPLES_OUT) && rm(EXAMPLES_OUT; recursive=true)
 mkpath(EXAMPLES_OUT)
 
+# Install and precompile all packages
+# Workaround for https://github.com/JuliaLang/Pkg.jl/issues/2219
+examples = filter!(isdir, readdir(joinpath(@__DIR__, "..", "examples"); join=true))
+let script = "using Pkg; Pkg.activate(ARGS[1]); Pkg.instantiate()"
+    for example in examples
+        if !success(`$(Base.julia_cmd()) -e $script $example`)
+            error(
+                "project environment of example ",
+                basename(example),
+                " could not be instantiated",
+            )
+        end
+    end
+end
 # Run examples asynchronously
-processes = map(filter!(isdir, readdir(EXAMPLES_SRC; join=true))) do example
-    scriptjl = joinpath(example, "script.jl")
-    return run(
-        pipeline(
-            `$(Base.julia_cmd()) $LITERATEJL $scriptjl $EXAMPLES_OUT`;
-            stdin=devnull,
-            stdout=devnull,
-            stderr=stderr,
-        );
-        wait=false,
-    )::Base.Process
+processes = let literatejl = joinpath(@__DIR__, "literate.jl")
+    map(examples) do example
+        return run(
+            pipeline(
+                `$(Base.julia_cmd()) $literatejl $(basename(example)) $EXAMPLES_OUT`;
+                stdin=devnull,
+                stdout=devnull,
+                stderr=stderr,
+            );
+            wait=false,
+        )::Base.Process
+    end
 end
 
 # Check that all examples were run successfully
 isempty(processes) || success(processes) || error("some examples were not run successfully")
 
-# Build documentation
-using KernelFunctions
+### Build documentation
 using Documenter
 
-# Print `@debug` statements (https://github.com/JuliaDocs/Documenter.jl/issues/955)
-if haskey(ENV, "GITHUB_ACTIONS")
-    ENV["JULIA_DEBUG"] = "Documenter"
-end
+using KernelFunctions
+using PDMats, Kronecker  # we have to load all optional packages to generate the full API documentation
 
 # Doctest setup
 DocMeta.setdocmeta!(
@@ -39,10 +48,7 @@ DocMeta.setdocmeta!(
     :DocTestSetup,
     quote
         using KernelFunctions
-        using LinearAlgebra
-        using Random
-        using PDMats: PDMats
-    end;
+    end;  # we have to load all packages used (implicitly) within jldoctest blocks in the API docstrings
     recursive=true,
 )
 
