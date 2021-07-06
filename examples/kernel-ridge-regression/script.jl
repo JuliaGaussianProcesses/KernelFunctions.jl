@@ -145,12 +145,7 @@ function kernelized_fit_and_plot(kernel, lambda=1e-4)
         title = string(nameof(typeof(kernel)))
     end
     scatter(x_train, y_train; label=nothing)
-    p = plot!(
-        x_test,
-        y_pred;
-        label=nothing,
-        title=title,
-    )
+    p = plot!(x_test, y_pred; label=nothing, title=title)
     return p
 end
 
