@@ -22,7 +22,7 @@ f_truth(x) = (x + 4) * (x + 1) * (x - 1) * (x - 3)
 x_train = collect(-5:0.5:5)
 x_test = collect(-5:0.1:5)
 
-noise = rand(Uniform(-10, 10), size(x_train))
+noise = rand(Uniform(-10, 10), length(x_train))
 y_train = f_truth.(x_train) + noise
 y_test = f_truth.(x_test)
 
@@ -55,8 +55,7 @@ plot!(x_test, y_pred; label="linear fit")
 # We can improve the fit by including additional features, i.e. generalizing to $\mathrm{X} = (\phi(x_n))_{n=1}^N$, where $\phi(x)$ constructs a feature vector for each input $x$. Here we include powers of the input, $\phi(x) = (1, x, x^2, \dots, x^d)$:
 
 function featurize_poly(x; degree=1)
-    xcols = [x .^ d for d in 0:degree]
-    return hcat(xcols...)
+    return repeat(x, 1, degree + 1) .^ (0:degree)'
 end
 
 function featurized_fit_and_plot(degree)
@@ -67,7 +66,7 @@ function featurized_fit_and_plot(degree)
     return plot!(x_test, y_pred)
 end
 
-plot([featurized_fit_and_plot(degree) for degree in 1:4]...)
+plot((featurized_fit_and_plot(degree) for degree in 1:4)...)
 
 # Note that the fit becomes perfect when we include exactly as many orders in the features as we have in the underlying polynomial (4).
 #
@@ -104,7 +103,7 @@ function regularized_fit_and_plot(degree, lambda)
     return plot!(x_test, y_pred)
 end
 
-plot([regularized_fit_and_plot(18, lambda) for lambda in [1e-4, 1e-2, 0.1, 10]]...)
+plot((regularized_fit_and_plot(18, lambda) for lambda in (1e-4, 1e-2, 0.1, 10))...)
 
 # ## Kernel ridge regression
 # Instead of constructing the feature matrix explicitly, we can use *kernels* to replace inner products of feature vectors with a kernel evaluation: $\langle \phi(x), \phi(x') \rangle = k(x, x')$ or $\mathrm{X} \mathrm{X}^\top = \mathrm{K}$, where $\mathrm{K}_{ij} = k(x_i, x_j)$.
@@ -151,12 +150,11 @@ function kernelized_fit_and_plot(kernel, lambda=1e-4)
         y_pred;
         label=nothing,
         title=title,
-        #title=string(raw"$\lambda=", lambda, raw"$")
     )
     return p
 end
 
-plot([kernelized_fit_and_plot(PolynomialKernel(; degree=degree, c=1)) for degree in 1:4]...)
+plot((kernelized_fit_and_plot(PolynomialKernel(; degree=degree, c=1)) for degree in 1:4)...)
 
 # However, we can now also use kernels that would have an infinite-dimensional feature expansion, such as the squared exponential kernel:
 
