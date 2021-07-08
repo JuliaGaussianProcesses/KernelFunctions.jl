@@ -1,19 +1,20 @@
-# Retrieve filename of literate script
+# Retrieve name of example and output directory
 if length(ARGS) != 2
-    error("please specify the literate script and the output directory")
+    error("please specify the name of the example and the output directory")
 end
-const SCRIPTJL = ARGS[1]
+const EXAMPLE = ARGS[1]
 const OUTDIR = ARGS[2]
 
 # Activate environment
-using Pkg: Pkg
-Pkg.activate(dirname(SCRIPTJL))
 # Note that each example's Project.toml must include Literate as a dependency
+using Pkg: Pkg
+const EXAMPLEPATH = joinpath(@__DIR__, "..", "examples", EXAMPLE)
+Pkg.activate(EXAMPLEPATH)
 Pkg.instantiate()
 using Literate: Literate
 
-# Add link to nbviewer below the first heading of level 1
 function preprocess(content)
+    # Add link to nbviewer below the first heading of level 1
     sub = SubstitutionString(
         """
 #md # ```@meta
@@ -34,14 +35,19 @@ function preprocess(content)
 #
         """,
     )
-    return replace(content, r"^# # [^\n]*"m => sub; count=1)
+    content = replace(content, r"^# # [^\n]*"m => sub; count=1)
+
+    # remove VSCode `##` block delimiter lines
+    content = replace(content, r"^##$."ms => "")
+
+    return content
 end
 
 # Convert to markdown and notebook
-name = basename(dirname(realpath(SCRIPTJL)))
+const SCRIPTJL = joinpath(EXAMPLEPATH, "script.jl")
 Literate.markdown(
-    SCRIPTJL, OUTDIR; name=name, documenter=false, execute=true, preprocess=preprocess
+    SCRIPTJL, OUTDIR; name=EXAMPLE, documenter=false, execute=true, preprocess=preprocess
 )
 Literate.notebook(
-    SCRIPTJL, OUTDIR; name=name, documenter=false, execute=true, preprocess=preprocess
+    SCRIPTJL, OUTDIR; name=EXAMPLE, documenter=false, execute=true, preprocess=preprocess
 )
