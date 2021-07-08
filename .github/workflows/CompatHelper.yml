@@ -27,6 +27,7 @@ jobs:
                   push!(subdirs, joinpath("examples", basename(f)))
               end
           end
+          @info "CompatHelper directories" subdirs
           CompatHelper.main(; subdirs=subdirs)
         shell: julia --color=yes {0}
         env:
