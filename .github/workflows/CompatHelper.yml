@@ -21,7 +21,6 @@ jobs:
       - name: "Run CompatHelper"
         run: |
           import CompatHelper
-          run(`ls -la`)
           subdirs = ["", "test", "docs"]
           for f in readdir("examples"; join=true)
               if isdir(f)
