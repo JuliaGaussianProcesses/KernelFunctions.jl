@@ -126,5 +126,5 @@ kernels = [
 plot(
     [visualize(k) for k in kernels]...;
     layout=(length(kernels), 1),
-    size=(800, 220*length(kernels)+100),
+    size=(800, 220 * length(kernels) + 100),
 )
