@@ -21,6 +21,7 @@ jobs:
       - name: "Run CompatHelper"
         run: |
           import CompatHelper
+          run(`ls -la`)
           subdirs = ["", "test", "docs"]
           for f in readdir(joinpath(@__DIR__, "examples"); join=true)
               if isdir(f)
@@ -32,4 +33,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMPATHELPER_PRIV: ${{ secrets.DOCUMENTER_KEY }}
-
