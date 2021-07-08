@@ -55,7 +55,7 @@ plot!(x_test, y_pred; label="linear fit")
 
 ##
 # ## Featurization
-# We can improve the fit by including additional features, i.e. generalizing to $\mathrm{X} = (\phi(x_n))_{n=1}^N$, where $\phi(x)$ constructs a feature vector for each input $x$. Here we include powers of the input, $\phi(x) = (1, x, x^2, \dots, x^d)$:
+# We can improve the fit by including additional features, i.e. generalizing to $\tilde{\mathrm{X}} = (\phi(x_n))_{n=1}^N$, where $\phi(x)$ constructs a feature vector for each input $x$. Here we include powers of the input, $\phi(x) = (1, x, x^2, \dots, x^d)$:
 
 function featurize_poly(x; degree=1)
     return repeat(x, 1, degree + 1) .^ (0:degree)'
@@ -112,7 +112,7 @@ plot((regularized_fit_and_plot(20, lambda) for lambda in (1e-3, 1e-2, 1e-1, 1)).
 
 ##
 # ## Kernel ridge regression
-# Instead of constructing the feature matrix explicitly, we can use *kernels* to replace inner products of feature vectors with a kernel evaluation: $\langle \phi(x), \phi(x') \rangle = k(x, x')$ or $\mathrm{X} \mathrm{X}^\top = \mathrm{K}$, where $\mathrm{K}_{ij} = k(x_i, x_j)$.
+# Instead of constructing the feature matrix explicitly, we can use *kernels* to replace inner products of feature vectors with a kernel evaluation: $\langle \phi(x), \phi(x') \rangle = k(x, x')$ or $\tilde{\mathrm{X}} \tilde{\mathrm{X}}^\top = \mathrm{K}$, where $\mathrm{K}_{ij} = k(x_i, x_j)$.
 #
 # To apply this "kernel trick" to ridge regression, we can rewrite the ridge estimate for the weights
 # ```math
