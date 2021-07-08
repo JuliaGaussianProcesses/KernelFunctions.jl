@@ -20,8 +20,8 @@ seed!(42);
 
 f_truth(x) = (x + 4) * (x + 1) * (x - 1) * (x - 3)
 
-x_train = collect(-5:0.5:5)
-x_test = collect(-5:0.1:5)
+x_train = -5:0.5:5
+x_test = -7:0.1:7
 
 noise = rand(Uniform(-10, 10), length(x_train))
 y_train = f_truth.(x_train) + noise
