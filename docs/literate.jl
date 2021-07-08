@@ -13,8 +13,8 @@ Pkg.activate(EXAMPLEPATH)
 Pkg.instantiate()
 using Literate: Literate
 
-# Add link to nbviewer below the first heading of level 1
 function preprocess(content)
+    # Add link to nbviewer below the first heading of level 1
     sub = SubstitutionString(
         """
 #md # ```@meta
@@ -35,7 +35,12 @@ function preprocess(content)
 #
         """,
     )
-    return replace(content, r"^# # [^\n]*"m => sub; count=1)
+    content = replace(content, r"^# # [^\n]*"m => sub; count=1)
+
+    # remove VSCode `##` block delimiter lines
+    content = replace(content, r"^##$."ms => "")
+
+    return content
 end
 
 # Convert to markdown and notebook
