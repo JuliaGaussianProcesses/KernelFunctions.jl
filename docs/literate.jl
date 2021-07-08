@@ -37,8 +37,8 @@ function preprocess(content)
     )
     content = replace(content, r"^# # [^\n]*"m => sub; count=1)
 
-    # remove VSCode `##` block delimiters
-    content = replace(content, r"^##$"m => "")
+    # remove VSCode `##` block delimiter lines
+    content = replace(content, r"^##$."ms => "")
 
     return content
 end
