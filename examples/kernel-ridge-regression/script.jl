@@ -151,7 +151,7 @@ function kernelized_fit_and_plot(kernel, lambda=1e-4)
         title = string(nameof(typeof(kernel)))
     end
     scatter(x_train, y_train; label=nothing)
-    plot!(x_test, y_pred; label=nothing, title=title)
+    return plot!(x_test, y_pred; label=nothing, title=title)
 end
 
 plot((kernelized_fit_and_plot(PolynomialKernel(; degree=degree, c=1)) for degree in 1:4)...)
