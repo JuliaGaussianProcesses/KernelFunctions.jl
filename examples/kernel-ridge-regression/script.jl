@@ -28,7 +28,7 @@ y_train = f_truth.(x_train) + noise
 y_test = f_truth.(x_test)
 
 plot(x_test, y_test; label=raw"$f(x)$")
-scatter!(x_train, y_train; label="observations")
+scatter!(x_train, y_train; seriescolor=1, label="observations")
 
 ##
 # ## Linear regression
@@ -151,8 +151,7 @@ function kernelized_fit_and_plot(kernel, lambda=1e-4)
         title = string(nameof(typeof(kernel)))
     end
     scatter(x_train, y_train; label=nothing)
-    p = plot!(x_test, y_pred; label=nothing, title=title)
-    return p
+    plot!(x_test, y_pred; label=nothing, title=title)
 end
 
 plot((kernelized_fit_and_plot(PolynomialKernel(; degree=degree, c=1)) for degree in 1:4)...)
