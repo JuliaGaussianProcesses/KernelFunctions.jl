@@ -4,8 +4,8 @@
     N = 10
     in_dim = 5
     out_dim = 4
-    x1 = isotopic_by_outputs([rand(rng, in_dim) for _ in 1:N], out_dim)
-    x2 = isotopic_by_outputs([rand(rng, in_dim) for _ in 1:N], out_dim)
+    x1 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
+    x2 = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
 
     k = LatentFactorMOKernel(
         [Matern32Kernel(), SqExponentialKernel(), FBMKernel()],

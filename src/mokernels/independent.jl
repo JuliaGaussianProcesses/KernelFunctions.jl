@@ -31,7 +31,7 @@ function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,I
     end
 end
 
-function kernelmatrix(k::IndependentMOKernel, x::IsotopicByOutputs, y::IsotopicByOutputs)
+function kernelmatrix(k::IndependentMOKernel, x::MOInput, y::MOInput)
     @assert x.out_dim == y.out_dim
     temp = k.kernel.(x.x, permutedims(y.x))
     return cat((temp for _ in 1:(y.out_dim))...; dims=(1, 2))
