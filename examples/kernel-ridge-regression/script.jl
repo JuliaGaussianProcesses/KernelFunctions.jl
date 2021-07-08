@@ -9,7 +9,7 @@ using Distributions
 
 ## Plotting
 using Plots;
-default(; lw=2.0, legendfontsize=11.0);
+default(; lw=2.0, legendfontsize=11.0, ylims=(-150, 500));
 
 using Random: seed!
 seed!(42);
