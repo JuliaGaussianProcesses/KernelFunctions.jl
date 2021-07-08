@@ -11,7 +11,7 @@
 ## Load required packages
 using KernelFunctions, LinearAlgebra
 using Plots, Plots.PlotMeasures
-default(; lw=1.0, legendfontsize=15.0)
+default(; lw=1.0, legendfontsize=8.0)
 using Random: seed!
 seed!(42); # reproducibility
 
@@ -84,9 +84,8 @@ function visualize(k::Kernel)
         label=raw"$x_\mathrm{ref}=0.0$",
         xlim=xlim,
         xticks=(xlim, xlim),
-        legendfontsize=8,
     )
-    plot!(X, k.(X, 1.0); label=raw"$x_\mathrm{ref}=1.0$")
+    plot!(X, k.(X, 1.5); label=raw"$x_\mathrm{ref}=1.5$")
 
     p_samples = plot(X, f; c="blue", title=raw"$f(x)$", ylim=(-3, 3), label=nothing)
 
