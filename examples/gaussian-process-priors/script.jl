@@ -32,13 +32,13 @@ num_inputs = 101
 xlim = (-5, 5)
 X = range(xlim...; length=num_inputs);
 
-# Given a kernel `k`, we can compute the kernel matrix as `K = kernelmatrix(k, X)`.`
+# Given a kernel `k`, we can compute the kernel matrix as `K = kernelmatrix(k, X)`.
 
 ##
 # ## Random samples
 #
 # To sample from the multivariate normal distribution $p(\mathbf{f}) = \mathcal{MVN}(0, \mathrm{K})$, we could make use of Distributions.jl and call `rand(MvNormal(K))`.
-# Alternatively, we could use the AbstractGPs.jl package and construct a `GP` object which we evaluate at the points of interest and from which we can then sample: `rand(GP(k)(X))`.
+# Alternatively, we could use the [AbstractGPs.jl](https://github.com/JuliaGaussianProcesses/AbstractGPs.jl) package and construct a `GP` object which we evaluate at the points of interest and from which we can then sample: `rand(GP(k)(X))`.
 
 # Here, we will explicitly construct samples using the Cholesky factorization $\mathrm{L} = \operatorname{cholesky}(\mathrm{K})$,
 # with $\mathbf{f} = \mathrm{L} \mathbf{v}$, where $\mathbf{v} \sim \mathcal{N}(0, \mathbf{I})$ is a vector of standard-normal random variables.
