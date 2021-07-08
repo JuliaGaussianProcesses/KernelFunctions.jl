@@ -128,7 +128,7 @@ include("test_utils.jl")
         @info "Ran tests on Kernel"
     end
 
-    if GROUP == "" || GROUP == "MultiOutput"
+    if GROUP == "" # || GROUP == "MultiOutput"
         @testset "multi_output" begin
             include(joinpath("mokernels", "moinput.jl"))
             include(joinpath("mokernels", "independent.jl"))
@@ -141,14 +141,6 @@ include("test_utils.jl")
 
     if GROUP == "" || GROUP == "Others"
         include("utils.jl")
-
-        @testset "distances" begin
-            include(joinpath("distances", "pairwise.jl"))
-            include(joinpath("distances", "dotproduct.jl"))
-            include(joinpath("distances", "delta.jl"))
-            include(joinpath("distances", "sinus.jl"))
-        end
-        @info "Ran tests on Distances"
 
         @testset "matrix" begin
             include(joinpath("matrix", "kernelmatrix.jl"))
