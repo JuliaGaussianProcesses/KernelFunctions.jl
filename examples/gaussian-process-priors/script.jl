@@ -80,12 +80,13 @@ function visualize(k::Kernel)
     p_kernel_cut = plot(
         X,
         k.(X, 0.0);
-        title=string(raw"$k(x, x_\text{ref})$"),
-        label=raw"$x_\text{ref}=0.0$",
+        title=string(raw"$k(x, x_\mathrm{ref})$"),
+        label=raw"$x_\mathrm{ref}=0.0$",
         xlim=xlim,
         xticks=(xlim, xlim),
+        legendfontsize=8,
     )
-    plot!(X, k.(X, 1.0); label=raw"$x_\text{ref}=1.0$")
+    plot!(X, k.(X, 1.0); label=raw"$x_\mathrm{ref}=1.0$")
 
     p_samples = plot(X, f; c="blue", title=raw"$f(x)$", ylim=(-3, 3), label=nothing)
 
