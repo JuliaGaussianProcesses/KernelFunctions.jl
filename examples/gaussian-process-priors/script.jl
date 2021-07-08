@@ -10,13 +10,12 @@
 
 ## Load required packages
 using KernelFunctions, LinearAlgebra
-using Plots
+using Plots, Plots.PlotMeasures
 default(; lw=1.0, legendfontsize=15.0)
 using Random: seed!
 seed!(42); # reproducibility
 
 ##
-
 # ## Evaluation at finite set of points
 #
 # The function values $\mathbf{f} = \{f(x_n)\}_{n=1}^N$ of the GP at a finite number $N$ of points $X = \{x_n\}_{n=1}^N$ follow a multivariate normal distribution $\mathbf{f} \sim \mathcal{MVN}(\mathbf{m}, \mathrm{K})$ with mean vector $\mathbf{m}$ and covariance matrix $\mathrm{K}$, where
@@ -31,12 +30,11 @@ seed!(42); # reproducibility
 # We can visualize the infinite-dimensional GP by evaluating it on a fine grid to approximate the dense real line:
 num_inputs = 101
 xlim = (-5, 5)
-X = collect(range(xlim...; length=num_inputs));
+X = range(xlim...; length=num_inputs);
 
 # Given a kernel `k`, we can compute the kernel matrix as `K = kernelmatrix(k, X)`.`
 
 ##
-
 # ## Random samples
 #
 # To sample from the multivariate normal distribution $p(\mathbf{f}) = \mathcal{MVN}(0, \mathrm{K})$, we could make use of Distributions.jl and call `rand(MvNormal(K))`.
@@ -46,7 +44,7 @@ X = collect(range(xlim...; length=num_inputs));
 # with $\mathbf{f} = \mathrm{L} \mathbf{v}$, where $\mathbf{v} \sim \mathcal{N}(0, \mathbf{I})$ is a vector of standard-normal random variables.
 
 # We will use the same randomness $\mathbf{v}$ to generate comparable samples across different kernels.
-num_samples = 11
+num_samples = 7
 v = randn(num_inputs, num_samples);
 
 # Mathematically, a kernel matrix is by definition positive semi-definite, but due to finite-precision inaccuracies, the computed kernel matrix might not be exactly positive definite. To avoid Cholesky errors, we add a small "nugget" term on the diagonal:
@@ -57,7 +55,6 @@ function mvn_sample(K)
 end;
 
 ##
-
 # ## Visualization
 # We now define a function that visualizes a kernel for us.
 
@@ -66,14 +63,20 @@ function visualize(k::Kernel; xref=0.0)
     f = mvn_sample(K)
 
     p_kernel_2d = heatmap(
+        X,
+        X,
         K;
         yflip=true,
         colorbar=false,
         ylabel=string(nameof(typeof(k))),
-        framestyle=:none,
-        #color=:blues,
+        xlim=xlim,
+        ylim=xlim,
+        xticks=(xlim, xlim),
+        yticks=(xlim, xlim),
         vlim=(0, 1),
         title=raw"$k(x, x')$",
+        aspect_ratio=:equal,
+        left_margin=5mm,
     )
 
     p_kernel_cut = plot(
@@ -100,20 +103,28 @@ function visualize(k::Kernel; xref=0.0)
 end;
 
 ##
-
 # We can now visualize a kernel and show samples from
 # a Gaussian process with a given kernel:
 
 plot(visualize(SqExponentialKernel()); size=(600, 220))
 
 ##
-
 # ## Kernel comparison
 # This also allows us to compare different kernels:
 
-kernel_classes = [Matern12Kernel, Matern32Kernel, Matern52Kernel, SqExponentialKernel]
+kernels = [
+    Matern12Kernel(),
+    Matern32Kernel(),
+    Matern52Kernel(),
+    SqExponentialKernel(),
+    WhiteKernel(),
+    ConstantKernel(),
+    LinearKernel(),
+    PeriodicKernel(),
+    NeuralNetworkKernel(),
+]
 plot(
-    [visualize(k()) for k in kernel_classes]...;
-    layout=(length(kernel_classes), 1),
-    size=(600, 1000),
+    [visualize(k) for k in kernels]...;
+    layout=(length(kernels), 1),
+    size=(800, 220*length(kernels)+100),
 )
