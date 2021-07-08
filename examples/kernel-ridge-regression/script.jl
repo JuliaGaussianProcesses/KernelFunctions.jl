@@ -23,7 +23,7 @@ f_truth(x) = (x + 4) * (x + 1) * (x - 1) * (x - 3)
 x_train = -5:0.5:5
 x_test = -7:0.1:7
 
-noise = rand(Uniform(-10, 10), length(x_train))
+noise = rand(Uniform(-20, 20), length(x_train))
 y_train = f_truth.(x_train) + noise
 y_test = f_truth.(x_test)
 
@@ -76,7 +76,7 @@ plot((featurized_fit_and_plot(degree) for degree in 1:4)...)
 #
 # However, when increasing the number of features, we can quickly overfit to noise in the data set:
 
-featurized_fit_and_plot(18)
+featurized_fit_and_plot(20)
 
 ##
 # ## Ridge regression
@@ -108,7 +108,7 @@ function regularized_fit_and_plot(degree, lambda)
     return plot!(x_test, y_pred)
 end
 
-plot((regularized_fit_and_plot(18, lambda) for lambda in (1e-4, 1e-2, 0.1, 10))...)
+plot((regularized_fit_and_plot(20, lambda) for lambda in (1e-3, 1e-2, 1e-1, 1))...)
 
 ##
 # ## Kernel ridge regression
