@@ -58,7 +58,7 @@ end;
 # ## Visualization
 # We now define a function that visualizes a kernel for us.
 
-function visualize(k::Kernel; xref=0.0)
+function visualize(k::Kernel)
     K = kernelmatrix(k, X)
     f = mvn_sample(K)
 
@@ -69,9 +69,7 @@ function visualize(k::Kernel; xref=0.0)
         yflip=true,
         colorbar=false,
         ylabel=string(nameof(typeof(k))),
-        xlim=xlim,
         ylim=xlim,
-        xticks=(xlim, xlim),
         yticks=(xlim, xlim),
         vlim=(0, 1),
         title=raw"$k(x, x')$",
@@ -81,25 +79,25 @@ function visualize(k::Kernel; xref=0.0)
 
     p_kernel_cut = plot(
         X,
-        k.(X, xref);
-        title=string(raw"$k(x, ", xref, raw")$"),
+        k.(X, 0.0);
+        title=string(raw"$k(x, x_\text{ref})$"),
+        label=raw"$x_\text{ref}=0.0$",
         xlim=xlim,
         xticks=(xlim, xlim),
-        label=nothing,
     )
+    plot!(X, k.(X, 1.0); label=raw"$x_\text{ref}=1.0$")
 
-    p_samples = plot(
-        X,
-        f;
-        c="blue",
-        title=raw"$f(x)$",
-        ylim=(-3, 3),
+    p_samples = plot(X, f; c="blue", title=raw"$f(x)$", ylim=(-3, 3), label=nothing)
+
+    return plot(
+        p_kernel_2d,
+        p_kernel_cut,
+        p_samples;
+        layout=(1, 3),
+        xlabel=raw"$x$",
         xlim=xlim,
         xticks=(xlim, xlim),
-        label=nothing,
     )
-
-    return plot(p_kernel_2d, p_kernel_cut, p_samples; layout=(1, 3), xlabel=raw"$x$")
 end;
 
 ##
