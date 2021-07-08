@@ -9,6 +9,7 @@ jobs:
   CompatHelper:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: "Install CompatHelper"
         run: |
           import Pkg
@@ -31,3 +32,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMPATHELPER_PRIV: ${{ secrets.DOCUMENTER_KEY }}
+
