@@ -2,9 +2,8 @@
     with_lengthscale(kernel::Kernel, lengthscale::Real)
     with_lengthscale(kernel::Kernel, lengthscales::AbstractVector{<:Real})
 
-Constructs a transformed kernel with `lengthscale`. If `lengthscales` is passed
-as a vector instead, constructs an "ARD" kernel with different lengthscales for
-each dimension.
+Constructs a transformed kernel with `lengthscale`.
+If a vector `lengthscales` is passed instead, constructs an "ARD" kernel with different lengthscales for each dimension.
 
 The following two ways of constructing a squared-exponential kernel with
 a given lengthscale are equivalent:
