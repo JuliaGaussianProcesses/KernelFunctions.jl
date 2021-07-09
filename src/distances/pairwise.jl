@@ -36,6 +36,14 @@ function colwise(d::PreMetric, x::AbstractVector)
     return zeros(Distances.result_type(d, x, x), length(x)) # Valid since d(x,x) == 0 by definition
 end
 
+function colwise(d::PreMetric, x::ColVecs)
+    return zeros(Distances.result_type(d, x.X, x.X), length(x)) # Valid since d(x,x) == 0 by definition
+end
+
+function colwise(d::PreMetric, x::RowVecs)
+    return zeros(Distances.result_type(d, x.X, x.X), length(x)) # Valid since d(x,x) == 0 by definition
+end
+
 ## The following is a hack for DotProduct and Delta to still work
 function colwise(d::Distances.UnionPreMetric, x::ColVecs)
     return Distances.colwise(d, x.X, x.X)
