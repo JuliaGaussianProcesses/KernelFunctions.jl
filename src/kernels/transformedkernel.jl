@@ -72,6 +72,10 @@ Base.:∘(k::TransformedKernel, t::Transform) = TransformedKernel(k.kernel, k.tr
 Base.:∘(k::Kernel, ::IdentityTransform) = k
 Base.:∘(k::TransformedKernel, ::IdentityTransform) = k
 
+function Base.isequal(k::TransformedKernel, k2::TransformedKernel)
+    return isequal(k.kernel, k2.kernel) && isequal(k.transform, k2.transform)
+end
+
 Base.show(io::IO, κ::TransformedKernel) = printshifted(io, κ, 0)
 
 function printshifted(io::IO, κ::TransformedKernel, shift::Int)
