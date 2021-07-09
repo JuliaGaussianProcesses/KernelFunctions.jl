@@ -15,6 +15,7 @@ true
 struct ARDTransform{Tv<:AbstractVector{<:Real}} <: Transform
     v::Tv
 end
+Base.==(a::ARDTransform, b::ARDTransform) = a.v == b.v
 
 """
     ARDTransform(s::Real, dims::Integer)
