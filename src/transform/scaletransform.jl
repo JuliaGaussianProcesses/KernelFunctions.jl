@@ -15,7 +15,6 @@ true
 struct ScaleTransform{T<:Real} <: Transform
     s::Vector{T}
 end
-Base .== (a::ScaleTransform, b::ScaleTransform) = a.s == b.s
 
 function ScaleTransform(s::T=1.0) where {T<:Real}
     return ScaleTransform{T}([s])
