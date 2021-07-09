@@ -23,11 +23,10 @@ julia> ℓ = [0.5, 2.5];
 julia> isequal(SqExponentialKernel() ∘ ARDTransform(inv.(ℓ)), with_lengthscale(SqExponentialKernel(), ℓ))
 true
 ```
-
 """
 function with_lengthscale(kernel::Kernel, lengthscale::Real)
     return compose(kernel, ScaleTransform(inv(lengthscale)))
 end
 function with_lengthscale(kernel::Kernel, lengthscales::AbstractVector{<:Real})
-    return compose(kernel, ARDTransform(inv.(lengthscales)))
+    return compose(kernel, ARDTransform(map(inv, lengthscales)))
 end
