@@ -11,7 +11,7 @@ a given lengthscale are equivalent:
 ```jldoctest
 julia> ℓ = 2.5;
 
-julia> SqExponentialKernel() ∘ ScaleTransform(inv(ℓ)) == with_lengthscale(SqExponentialKernel(), ℓ)
+julia> isequal(SqExponentialKernel() ∘ ScaleTransform(inv(ℓ)), with_lengthscale(SqExponentialKernel(), ℓ))
 true
 ```
 
@@ -20,7 +20,7 @@ and for the ARD case:
 ```jldoctest
 julia> ℓ = [0.5, 2.5];
 
-julia> SqExponentialKernel() ∘ ARDTransform(inv.(ℓ)) == with_lengthscale(SqExponentialKernel(), ℓ)
+julia> isequal(SqExponentialKernel() ∘ ARDTransform(inv.(ℓ)), with_lengthscale(SqExponentialKernel(), ℓ))
 true
 ```
 
