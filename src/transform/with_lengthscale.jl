@@ -1,32 +1,43 @@
 """
     with_lengthscale(kernel::Kernel, lengthscale::Real)
-    with_lengthscale(kernel::Kernel, lengthscales::AbstractVector{<:Real})
 
 Construct a transformed kernel with `lengthscale`.
-If a vector `lengthscales` is passed instead, construct an "ARD" kernel with different lengthscales for each dimension.
 
-The following two ways of constructing a squared-exponential kernel with
-a given lengthscale are equivalent:
+# Examples
 
 ```jldoctest
-julia> ℓ = 2.5;
+julia> kernel = with_lengthscale(SqExponentialKernel(), 2.5);
 
-julia> isequal(SqExponentialKernel() ∘ ScaleTransform(inv(ℓ)), with_lengthscale(SqExponentialKernel(), ℓ))
-true
-```
+julia> x = rand(2);
 
-and for the ARD case:
+julia> y = rand(2);
 
-```jldoctest
-julia> ℓ = [0.5, 2.5];
-
-julia> isequal(SqExponentialKernel() ∘ ARDTransform(inv.(ℓ)), with_lengthscale(SqExponentialKernel(), ℓ))
+julia> kernel(x, y) ≈ (SqExponentialKernel() ∘ ScaleTransform(0.4))(x, y)
 true
 ```
 """
 function with_lengthscale(kernel::Kernel, lengthscale::Real)
-    return compose(kernel, ScaleTransform(inv(lengthscale)))
+    return kernel ∘ ScaleTransform(inv(lengthscale))
 end
+
+"""
+    with_lengthscale(kernel::Kernel, lengthscales::AbstractVector{<:Real})
+
+Construct a transformed "ARD" kernel with different `lengthscales` for each dimension.
+
+# Examples
+
+```jldoctest
+julia> kernel = with_lengthscale(SqExponentialKernel(), [0.5, 2.5]);
+
+julia> x = rand(2);
+
+julia> y = rand(2);
+
+julia> kernel(x, y) ≈ (SqExponentialKernel() ∘ ARDTransform([2, 0.4]))(x, y)
+true
+```
+"""
 function with_lengthscale(kernel::Kernel, lengthscales::AbstractVector{<:Real})
-    return compose(kernel, ARDTransform(map(inv, lengthscales)))
+    return kernel ∘ ARDTransform(map(inv, lengthscales))
 end

@@ -46,8 +46,6 @@ end
 set!(t::ChainTransform, θ) = set!.(t.transforms, θ)
 duplicate(t::ChainTransform, θ) = ChainTransform(duplicate.(t.transforms, θ))
 
-Base.isequal(t::ChainTransform, t2::ChainTransform) = isequal(t.transforms, t2.transforms)
-
 Base.show(io::IO, t::ChainTransform) = printshifted(io, t, 0)
 
 function printshifted(io::IO, t::ChainTransform, shift::Int)
