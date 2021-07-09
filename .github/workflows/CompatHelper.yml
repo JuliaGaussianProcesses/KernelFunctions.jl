@@ -9,6 +9,7 @@ jobs:
   CompatHelper:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: "Install CompatHelper"
         run: |
           import Pkg
@@ -21,11 +22,12 @@ jobs:
         run: |
           import CompatHelper
           subdirs = ["", "test", "docs"]
-          for f in readdir(joinpath(@__DIR__, "examples"); join=true)
+          for f in readdir("examples"; join=true)
               if isdir(f)
                   push!(subdirs, joinpath("examples", basename(f)))
               end
           end
+          @info "CompatHelper directories" subdirs
           CompatHelper.main(; subdirs=subdirs)
         shell: julia --color=yes {0}
         env:
