@@ -70,7 +70,7 @@ function visualize(k::Kernel)
         colorbar=false,
         ylabel=string(nameof(typeof(k))),
         ylim=xlim,
-        yticks=(xlim, xlim),
+        yticks=([xlim[1], 0, xlim[end]], ["\u22125", raw"$x'$", "5"]),
         vlim=(0, 1),
         title=raw"$k(x, x')$",
         aspect_ratio=:equal,
@@ -82,8 +82,8 @@ function visualize(k::Kernel)
         k.(X, 0.0);
         title=string(raw"$k(x, x_\mathrm{ref})$"),
         label=raw"$x_\mathrm{ref}=0.0$",
-        xlim=xlim,
-        xticks=(xlim, xlim),
+        legend=:topleft,
+        foreground_color_legend=nothing,
     )
     plot!(X, k.(X, 1.5); label=raw"$x_\mathrm{ref}=1.5$")
 
@@ -96,7 +96,7 @@ function visualize(k::Kernel)
         layout=(1, 3),
         xlabel=raw"$x$",
         xlim=xlim,
-        xticks=(xlim, xlim),
+        xticks=collect(xlim),
     )
 end;
 
@@ -104,7 +104,7 @@ end;
 # We can now visualize a kernel and show samples from
 # a Gaussian process with a given kernel:
 
-plot(visualize(SqExponentialKernel()); size=(600, 220))
+plot(visualize(SqExponentialKernel()); size=(800, 210), bottommargin=5mm, topmargin=5mm)
 
 ##
 # ## Kernel comparison
@@ -118,7 +118,7 @@ kernels = [
     WhiteKernel(),
     ConstantKernel(),
     LinearKernel(),
-    PeriodicKernel(),
+    compose(PeriodicKernel(), ScaleTransform(0.2)),
     NeuralNetworkKernel(),
 ]
 plot(
