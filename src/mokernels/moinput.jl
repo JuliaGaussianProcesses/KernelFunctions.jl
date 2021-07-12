@@ -18,7 +18,7 @@ julia> KernelFunctions.MOInputIsotopicByFeatures(x, 2)
 
 Accommodates modelling multi-dimensional output data where all outputs are always observed.
 
-As shown above, an `IsotopicByFeatures` represents a vector of tuples.
+As shown above, an `MOInputIsotopicByFeatures` represents a vector of tuples.
 The first `out_dim` elements represent all outputs for the first input, the second
 `out_dim` elements represent the outputs for the second input, etc.
 
@@ -78,7 +78,7 @@ Base.size(inp::IsotopicMOInputs) = (inp.out_dim * length(inp.x),)
 
 """
     MOInput(x::AbstractVector, out_dim::Integer)
-A data type to accomodate modelling multi-dimensional output data.
+A data type to accommodate modelling multi-dimensional output data.
 `MOInput(x, out_dim)` has length `length(x) * out_dim`.
 
 ```jldoctest
@@ -103,7 +103,7 @@ const MOInput = MOInputIsotopicByOutputs
 """
     isotopic_by_outputs(x::AbstractVector, out_dim::Integer)
 
-Helper function to construct [`IsotopicByOutputs`](@ref).
+Helper function to construct [`MOInputIsotopicByOutputs`](@ref).
 
 ```jldoctest isotopic_by_outputs
 julia> x = [1, 2, 3];
@@ -112,7 +112,7 @@ julia> KernelFunctions.isotopic_by_outputs(x, 2) == KernelFunctions.MOInputIsoto
 true
 ```
 """
-const isotopic_by_outputs = MOInputIsotopicByOutputs
+isotopic_by_outputs(features, output_dim) = MOInputIsotopicByOutputs(features, output_dim)
 
 """
     isotopic_by_features(x::AbstractVector, out_dim::Integer)
@@ -126,4 +126,4 @@ julia> KernelFunctions.isotopic_by_features(x, 2) == KernelFunctions.MOInputIsot
 true
 ```
 """
-const isotopic_by_features = MOInputIsotopicByFeatures
+isotopic_by_features(features, output_dim) = MOInputIsotopicByFeatures(features, output_dim)

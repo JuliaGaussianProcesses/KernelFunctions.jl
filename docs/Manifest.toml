@@ -119,7 +119,7 @@ version = "0.21.1"
 deps = ["ChainRulesCore", "Compat", "CompositionsBase", "Distances", "FillArrays", "Functors", "LinearAlgebra", "Random", "Requires", "SpecialFunctions", "StatsBase", "StatsFuns", "TensorCore", "Test", "ZygoteRules"]
 path = ".."
 uuid = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
-version = "0.11.0"
+version = "0.10.7"
 
 [[Kronecker]]
 deps = ["FillArrays", "LinearAlgebra", "NamedDims", "SparseArrays", "StatsBase"]
