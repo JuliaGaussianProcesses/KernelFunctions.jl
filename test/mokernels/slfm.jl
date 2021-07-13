@@ -40,9 +40,11 @@
         return k((x1, 1), (x2, 1))
     end
 
-    a = rand()
-    @test all(
-        FiniteDifferences.j′vp(FDM, test_slfm, a, k.A, x1[1][1], x2[1][1]) .≈
-        Zygote.pullback(test_slfm, k.A, x1[1][1], x2[1][1])[2](a),
+    k = LatentFactorMOKernel(
+        [SqExponentialKernel(), SqExponentialKernel(), SqExponentialKernel()],
+        IndependentMOKernel(GaussianKernel()),
+        rand(rng, out_dim, 3),
     )
+
+    test_ADs(k)
 end
