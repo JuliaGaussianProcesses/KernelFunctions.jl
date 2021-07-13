@@ -4,7 +4,7 @@
     type_2 = AbstractVector{Tuple{AbstractVector{Vector{Float64}},Int}}
 
     @testset "isotopicbyoutputs" begin
-        ibo = KernelFunctions.isotopic_by_outputs(x, 3)
+        ibo = MOInput(x, 3)
 
         @test ibo == KernelFunctions.MOInputIsotopicByOutputs(x, 3)
 
@@ -26,9 +26,7 @@
     end
 
     @testset "isotopicbyfeatures" begin
-        ibf = KernelFunctions.isotopic_by_features(x, 3)
-
-        @test ibf == KernelFunctions.MOInputIsotopicByFeatures(x, 3)
+        ibf = KernelFunctions.MOInputIsotopicByFeatures(x, 3)
 
         @test isa(ibf, type_1) == true
         @test isa(ibf, type_2) == false

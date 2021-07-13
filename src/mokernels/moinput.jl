@@ -26,7 +26,7 @@ See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
 struct MOInputIsotopicByFeatures{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{S,Int}}
     x::T
-    out_dim::Int
+    out_dim::Integer
 end
 
 """
@@ -55,7 +55,7 @@ The first `length(x)` elements represent the inputs for the first output, the se
 """
 struct MOInputIsotopicByOutputs{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{S,Int}}
     x::T
-    out_dim::Int
+    out_dim::Integer
 end
 
 const IsotopicMOInputs = Union{MOInputIsotopicByFeatures,MOInputIsotopicByOutputs}
@@ -78,6 +78,7 @@ Base.size(inp::IsotopicMOInputs) = (inp.out_dim * length(inp.x),)
 
 """
     MOInput(x::AbstractVector, out_dim::Integer)
+
 A data type to accommodate modelling multi-dimensional output data.
 `MOInput(x, out_dim)` has length `length(x) * out_dim`.
 
@@ -99,31 +100,3 @@ The first `length(x)` elements represent the inputs for the first output, the se
 See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
 const MOInput = MOInputIsotopicByOutputs
-
-"""
-    isotopic_by_outputs(x::AbstractVector, out_dim::Integer)
-
-Helper function to construct [`MOInputIsotopicByOutputs`](@ref).
-
-```jldoctest isotopic_by_outputs
-julia> x = [1, 2, 3];
-
-julia> KernelFunctions.isotopic_by_outputs(x, 2) == KernelFunctions.MOInputIsotopicByOutputs(x, 2)
-true
-```
-"""
-isotopic_by_outputs(features, output_dim) = MOInputIsotopicByOutputs(features, output_dim)
-
-"""
-    isotopic_by_features(x::AbstractVector, out_dim::Integer)
-
-Helper function to construct [`IsotopicByFeatures`](@ref).
-
-```jldoctest isotopic_by_features
-julia> x = [1, 2, 3];
-
-julia> KernelFunctions.isotopic_by_features(x, 2) == KernelFunctions.MOInputIsotopicByFeatures(x, 2)
-true
-```
-"""
-isotopic_by_features(features, output_dim) = MOInputIsotopicByFeatures(features, output_dim)
