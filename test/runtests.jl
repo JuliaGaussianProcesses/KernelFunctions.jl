@@ -76,6 +76,8 @@ include("test_utils.jl")
             print(" ")
             include(joinpath("transform", "periodic_transform.jl"))
             print(" ")
+            include(joinpath("transform", "with_lengthscale.jl"))
+            print(" ")
         end
         @info "Ran tests on Transform"
     end
