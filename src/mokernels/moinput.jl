@@ -24,9 +24,9 @@ The first `out_dim` elements represent all outputs for the first input, the seco
 
 See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
-struct MOInputIsotopicByFeatures{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{S,Int}}
+struct MOInputIsotopicByFeatures{S,T<:AbstractVector{S}, U<:Integer} <: AbstractVector{Tuple{S,U}}
     x::T
-    out_dim::Integer
+    out_dim::U
 end
 
 """
@@ -98,5 +98,8 @@ As shown above, an `MOInput` represents a vector of tuples.
 The first `length(x)` elements represent the inputs for the first output, the second
 `length(x)` elements represent the inputs for the second output, etc.
 See [Inputs for Multiple Outputs](@ref) in the docs for more info.
+
+`MOInput` will be deprecated in version 0.11 in favour of `MOInputIsotopicByOutputs`,
+and removed in version 0.12.
 """
 const MOInput = MOInputIsotopicByOutputs
