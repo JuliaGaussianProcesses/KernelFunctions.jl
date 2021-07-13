@@ -36,3 +36,9 @@ SelectTransform
 ChainTransform
 PeriodicTransform
 ```
+
+## Convenience functions
+
+```@docs
+with_lengthscale
+```

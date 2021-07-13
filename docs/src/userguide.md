@@ -15,6 +15,11 @@ For example, a squared exponential kernel is created by
       k = SqExponentialKernel() ∘ ScaleTransform(2.0)
       k = compose(SqExponentialKernel(), ScaleTransform(2.0))
     ```
+    Alternatively, you can use the convenience function [`with_lengthscale`](@ref):
+    ```julia
+    k = with_lengthscale(SqExponentialKernel(), 0.5)
+    ```
+    [`with_lengthscale`](@ref) also works with vector-valued lengthscales for ARD.
     Check the [Input Transforms](@ref input_transforms) page for more details.
 
 !!! tip "How do I set the kernel variance?"
@@ -73,18 +78,37 @@ kernelmatrix(k, ColVecs(X))  # returns a 5×5 matrix -- each column of X treated
 ```
 This is the mechanism used throughout KernelFunctions.jl to handle multi-dimensional inputs.
 
-You can also utilise the `obsdim` keyword argument if you prefer:
+You can utilise the `obsdim` keyword argument if you prefer:
 ```julia
 kernelmatrix(k, X; obsdim=1) # same as RowVecs(X)
 kernelmatrix(k, X; obsdim=2) # same as ColVecs(X)
 ```
 This is similar to the convention used in [Distances.jl](https://github.com/JuliaStats/Distances.jl).
 
-See [Input Types](@ref) for a more thorough discussion of these two approaches.
+### So what type should I use to represent a collection of inputs?
+The central assumption made by KernelFunctions.jl is that all collections of `N` inputs are represented by `AbstractVector`s of length `N`.
+Abstraction is then used to ensure that efficiency is retained, `ColVecs` and `RowVecs`
+being the most obvious examples of this.
+
+Concretely:
+1. For `Real`-valued inputs (scalars), a `Vector{<:Real}` is fine.
+1. For vector-valued inputs, consider a `ColVecs` or `RowVecs`.
+1. For a new input type, simply represent collections of inputs of this type as an `AbstractVector`.
+
+See [Input Types](@ref) and [Design](@ref) for a more thorough discussion of the
+considerations made when this design was adopted.
+
+The `obsdim` kwarg mentioned above is a special case for vector-valued inputs stored in a
+matrix.
+It is implemented as a lightweight wrapper that constructs either a `RowVecs` or `ColVecs`
+from your inputs, and passes this on.
 
 
 
-We also support specific kernel matrix outputs:
+### Output Types
+
+In addition to plain `Matrix`-like output, KernelFunctions.jl supports specific output
+types:
 - For a positive-definite matrix object of type `PDMat` from [`PDMats.jl`](https://github.com/JuliaStats/PDMats.jl), you can call the following:
 ```julia
 using PDMats

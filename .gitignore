@@ -1,6 +1,6 @@
 *.json
 *.cov
-Manifest.toml
+/Manifest.toml
+/test/Manifest.toml
 coverage/
-src/update_v0.8.0
 .DS_store

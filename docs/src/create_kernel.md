@@ -10,7 +10,7 @@ Here are a few ways depending on how complicated your kernel is:
 
 If your kernel function is of the form `k(x, y) = f(d(x, y))` where `d(x, y)` is a `PreMetric`,
 you can construct your custom kernel by defining `kappa` and `metric` for your kernel.
-Here is for example how one can define the `SqExponentialKernel` again :
+Here is for example how one can define the `SqExponentialKernel` again:
 
 ```julia
 struct MyKernel <: KernelFunctions.SimpleKernel end
