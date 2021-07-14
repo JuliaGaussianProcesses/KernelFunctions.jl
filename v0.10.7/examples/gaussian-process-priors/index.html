@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Gaussian process prior samples · KernelFunctions.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">KernelFunctions.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><a class="tocitem" href="../../userguide/">User guide</a></li><li><a class="tocitem" href="../../kernels/">Kernel Functions</a></li><li><a class="tocitem" href="../../transform/">Input Transforms</a></li><li><a class="tocitem" href="../../metrics/">Metrics</a></li><li><a class="tocitem" href="../../create_kernel/">Custom Kernels</a></li><li><a class="tocitem" href="../../api/">API</a></li><li><a class="tocitem" href="../../design/">Design</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../deep-kernel-learning/">Deep Kernel Learning</a></li><li class="is-active"><a class="tocitem" href>Gaussian process prior samples</a><ul class="internal"><li><a class="tocitem" href="#Evaluation-at-finite-set-of-points"><span>Evaluation at finite set of points</span></a></li><li><a class="tocitem" href="#Random-samples"><span>Random samples</span></a></li><li><a class="tocitem" href="#Visualization"><span>Visualization</span></a></li><li><a class="tocitem" href="#Kernel-comparison"><span>Kernel comparison</span></a></li></ul></li><li><a class="tocitem" href="../kernel-ridge-regression/">Kernel Ridge Regression</a></li><li><a class="tocitem" href="../support-vector-machine/">Support Vector Machine</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Gaussian process prior samples</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Gaussian process prior samples</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaGaussianProcesses/KernelFunctions.jl/blob/master/examples/gaussian-process-priors/script.jl" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Gaussian-process-prior-samples"><a class="docs-heading-anchor" href="#Gaussian-process-prior-samples">Gaussian process prior samples</a><a id="Gaussian-process-prior-samples-1"></a><a class="docs-heading-anchor-permalink" href="#Gaussian-process-prior-samples" title="Permalink"></a></h1><p><a href="https://nbviewer.jupyter.org/github/JuliaGaussianProcesses/KernelFunctions.jl/blob/gh-pages/v0.10.7/examples/gaussian-process-priors.ipynb"><img src="https://img.shields.io/badge/show-nbviewer-579ACA.svg" alt/></a></p><p><em>You are seeing the HTML output generated by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a> from the <a href="https://github.com/JuliaGaussianProcesses/KernelFunctions.jl/blob/master/examples/gaussian-process-priors/script.jl">Julia source file</a>. The corresponding notebook can be viewed in <a href="https://nbviewer.jupyter.org/github/JuliaGaussianProcesses/KernelFunctions.jl/blob/gh-pages/v0.10.7/examples/gaussian-process-priors.ipynb">nbviewer</a>.</em></p><p>The kernels defined in this package can also be used to specify the covariance of a Gaussian process prior. A Gaussian process (GP) is defined by its mean function <span>$m(\cdot)$</span> and its covariance function or kernel <span>$k(\cdot, \cdot&#39;)$</span>:</p><p class="math-container">\[  f \sim \mathcal{GP}\big(m(\cdot), k(\cdot, \cdot&#39;)\big)\]</p><p>In this notebook we show how the choice of kernel affects the samples from a GP (with zero mean).</p><pre><code class="language-julia"># Load required packages
+using KernelFunctions, LinearAlgebra
+using Plots, Plots.PlotMeasures
+default(; lw=1.0, legendfontsize=8.0)
+using Random: seed!
+seed!(42); # reproducibility</code></pre><h2 id="Evaluation-at-finite-set-of-points"><a class="docs-heading-anchor" href="#Evaluation-at-finite-set-of-points">Evaluation at finite set of points</a><a id="Evaluation-at-finite-set-of-points-1"></a><a class="docs-heading-anchor-permalink" href="#Evaluation-at-finite-set-of-points" title="Permalink"></a></h2><p>The function values <span>$\mathbf{f} = \{f(x_n)\}_{n=1}^N$</span> of the GP at a finite number <span>$N$</span> of points <span>$X = \{x_n\}_{n=1}^N$</span> follow a multivariate normal distribution <span>$\mathbf{f} \sim \mathcal{MVN}(\mathbf{m}, \mathrm{K})$</span> with mean vector <span>$\mathbf{m}$</span> and covariance matrix <span>$\mathrm{K}$</span>, where</p><p class="math-container">\[\begin{aligned}
+  \mathbf{m}_i &amp;= m(x_i) \\
+  \mathrm{K}_{i,j} &amp;= k(x_i, x_j)
+\end{aligned}\]</p><p>with <span>$1 \le i, j \le N$</span>.</p><p>We can visualize the infinite-dimensional GP by evaluating it on a fine grid to approximate the dense real line:</p><pre><code class="language-julia">num_inputs = 101
+xlim = (-5, 5)
+X = range(xlim...; length=num_inputs);</code></pre><p>Given a kernel <code>k</code>, we can compute the kernel matrix as <code>K = kernelmatrix(k, X)</code>.</p><h2 id="Random-samples"><a class="docs-heading-anchor" href="#Random-samples">Random samples</a><a id="Random-samples-1"></a><a class="docs-heading-anchor-permalink" href="#Random-samples" title="Permalink"></a></h2><p>To sample from the multivariate normal distribution <span>$p(\mathbf{f}) = \mathcal{MVN}(0, \mathrm{K})$</span>, we could make use of Distributions.jl and call <code>rand(MvNormal(K))</code>. Alternatively, we could use the <a href="https://github.com/JuliaGaussianProcesses/AbstractGPs.jl">AbstractGPs.jl</a> package and construct a <code>GP</code> object which we evaluate at the points of interest and from which we can then sample: <code>rand(GP(k)(X))</code>.</p><p>Here, we will explicitly construct samples using the Cholesky factorization <span>$\mathrm{L} = \operatorname{cholesky}(\mathrm{K})$</span>, with <span>$\mathbf{f} = \mathrm{L} \mathbf{v}$</span>, where <span>$\mathbf{v} \sim \mathcal{N}(0, \mathbf{I})$</span> is a vector of standard-normal random variables.</p><p>We will use the same randomness <span>$\mathbf{v}$</span> to generate comparable samples across different kernels.</p><pre><code class="language-julia">num_samples = 7
+v = randn(num_inputs, num_samples);</code></pre><p>Mathematically, a kernel matrix is by definition positive semi-definite, but due to finite-precision inaccuracies, the computed kernel matrix might not be exactly positive definite. To avoid Cholesky errors, we add a small &quot;nugget&quot; term on the diagonal:</p><pre><code class="language-julia">function mvn_sample(K)
+    L = cholesky(K + 1e-6 * I)
+    f = L.L * v
+    return f
+end;</code></pre><h2 id="Visualization"><a class="docs-heading-anchor" href="#Visualization">Visualization</a><a id="Visualization-1"></a><a class="docs-heading-anchor-permalink" href="#Visualization" title="Permalink"></a></h2><p>We now define a function that visualizes a kernel for us.</p><pre><code class="language-julia">function visualize(k::Kernel)
+    K = kernelmatrix(k, X)
+    f = mvn_sample(K)
+
+    p_kernel_2d = heatmap(
+        X,
+        X,
+        K;
+        yflip=true,
+        colorbar=false,
+        ylabel=string(nameof(typeof(k))),
+        ylim=xlim,
+        yticks=([xlim[1], 0, xlim[end]], [&quot;\u22125&quot;, raw&quot;$x&#39;$&quot;, &quot;5&quot;]),
+        vlim=(0, 1),
+        title=raw&quot;$k(x, x&#39;)$&quot;,
+        aspect_ratio=:equal,
+        left_margin=5mm,
+    )
+
+    p_kernel_cut = plot(
+        X,
+        k.(X, 0.0);
+        title=string(raw&quot;$k(x, x_\mathrm{ref})$&quot;),
+        label=raw&quot;$x_\mathrm{ref}=0.0$&quot;,
+        legend=:topleft,
+        foreground_color_legend=nothing,
+    )
+    plot!(X, k.(X, 1.5); label=raw&quot;$x_\mathrm{ref}=1.5$&quot;)
+
+    p_samples = plot(X, f; c=&quot;blue&quot;, title=raw&quot;$f(x)$&quot;, ylim=(-3, 3), label=nothing)
+
+    return plot(
+        p_kernel_2d,
+        p_kernel_cut,
+        p_samples;
+        layout=(1, 3),
+        xlabel=raw&quot;$x$&quot;,
+        xlim=xlim,
+        xticks=collect(xlim),
+    )
+end;</code></pre><p>We can now visualize a kernel and show samples from a Gaussian process with a given kernel:</p><pre><code class="language-julia">plot(visualize(SqExponentialKernel()); size=(800, 210), bottommargin=5mm, topmargin=5mm)</code></pre><p><img src="../3778434506.png" alt/></p><h2 id="Kernel-comparison"><a class="docs-heading-anchor" href="#Kernel-comparison">Kernel comparison</a><a id="Kernel-comparison-1"></a><a class="docs-heading-anchor-permalink" href="#Kernel-comparison" title="Permalink"></a></h2><p>This also allows us to compare different kernels:</p><pre><code class="language-julia">kernels = [
+    Matern12Kernel(),
+    Matern32Kernel(),
+    Matern52Kernel(),
+    SqExponentialKernel(),
+    WhiteKernel(),
+    ConstantKernel(),
+    LinearKernel(),
+    compose(PeriodicKernel(), ScaleTransform(0.2)),
+    NeuralNetworkKernel(),
+]
+plot(
+    [visualize(k) for k in kernels]...;
+    layout=(length(kernels), 1),
+    size=(800, 220 * length(kernels) + 100),
+)</code></pre><p><img src="../181515774.png" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../deep-kernel-learning/">« Deep Kernel Learning</a><a class="docs-footer-nextpage" href="../kernel-ridge-regression/">Kernel Ridge Regression »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.3 on <span class="colophon-date" title="Saturday 10 July 2021 21:44">Saturday 10 July 2021</span>. Using Julia version 1.6.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
