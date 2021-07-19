@@ -33,7 +33,7 @@ x_test = ColVecs(mapreduce(collect, hcat, Iterators.product(test_range, test_ran
 # Create kernel function:
 k = SqExponentialKernel() ∘ ScaleTransform(2.0)
 
-# LibSVM can make use of a pre-computed kernel matrix.
+# [LIBSVM](https://github.com/JuliaML/LIBSVM.jl) can make use of a pre-computed kernel matrix.
 # KernelFunctions.jl can be used to produce that.
 # Precomputed matrix for training (corresponds to linear kernel)
 model = svmtrain(kernelmatrix(k, x_train), y_train; kernel=LIBSVM.Kernel.Precomputed)
