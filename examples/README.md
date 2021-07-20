@@ -44,7 +44,7 @@ From a Julia REPL started in your example script's directory, you can run
 ```julia
 julia> ] activate .
 julia> ] add Literate
-julia> ] add KernelFunctions
+julia> ] dev ../..
 julia> # add any other example-specific dependencies
 ```
 to generate the project files.
