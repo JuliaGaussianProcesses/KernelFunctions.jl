@@ -19,7 +19,9 @@
     # Tests failing for ForwardDiff and Zygote.
     # Related to: https://github.com/FluxML/Zygote.jl/issues/1036
     @test_broken !isinf(ForwardDiff.gradient(x -> x[1]^x[2], [0.0, 0.9])[1])
-    @test_broken !isinf(Zygote.gradient((x, y) -> sum(f.(x, y)), zeros(1), fill(0.9, 1))[1][1])
+    @test_broken !isinf(
+        Zygote.gradient((x, y) -> sum(f.(x, y)), zeros(1), fill(0.9, 1))[1][1]
+    )
 
     test_params(k, ([h],))
 end
