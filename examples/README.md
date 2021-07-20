@@ -44,6 +44,7 @@ From a Julia REPL started in your example script's directory, you can run
 ```julia
 julia> ] activate .
 julia> ] add Literate
+julia> # the following line adds a dependency on KernelFunctions that is based on the local directories, not a hash:
 julia> ] dev ../..
 julia> # add any other example-specific dependencies
 ```
