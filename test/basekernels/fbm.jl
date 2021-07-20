@@ -13,7 +13,13 @@
 
     test_interface(k)
     @test repr(k) == "Fractional Brownian Motion Kernel (h = $(h))"
-    test_ADs(FBMKernel; ADs=[:ReverseDiff, :Zygote])
-    @test_broken "Tests failing for kernelmatrix(k, x) for ForwardDiff"
+    test_ADs(FBMKernel; ADs=[:ReverseDiff])
+
+    # Tests failing for ForwardDiff
+    @test_broken !isinf(ForwardDiff.gradient(x -> x[1]^x[2], [0.0, 0.9])[1])
+
+    # Zygote also doesn't work.
+    @test_broken !isinf(Zygote.gradient((x, y) -> sum(f.(x, y)), zeros(1), fill(0.9, 1))[1][1])
+
     test_params(k, ([h],))
 end
