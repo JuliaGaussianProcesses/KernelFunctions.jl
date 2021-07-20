@@ -24,7 +24,7 @@ y_train = rand([-1, 1], N);
 X = Matrix{Float64}(undef, 2, N)
 rand!(MvNormal(randn(2), I), view(X, :, y_train .== 1))
 rand!(MvNormal(randn(2), I), view(X, :, y_train .== -1));
-x_train = ColVecs(X)
+x_train = ColVecs(X);
 
 # Create a 2D grid:
 test_range = range(floor(Int, minimum(X)), ceil(Int, maximum(X)); length=100)
@@ -39,7 +39,7 @@ k = SqExponentialKernel() ∘ ScaleTransform(2.0)
 model = svmtrain(kernelmatrix(k, x_train), y_train; kernel=LIBSVM.Kernel.Precomputed)
 
 # Precomputed matrix for prediction
-y_pr, _ = svmpredict(model, kernelmatrix(k, x_train, x_test))
+y_pr, _ = svmpredict(model, kernelmatrix(k, x_train, x_test));
 
 # Compute prediction on a grid:
 contourf(test_range, test_range, y_pr)
