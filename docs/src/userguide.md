@@ -15,6 +15,11 @@ For example, a squared exponential kernel is created by
       k = SqExponentialKernel() ∘ ScaleTransform(2.0)
       k = compose(SqExponentialKernel(), ScaleTransform(2.0))
     ```
+    Alternatively, you can use the convenience function [`with_lengthscale`](@ref):
+    ```julia
+    k = with_lengthscale(SqExponentialKernel(), 0.5)
+    ```
+    [`with_lengthscale`](@ref) also works with vector-valued lengthscales for ARD.
     Check the [Input Transforms](@ref input_transforms) page for more details.
 
 !!! tip "How do I set the kernel variance?"

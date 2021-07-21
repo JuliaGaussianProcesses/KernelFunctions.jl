@@ -27,6 +27,7 @@ export Transform,
     IdentityTransform,
     FunctionTransform,
     PeriodicTransform
+export with_lengthscale
 
 export NystromFact, nystrom
 
@@ -75,6 +76,7 @@ include(joinpath("transform", "selecttransform.jl"))
 include(joinpath("transform", "chaintransform.jl"))
 include(joinpath("transform", "periodic_transform.jl"))
 include(joinpath("kernels", "transformedkernel.jl"))
+include(joinpath("transform", "with_lengthscale.jl"))
 
 include(joinpath("basekernels", "constant.jl"))
 include(joinpath("basekernels", "cosine.jl"))
