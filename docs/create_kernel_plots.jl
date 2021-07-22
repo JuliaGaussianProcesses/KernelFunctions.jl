@@ -13,7 +13,7 @@ n_grid = 101
 fill(x₀, n_grid, 1)
 xrange = reshape(collect(range(-3, 3; length=n_grid)), :, 1)
 
-k = transform(SqExponentialKernel(), 1.0)
+k = SqExponentialKernel() ∘ ScaleTransform(1.0)
 K1 = kernelmatrix(k, xrange; obsdim=1)
 p = heatmap(
     K1;
@@ -35,7 +35,7 @@ p = heatmap(
 )
 savefig(joinpath(@__DIR__, "src", "assets", "heatmap_matern.png"))
 
-k = transform(PolynomialKernel(; c=0.0, d=2.0), LinearTransform(randn(3, 1)))
+k = PolynomialKernel(; c=0.0, d=2.0) ∘ LinearTransform(randn(3, 1))
 K3 = kernelmatrix(k, xrange; obsdim=1)
 p = heatmap(
     K3;
@@ -47,7 +47,7 @@ p = heatmap(
 savefig(joinpath(@__DIR__, "src", "assets", "heatmap_poly.png"))
 
 k =
-    0.5 * SqExponentialKernel() * transform(LinearKernel(), 0.5) +
+    0.5 * SqExponentialKernel() * (LinearKernel() ∘ ScaleTransform(0.5)) +
     0.4 * (@kernel Matern32Kernel() FunctionTransform(x -> sin.(x)))
 K4 = kernelmatrix(k, xrange; obsdim=1)
 p = heatmap(

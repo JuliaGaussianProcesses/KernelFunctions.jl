@@ -33,26 +33,30 @@ function kernelmatrix(κ::ScaledKernel, x::AbstractVector)
     return κ.σ² .* kernelmatrix(κ.kernel, x)
 end
 
-function kerneldiagmatrix(κ::ScaledKernel, x::AbstractVector)
-    return κ.σ² .* kerneldiagmatrix(κ.kernel, x)
+function kernelmatrix_diag(κ::ScaledKernel, x::AbstractVector)
+    return κ.σ² .* kernelmatrix_diag(κ.kernel, x)
+end
+
+function kernelmatrix_diag(κ::ScaledKernel, x::AbstractVector, y::AbstractVector)
+    return κ.σ² .* kernelmatrix_diag(κ.kernel, x, y)
 end
 
 function kernelmatrix!(
     K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector, y::AbstractVector
 )
-    kernelmatrix!(K, κ, x, y)
+    kernelmatrix!(K, κ.kernel, x, y)
     K .*= κ.σ²
     return K
 end
 
 function kernelmatrix!(K::AbstractMatrix, κ::ScaledKernel, x::AbstractVector)
-    kernelmatrix!(K, κ, x)
+    kernelmatrix!(K, κ.kernel, x)
     K .*= κ.σ²
     return K
 end
 
-function kerneldiagmatrix!(K::AbstractVector, κ::ScaledKernel, x::AbstractVector)
-    kerneldiagmatrix!(K, κ, x)
+function kernelmatrix_diag!(K::AbstractVector, κ::ScaledKernel, x::AbstractVector)
+    kernelmatrix_diag!(K, κ.kernel, x)
     K .*= κ.σ²
     return K
 end

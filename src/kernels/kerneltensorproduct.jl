@@ -95,14 +95,14 @@ function kernelmatrix!(
     return K
 end
 
-function kerneldiagmatrix!(K::AbstractVector, k::KernelTensorProduct, x::AbstractVector)
+function kernelmatrix_diag!(K::AbstractVector, k::KernelTensorProduct, x::AbstractVector)
     validate_inplace_dims(K, x)
     validate_domain(k, x)
 
     kernels_and_inputs = zip(k.kernels, slices(x))
-    kerneldiagmatrix!(K, first(kernels_and_inputs)...)
+    kernelmatrix_diag!(K, first(kernels_and_inputs)...)
     for (k, xi) in Iterators.drop(kernels_and_inputs, 1)
-        K .*= kerneldiagmatrix(k, xi)
+        K .*= kernelmatrix_diag(k, xi)
     end
 
     return K
@@ -118,9 +118,14 @@ function kernelmatrix(k::KernelTensorProduct, x::AbstractVector, y::AbstractVect
     return mapreduce(kernelmatrix, hadamard, k.kernels, slices(x), slices(y))
 end
 
-function kerneldiagmatrix(k::KernelTensorProduct, x::AbstractVector)
+function kernelmatrix_diag(k::KernelTensorProduct, x::AbstractVector)
     validate_domain(k, x)
-    return mapreduce(kerneldiagmatrix, hadamard, k.kernels, slices(x))
+    return mapreduce(kernelmatrix_diag, hadamard, k.kernels, slices(x))
+end
+
+function kernelmatrix_diag(k::KernelTensorProduct, x::AbstractVector, y::AbstractVector)
+    validate_domain(k, x)
+    return mapreduce(kernelmatrix_diag, hadamard, k.kernels, slices(x), slices(y))
 end
 
 Base.show(io::IO, kernel::KernelTensorProduct) = printshifted(io, kernel, 0)

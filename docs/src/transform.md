@@ -18,8 +18,8 @@ LowRankTransform(rand(10, 5)) ∘ ScaleTransform(2.0)
 A transformation `t` can be applied to a single input `x` with `t(x)` and to multiple inputs
 `xs` with `map(t, xs)`.
 
-Kernels can be coupled with input transformations with
-[`transform`](@ref). It falls back to creating a [`TransformedKernel`](@ref) but allows more
+Kernels can be coupled with input transformations with [`∘`](@ref) or its alias `compose`. It falls
+back to creating a [`TransformedKernel`](@ref) but allows more
 optimized implementations for specific kernels and transformations.
 
 ## List of Input Transforms
@@ -36,4 +36,10 @@ FunctionTransform
 SelectTransform
 ChainTransform
 PeriodicTransform
+```
+
+## Convenience functions
+
+```@docs
+with_lengthscale
 ```

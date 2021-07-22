@@ -11,7 +11,11 @@
     @test kappa(k, 1.5) ≈ 0.0 atol = 1e-5
     @test kappa(k, x) ≈ cospi(x) atol = 1e-5
     @test k(v1, v2) ≈ cospi(sqrt(sum(abs2.(v1 - v2)))) atol = 1e-5
-    @test repr(k) == "Cosine Kernel"
+    @test repr(k) == "Cosine Kernel (metric = Euclidean(0.0))"
+
+    k2 = CosineKernel(; metric=WeightedEuclidean(ones(3)))
+    @test metric(k2) isa WeightedEuclidean
+    @test k2(v1, v2) ≈ k(v1, v2)
 
     # Standardised tests.
     TestUtils.test_interface(k, Vector{Float64})

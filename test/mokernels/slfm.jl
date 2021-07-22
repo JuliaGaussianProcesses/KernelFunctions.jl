@@ -22,10 +22,12 @@
 
     @test string(k) == "Semi-parametric Latent Factor Multi-Output Kernel"
     @test repr("text/plain", k) == (
-        "Semi-parametric Latent Factor Multi-Output Kernel\n\tgᵢ: " *
-        "Matern 3/2 Kernel\n\t\tSquared Exponential Kernel\n" *
-        "\t\tFractional Brownian Motion Kernel (h = 0.5)\n\teᵢ: " *
-        "Independent Multi-Output Kernel\n\tSquared Exponential Kernel"
+        "Semi-parametric Latent Factor Multi-Output Kernel\n" *
+        "\tgᵢ: Matern 3/2 Kernel (metric = Euclidean(0.0))\n" *
+        "\t\tSquared Exponential Kernel (metric = Euclidean(0.0))\n" *
+        "\t\tFractional Brownian Motion Kernel (h = 0.5)\n" *
+        "\teᵢ: Independent Multi-Output Kernel\n" *
+        "\tSquared Exponential Kernel (metric = Euclidean(0.0))"
     )
 
     # AD test
@@ -38,9 +40,11 @@
         return k((x1, 1), (x2, 1))
     end
 
-    a = rand()
-    @test all(
-        FiniteDifferences.j′vp(FDM, test_slfm, a, k.A, x1[1][1], x2[1][1]) .≈
-        Zygote.pullback(test_slfm, k.A, x1[1][1], x2[1][1])[2](a),
+    k = LatentFactorMOKernel(
+        [SqExponentialKernel(), SqExponentialKernel(), SqExponentialKernel()],
+        IndependentMOKernel(GaussianKernel()),
+        rand(rng, out_dim, 3),
     )
+
+    test_ADs(k)
 end

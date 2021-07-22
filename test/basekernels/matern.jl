@@ -13,9 +13,13 @@
         @test kappa(MaternKernel(; ν=ν), x) == kappa(k, x)
         @test metric(MaternKernel()) == Euclidean()
         @test metric(MaternKernel(; ν=2.0)) == Euclidean()
-        @test repr(k) == "Matern Kernel (ν = $(ν))"
+        @test repr(k) == "Matern Kernel (ν = $(ν), metric = Euclidean(0.0))"
         # test_ADs(x->MaternKernel(nu=first(x)),[ν])
         @test_broken "All fails (because of logabsgamma for ForwardDiff and ReverseDiff and because of nu for Zygote)"
+
+        k2 = MaternKernel(; ν=ν, metric=WeightedEuclidean(ones(3)))
+        @test metric(k2) isa WeightedEuclidean
+        @test k2(v1, v2) ≈ k(v1, v2)
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
@@ -27,7 +31,11 @@
         @test k(v1, v2) ≈ (1 + sqrt(3) * norm(v1 - v2))exp(-sqrt(3) * norm(v1 - v2))
         @test kappa(Matern32Kernel(), x) == kappa(k, x)
         @test metric(Matern32Kernel()) == Euclidean()
-        @test repr(k) == "Matern 3/2 Kernel"
+        @test repr(k) == "Matern 3/2 Kernel (metric = Euclidean(0.0))"
+
+        k2 = Matern32Kernel(; metric=WeightedEuclidean(ones(3)))
+        @test metric(k2) isa WeightedEuclidean
+        @test k2(v1, v2) ≈ k(v1, v2)
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
@@ -42,7 +50,11 @@
         )exp(-sqrt(5) * norm(v1 - v2))
         @test kappa(Matern52Kernel(), x) == kappa(k, x)
         @test metric(Matern52Kernel()) == Euclidean()
-        @test repr(k) == "Matern 5/2 Kernel"
+        @test repr(k) == "Matern 5/2 Kernel (metric = Euclidean(0.0))"
+
+        k2 = Matern52Kernel(; metric=WeightedEuclidean(ones(3)))
+        @test metric(k2) isa WeightedEuclidean
+        @test k2(v1, v2) ≈ k(v1, v2)
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)

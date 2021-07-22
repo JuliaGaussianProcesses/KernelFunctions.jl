@@ -33,6 +33,8 @@
               pairwise(SqEuclidean(), X; dims=2)
         @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈
               pairwise(SqEuclidean(), X, Y; dims=2)
+        @test vcat(DX, DY) isa ColVecs
+        @test vcat(DX, DY).X == hcat(X, Y)
         K = zeros(N, N)
         KernelFunctions.pairwise!(K, SqEuclidean(), DX)
         @test K ≈ pairwise(SqEuclidean(), X; dims=2)
@@ -72,6 +74,8 @@
               pairwise(SqEuclidean(), X; dims=1)
         @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈
               pairwise(SqEuclidean(), X, Y; dims=1)
+        @test vcat(DX, DY) isa RowVecs
+        @test vcat(DX, DY).X == vcat(X, Y)
         K = zeros(D, D)
         KernelFunctions.pairwise!(K, SqEuclidean(), DX)
         @test K ≈ pairwise(SqEuclidean(), X; dims=1)

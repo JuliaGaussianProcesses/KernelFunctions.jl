@@ -51,6 +51,19 @@ function kernelmatrix(::NeuralNetworkKernel, x::ColVecs)
     return asin.(XX ./ sqrt.(X_2_1' * X_2_1))
 end
 
+function kernelmatrix_diag(::NeuralNetworkKernel, x::ColVecs)
+    x_2 = vec(sum(x.X .* x.X; dims=1))
+    return asin.(x_2 ./ (x_2 .+ 1))
+end
+
+function kernelmatrix_diag(::NeuralNetworkKernel, x::ColVecs, y::ColVecs)
+    validate_inputs(x, y)
+    x_2 = vec(sum(x.X .* x.X; dims=1) .+ 1)
+    y_2 = vec(sum(y.X .* y.X; dims=1) .+ 1)
+    xy = vec(sum(x.X' .* y.X'; dims=2))
+    return asin.(xy ./ sqrt.(x_2 .* y_2))
+end
+
 function kernelmatrix(::NeuralNetworkKernel, x::RowVecs, y::RowVecs)
     validate_inputs(x, y)
     X_2 = sum(x.X .* x.X; dims=2)
@@ -63,6 +76,19 @@ function kernelmatrix(::NeuralNetworkKernel, x::RowVecs)
     X_2_1 = sum(x.X .* x.X; dims=2) .+ 1
     XX = x.X * x.X'
     return asin.(XX ./ sqrt.(X_2_1 * X_2_1'))
+end
+
+function kernelmatrix_diag(::NeuralNetworkKernel, x::RowVecs)
+    x_2 = vec(sum(x.X .* x.X; dims=2))
+    return asin.(x_2 ./ (x_2 .+ 1))
+end
+
+function kernelmatrix_diag(::NeuralNetworkKernel, x::RowVecs, y::RowVecs)
+    validate_inputs(x, y)
+    x_2 = vec(sum(x.X .* x.X; dims=2) .+ 1)
+    y_2 = vec(sum(y.X .* y.X; dims=2) .+ 1)
+    xy = vec(sum(x.X .* y.X; dims=2))
+    return asin.(xy ./ sqrt.(x_2 .* y_2))
 end
 
 Base.show(io::IO, ::NeuralNetworkKernel) = print(io, "Neural Network Kernel")
