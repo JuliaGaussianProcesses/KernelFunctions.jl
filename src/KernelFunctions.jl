@@ -1,7 +1,6 @@
 module KernelFunctions
 
 export kernelmatrix, kernelmatrix!, kernelmatrix_diag, kernelmatrix_diag!
-export transform
 export duplicate, set! # Helpers
 
 export Kernel, MOKernel
@@ -13,8 +12,8 @@ export ExponentiatedKernel
 export FBMKernel
 export MaternKernel, Matern12Kernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
-export RationalQuadraticKernel, GammaRationalQuadraticKernel
-export GaborKernel, PiecewisePolynomialKernel
+export RationalKernel, RationalQuadraticKernel, GammaRationalKernel
+export PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
 export KernelSum, KernelProduct, KernelTensorProduct
 export TransformedKernel, ScaledKernel, NormalizedKernel
@@ -31,29 +30,32 @@ export Transform,
 
 export NystromFact, nystrom
 
+export gaborkernel
 export spectral_mixture_kernel, spectral_mixture_product_kernel
 
 export ColVecs, RowVecs
 
 export MOInput
-export IndependentMOKernel, LatentFactorMOKernel
+export IndependentMOKernel,
+    LatentFactorMOKernel, IntrinsicCoregionMOKernel, LinearMixingModelKernel
 
 # Reexports
 export tensor, ⊗, compose
 
 using Compat
-using ChainRulesCore: ChainRulesCore, Composite, Zero, One, DoesNotExist, NO_FIELDS
+using ChainRulesCore: ChainRulesCore, Tangent, ZeroTangent, NoTangent
 using ChainRulesCore: @thunk, InplaceableThunk
 using CompositionsBase
-using Requires
-using Distances, LinearAlgebra
+using Distances
+using FillArrays
 using Functors
+using LinearAlgebra
+using Requires
 using SpecialFunctions: loggamma, besselk, polygamma
-using ZygoteRules: ZygoteRules
-using StatsFuns: logtwo, twoπ
+using StatsFuns: logtwo, twoπ, softplus
 using StatsBase
 using TensorCore
-using FillArrays
+using ZygoteRules: ZygoteRules
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
@@ -72,6 +74,7 @@ include(joinpath("transform", "functiontransform.jl"))
 include(joinpath("transform", "selecttransform.jl"))
 include(joinpath("transform", "chaintransform.jl"))
 include(joinpath("transform", "periodic_transform.jl"))
+include(joinpath("kernels", "transformedkernel.jl"))
 
 include(joinpath("basekernels", "constant.jl"))
 include(joinpath("basekernels", "cosine.jl"))
@@ -84,11 +87,10 @@ include(joinpath("basekernels", "nn.jl"))
 include(joinpath("basekernels", "periodic.jl"))
 include(joinpath("basekernels", "piecewisepolynomial.jl"))
 include(joinpath("basekernels", "polynomial.jl"))
-include(joinpath("basekernels", "rationalquad.jl"))
+include(joinpath("basekernels", "rational.jl"))
 include(joinpath("basekernels", "sm.jl"))
 include(joinpath("basekernels", "wiener.jl"))
 
-include(joinpath("kernels", "transformedkernel.jl"))
 include(joinpath("kernels", "scaledkernel.jl"))
 include(joinpath("kernels", "normalizedkernel.jl"))
 include(joinpath("matrix", "kernelmatrix.jl"))
@@ -96,6 +98,7 @@ include(joinpath("kernels", "kernelsum.jl"))
 include(joinpath("kernels", "kernelproduct.jl"))
 include(joinpath("kernels", "kerneltensorproduct.jl"))
 include(joinpath("kernels", "overloads.jl"))
+include(joinpath("kernels", "neuralkernelnetwork.jl"))
 include(joinpath("approximations", "nystrom.jl"))
 include("generic.jl")
 
@@ -103,13 +106,13 @@ include(joinpath("mokernels", "mokernel.jl"))
 include(joinpath("mokernels", "moinput.jl"))
 include(joinpath("mokernels", "independent.jl"))
 include(joinpath("mokernels", "slfm.jl"))
+include(joinpath("mokernels", "intrinsiccoregion.jl"))
+include(joinpath("mokernels", "lmm.jl"))
 
 include("chainrules.jl")
 include("zygoterules.jl")
 
 include("test_utils.jl")
-
-include("deprecations.jl")
 
 function __init__()
     @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin

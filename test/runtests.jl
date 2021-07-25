@@ -4,6 +4,7 @@ using Distances
 using Documenter
 using Kronecker: Kronecker
 using LinearAlgebra
+using LogExpFunctions
 using PDMats
 using Random
 using SpecialFunctions
@@ -17,6 +18,10 @@ using FiniteDifferences: FiniteDifferences
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 
 using KernelFunctions.TestUtils: test_interface
+
+# The GROUP is used to run different sets of tests in parallel on the GitHub Actions CI.
+# If you want to introduce a new group, ensure you also add it to .github/workflows/ci.yml
+const GROUP = get(ENV, "GROUP", "")
 
 # Writing tests:
 # 1. The file structure of the test should match precisely the file structure of src.
@@ -53,115 +58,133 @@ using KernelFunctions.TestUtils: test_interface
 include("test_utils.jl")
 
 @testset "KernelFunctions" begin
-    include("utils.jl")
-
-    @testset "distances" begin
-        include(joinpath("distances", "pairwise.jl"))
-        include(joinpath("distances", "dotproduct.jl"))
-        include(joinpath("distances", "delta.jl"))
-        include(joinpath("distances", "sinus.jl"))
-    end
-    @info "Ran tests on Distances"
-
-    @testset "transform" begin
-        include(joinpath("transform", "transform.jl"))
-        print(" ")
-        include(joinpath("transform", "scaletransform.jl"))
-        print(" ")
-        include(joinpath("transform", "ardtransform.jl"))
-        print(" ")
-        include(joinpath("transform", "lineartransform.jl"))
-        print(" ")
-        include(joinpath("transform", "functiontransform.jl"))
-        print(" ")
-        include(joinpath("transform", "selecttransform.jl"))
-        print(" ")
-        include(joinpath("transform", "chaintransform.jl"))
-        print(" ")
-        include(joinpath("transform", "periodic_transform.jl"))
-        print(" ")
-    end
-    @info "Ran tests on Transform"
-
-    @testset "basekernels" begin
-        include(joinpath("basekernels", "constant.jl"))
-        print(" ")
-        include(joinpath("basekernels", "cosine.jl"))
-        print(" ")
-        include(joinpath("basekernels", "exponential.jl"))
-        print(" ")
-        include(joinpath("basekernels", "exponentiated.jl"))
-        print(" ")
-        include(joinpath("basekernels", "fbm.jl"))
-        print(" ")
-        include(joinpath("basekernels", "gabor.jl"))
-        print(" ")
-        include(joinpath("basekernels", "matern.jl"))
-        print(" ")
-        include(joinpath("basekernels", "nn.jl"))
-        print(" ")
-        include(joinpath("basekernels", "periodic.jl"))
-        print(" ")
-        include(joinpath("basekernels", "piecewisepolynomial.jl"))
-        print(" ")
-        include(joinpath("basekernels", "polynomial.jl"))
-        print(" ")
-        include(joinpath("basekernels", "rationalquad.jl"))
-        print(" ")
-        include(joinpath("basekernels", "sm.jl"))
-        print(" ")
-        include(joinpath("basekernels", "wiener.jl"))
-        print(" ")
-    end
-    @info "Ran tests on BaseKernel"
-
-    @testset "kernels" begin
-        include(joinpath("kernels", "kernelproduct.jl"))
-        include(joinpath("kernels", "kernelsum.jl"))
-        include(joinpath("kernels", "kerneltensorproduct.jl"))
-        include(joinpath("kernels", "overloads.jl"))
-        include(joinpath("kernels", "scaledkernel.jl"))
-        include(joinpath("kernels", "transformedkernel.jl"))
-        include(joinpath("kernels", "normalizedkernel.jl"))
-    end
-    @info "Ran tests on Kernel"
-
-    @testset "matrix" begin
-        include(joinpath("matrix", "kernelmatrix.jl"))
-        include(joinpath("matrix", "kernelkroneckermat.jl"))
-        include(joinpath("matrix", "kernelpdmat.jl"))
-    end
-    @info "Ran tests on matrix"
-
-    @testset "multi_output" begin
-        include(joinpath("mokernels", "moinput.jl"))
-        include(joinpath("mokernels", "independent.jl"))
-        include(joinpath("mokernels", "slfm.jl"))
-    end
-    @info "Ran tests on Multi-Output Kernels"
-
-    @testset "approximations" begin
-        include(joinpath("approximations", "nystrom.jl"))
+    if GROUP == "" || GROUP == "Transform"
+        @testset "transform" begin
+            include(joinpath("transform", "transform.jl"))
+            print(" ")
+            include(joinpath("transform", "scaletransform.jl"))
+            print(" ")
+            include(joinpath("transform", "ardtransform.jl"))
+            print(" ")
+            include(joinpath("transform", "lineartransform.jl"))
+            print(" ")
+            include(joinpath("transform", "functiontransform.jl"))
+            print(" ")
+            include(joinpath("transform", "selecttransform.jl"))
+            print(" ")
+            include(joinpath("transform", "chaintransform.jl"))
+            print(" ")
+            include(joinpath("transform", "periodic_transform.jl"))
+            print(" ")
+        end
+        @info "Ran tests on Transform"
     end
 
-    include("generic.jl")
-    include("chainrules.jl")
-    include("zygoterules.jl")
+    if GROUP == "" || GROUP == "BaseKernels"
+        @testset "basekernels" begin
+            include(joinpath("basekernels", "constant.jl"))
+            print(" ")
+            include(joinpath("basekernels", "cosine.jl"))
+            print(" ")
+            include(joinpath("basekernels", "exponential.jl"))
+            print(" ")
+            include(joinpath("basekernels", "exponentiated.jl"))
+            print(" ")
+            include(joinpath("basekernels", "fbm.jl"))
+            print(" ")
+            include(joinpath("basekernels", "gabor.jl"))
+            print(" ")
+            include(joinpath("basekernels", "matern.jl"))
+            print(" ")
+            include(joinpath("basekernels", "nn.jl"))
+            print(" ")
+            include(joinpath("basekernels", "periodic.jl"))
+            print(" ")
+            include(joinpath("basekernels", "piecewisepolynomial.jl"))
+            print(" ")
+            include(joinpath("basekernels", "polynomial.jl"))
+            print(" ")
+            include(joinpath("basekernels", "rational.jl"))
+            print(" ")
+            include(joinpath("basekernels", "sm.jl"))
+            print(" ")
+            include(joinpath("basekernels", "wiener.jl"))
+            print(" ")
+        end
+        @info "Ran tests on BaseKernel"
+    end
 
-    include("deprecations.jl")
+    if GROUP == "" || GROUP == "Kernels"
+        @testset "kernels" begin
+            include(joinpath("kernels", "kernelproduct.jl"))
+            include(joinpath("kernels", "kernelsum.jl"))
+            include(joinpath("kernels", "kerneltensorproduct.jl"))
+            include(joinpath("kernels", "overloads.jl"))
+            include(joinpath("kernels", "scaledkernel.jl"))
+            include(joinpath("kernels", "transformedkernel.jl"))
+            include(joinpath("kernels", "normalizedkernel.jl"))
+            include(joinpath("kernels", "neuralkernelnetwork.jl"))
+        end
+        @info "Ran tests on Kernel"
+    end
 
-    @testset "doctests" begin
-        DocMeta.setdocmeta!(
-            KernelFunctions,
-            :DocTestSetup,
-            quote
-                using KernelFunctions
-                using LinearAlgebra
-                using Random
-                using PDMats: PDMats
-            end;
-            recursive=true,
-        )
-        doctest(KernelFunctions)
+    if GROUP == "" || GROUP == "MultiOutput"
+        @testset "multi_output" begin
+            include(joinpath("mokernels", "moinput.jl"))
+            include(joinpath("mokernels", "independent.jl"))
+            include(joinpath("mokernels", "slfm.jl"))
+            include(joinpath("mokernels", "intrinsiccoregion.jl"))
+            include(joinpath("mokernels", "lmm.jl"))
+        end
+        @info "Ran tests on Multi-Output Kernels"
+    end
+
+    if GROUP == "" || GROUP == "Others"
+        include("utils.jl")
+
+        @testset "distances" begin
+            include(joinpath("distances", "pairwise.jl"))
+            include(joinpath("distances", "dotproduct.jl"))
+            include(joinpath("distances", "delta.jl"))
+            include(joinpath("distances", "sinus.jl"))
+        end
+        @info "Ran tests on Distances"
+
+        @testset "matrix" begin
+            include(joinpath("matrix", "kernelmatrix.jl"))
+            include(joinpath("matrix", "kernelkroneckermat.jl"))
+            include(joinpath("matrix", "kernelpdmat.jl"))
+        end
+        @info "Ran tests on matrix"
+
+        @testset "approximations" begin
+            include(joinpath("approximations", "nystrom.jl"))
+        end
+
+        include("generic.jl")
+        include("chainrules.jl")
+        include("zygoterules.jl")
+
+        @testset "doctests" begin
+            DocMeta.setdocmeta!(
+                KernelFunctions,
+                :DocTestSetup,
+                quote
+                    using KernelFunctions
+                    using LinearAlgebra
+                    using Random
+                    using PDMats: PDMats
+                end;
+                recursive=true,
+            )
+            doctest(
+                KernelFunctions;
+                doctestfilters=[
+                    r"{([a-zA-Z0-9]+,\s?)+[a-zA-Z0-9]+}",
+                    r"(Array{[a-zA-Z0-9]+,\s?1}|Vector{[a-zA-Z0-9]+})",
+                    r"(Array{[a-zA-Z0-9]+,\s?2}|Matrix{[a-zA-Z0-9]+})",
+                ],
+            )
+        end
     end
 end

@@ -33,8 +33,34 @@ end
 """
     ColVecs(X::AbstractMatrix)
 
-A lightweight wrapper for an `AbstractMatrix` to make it behave like a vector of vectors.
-Each vector represents a column of the matrix
+A lightweight wrapper for an `AbstractMatrix` which interprets it as a vector-of-vectors, in
+which each _column_ of `X` represents a single vector.
+
+That is, by writing `x = ColVecs(X)`, you are saying "`x` is a vector-of-vectors, each of
+which has length `size(X, 1)`. The total number of vectors is `size(X, 2)`."
+
+Phrased differently, `ColVecs(X)` says that `X` should be interpreted as a vector
+of horizontally-concatenated column-vectors, hence the name `ColVecs`.
+
+```jldoctest
+julia> X = randn(2, 5);
+
+julia> x = ColVecs(X);
+
+julia> length(x) == 5
+true
+
+julia> X[:, 3] == x[3]
+true
+```
+
+`ColVecs` is related to [`RowVecs`](@ref) via transposition:
+```jldoctest
+julia> X = randn(2, 5);
+
+julia> ColVecs(X) == RowVecs(X')
+true
+```
 """
 struct ColVecs{T,TX<:AbstractMatrix{T},S} <: AbstractVector{S}
     X::TX
@@ -49,6 +75,8 @@ Base.getindex(D::ColVecs, i::Int) = view(D.X, :, i)
 Base.getindex(D::ColVecs, i::CartesianIndex{1}) = view(D.X, :, i)
 Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
 Base.setindex!(D::ColVecs, v::AbstractVector, i) = setindex!(D.X, v, :, i)
+
+Base.vcat(a::ColVecs, b::ColVecs) = ColVecs(hcat(a.X, b.X))
 
 dim(x::ColVecs) = size(x.X, 1)
 
@@ -70,8 +98,37 @@ end
 """
     RowVecs(X::AbstractMatrix)
 
-A lightweight wrapper for an `AbstractMatrix` to make it behave like a vector of vectors.
-Each vector represents a row of the matrix
+A lightweight wrapper for an `AbstractMatrix` which interprets it as a vector-of-vectors, in
+which each _row_ of `X` represents a single vector.
+
+That is, by writing `x = RowVecs(X)`, you are saying "`x` is a vector-of-vectors, each of
+which has length `size(X, 2)`. The total number of vectors is `size(X, 1)`."
+
+Phrased differently, `RowVecs(X)` says that `X` should be interpreted as a vector
+of vertically-concatenated row-vectors, hence the name `RowVecs`.
+
+Internally, the data continues to be represented as an `AbstractMatrix`, so using this type
+does not introduce any kind of performance penalty.
+
+```jldoctest
+julia> X = randn(5, 2);
+
+julia> x = RowVecs(X);
+
+julia> length(x) == 5
+true
+
+julia> X[3, :] == x[3]
+true
+```
+
+`RowVecs` is related to [`ColVecs`](@ref) via transposition:
+```jldoctest
+julia> X = randn(5, 2);
+
+julia> RowVecs(X) == ColVecs(X')
+true
+```
 """
 struct RowVecs{T,TX<:AbstractMatrix{T},S} <: AbstractVector{S}
     X::TX
@@ -88,6 +145,8 @@ Base.getindex(D::RowVecs, i::Int) = view(D.X, i, :)
 Base.getindex(D::RowVecs, i::CartesianIndex{1}) = view(D.X, i, :)
 Base.getindex(D::RowVecs, i) = RowVecs(view(D.X, i, :))
 Base.setindex!(D::RowVecs, v::AbstractVector, i) = setindex!(D.X, v, i, :)
+
+Base.vcat(a::RowVecs, b::RowVecs) = RowVecs(vcat(a.X, b.X))
 
 dim(x::RowVecs) = size(x.X, 2)
 

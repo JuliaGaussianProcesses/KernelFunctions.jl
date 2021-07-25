@@ -68,6 +68,10 @@ See also: [`TransformedKernel`](@ref)
 Base.:∘(k::Kernel, t::Transform) = TransformedKernel(k, t)
 Base.:∘(k::TransformedKernel, t::Transform) = TransformedKernel(k.kernel, k.transform ∘ t)
 
+# Simplify kernels with identity transformation of the inputs
+Base.:∘(k::Kernel, ::IdentityTransform) = k
+Base.:∘(k::TransformedKernel, ::IdentityTransform) = k
+
 Base.show(io::IO, κ::TransformedKernel) = printshifted(io, κ, 0)
 
 function printshifted(io::IO, κ::TransformedKernel, shift::Int)

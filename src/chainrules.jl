@@ -17,7 +17,7 @@ end
 function ChainRulesCore.rrule(dist::Delta, x::AbstractVector, y::AbstractVector)
     d = dist(x, y)
     function evaluate_pullback(::Any)
-        return NO_FIELDS, Zero(), Zero()
+        return NoTangent(), ZeroTangent(), ZeroTangent()
     end
     return d, evaluate_pullback
 end
@@ -27,7 +27,7 @@ function ChainRulesCore.rrule(
 )
     P = Distances.pairwise(d, X, Y; dims=dims)
     function pairwise_pullback(::AbstractMatrix)
-        return NO_FIELDS, NO_FIELDS, Zero(), Zero()
+        return NoTangent(), NoTangent(), ZeroTangent(), ZeroTangent()
     end
     return P, pairwise_pullback
 end
@@ -37,7 +37,7 @@ function ChainRulesCore.rrule(
 )
     P = Distances.pairwise(d, X; dims=dims)
     function pairwise_pullback(::AbstractMatrix)
-        return NO_FIELDS, NO_FIELDS, Zero()
+        return NoTangent(), NoTangent(), ZeroTangent()
     end
     return P, pairwise_pullback
 end
@@ -47,7 +47,7 @@ function ChainRulesCore.rrule(
 )
     C = Distances.colwise(d, X, Y)
     function colwise_pullback(::AbstractVector)
-        return NO_FIELDS, NO_FIELDS, Zero(), Zero()
+        return NoTangent(), NoTangent(), ZeroTangent(), ZeroTangent()
     end
     return C, colwise_pullback
 end
@@ -57,7 +57,7 @@ end
 function ChainRulesCore.rrule(dist::DotProduct, x::AbstractVector, y::AbstractVector)
     d = dist(x, y)
     function evaluate_pullback(Δ::Any)
-        return NO_FIELDS, Δ .* y, Δ .* x
+        return NoTangent(), Δ .* y, Δ .* x
     end
     return d, evaluate_pullback
 end
@@ -72,9 +72,9 @@ function ChainRulesCore.rrule(
     P = Distances.pairwise(d, X, Y; dims=dims)
     function pairwise_pullback_cols(Δ::AbstractMatrix)
         if dims == 1
-            return NO_FIELDS, NO_FIELDS, Δ * Y, Δ' * X
+            return NoTangent(), NoTangent(), Δ * Y, Δ' * X
         else
-            return NO_FIELDS, NO_FIELDS, Y * Δ', X * Δ
+            return NoTangent(), NoTangent(), Y * Δ', X * Δ
         end
     end
     return P, pairwise_pullback_cols
@@ -86,9 +86,9 @@ function ChainRulesCore.rrule(
     P = Distances.pairwise(d, X; dims=dims)
     function pairwise_pullback_cols(Δ::AbstractMatrix)
         if dims == 1
-            return NO_FIELDS, NO_FIELDS, 2 * Δ * X
+            return NoTangent(), NoTangent(), 2 * Δ * X
         else
-            return NO_FIELDS, NO_FIELDS, 2 * X * Δ
+            return NoTangent(), NoTangent(), 2 * X * Δ
         end
     end
     return P, pairwise_pullback_cols
@@ -99,7 +99,7 @@ function ChainRulesCore.rrule(
 )
     C = Distances.colwise(d, X, Y)
     function colwise_pullback(Δ::AbstractVector)
-        return NO_FIELDS, NO_FIELDS, Δ' .* Y, Δ' .* X
+        return NoTangent(), NoTangent(), Δ' .* Y, Δ' .* X
     end
     return C, colwise_pullback
 end
@@ -135,7 +135,7 @@ function ChainRulesCore.rrule(
         ∂b = InplaceableThunk(
             @thunk((-2 * Δ) * dist.qmat * a_b), X̄ -> mul!(X̄, dist.qmat, a_b, true, -2 * Δ)
         )
-        return Composite{typeof(dist)}(; qmat=∂qmat), ∂a, ∂b
+        return Tangent{typeof(dist)}(; qmat=∂qmat), ∂a, ∂b
     end
     return d, SqMahalanobis_pullback
 end
@@ -143,7 +143,7 @@ end
 ## Reverse Rules for matrix wrappers
 
 function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
-    ColVecs_pullback(Δ::Composite) = (NO_FIELDS, Δ.X)
+    ColVecs_pullback(Δ::Tangent) = (NoTangent(), Δ.X)
     function ColVecs_pullback(::AbstractVector{<:AbstractVector{<:Real}})
         return error(
             "Pullback on AbstractVector{<:AbstractVector}.\n" *
@@ -155,7 +155,7 @@ function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
 end
 
 function ChainRulesCore.rrule(::Type{<:RowVecs}, X::AbstractMatrix)
-    RowVecs_pullback(Δ::Composite) = (NO_FIELDS, Δ.X)
+    RowVecs_pullback(Δ::Tangent) = (NoTangent(), Δ.X)
     function RowVecs_pullback(::AbstractVector{<:AbstractVector{<:Real}})
         return error(
             "Pullback on AbstractVector{<:AbstractVector}.\n" *

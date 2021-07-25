@@ -50,7 +50,7 @@ FBMKernel
 ### Gabor Kernel
 
 ```@docs
-GaborKernel
+gaborkernel
 ```
 
 ### Matérn Kernels
@@ -88,11 +88,12 @@ LinearKernel
 PolynomialKernel
 ```
 
-### Rational Quadratic Kernels
+### Rational Kernels
 
 ```@docs
+RationalKernel
 RationalQuadraticKernel
-GammaRationalQuadraticKernel
+GammaRationalKernel
 ```
 
 ### Spectral Mixture Kernels
@@ -132,4 +133,6 @@ NormalizedKernel
 MOKernel
 IndependentMOKernel
 LatentFactorMOKernel
+IntrinsicCoregionMOKernel
+LinearMixingModelKernel
 ```
