@@ -1,12 +1,25 @@
 """
     spectral_mixture_kernel(
         h::Kernel=SqExponentialKernel(),
-        αs::AbstractVector{<:Real},
-        γs::AbstractMatrix{<:Real},
-        ωs::AbstractMatrix{<:Real},
+        α::AbstractVector{<:Real},
+        γ::AbstractMatrix{<:Real},
+        ω::AbstractMatrix{<:Real},
+    )
+    spectral_mixture_kernel(
+        h::Kernel=SqExponentialKernel(),
+        α::AbstractVector{<:Real},
+        γ::AbstractVector{<:AbstractVecorMat{<:Real}},
+        ω::AbstractVector{<:AbstractVecorMat{<:Real}},
     )
 
-where `αs` are the weight vector of dimension `A`, `γs` is the sqrt of the covariance matrix of
+Given `A` the number of mixture components and `D` the dimension of the inputs:
+
+## Arguments
+- `h`: Stationary kernel (translation invariant), `SqExponentialKernel` by default
+- `α`: Weight vector of each mixture component (`length(α)==A`)
+- `γ`: Linear transformation of the input for `h`. `γ` can be an `AbstractMatrix` or 
+- `ω`: Linear transformation 
+where `α` are the weight vector of dimension `A`, `γs` is the sqrt of the covariance matrix of
 dimension `(D, A)` and `ωs` are the concatenated mean vectors of dimension (D, A).
 Here, `D` is input dimension and `A` is the number of spectral components.
 
@@ -16,7 +29,7 @@ Generalised Spectral Mixture kernel function. This family of functions is dense
 in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
 
 ```math
-   κ(x, y) = \sum_k \alpha_k^\top (h(γ_k x, γ_k y) \cos(π \cdot ω_k \odot (x-y)),
+   κ(x, y) = \sum_k \alpha_k^\top (h(γ_k \odot x, γ_k \odot y) \cos(π \cdot ω_k^\top (x-y)),
 ```
 
 # References:
@@ -31,23 +44,41 @@ in the family of stationary real-valued kernels with respect to the pointwise co
 """
 function spectral_mixture_kernel(
     h::Kernel,
-    αs::AbstractVector{<:Real},
-    γs::AbstractMatrix{<:Real},
-    ωs::AbstractMatrix{<:Real},
+    α::AbstractVector{<:Real},
+    γ::AbstractMatrix{<:Real},
+    ω::AbstractMatrix{<:Real},
 )
-    if !(size(αs, 1) == size(γs, 2) == size(ωs, 2))
-        throw(DimensionMismatch("The dimensions of αs, γs, ans ωs do not match"))
+    if !(size(α, 1) == size(γ, 2) == size(ω, 2))
+        throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
     end
-    if size(γs) != size(ωs)
-        throw(DimensionMismatch("The dimensions of γs ans ωs do not match"))
+    if size(γ, 1) != size(ω, 1)
+        throw(DimensionMismatch("The dimensions of γ ans ω do not match"))
     end
 
-    return sum(zip(αs, eachcol(γs), eachcol(ωs))) do (α, γ, ω)
-        a = TransformedKernel(h, LinearTransform(γ'))
-        b = TransformedKernel(CosineKernel(), LinearTransform(ω'))
+    return sum(zip(α, eachcol(γ), eachcol(ω))) do (α, γ, ω)
+        a = TransformedKernel(h, ARDTransform(γ))
+        b = TransformedKernel(CosineKernel(), ARDTransform(ω))
         return α * a * b
     end
 end
+
+function spectral_mixture_kernel(
+    h::Kernel,
+    α::AbstractVector{<:Real},
+    γ::AbstractVector{<:AbstractVector},
+    ω::AbstractVector{<:AbstractVector},
+)
+    if !(length(α) == length(γ) == length(ω))
+        throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
+    end
+
+    return sum(zip(α, γ, ω)) do (αk, γk, ωk)
+        a = TransformedKernel(h, ARDTransform(γk))
+        b = TransformedKernel(CosineKernel(), ARDTransform(ωk))
+        return αk * a * b
+    end
+end
+
 
 function spectral_mixture_kernel(
     αs::AbstractVector{<:Real}, γs::AbstractMatrix{<:Real}, ωs::AbstractMatrix{<:Real}
