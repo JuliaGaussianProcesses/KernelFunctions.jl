@@ -104,7 +104,6 @@ and removed in version 0.12.
 """
 const MOInput = MOInputIsotopicByOutputs
 
-
 """
     prepare_isotopic_multi_output_data(x::AbstractVector, Y::AbstractMatrix{<:Real})
 
