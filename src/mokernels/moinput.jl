@@ -103,3 +103,72 @@ See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 and removed in version 0.12.
 """
 const MOInput = MOInputIsotopicByOutputs
+
+
+"""
+    prepare_isotopic_multi_output_data(x::AbstractVector, Y::AbstractMatrix{<:Real})
+
+Utility functionality to convert a collection of inputs `x` and a matrix of vector-valued
+outputs `Y` into a canonical format needed by `KernelFunctions`.
+
+If `length(x)` is `N`, then `Y` must be either of size `N x P` or `P x N`, where `P` is the
+number of outputs.
+
+If `size(Y)` is `N x P`, then
+```jldoctest
+julia> N, P = 10, 5;
+
+julia> x = ColVecs(randn(3, N));
+
+julia> Y = randn(N, P);
+
+julia> x_canon, y_canon = prepare_isotopic_multi_output_data(x, Y);
+
+julia> x_canon isa KernelFunctions.MOInputIsotopicByOutputs
+true
+
+julia> length(x_canon) == N * P
+true
+
+julia> y_canon isa AbstractVector{<:Real}
+true
+
+julia> length(y_canon) == length(x_canon)
+true
+```
+
+If `size(Y)` is `P x N`, then
+```julia
+julia> N, P = 10, 5;
+
+julia> x = ColVecs(randn(3, N));
+
+julia> Y = randn(P, N);
+
+julia> x_canon, y_canon = prepare_isotopic_multi_output_data(x, Y);
+
+julia> x_canon isa KernelFunctions.MOInputIsotopicByFeatures
+true
+
+julia> length(x_canon) == N * P
+true
+
+julia> y_canon isa AbstractVector{<:Real}
+true
+
+julia> length(y_canon) == length(x_canon)
+true
+```
+
+An `ArgumentError` is thrown if the sizes don't match.
+"""
+function prepare_isotopic_multi_output_data(x::AbstractVector, Y::AbstractMatrix{<:Real})
+    N = length(x)
+    if size(Y, 1) == N
+        return MOInputIsotopicByOutputs(x, size(Y, 2)), vec(Y)
+    elseif size(Y, 2) == N
+        return MOInputIsotopicByFeatures(x, size(Y, 1)), vec(Y)
+    else
+        throw(ArgumentError("Length of x not compatible with size of Y."))
+    end
+end
