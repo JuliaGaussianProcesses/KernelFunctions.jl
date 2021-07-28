@@ -60,7 +60,8 @@ The type of collections of inputs for multi-output GPs is therefore `AbstractVec
 
 KernelFunctions.jl provides the following helper function for situations in which all outputs are observed all of the time:
 ```@docs
-prepare_isotopic_multi_output_data
+prepare_isotopic_multi_output_data(x::AbstractVector, y::ColVecs)
+prepare_isotopic_multi_output_data(x::AbstractVector, y::RowVecs)
 ```
 
 The input types that it constructs can also be constructed manually:
