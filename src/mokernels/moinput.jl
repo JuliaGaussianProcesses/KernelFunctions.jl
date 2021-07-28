@@ -105,46 +105,24 @@ and removed in version 0.12.
 const MOInput = MOInputIsotopicByOutputs
 
 """
-    prepare_isotopic_multi_output_data(x::AbstractVector, Y::AbstractMatrix{<:Real})
+    prepare_isotopic_multi_output_data(x::AbstractVector, y::ColVecs)
 
-Utility functionality to convert a collection of inputs `x` and a matrix of vector-valued
-outputs `Y` into a canonical format needed by `KernelFunctions`.
+Utility functionality to convert a collection of `N = length(x)` inputs `x`, and a
+vector-of-vectors `y` (efficiently represented by a `ColVecs`) into a format suitable for
+use with multi-output kernels.
 
-If `length(x)` is `N`, then `Y` must be either of size `N x P` or `P x N`, where `P` is the
-number of outputs.
+`y[n]` is the vector-valued output corresponding to the input `x[n]`.
+Consequently, it is necessary that `length(x) == length(y)`.
 
-If `size(Y)` is `N x P`, then
-```jldoctest
-julia> N, P = 10, 5;
-
-julia> x = ColVecs(randn(3, N));
-
-julia> Y = randn(N, P);
-
-julia> x_canon, y_canon = prepare_isotopic_multi_output_data(x, Y);
-
-julia> x_canon isa KernelFunctions.MOInputIsotopicByOutputs
-true
-
-julia> length(x_canon) == N * P
-true
-
-julia> y_canon isa AbstractVector{<:Real}
-true
-
-julia> length(y_canon) == length(x_canon)
-true
-```
-
-If `size(Y)` is `P x N`, then
+For example:
 ```julia
 julia> N, P = 10, 5;
 
-julia> x = ColVecs(randn(3, N));
+julia> x = randn(N);
 
-julia> Y = randn(P, N);
+julia> y = ColVecs(randn(P, N));
 
-julia> x_canon, y_canon = prepare_isotopic_multi_output_data(x, Y);
+julia> x_canon, y_canon = prepare_isotopic_multi_output_data(x, y);
 
 julia> x_canon isa KernelFunctions.MOInputIsotopicByFeatures
 true
@@ -158,16 +136,46 @@ true
 julia> length(y_canon) == length(x_canon)
 true
 ```
-
-An `ArgumentError` is thrown if the sizes don't match.
 """
-function prepare_isotopic_multi_output_data(x::AbstractVector, Y::AbstractMatrix{<:Real})
-    N = length(x)
-    if size(Y, 1) == N
-        return MOInputIsotopicByOutputs(x, size(Y, 2)), vec(Y)
-    elseif size(Y, 2) == N
-        return MOInputIsotopicByFeatures(x, size(Y, 1)), vec(Y)
-    else
-        throw(ArgumentError("Length of x not compatible with size of Y."))
-    end
+function prepare_isotopic_multi_output_data(x::AbstractVector, y::ColVecs)
+    length(x) == length(y) || throw(ArgumentError("length(x) not equal to length(y)."))
+    return MOInputIsotopicByFeatures(x, size(y.X, 1)), vec(y.X)
+end
+
+"""
+    prepare_isotopic_multi_output_data(x::AbstractVector, y::RowVecs)
+
+Utility functionality to convert a collection of `N = length(x)` inputs `x` and output
+vectors `y` (efficiently represented by a `RowVecs`) into a format suitable for
+use with multi-output kernels.
+
+`y[n]` is the vector-valued output corresponding to the input `x[n]`.
+Consequently, it is necessary that `length(x) == length(y)`.
+
+For example:
+```jldoctest
+julia> N, P = 10, 5;
+
+julia> x = randn(N);
+
+julia> y = RowVecs(randn(N, P));
+
+julia> x_canon, y_canon = prepare_isotopic_multi_output_data(x, y);
+
+julia> x_canon isa KernelFunctions.MOInputIsotopicByOutputs
+true
+
+julia> length(x_canon) == N * P
+true
+
+julia> y_canon isa AbstractVector{<:Real}
+true
+
+julia> length(y_canon) == length(x_canon)
+true
+```
+"""
+function prepare_isotopic_multi_output_data(x::AbstractVector, y::RowVecs)
+    length(x) == length(y) || throw(ArgumentError("length(x) not equal to length(y)."))
+    return MOInputIsotopicByOutputs(x, size(y.X, 2)), vec(y.X)
 end
