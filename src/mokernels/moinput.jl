@@ -116,25 +116,32 @@ Consequently, it is necessary that `length(x) == length(y)`.
 
 For example:
 ```julia
-julia> N, P = 10, 5;
+julia> x = [1.0, 2.0, 3.0];
 
-julia> x = randn(N);
+julia> Y = [1.1 2.1 3.1; 1.2 2.2 3.2]
+2×3 Matrix{Float64}:
+ 1.1  2.1  3.1
+ 1.2  2.2  3.2
 
-julia> y = ColVecs(randn(P, N));
+julia> inputs, outputs = prepare_isotopic_multi_output_data(x, ColVecs(Y));
 
-julia> x_canon, y_canon = prepare_isotopic_multi_output_data(x, y);
+julia> inputs
+6-element KernelFunctions.MOInputIsotopicByFeatures{Float64, Vector{Float64}}:
+ (1.0, 1)
+ (1.0, 2)
+ (2.0, 1)
+ (2.0, 2)
+ (3.0, 1)
+ (3.0, 2)
 
-julia> x_canon isa KernelFunctions.MOInputIsotopicByFeatures
-true
-
-julia> length(x_canon) == N * P
-true
-
-julia> y_canon isa AbstractVector{<:Real}
-true
-
-julia> length(y_canon) == length(x_canon)
-true
+julia> outputs
+6-element Vector{Float64}:
+ 1.1
+ 1.2
+ 2.1
+ 2.2
+ 3.1
+ 3.2
 ```
 """
 function prepare_isotopic_multi_output_data(x::AbstractVector, y::ColVecs)
@@ -154,25 +161,33 @@ Consequently, it is necessary that `length(x) == length(y)`.
 
 For example:
 ```jldoctest
-julia> N, P = 10, 5;
+julia> x = [1.0, 2.0, 3.0];
 
-julia> x = randn(N);
+julia> Y = [1.1 1.2; 2.1 2.2; 3.1 3.2]
+3×2 Matrix{Float64}:
+ 1.1  1.2
+ 2.1  2.2
+ 3.1  3.2
 
-julia> y = RowVecs(randn(N, P));
+julia> inputs, outputs = prepare_isotopic_multi_output_data(x, RowVecs(Y));
 
-julia> x_canon, y_canon = prepare_isotopic_multi_output_data(x, y);
+julia> inputs
+6-element KernelFunctions.MOInputIsotopicByOutputs{Float64, Vector{Float64}}:
+ (1.0, 1)
+ (2.0, 1)
+ (3.0, 1)
+ (1.0, 2)
+ (2.0, 2)
+ (3.0, 2)
 
-julia> x_canon isa KernelFunctions.MOInputIsotopicByOutputs
-true
-
-julia> length(x_canon) == N * P
-true
-
-julia> y_canon isa AbstractVector{<:Real}
-true
-
-julia> length(y_canon) == length(x_canon)
-true
+julia> outputs
+6-element Vector{Float64}:
+ 1.1
+ 2.1
+ 3.1
+ 1.2
+ 2.2
+ 3.2
 ```
 """
 function prepare_isotopic_multi_output_data(x::AbstractVector, y::RowVecs)
