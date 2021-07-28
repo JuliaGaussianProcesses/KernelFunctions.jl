@@ -161,7 +161,7 @@ true
 
 An `ArgumentError` is thrown if the sizes don't match.
 """
-function prepare_isotopic_multi_output_data(x::AbstractVector, Y::AbstractMatrix{<:Real})
+function prepare_isotopic_multi_output_data(x::AbstractVector, Y::AbstractMatrix)
     N = length(x)
     if size(Y, 1) == N
         return MOInputIsotopicByOutputs(x, size(Y, 2)), vec(Y)
