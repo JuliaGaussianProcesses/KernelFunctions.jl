@@ -61,8 +61,8 @@
             @test length(y_canon) == length(x_canon)
         end
         @testset "RowVecs" begin
-            N = 10
-            P = 5
+            N = 5
+            P = 3
 
             x = randn(N)
             y = RowVecs(randn(N, P))
