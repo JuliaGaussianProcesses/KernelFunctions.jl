@@ -47,8 +47,8 @@
 
     @testset "prepare_isotopic_multi_output_data" begin
         @testset "ColVecs" begin
-            N = 10
-            P = 5
+            N = 5
+            P = 3
 
             x = randn(N)
             y = ColVecs(randn(P, N))

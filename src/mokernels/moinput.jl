@@ -114,7 +114,7 @@ use with multi-output kernels.
 `y[n]` is the vector-valued output corresponding to the input `x[n]`.
 Consequently, it is necessary that `length(x) == length(y)`.
 
-For example, if outputs are initially stored in a `num_outputs x N` matrix:
+For example, if outputs are initially stored in a `num_outputs × N` matrix:
 ```julia
 julia> x = [1.0, 2.0, 3.0];
 
@@ -159,7 +159,7 @@ use with multi-output kernels.
 `y[n]` is the vector-valued output corresponding to the input `x[n]`.
 Consequently, it is necessary that `length(x) == length(y)`.
 
-For example, if outputs are initial stored in an `N x num_outputs` matrix:
+For example, if outputs are initial stored in an `N × num_outputs` matrix:
 ```jldoctest
 julia> x = [1.0, 2.0, 3.0];
 
