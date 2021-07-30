@@ -47,13 +47,13 @@
 
     @testset "prepare_isotopic_multi_output_data" begin
         @testset "ColVecs" begin
-            N = 10
-            P = 5
+            N = 5
+            P = 3
 
             x = randn(N)
             y = ColVecs(randn(P, N))
 
-            x_canon, y_canon = prepare_isotopic_multi_output_data(x, y);
+            x_canon, y_canon = prepare_isotopic_multi_output_data(x, y)
 
             @test x_canon isa KernelFunctions.MOInputIsotopicByFeatures
             @test length(x_canon) == N * P
@@ -61,13 +61,13 @@
             @test length(y_canon) == length(x_canon)
         end
         @testset "RowVecs" begin
-            N = 10
-            P = 5
+            N = 5
+            P = 3
 
             x = randn(N)
             y = RowVecs(randn(N, P))
 
-            x_canon, y_canon = prepare_isotopic_multi_output_data(x, y);
+            x_canon, y_canon = prepare_isotopic_multi_output_data(x, y)
 
             @test x_canon isa KernelFunctions.MOInputIsotopicByOutputs
             @test length(x_canon) == N * P
