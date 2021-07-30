@@ -165,6 +165,10 @@ function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs, y::RowVecs)
     return Distances.pairwise!(out, d, x.X, y.X; dims=1)
 end
 
+# Resolve ambiguity error for ColVecs vs RowVecs. #346
+pairwise(d::PreMetric, x::ColVecs, y::RowVecs) = pairwise(d, x, ColVecs(permutedims(y.X)))
+pairwise(d::PreMetric, x::RowVecs, y::ColVecs) = pairwise(d, ColVecs(permutedims(x.X)), y)
+
 dim(x) = 0 # This is the passes-by-default choice. For a proper check, implement `KernelFunctions.dim` for your datatype.
 dim(x::AbstractVector) = dim(first(x))
 dim(x::AbstractVector{<:AbstractVector{<:Real}}) = length(first(x))
