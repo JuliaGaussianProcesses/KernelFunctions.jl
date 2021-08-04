@@ -118,10 +118,10 @@ include("test_utils.jl")
 
 function __init__()
     @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin
-        include(joinpath("matrix", "kernelkroneckermat.jl"))
+        Requires.@include("matrix/kernelkroneckermat.jl")
     end
     @require PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150" begin
-        include(joinpath("matrix", "kernelpdmat.jl"))
+        Requires.@include("matrix/kernelpdmat.jl")
     end
 end
 
