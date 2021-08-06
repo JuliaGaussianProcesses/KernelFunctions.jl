@@ -23,14 +23,17 @@ struct IndependentMOKernel{Tkernel<:Kernel} <: MOKernel
     kernel::Tkernel
 end
 
-function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
+# kernel function should be symmetric
+function (κ::IndependentMOKernel)((x, px)::Tuple{T,Int}, (y, py)::Tuple{T,Int}) where T
     if px == py
         return κ.kernel(x, y)
     else
-        return 0.0
+        retType = Base.return_types(κ.kernel, (typeof(x), typeof(y)))[1]
+        return zero(retType)
     end
 end
 
+# this function never gets called it seems
 function kernelmatrix(k::IndependentMOKernel, x::MOInput, y::MOInput)
     @assert x.out_dim == y.out_dim
     temp = k.kernel.(x.x, permutedims(y.x))

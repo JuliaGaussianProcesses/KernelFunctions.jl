@@ -16,6 +16,12 @@
     @test k(x1[1], x1[1]) isa Real
     @test kernelmatrix(k, x1) isa Matrix
 
+    # type stability
+    x2 = MOInput(rand(Float32, 4), 2)
+    @test k(x2[1], x2[2]) isa Float32
+    @test k(x2[1], x2[1]) isa Float32
+    @test eltype(typeof(kernelmatrix(k, x2))) isa Float32
+
     @test string(k) ==
           "Independent Multi-Output Kernel\n" *
           "\tSquared Exponential Kernel (metric = Euclidean(0.0))"
