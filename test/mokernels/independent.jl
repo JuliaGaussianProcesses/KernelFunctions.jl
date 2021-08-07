@@ -20,7 +20,7 @@
     x2 = MOInput(rand(Float32, 4), 2)
     @test k(x2[1], x2[2]) isa Float32
     @test k(x2[1], x2[1]) isa Float32
-    @test eltype(typeof(kernelmatrix(k, x2))) isa Float32
+    @test eltype(typeof(kernelmatrix(k, x2))) <: Float32
 
     @test string(k) ==
           "Independent Multi-Output Kernel\n" *

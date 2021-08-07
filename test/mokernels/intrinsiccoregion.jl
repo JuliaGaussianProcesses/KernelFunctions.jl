@@ -7,15 +7,26 @@
     A = randn(dims.out, rank)
     B = A * transpose(A) + Diagonal(rand(dims.out))
 
-    X = [(rand(dims.in), rand(1:(dims.out))) for i in 1:(dims.obs)]
+    # X = [(rand(dims.in), rand(1:(dims.out))) for i in 1:(dims.obs)]
+    x = [rand(dims.in) for _ in 1:2]
+    X = KernelFunctions.MOInputIsotopicByFeatures(x, dims.out)
 
     kernel = SqExponentialKernel()
     icoregionkernel = IntrinsicCoregionMOKernel(; kernel=kernel, B=B)
+
+    icoregionkernel2 = IntrinsicCoregionMOKernel(kernel, B)
+    @test icoregionkernel == icoregionkernel2
 
     @test icoregionkernel.B == B
     @test icoregionkernel.kernel == kernel
     @test icoregionkernel(X[1], X[1]) ≈ B[X[1][2], X[1][2]] * kernel(X[1][1], X[1][1])
     @test icoregionkernel(X[1], X[end]) ≈ B[X[1][2], X[end][2]] * kernel(X[1][1], X[end][1])
+
+    # test convenience function using kronecker product
+    @test icoregionkernel(X.x[1], X.x[2]) ≈ icoregionkernel.kernel(X.x[1], X.x[2])*B
+
+    # kernelmatrix
+    @test kernelmatrix(icoregionkernel, X) ≈ kron(kernelmatrix(kernel, X.x), B)
 
     KernelFunctions.TestUtils.test_interface(
         icoregionkernel, Vector{Tuple{Float64,Int}}; dim_out=dims.out

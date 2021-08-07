@@ -38,11 +38,7 @@ function IntrinsicCoregionMOKernel(kernel::Kernel, B::AbstractMatrix)
     return IntrinsicCoregionMOKernel{typeof(kernel),typeof(B)}(kernel, B)
 end
 
-function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{T,Int}, (y, py)::Tuple{T,Int}) where T
-    # @boundscheck println("Checking bounds")
-    # ( if size(k.B,1)<px || size(k.B,2)<py
-    #     error("Inputs are too large for this kernel")
-    # end)
+function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int}) 
     return k.B[px, py] * k.kernel(x, y)
 end
 
