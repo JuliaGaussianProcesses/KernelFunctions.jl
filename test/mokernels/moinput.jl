@@ -80,7 +80,7 @@
         y = randn(3)
         output_indices = [3, 1, 2]
         x_canon, y_canon = prepare_heterotopic_multi_output_data(x, y, output_indices)
-        @test x_canon isa AbstractVector{<:Tuple{<:Real, Int}}
+        @test x_canon isa AbstractVector{<:Tuple{<:Real,Int}}
         @test y isa AbstractVector{<:Real}
 
         @test_throws ArgumentError prepare_heterotopic_multi_output_data(x, y, [3, 1])

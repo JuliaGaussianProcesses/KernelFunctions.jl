@@ -239,7 +239,7 @@ julia> outputs
 See also [`prepare_isotopic_multi_output_data`](@ref).
 """
 function prepare_heterotopic_multi_output_data(
-    x::AbstractVector, y::AbstractVector{<:Real}, output_indices::AbstractVector{Int},
+    x::AbstractVector, y::AbstractVector{<:Real}, output_indices::AbstractVector{Int}
 )
     # Ensure validity of arguments.
     if length(x) != length(y)
