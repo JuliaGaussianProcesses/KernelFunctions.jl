@@ -208,8 +208,8 @@ Utility functionality to convert a collection of inputs `x`, observations `y`, a
 `output_indices` into a format suitable for use with multi-output kernels.
 Handles the situation in which only one (or a subset) of outputs are observed at each
 feature.
-Ensures that all arguments are compatible, and returns a vector of inputs and a vector of
-outputs.
+Ensures that all arguments are compatible with one another, and returns a vector of inputs
+and a vector of outputs.
 
 `y[n]` should be the observed value associated with output `output_indices[n]` at feature
 `x[n]`.
