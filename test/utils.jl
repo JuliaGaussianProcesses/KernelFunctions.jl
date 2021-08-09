@@ -93,6 +93,19 @@
             @test back(ones(size(X)))[1].X == ones(size(X))
         end
     end
+    @testset "ColVecs + RowVecs" begin
+        x_colvecs = ColVecs(randn(3, 5))
+        x_rowvecs = RowVecs(randn(7, 3))
+
+        @test isapprox(
+            pairwise(SqEuclidean(), x_colvecs, x_rowvecs),
+            pairwise(SqEuclidean(), collect(x_colvecs), collect(x_rowvecs)),
+        )
+        @test isapprox(
+            pairwise(SqEuclidean(), x_rowvecs, x_colvecs),
+            pairwise(SqEuclidean(), collect(x_rowvecs), collect(x_colvecs)),
+        )
+    end
     @testset "input checks" begin
         D = 3
         D⁻ = 2

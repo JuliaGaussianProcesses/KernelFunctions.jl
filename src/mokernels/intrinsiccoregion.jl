@@ -1,5 +1,5 @@
 @doc raw"""
-    IntrinsicIntrinsicCoregionMOKernel(; kernel::Kernel, B::AbstractMatrix)
+    IntrinsicCoregionMOKernel(; kernel::Kernel, B::AbstractMatrix)
 
 Kernel associated with the intrinsic coregionalization model.
 

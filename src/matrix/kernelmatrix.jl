@@ -24,9 +24,16 @@ kernelmatrix!
 
 """
     kernelmatrix(κ::Kernel, x::AbstractVector)
+
+Compute the kernel `κ` for each pair of inputs in `x`.
+Returns a matrix of size `(length(x), length(x))` satisfying
+`kernelmatrix(κ, x)[p, q] == κ(x[p], x[q])`.
+
     kernelmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector)
 
-Calculate the kernel matrix of `x` (and `y`) with respect to kernel `κ`.
+Compute the kernel `κ` for each pair of inputs in `x` and `y`.
+Returns a matrix of size `(length(x), length(y))` satisfying
+`kernelmatrix(κ, x, y)[p, q] == κ(x[p], y[q])`.
 
     kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int=2)
     kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int=2)
@@ -65,11 +72,11 @@ kernelmatrix_diag!
 """
     kernelmatrix_diag(κ::Kernel, x::AbstractVector)
 
-Calculate the diagonal matrix of `x` with respect to kernel `κ`.
+Compute the diagonal of `kernelmatrix(κ, x)` efficiently.
 
     kernelmatrix_diag(κ::Kernel, x::AbstractVector, y::AbstractVector)
 
-Calculate the diagonal of `kernelmatrix(κ, x, y)` efficiently.
+Compute the diagonal of `kernelmatrix(κ, x, y)` efficiently.
 Requires that `x` and `y` are the same length.
 
     kernelmatrix_diag(κ::Kernel, X::AbstractMatrix; obsdim::Int=2)
