@@ -1,16 +1,17 @@
 # Contribution guidelines
 
-We follow the [ColPrac guide for collaborative practices](https://colprac.sciml.ai/). New contributors should make sure to read that guide.
+We follow the [ColPrac guide for collaborative practices](https://colprac.sciml.ai/). New contributors should make sure to read the [first section](https://github.com/SciML/ColPrac#colprac-contributors-guide-on-collaborative-practices-for-community-packages) of that guide, but could also read the [Further Guidance](https://github.com/SciML/ColPrac#colprac-further-guidance) section if interested.
 
 
 # Workflows
 
 
-## Creating a new pull request
+## Creating a new [pull request](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
 
 ### Bumping the version number
 
 When contributing a PR, bump the version number (defined by `version = "..."` at the top of the base `Project.toml`) accordingly (as explained by the [guidance on the versioning scheme](https://colprac.sciml.ai/#incrementing-the-package-version) in the ColPrac guide).
+If unsure about what the new version should be, please just open the PR anyway -- existing contrbutors will provide a suggestion.
 
 ### Running tests locally
 
