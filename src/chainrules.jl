@@ -127,13 +127,13 @@ function ChainRulesCore.rrule(
     function SqMahalanobis_pullback(Δ::Real)
         a_b = a - b
         ∂qmat = InplaceableThunk(
-            X̄ -> mul!(X̄, a_b, a_b', true, Δ), @thunk((a_b * a_b') * Δ),
+            X̄ -> mul!(X̄, a_b, a_b', true, Δ), @thunk((a_b * a_b') * Δ)
         )
         ∂a = InplaceableThunk(
             X̄ -> mul!(X̄, dist.qmat, a_b, true, 2 * Δ), @thunk((2 * Δ) * dist.qmat * a_b)
         )
         ∂b = InplaceableThunk(
-            X̄ -> mul!(X̄, dist.qmat, a_b, true, -2 * Δ), @thunk((-2 * Δ) * dist.qmat * a_b),
+            X̄ -> mul!(X̄, dist.qmat, a_b, true, -2 * Δ), @thunk((-2 * Δ) * dist.qmat * a_b)
         )
         return Tangent{typeof(dist)}(; qmat=∂qmat), ∂a, ∂b
     end
