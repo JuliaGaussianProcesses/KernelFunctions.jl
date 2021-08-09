@@ -76,20 +76,14 @@ end
 
 Base.size(inp::IsotopicMOInputs) = (inp.out_dim * length(inp.x),)
 
-function Base.vcat(x::IsotopicMOInputs, y::IsotopicMOInputs)
+function Base.vcat(x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures)
     x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
-    typeof(x) == typeof(y) ||
-        throw(TypeError(
-            :vcat,
-            "cannot vcat an input ordered by output with an input ordered by features",
-            typeof(y),
-            typeof(x)
-        ))
-    if isa(x, MOInputIsotopicByOutputs)
-        return MOInputIsotopicByOutputs(vcat(x.x, y.x), x.out_dim)
-    else
-        return MOInputIsotopicByFeatures(vcat(x.x, y.x), x.out_dim)
-    end
+    return MOInputIsotopicByFeatures(vcat(x.x, y.x), x.out_dim)
+end
+
+function Base.vcat(x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs)
+    x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
+    return MOInputIsotopicByOutputs(vcat(x.x, y.x), x.out_dim)
 end
 
 """
