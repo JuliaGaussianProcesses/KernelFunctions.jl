@@ -183,8 +183,8 @@ include("test_utils.jl")
                 KernelFunctions;
                 doctestfilters=[
                     r"{([a-zA-Z0-9]+,\s?)+[a-zA-Z0-9]+}",
-                    r"(Array{[a-zA-Z0-9]+,\s?1}|\s?Vector{[a-zA-Z0-9]+})",
-                    r"(Array{[a-zA-Z0-9]+,\s?2}|\s?Matrix{[a-zA-Z0-9]+})",
+                    r"(\s?Array{[a-zA-Z0-9]+,\s?1}|\s?Vector{[a-zA-Z0-9]+})",
+                    r"(\s?Array{[a-zA-Z0-9]+,\s?2}|\s?Matrix{[a-zA-Z0-9]+})",
                 ],
             )
         end
