@@ -29,8 +29,9 @@ function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,I
     if px == py
         return κ.kernel(x, y)
     else
-        retType = Base.return_types(κ.kernel, (typeof(x), typeof(y)))[1]
-        return zero(retType)
+        # retType, = Base.return_types(κ.kernel, (typeof(x), typeof(y)))[1]
+        # return zero(retType)
+        return false
     end
 end
 
