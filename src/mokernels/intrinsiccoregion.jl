@@ -55,11 +55,20 @@ function matrixkernel(
 end
 
 function kernelmatrix(
-    k::IntrinsicCoregionMOKernel, x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures
-)
-    @assert x.out_dim == y.out_dim == size(k.B, 1)
+    k::IntrinsicCoregionMOKernel,
+    x::MOI,
+    y::MOI;
+    matrixtype::MT=ExplicitKroneckerKernelMatrix(),
+) where {MOI<:AbstractMOInput,MT<:KroneckerKernelMatrix}
+    @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-    return kron(Ktmp, k.B)
+    return _kronkernelmatrix(Ktmp, k.B, x, matrixtype)
+end
+
+function kernelmatrix(
+    k::IntrinsicCoregionMOKernel, x::MOI; matrixtype::MT=ExplicitKroneckerKernelMatrix()
+) where {MOI<:AbstractMOInput,MT<:KroneckerKernelMatrix}
+    return kernelmatrix(k, x, x; matrixtype)
 end
 
 function kernelmatrix!(
@@ -68,28 +77,9 @@ function kernelmatrix!(
     x::MOInputIsotopicByFeatures,
     y::MOInputIsotopicByFeatures,
 )
-    @assert x.out_dim == y.out_dim == size(k.B, 1)
+    @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-    return kron!(K, Ktmp, k.B)
-end
-
-function kernelmatrix(
-    k::IntrinsicCoregionMOKernel, x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs
-)
-    @assert x.out_dim == y.out_dim == size(k.B, 1)
-    Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-    return kron(k.B, Ktmp)
-end
-
-function kernelmatrix!(
-    K::AbstractMatrix,
-    k::IntrinsicCoregionMOKernel,
-    x::MOInputIsotopicByOutputs,
-    y::MOInputIsotopicByOutputs,
-)
-    @assert x.out_dim == y.out_dim == size(k.B, 1)
-    Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-    return kron!(K, k.B, Ktmp)
+    return _kronkernelmatrix!(K, Ktmp, k.B, x)
 end
 
 function Base.show(io::IO, k::IntrinsicCoregionMOKernel)

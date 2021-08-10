@@ -2,9 +2,9 @@
     rng = MersenneTwister(123)
 
     dims = (in=3, out=2, obs=3)
-    rank = 1
+    r = 1
 
-    A = randn(dims.out, rank)
+    A = randn(dims.out, r)
     B = A * transpose(A) + Diagonal(rand(dims.out))
 
     # X = [(rand(dims.in), rand(1:(dims.out))) for i in 1:(dims.obs)]
@@ -35,6 +35,16 @@
     KernelFunctions.TestUtils.test_interface(
         icoregionkernel, Vector{Tuple{Float64,Int}}; dim_out=dims.out
     )
+
+    # in-place
+    kmsize = dims.out * length(x)
+    K = zeros(kmsize, kmsize)
+    kernelmatrix!(K, icoregionkernel, X, X)
+    @test K ≈ icoregionkernel.(X, permutedims(X))
+
+    K = zeros(kmsize, kmsize)
+    kernelmatrix!(K, icoregionkernel, X_alt, X_alt)
+    @test K ≈ icoregionkernel.(X_alt, permutedims(X_alt))
 
     test_ADs(icoregionkernel; dims=dims)
 

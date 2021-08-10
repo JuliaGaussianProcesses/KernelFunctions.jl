@@ -25,3 +25,16 @@ end
     k(x,x') = ∏ᵢᴰ k(xᵢ,x'ᵢ)
 """
 @inline iskroncompatible(κ::Kernel) = false # Default return for kernels
+
+# see mokernels/independent.jl for non-Kronecker.jl version 
+function _kronkernelmatrix(
+    Ktmp, B, ::MOInputIsotopicByFeatures, ::LazyKroneckerKernelMatrix
+)
+    return Kronecker.kronecker(Ktmp, B)
+end
+
+function _kronkernelmatrix(
+    K, Ktmp, B, ::MOInputIsotopicByOutputs, ::LazyKroneckerKernelMatrix
+)
+    return Kronecker.kronecker(B, Ktmp)
+end
