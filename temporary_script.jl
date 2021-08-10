@@ -8,7 +8,7 @@ dims = (in=5, out=3)
 x = [rand(dims.in) for _ in 1:20]
 
 xMOF = KernelFunctions.MOInputIsotopicByFeatures(x, dims.out)
-xMOO  = KernelFunctions.MOInputIsotopicByOutputs(x, dims.out)
+xMOO = KernelFunctions.MOInputIsotopicByOutputs(x, dims.out)
 
 indk = IndependentMOKernel(GaussianKernel())
 
@@ -41,7 +41,6 @@ Kind1 ≈ Kind2
 #   6.16 μs      Histogram: log(frequency) by time      13.7 μs <
 
 #  Memory estimate: 34.89 KiB, allocs estimate: 7.
-
 
 A = randn(dims.out, mrank)
 B = A * transpose(A) + Diagonal(rand(dims.out))

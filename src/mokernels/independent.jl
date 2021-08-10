@@ -35,35 +35,47 @@ function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,I
     end
 end
 
-function kernelmatrix(k::IndependentMOKernel, x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures)
+function kernelmatrix(
+    k::IndependentMOKernel, x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures
+)
     @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
     mtype = eltype(Ktmp)
-    kron(Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim))
+    return kron(Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim))
 end
 
-function kernelmatrix!(K::AbstractMatrix, k::IndependentMOKernel, x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures)
+function kernelmatrix!(
+    K::AbstractMatrix,
+    k::IndependentMOKernel,
+    x::MOInputIsotopicByFeatures,
+    y::MOInputIsotopicByFeatures,
+)
     @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
     mtype = eltype(Ktmp)
-    kron!(K, Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim))
+    return kron!(K, Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim))
 end
 
-
-function kernelmatrix(k::IndependentMOKernel, x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs)
+function kernelmatrix(
+    k::IndependentMOKernel, x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs
+)
     @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
     mtype = eltype(Ktmp)
-    kron(Matrix{mtype}(I, x.out_dim, x.out_dim), Ktmp)
+    return kron(Matrix{mtype}(I, x.out_dim, x.out_dim), Ktmp)
 end
 
-function kernelmatrix!(K::AbstractMatrix, k::IndependentMOKernel, x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs)
+function kernelmatrix!(
+    K::AbstractMatrix,
+    k::IndependentMOKernel,
+    x::MOInputIsotopicByOutputs,
+    y::MOInputIsotopicByOutputs,
+)
     @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
     mtype = eltype(Ktmp)
-    kron!(K, Matrix{mtype}(I, x.out_dim, x.out_dim), Ktmp)
+    return kron!(K, Matrix{mtype}(I, x.out_dim, x.out_dim), Ktmp)
 end
-
 
 function Base.show(io::IO, k::IndependentMOKernel)
     return print(io, string("Independent Multi-Output Kernel\n\t", string(k.kernel)))

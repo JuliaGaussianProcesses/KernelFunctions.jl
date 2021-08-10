@@ -38,45 +38,59 @@ function IntrinsicCoregionMOKernel(kernel::Kernel, B::AbstractMatrix)
     return IntrinsicCoregionMOKernel{typeof(kernel),typeof(B)}(kernel, B)
 end
 
-function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int}) 
+function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
     return k.B[px, py] * k.kernel(x, y)
 end
 
 # convenience function
 export matrixkernel
-function matrixkernel(k::IntrinsicCoregionMOKernel, x::Vector{T}, y::Vector{T}) where T <: Real
+function matrixkernel(
+    k::IntrinsicCoregionMOKernel, x::Vector{T}, y::Vector{T}
+) where {T<:Real}
     @assert size(x) == size(y)
     outputsize = size(k.B, 1)
     xMO = MOInputIsotopicByFeatures([x], outputsize)
     yMO = MOInputIsotopicByFeatures([y], outputsize)
-    kernelmatrix(k, xMO, yMO)
+    return kernelmatrix(k, xMO, yMO)
 end
 
-function kernelmatrix(k::IntrinsicCoregionMOKernel, x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures)
+function kernelmatrix(
+    k::IntrinsicCoregionMOKernel, x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures
+)
     @assert x.out_dim == y.out_dim == size(k.B, 1)
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-    kron(Ktmp, k.B)
+    return kron(Ktmp, k.B)
 end
 
-function kernelmatrix!(K::AbstractMatrix, k::IntrinsicCoregionMOKernel, x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures)
+function kernelmatrix!(
+    K::AbstractMatrix,
+    k::IntrinsicCoregionMOKernel,
+    x::MOInputIsotopicByFeatures,
+    y::MOInputIsotopicByFeatures,
+)
     @assert x.out_dim == y.out_dim == size(k.B, 1)
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-    kron!(K, Ktmp, k.B)
+    return kron!(K, Ktmp, k.B)
 end
 
-
-function kernelmatrix(k::IntrinsicCoregionMOKernel, x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs)
+function kernelmatrix(
+    k::IntrinsicCoregionMOKernel, x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs
+)
     @assert x.out_dim == y.out_dim == size(k.B, 1)
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-    kron(k.B, Ktmp)
+    return kron(k.B, Ktmp)
 end
 
-function kernelmatrix!(K::AbstractMatrix, k::IntrinsicCoregionMOKernel, x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs)
+function kernelmatrix!(
+    K::AbstractMatrix,
+    k::IntrinsicCoregionMOKernel,
+    x::MOInputIsotopicByOutputs,
+    y::MOInputIsotopicByOutputs,
+)
     @assert x.out_dim == y.out_dim == size(k.B, 1)
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-    kron!(K, k.B, Ktmp)
+    return kron!(K, k.B, Ktmp)
 end
-
 
 function Base.show(io::IO, k::IntrinsicCoregionMOKernel)
     return print(
