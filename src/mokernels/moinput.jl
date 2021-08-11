@@ -1,4 +1,4 @@
-abstract type AbstractMOInput{T} <: AbstractVector{T} end
+abstract type AbstractMOInput{T} <: AbstractVector{Tuple{T,Int}} end
 
 """
     MOInputIsotopicByFeatures(x::AbstractVector, out_dim::Integer)
@@ -26,7 +26,7 @@ The first `out_dim` elements represent all outputs for the first input, the seco
 
 See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
-struct MOInputIsotopicByFeatures{S,T<:AbstractVector{S}} <: AbstractMOInput{Tuple{S,Int}}
+struct MOInputIsotopicByFeatures{S,T<:AbstractVector{S}} <: AbstractMOInput{S}
     x::T
     out_dim::Integer
 end
@@ -55,7 +55,7 @@ As shown above, an `MOInputIsotopicByOutputs` represents a vector of tuples.
 The first `length(x)` elements represent the inputs for the first output, the second
 `length(x)` elements represent the inputs for the second output, etc.
 """
-struct MOInputIsotopicByOutputs{S,T<:AbstractVector{S}} <: AbstractMOInput{Tuple{S,Int}}
+struct MOInputIsotopicByOutputs{S,T<:AbstractVector{S}} <: AbstractMOInput{S}
     x::T
     out_dim::Integer
 end
