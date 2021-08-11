@@ -11,11 +11,15 @@ We follow the [ColPrac guide for collaborative practices](https://colprac.sciml.
 ### Bumping the version number
 
 When contributing a PR, bump the version number (defined by `version = "..."` at the top of the base `Project.toml`) accordingly (as explained by the [guidance on the versioning scheme](https://colprac.sciml.ai/#incrementing-the-package-version) in the ColPrac guide).
-If unsure about what the new version should be, please just open the PR anyway -- existing contrbutors will provide a suggestion.
+If unsure about what the new version should be, please just open the PR anyway -- existing contributors will provide a suggestion.
 
 ### Running tests locally
 
-Run `make test`.
+Firstly, run `using Pkg; Pkg.develop("KernelFunctions")` at the Julia REPL, and navigate to `~/.julia/dev/KernelFunctions`.
+
+Running `make test` will now run the entire test suite.
+These tests can take a long time to run, so it's often a good idea to simply comment out the blocks of tests not required in `test/runtests.jl`.
+Test files are paired 1-1 with source files, so if you're modifying code in `src/foo.jl`, you should only need to run the tests in `test/foo.jl` during development.
 
 ### Code formatting
 
