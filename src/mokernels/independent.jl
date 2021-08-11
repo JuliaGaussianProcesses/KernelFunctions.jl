@@ -35,31 +35,19 @@ function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,I
     end
 end
 
-function _kronkernelmatrix(
-    Ktmp, B, ::MOInputIsotopicByFeatures, ::ExplicitKroneckerKernelMatrix
-)
+function _kronkernelmatrix(Ktmp, B, ::MOInputIsotopicByFeatures)
     return kron(Ktmp, B)
 end
 
-function _kronkernelmatrix(
-    Ktmp, B, ::MOInputIsotopicByOutputs, ::ExplicitKroneckerKernelMatrix
-)
+function _kronkernelmatrix(Ktmp, B, ::MOInputIsotopicByOutputs)
     return kron(B, Ktmp)
 end
 
-function kernelmatrix(
-    k::IndependentMOKernel, x::MOI, y::MOI; matrixtype::MT=ExplicitKroneckerKernelMatrix()
-) where {MOI<:AbstractMOInput,MT<:KroneckerKernelMatrix}
+function kernelmatrix(k::IndependentMOKernel, x::MOI, y::MOI) where {MOI<:AbstractMOInput}
     @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
     mtype = eltype(Ktmp)
-    return _kronkernelmatrix(Ktmp, Eye{mtype}(x.out_dim), x, matrixtype)
-end
-
-function kernelmatrix(
-    k::IndependentMOKernel, x::MOI; matrixtype::MT=ExplicitKroneckerKernelMatrix()
-) where {MOI<:AbstractMOInput,MT<:KroneckerKernelMatrix}
-    return kernelmatrix(k, x, x; matrixtype)
+    return _kronkernelmatrix(Ktmp, Eye{mtype}(x.out_dim), x)
 end
 
 function _kronkernelmatrix!(K, Ktmp, B, ::MOInputIsotopicByFeatures)

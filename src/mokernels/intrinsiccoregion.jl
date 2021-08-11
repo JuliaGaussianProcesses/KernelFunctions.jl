@@ -55,20 +55,15 @@ function matrixkernel(
 end
 
 function kernelmatrix(
-    k::IntrinsicCoregionMOKernel,
-    x::MOI,
-    y::MOI;
-    matrixtype::MT=ExplicitKroneckerKernelMatrix(),
-) where {MOI<:AbstractMOInput,MT<:KroneckerKernelMatrix}
+    k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
+) where {MOI<:AbstractMOInput}
     @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-    return _kronkernelmatrix(Ktmp, k.B, x, matrixtype)
+    return _kronkernelmatrix(Ktmp, k.B, x)
 end
 
-function kernelmatrix(
-    k::IntrinsicCoregionMOKernel, x::MOI; matrixtype::MT=ExplicitKroneckerKernelMatrix()
-) where {MOI<:AbstractMOInput,MT<:KroneckerKernelMatrix}
-    return kernelmatrix(k, x, x; matrixtype)
+function kernelmatrix(k::IntrinsicCoregionMOKernel, x::MOI) where {MOI<:AbstractMOInput}
+    return kernelmatrix(k, x, x)
 end
 
 function kernelmatrix!(
