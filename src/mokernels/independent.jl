@@ -44,23 +44,24 @@ function kernelmatrix(k::IndependentMOKernel, x::MOI, y::MOI) where {MOI<:MOInpu
     return _kronkernelmatrix(Ktmp, Eye{mtype}(x.out_dim), x)
 end
 
-## only works for julia 1.6+, needs change in [compat]
-# function _kronkernelmatrix!(K, Ktmp, B, ::MOInputIsotopicByFeatures)
-#     return kron!(K, Ktmp, B)
-# end
+if VERSION >= v"1.6"
+    function _kronkernelmatrix!(K, Ktmp, B, ::MOInputIsotopicByFeatures)
+        return kron!(K, Ktmp, B)
+    end
 
-# function _kronkernelmatrix!(K, Ktmp, B, ::MOInputIsotopicByOutputs)
-#     return kron!(K, B, Ktmp)
-# end
+    function _kronkernelmatrix!(K, Ktmp, B, ::MOInputIsotopicByOutputs)
+        return kron!(K, B, Ktmp)
+    end
 
-# function kernelmatrix!(
-#     K::AbstractMatrix, k::IndependentMOKernel, x::MOI, y::MOI
-# ) where {MOI<:MOInputsUnion}
-#     @assert x.out_dim == y.out_dim
-#     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-#     mtype = eltype(Ktmp)
-#     return _kronkernelmatrix!(K, Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim), x)
-# end
+    function kernelmatrix!(
+        K::AbstractMatrix, k::IndependentMOKernel, x::MOI, y::MOI
+    ) where {MOI<:MOInputsUnion}
+        @assert x.out_dim == y.out_dim
+        Ktmp = kernelmatrix(k.kernel, x.x, y.x)
+        mtype = eltype(Ktmp)
+        return _kronkernelmatrix!(K, Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim), x)
+    end
+end
 
 function Base.show(io::IO, k::IndependentMOKernel)
     return print(io, string("Independent Multi-Output Kernel\n\t", string(k.kernel)))
