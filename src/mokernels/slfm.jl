@@ -1,5 +1,5 @@
 @doc raw"""
-    LatentFactorMOKernel(g, e::MOKernel, A::AbstractMatrix)
+    LatentFactorMOKernel(g::AbstractVector{<:Kernel}, e::MOKernel, A::AbstractMatrix)
 
 Kernel associated with the semiparametric latent factor model.
 
@@ -31,6 +31,10 @@ end
 function (κ::LatentFactorMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
     cov_f = sum(κ.A[px, q] * κ.g[q](x, y) * κ.A[py, q] for q in 1:length(κ.g))
     return cov_f + κ.e((x, px), (y, py))
+end
+
+function matrixkernel(k::LatentFactorMOKernel, x, y)
+    matrixkernel(k, x, y; outputsize = size(k.A,1))
 end
 
 function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)

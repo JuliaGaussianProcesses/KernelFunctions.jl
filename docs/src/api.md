@@ -74,6 +74,11 @@ type enables specialised implementations of e.g. [`kernelmatrix`](@ref) for
 
 To find out more about the background, read this [review of kernels for vector-valued functions](https://arxiv.org/pdf/1106.6251.pdf).
 
+If you are interested in the matrix-kernel interpretation, Kernelfunction.jl provides a convenience function that computes the resulting kernel when applied to a pair of inputs
+```@docs
+matrixkernel
+```
+
 ## Generic Utilities
 
 KernelFunctions also provides miscellaneous utility functions.

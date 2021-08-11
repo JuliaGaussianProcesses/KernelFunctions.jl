@@ -43,11 +43,7 @@ function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{
 end
 
 function matrixkernel(k::IntrinsicCoregionMOKernel, x, y)
-    @assert size(x) == size(y)
-    outputsize = size(k.B, 1)
-    xMO = MOInputIsotopicByFeatures([x], outputsize)
-    yMO = MOInputIsotopicByFeatures([y], outputsize)
-    return kernelmatrix(k, xMO, yMO)
+    matrixkernel(k, x, y; outputsize = size(k.B,1))
 end
 
 function kernelmatrix(
