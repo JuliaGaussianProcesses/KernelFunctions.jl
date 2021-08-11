@@ -53,7 +53,7 @@ function kernelmatrix(
     @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
     mtype = eltype(Ktmp)
-    return _kronkernelmatrix(Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim), x, matrixtype)
+    return _kronkernelmatrix(Ktmp, Eye{mtype}(x.out_dim), x, matrixtype)
 end
 
 function kernelmatrix(
