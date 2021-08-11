@@ -43,7 +43,7 @@ function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{
 end
 
 function matrixkernel(k::IntrinsicCoregionMOKernel, x, y)
-    matrixkernel(k, x, y; outputsize = size(k.B,1))
+    return matrixkernel(k, x, y; outputsize=size(k.B, 1))
 end
 
 function kernelmatrix(

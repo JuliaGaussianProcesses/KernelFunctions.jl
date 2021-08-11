@@ -35,7 +35,7 @@ function (κ::LinearMixingModelKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{A
 end
 
 function matrixkernel(k::LinearMixingModelKernel, x, y)
-    matrixkernel(k, x, y; outputsize = size(k.H,2))
+    return matrixkernel(k, x, y; outputsize=size(k.H, 2))
 end
 
 function Base.show(io::IO, k::LinearMixingModelKernel)

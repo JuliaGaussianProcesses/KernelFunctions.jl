@@ -34,7 +34,7 @@ function (κ::LatentFactorMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,
 end
 
 function matrixkernel(k::LatentFactorMOKernel, x, y)
-    matrixkernel(k, x, y; outputsize = size(k.A,1))
+    return matrixkernel(k, x, y; outputsize=size(k.A, 1))
 end
 
 function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)
