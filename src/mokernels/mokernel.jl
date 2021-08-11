@@ -10,7 +10,7 @@ abstract type MOKernel <: Kernel end
 
 Convenience function ... More documentation soon. 
 """
-function matrixkernel(k::MOK, x::T, y::T; outputsize) where {T,MOK<:MOKernel}
+function matrixkernel(k::MOK, x, y; outputsize) where {T,MOK<:MOKernel}
     @assert size(x) == size(y)
     xMO = MOInputIsotopicByFeatures([x], outputsize)
     yMO = MOInputIsotopicByFeatures([y], outputsize)

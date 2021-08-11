@@ -26,13 +26,7 @@ end
 # kernel function should be symmetric
 # would really like (κ::IndependentMOKernel)((x, px)::Tuple{T,Int}, (y, py)::Tuple{T,Int}) where T, but seems to cause autodiff problems
 function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
-    if px == py
-        return κ.kernel(x, y)
-    else
-        # retType, = Base.return_types(κ.kernel, (typeof(x), typeof(y)))[1]
-        # return zero(retType)
-        return false
-    end
+    return κ.kernel(x, y) * (px == py)
 end
 
 function _kronkernelmatrix(Ktmp, B, ::MOInputIsotopicByFeatures)
