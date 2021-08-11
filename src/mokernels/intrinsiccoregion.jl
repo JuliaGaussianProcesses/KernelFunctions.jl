@@ -42,10 +42,8 @@ function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{
     return k.B[px, py] * k.kernel(x, y)
 end
 
-# convenience function
-export matrixkernel
 function matrixkernel(
-    k::IntrinsicCoregionMOKernel, x::Vector{T}, y::Vector{T}
+    k::IntrinsicCoregionMOKernel, x::T, y::T
 ) where {T<:Real}
     @assert size(x) == size(y)
     outputsize = size(k.B, 1)
