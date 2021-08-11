@@ -53,7 +53,7 @@ function kernelkronmat(
     return _kroneckerkernelmatrix(Ktmp, k.B, x)
 end
 
-function kernelkronmat(k::MOK, x::MOI) where {MOI<:MOInputsUnion, MOK<:MOKernel}
+function kernelkronmat(k::MOK, x::MOI) where {MOI<:MOInputsUnion,MOK<:MOKernel}
     @assert iskroncompatible(κ) "The chosen kernel is not compatible for Kronecker matrices"
     return kernelkronmat(k, x, x)
 end

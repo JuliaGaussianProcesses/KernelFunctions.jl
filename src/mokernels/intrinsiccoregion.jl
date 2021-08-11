@@ -42,9 +42,7 @@ function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{
     return k.B[px, py] * k.kernel(x, y)
 end
 
-function matrixkernel(
-    k::IntrinsicCoregionMOKernel, x::T, y::T
-) where T
+function matrixkernel(k::IntrinsicCoregionMOKernel, x::T, y::T) where {T}
     @assert size(x) == size(y)
     outputsize = size(k.B, 1)
     xMO = MOInputIsotopicByFeatures([x], outputsize)
@@ -61,11 +59,8 @@ function kernelmatrix(
 end
 
 function kernelmatrix!(
-    K::AbstractMatrix,
-    k::IntrinsicCoregionMOKernel,
-    x::MOI,
-    y::MOI,
-) where {MOI <: MOInputsUnion}
+    K::AbstractMatrix, k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
+) where {MOI<:MOInputsUnion}
     @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
     return _kronkernelmatrix!(K, Ktmp, k.B, x)
