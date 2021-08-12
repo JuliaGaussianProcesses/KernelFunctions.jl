@@ -30,19 +30,19 @@ end
 @inline ismatrixkroncompatible(κ::IndependentMOKernel) = true
 @inline ismatrixkroncompatible(κ::IntrinsicCoregionMOKernel) = true
 
-function _kroneckerkernelmatrix(Ktmp, B, ::MOInputIsotopicByFeatures)
-    return Kronecker.kronecker(Ktmp, B)
+function _mo_kernelmatrix_kron(::MOInputIsotopicByFeatures, K, B)
+    return Kronecker.kronecker(K, B)
 end
 
-function _kroneckerkernelmatrix(Ktmp, B, ::MOInputIsotopicByOutputs)
-    return Kronecker.kronecker(B, Ktmp)
+function _mo_kernelmatrix_kron(::MOInputIsotopicByOutputs, K, B)
+    return Kronecker.kronecker(B, K)
 end
 
 function kernelkronmat(k::IndependentMOKernel, x::MOI, y::MOI) where {MOI<:IsotopicMOInputsUnion}
     @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
     mtype = eltype(Ktmp)
-    return _kroneckerkernelmatrix(Ktmp, Eye{mtype}(x.out_dim), x)
+    return _mo_kernelmatrix_kron(Ktmp, Eye{mtype}(x.out_dim), x)
 end
 
 function kernelkronmat(
@@ -50,10 +50,10 @@ function kernelkronmat(
 ) where {MOI<:IsotopicMOInputsUnion}
     @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-    return _kroneckerkernelmatrix(Ktmp, k.B, x)
+    return _mo_kernelmatrix_kron(Ktmp, k.B, x)
 end
 
 function kernelkronmat(k::MOK, x::MOI) where {MOI<:IsotopicMOInputsUnion,MOK<:MOKernel}
-    @assert iskroncompatible(κ) "The chosen kernel is not compatible for Kronecker matrices"
+    @assert ismatrixkroncompatible(κ) "The chosen kernel is not compatible for Kronecker matrices"
     return kernelkronmat(k, x, x)
 end
