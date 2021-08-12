@@ -21,26 +21,24 @@
     kernel = SqExponentialKernel()
     icoregionkernel = IntrinsicCoregionMOKernel(kernel, B)
 
-    icoregionkernel2 = IntrinsicCoregionMOKernel(; kernel = kernel, B = B)
+    icoregionkernel2 = IntrinsicCoregionMOKernel(; kernel=kernel, B=B)
     @test icoregionkernel == icoregionkernel2
 
     @test icoregionkernel.B == B
     @test icoregionkernel.kernel == kernel
-    @test icoregionkernel(XIF[1], XIF[1]) ≈ B[XIF[1][2], XIF[1][2]] * kernel(XIF[1][1], XIF[1][1])
-    @test icoregionkernel(XIF[1], XIF[end]) ≈ B[XIF[1][2], XIF[end][2]] * kernel(XIF[1][1], XIF[end][1])
+    @test icoregionkernel(XIF[1], XIF[1]) ≈
+          B[XIF[1][2], XIF[1][2]] * kernel(XIF[1][1], XIF[1][1])
+    @test icoregionkernel(XIF[1], XIF[end]) ≈
+          B[XIF[1][2], XIF[end][2]] * kernel(XIF[1][1], XIF[end][1])
 
     # test convenience function using kronecker product
     @test matrixkernel(icoregionkernel, XIF.x[1], XIF.x[2]) ≈
           icoregionkernel.kernel(XIF.x[1], XIF.x[2]) * icoregionkernel.B
 
     # kernelmatrix
-    KernelFunctions.TestUtils.test_interface(
-        icoregionkernel, XIF, YIF, ZIF
-    )
+    KernelFunctions.TestUtils.test_interface(icoregionkernel, XIF, YIF, ZIF)
 
-    KernelFunctions.TestUtils.test_interface(
-        icoregionkernel, XIO, YIO, ZIO
-    )
+    KernelFunctions.TestUtils.test_interface(icoregionkernel, XIO, YIO, ZIO)
 
     KernelFunctions.TestUtils.test_interface(
         icoregionkernel, Vector{Tuple{Float64,Int}}; dim_out=dims.out

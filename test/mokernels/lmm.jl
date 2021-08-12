@@ -4,9 +4,15 @@
     N = 6
     in_dim = 3
     out_dim = 4
-    x1IO = KernelFunctions.MOInputIsotopicByOutputs([rand(rng, in_dim) for _ in 1:N], out_dim)
-    x2IO = KernelFunctions.MOInputIsotopicByOutputs([rand(rng, in_dim) for _ in 1:N], out_dim)
-    x3IO = KernelFunctions.MOInputIsotopicByOutputs([rand(rng, in_dim) for _ in 1:div(N,2)], out_dim)
+    x1IO = KernelFunctions.MOInputIsotopicByOutputs(
+        [rand(rng, in_dim) for _ in 1:N], out_dim
+    )
+    x2IO = KernelFunctions.MOInputIsotopicByOutputs(
+        [rand(rng, in_dim) for _ in 1:N], out_dim
+    )
+    x3IO = KernelFunctions.MOInputIsotopicByOutputs(
+        [rand(rng, in_dim) for _ in 1:div(N, 2)], out_dim
+    )
     H = rand(4, 6)
     # H = rand(4, 6) + hcat(Matrix{Float64}(I, 4,4), zeros(4,2))
 

@@ -255,4 +255,3 @@ function prepare_heterotopic_multi_output_data(
     x_mogp = map(tuple, x, output_indices)
     return x_mogp, y
 end
-

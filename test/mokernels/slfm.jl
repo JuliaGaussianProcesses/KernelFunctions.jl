@@ -4,9 +4,15 @@
     N = 6
     in_dim = 3
     out_dim = 4
-    x1IO = KernelFunctions.MOInputIsotopicByOutputs([rand(rng, in_dim) for _ in 1:N], out_dim)
-    x2IO = KernelFunctions.MOInputIsotopicByOutputs([rand(rng, in_dim) for _ in 1:N], out_dim)
-    x3IO = KernelFunctions.MOInputIsotopicByOutputs([rand(rng, in_dim) for _ in 1:div(N,2)], out_dim)
+    x1IO = KernelFunctions.MOInputIsotopicByOutputs(
+        [rand(rng, in_dim) for _ in 1:N], out_dim
+    )
+    x2IO = KernelFunctions.MOInputIsotopicByOutputs(
+        [rand(rng, in_dim) for _ in 1:N], out_dim
+    )
+    x3IO = KernelFunctions.MOInputIsotopicByOutputs(
+        [rand(rng, in_dim) for _ in 1:div(N, 2)], out_dim
+    )
     x1IO = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
     x2IO = MOInput([rand(rng, in_dim) for _ in 1:N], out_dim)
 

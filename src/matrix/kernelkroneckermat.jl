@@ -38,7 +38,9 @@ function _mo_kernelmatrix_kron(::MOInputIsotopicByOutputs, K, B)
     return Kronecker.kronecker(B, K)
 end
 
-function kernelkronmat(k::IndependentMOKernel, x::MOI, y::MOI) where {MOI<:IsotopicMOInputsUnion}
+function kernelkronmat(
+    k::IndependentMOKernel, x::MOI, y::MOI
+) where {MOI<:IsotopicMOInputsUnion}
     @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
     mtype = eltype(Ktmp)
