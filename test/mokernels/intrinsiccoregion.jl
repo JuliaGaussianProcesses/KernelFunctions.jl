@@ -19,9 +19,9 @@
     ZIO = KernelFunctions.MOInputIsotopicByOutputs(z, dims.out)
 
     kernel = SqExponentialKernel()
-    icoregionkernel = IntrinsicCoregionMOKernel(kernel=kernel, B=B)
+    icoregionkernel = IntrinsicCoregionMOKernel(kernel, B)
 
-    icoregionkernel2 = IntrinsicCoregionMOKernel(; kernel, B)
+    icoregionkernel2 = IntrinsicCoregionMOKernel(; kernel = kernel, B = B)
     @test icoregionkernel == icoregionkernel2
 
     @test icoregionkernel.B == B
