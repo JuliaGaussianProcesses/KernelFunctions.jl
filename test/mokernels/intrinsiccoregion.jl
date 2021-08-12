@@ -7,44 +7,56 @@
     A = randn(dims.out, r)
     B = A * transpose(A) + Diagonal(rand(dims.out))
 
-    # X = [(rand(dims.in), rand(1:(dims.out))) for i in 1:(dims.obs)]
+    # XIF = [(rand(dims.in), rand(1:(dims.out))) for i in 1:(dims.obs)]
     x = [rand(dims.in) for _ in 1:2]
-    X = KernelFunctions.MOInputIsotopicByFeatures(x, dims.out)
+    XIF = KernelFunctions.MOInputIsotopicByFeatures(x, dims.out)
+    XIO = KernelFunctions.MOInputIsotopicByOutputs(x, dims.out)
+    y = [rand(dims.in) for _ in 1:2]
+    YIF = KernelFunctions.MOInputIsotopicByFeatures(y, dims.out)
+    YIO = KernelFunctions.MOInputIsotopicByOutputs(y, dims.out)
+    z = [rand(dims.in) for _ in 1:3]
+    ZIF = KernelFunctions.MOInputIsotopicByFeatures(z, dims.out)
+    ZIO = KernelFunctions.MOInputIsotopicByOutputs(z, dims.out)
 
     kernel = SqExponentialKernel()
-    icoregionkernel = IntrinsicCoregionMOKernel(; kernel=kernel, B=B)
+    icoregionkernel = IntrinsicCoregionMOKernel(kernel=kernel, B=B)
 
-    icoregionkernel2 = IntrinsicCoregionMOKernel(kernel, B)
+    icoregionkernel2 = IntrinsicCoregionMOKernel(; kernel, B)
     @test icoregionkernel == icoregionkernel2
 
     @test icoregionkernel.B == B
     @test icoregionkernel.kernel == kernel
-    @test icoregionkernel(X[1], X[1]) ≈ B[X[1][2], X[1][2]] * kernel(X[1][1], X[1][1])
-    @test icoregionkernel(X[1], X[end]) ≈ B[X[1][2], X[end][2]] * kernel(X[1][1], X[end][1])
+    @test icoregionkernel(XIF[1], XIF[1]) ≈ B[XIF[1][2], XIF[1][2]] * kernel(XIF[1][1], XIF[1][1])
+    @test icoregionkernel(XIF[1], XIF[end]) ≈ B[XIF[1][2], XIF[end][2]] * kernel(XIF[1][1], XIF[end][1])
 
     # test convenience function using kronecker product
-    @test matrixkernel(icoregionkernel, X.x[1], X.x[2]) ≈
-          icoregionkernel.kernel(X.x[1], X.x[2]) * icoregionkernel.B
+    @test matrixkernel(icoregionkernel, XIF.x[1], XIF.x[2]) ≈
+          icoregionkernel.kernel(XIF.x[1], XIF.x[2]) * icoregionkernel.B
 
     # kernelmatrix
-    @test kernelmatrix(icoregionkernel, X) ≈ icoregionkernel.(X, permutedims(X))
+    KernelFunctions.TestUtils.test_interface(
+        icoregionkernel, XIF, YIF, ZIF
+    )
 
-    X_alt = KernelFunctions.MOInputIsotopicByOutputs(x, dims.out)
-    @test kernelmatrix(icoregionkernel, X_alt) ≈ icoregionkernel.(X_alt, permutedims(X_alt))
+    KernelFunctions.TestUtils.test_interface(
+        icoregionkernel, XIO, YIO, ZIO
+    )
 
     KernelFunctions.TestUtils.test_interface(
         icoregionkernel, Vector{Tuple{Float64,Int}}; dim_out=dims.out
     )
 
     # in-place
-    kmsize = dims.out * length(x)
-    K = zeros(kmsize, kmsize)
-    kernelmatrix!(K, icoregionkernel, X, X)
-    @test K ≈ icoregionkernel.(X, permutedims(X))
+    if VERSION >= v"1.6"
+        kmsize = dims.out * length(x)
+        K = zeros(kmsize, kmsize)
+        kernelmatrix!(K, icoregionkernel, XIF, XIF)
+        @test K ≈ icoregionkernel.(XIF, permutedims(XIF))
 
-    K = zeros(kmsize, kmsize)
-    kernelmatrix!(K, icoregionkernel, X_alt, X_alt)
-    @test K ≈ icoregionkernel.(X_alt, permutedims(X_alt))
+        K = zeros(kmsize, kmsize)
+        kernelmatrix!(K, icoregionkernel, XIO, XIO)
+        @test K ≈ icoregionkernel.(XIO, permutedims(XIO))
+    end
 
     test_ADs(icoregionkernel; dims=dims)
 
