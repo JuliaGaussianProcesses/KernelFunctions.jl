@@ -2,7 +2,7 @@
     LinearMixingModelKernel(k::Kernel, H::AbstractMatrix)
     LinearMixingModelKernel(Tk::AbstractVector{<:Kernel},Th::AbstractMatrix)
 
-Kernel associated with the linear mixing model, taking a vector of `m` kernels and a `m` by `p` matrix H for a function with `p` outputs. Also accepts a single kernel `k` for use across all `m` basis vectors. 
+Kernel associated with the linear mixing model, taking a vector of `m` kernels and a `m × p` matrix H for a function with `p` outputs. Also accepts a single kernel `k` for use across all `m` basis vectors. 
 
 # Definition
 
