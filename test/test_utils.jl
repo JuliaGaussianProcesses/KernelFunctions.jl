@@ -2,6 +2,23 @@
 # of additional deps that we don't want to have in the main package.
 
 # Check parameters of kernels
+trainable(m) = functor(m)[1]
+
+params!(p::Zygote.Params, x::AbstractArray{<:Number}, seen = Zygote.IdSet()) = push!(p, x)
+
+function params!(p::Zygote.Params, x, seen = Zygote.IdSet())
+  x in seen && return
+  push!(seen, x)
+  for child in trainable(x)
+    params!(p, child, seen)
+  end
+end
+
+function params(m...)
+  ps = Zygote.Params()
+  params!(ps, m)
+  return ps
+end
 
 function test_params(kernel, reference)
     params_kernel = params(kernel)
