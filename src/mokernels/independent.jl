@@ -23,8 +23,6 @@ struct IndependentMOKernel{Tkernel<:Kernel} <: MOKernel
     kernel::Tkernel
 end
 
-# kernel function should be symmetric
-# would really like (κ::IndependentMOKernel)((x, px)::Tuple{T,Int}, (y, py)::Tuple{T,Int}) where T, but seems to cause autodiff problems
 function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
     return κ.kernel(x, y) * (px == py)
 end
