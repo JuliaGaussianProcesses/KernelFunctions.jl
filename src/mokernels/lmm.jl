@@ -23,6 +23,10 @@ struct LinearMixingModelKernel{Tk<:AbstractVector{<:Kernel},Th<:AbstractMatrix} 
     H::Th
 end
 # does it maybe make sense to check that length(K) and size(H,1) are equal?
+function LinearMixingModelKernel(Tk::AbstractVector{<:Kernel}, H::AbstractMatrix)
+    @assert length(Tk) == size(H, 1) "Number of kernels and number of rows in H must match"
+    return LinearMixingModelKernel{typeof(Tk),typeof(H)}(Tk, H)
+end
 
 function LinearMixingModelKernel(k::Kernel, H::AbstractMatrix)
     return LinearMixingModelKernel(Fill(k, size(H, 1)), H)

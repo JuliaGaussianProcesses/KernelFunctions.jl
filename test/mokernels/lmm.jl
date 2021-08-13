@@ -3,7 +3,7 @@
     FDM = FiniteDifferences.central_fdm(5, 1)
     N = 6
     in_dim = 3
-    out_dim = 4
+    out_dim = 3
     x1IO = KernelFunctions.MOInputIsotopicByOutputs(
         [rand(rng, in_dim) for _ in 1:N], out_dim
     )
@@ -13,12 +13,14 @@
     x3IO = KernelFunctions.MOInputIsotopicByOutputs(
         [rand(rng, in_dim) for _ in 1:div(N, 2)], out_dim
     )
-    H = rand(4, 6)
-    # H = rand(4, 6) + hcat(Matrix{Float64}(I, 4,4), zeros(4,2))
 
-    k = LinearMixingModelKernel(
-        [Matern32Kernel(), SqExponentialKernel(), FBMKernel(), Matern32Kernel()], H
-    )
+    latentkernels = [Matern32Kernel(), SqExponentialKernel(), FBMKernel(), Matern32Kernel()]
+    H = rand(length(latentkernels), out_dim)
+    k = LinearMixingModelKernel(latentkernels, H)
+
+    badH = rand(length(latentkernels) - 1, out_dim)
+    @test_throws AssertionError LinearMixingModelKernel(latentkernels, badH)
+
     @test k isa LinearMixingModelKernel
     @test k isa MOKernel
     @test k isa Kernel
