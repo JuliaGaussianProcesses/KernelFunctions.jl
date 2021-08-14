@@ -1,7 +1,8 @@
 # More test utilities. Can't be included in KernelFunctions because they introduce a number
 # of additional deps that we don't want to have in the main package.
 
-# Check parameters of kernels
+# Check parameters of kernels. `trainable`, `params!`, and `params` are taken directly from
+# Flux.jl so as to avoid having to depend on Flux at test-time.
 trainable(m) = functor(m)[1]
 
 params!(p::Zygote.Params, x::AbstractArray{<:Number}, seen=Zygote.IdSet()) = push!(p, x)
