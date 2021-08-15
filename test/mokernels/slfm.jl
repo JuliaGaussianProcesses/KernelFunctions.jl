@@ -36,11 +36,6 @@
 
     TestUtils.test_interface(k, x1IF, x2IF, x3IF)
 
-    # matrixkernel
-    a = KernelFunctions.MOInputIsotopicByOutputs([rand(rng, in_dim)], out_dim)
-    b = KernelFunctions.MOInputIsotopicByOutputs([rand(rng, in_dim)], out_dim)
-    @test matrixkernel(k, a.x[1], b.x[1]) ≈ k.(a, permutedims(b))
-
     @test string(k) == "Semi-parametric Latent Factor Multi-Output Kernel"
     @test repr("text/plain", k) == (
         "Semi-parametric Latent Factor Multi-Output Kernel\n" *

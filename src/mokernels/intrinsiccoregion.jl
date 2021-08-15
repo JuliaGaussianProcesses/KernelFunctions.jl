@@ -42,10 +42,6 @@ function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{
     return k.B[px, py] * k.kernel(x, y)
 end
 
-function matrixkernel(k::IntrinsicCoregionMOKernel, x, y)
-    return matrixkernel(k, x, y, size(k.B, 1))
-end
-
 function kernelmatrix(
     k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
 ) where {MOI<:IsotopicMOInputsUnion}
