@@ -45,9 +45,7 @@ function kernelmatrix(
 end
 
 if VERSION >= v"1.6"
-    function _kronkernelmatrix!(K, Ktmp, B, ::MOInputIsotopicByFeatures)
-        return kron!(K, Ktmp, B)
-    end
+    _kronkernelmatrix!(K, Ktmp, B, ::MOInputIsotopicByFeatures) = kron!(K, Ktmp, B)
 
     _kronkernelmatrix!(K, Ktmp, B, ::MOInputIsotopicByOutputs) = kron!(K, B, Ktmp)
 
