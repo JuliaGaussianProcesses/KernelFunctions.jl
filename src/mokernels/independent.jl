@@ -45,9 +45,13 @@ function kernelmatrix(
 end
 
 if VERSION >= v"1.6"
-    _kernelmatrix_kron_helper!(K, ::MOInputIsotopicByFeatures, K, B) = kron!(K, K, B)
+    function _kernelmatrix_kron_helper!(K, ::MOInputIsotopicByFeatures, Kfeatures, B)
+        return kron!(K, Kfeatures, B)
+    end
 
-    _kernelmatrix_kron_helper!(K, ::MOInputIsotopicByOutputs, K, B) = kron!(K, B, K)
+    function _kernelmatrix_kron_helper!(K, ::MOInputIsotopicByOutputs, Kfeatures, B)
+        return kron!(K, B, Kfeatures)
+    end
 
     function kernelmatrix!(
         K::AbstractMatrix, k::IndependentMOKernel, x::MOI, y::MOI
@@ -55,7 +59,9 @@ if VERSION >= v"1.6"
         @assert x.out_dim == y.out_dim
         Ktmp = kernelmatrix(k.kernel, x.x, y.x)
         mtype = eltype(Ktmp)
-        return _kernelmatrix_kron_helper!(K, Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim), x)
+        return _kernelmatrix_kron_helper!(
+            K, Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim), x
+        )
     end
 end
 
