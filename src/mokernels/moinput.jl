@@ -76,6 +76,16 @@ end
 
 Base.size(inp::IsotopicMOInputs) = (inp.out_dim * length(inp.x),)
 
+function Base.vcat(x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures)
+    x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
+    return MOInputIsotopicByFeatures(vcat(x.x, y.x), x.out_dim)
+end
+
+function Base.vcat(x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs)
+    x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
+    return MOInputIsotopicByOutputs(vcat(x.x, y.x), x.out_dim)
+end
+
 """
     MOInput(x::AbstractVector, out_dim::Integer)
 
