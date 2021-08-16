@@ -27,11 +27,11 @@ function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,I
     return κ.kernel(x, y) * (px == py)
 end
 
-function _kernelmatrixkronhelper(::MOInputIsotopicByFeatures, Ktmp, B)
+function _kernelmatrix_kron_helper(::MOInputIsotopicByFeatures, Ktmp, B)
     return kron(Ktmp, B)
 end
 
-function _kernelmatrixkronhelper(::MOInputIsotopicByOutputs, Ktmp, B)
+function _kernelmatrix_kron_helper(::MOInputIsotopicByOutputs, Ktmp, B)
     return kron(B, Ktmp)
 end
 
@@ -41,13 +41,13 @@ function kernelmatrix(
     @assert x.out_dim == y.out_dim
     Ktmp = kernelmatrix(k.kernel, x.x, y.x)
     mtype = eltype(Ktmp)
-    return _kernelmatrixkronhelper(x, Ktmp, Eye{mtype}(x.out_dim))
+    return _kernelmatrix_kron_helper(x, Ktmp, Eye{mtype}(x.out_dim))
 end
 
 if VERSION >= v"1.6"
-    _kernelmatrixkronhelper!(K, ::MOInputIsotopicByFeatures, K, B) = kron!(K, K, B)
+    _kernelmatrix_kron_helper!(K, ::MOInputIsotopicByFeatures, K, B) = kron!(K, K, B)
 
-    _kernelmatrixkronhelper!(K, ::MOInputIsotopicByOutputs, K, B) = kron!(K, B, K)
+    _kernelmatrix_kron_helper!(K, ::MOInputIsotopicByOutputs, K, B) = kron!(K, B, K)
 
     function kernelmatrix!(
         K::AbstractMatrix, k::IndependentMOKernel, x::MOI, y::MOI
@@ -55,7 +55,7 @@ if VERSION >= v"1.6"
         @assert x.out_dim == y.out_dim
         Ktmp = kernelmatrix(k.kernel, x.x, y.x)
         mtype = eltype(Ktmp)
-        return _kernelmatrixkronhelper!(K, Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim), x)
+        return _kernelmatrix_kron_helper!(K, Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim), x)
     end
 end
 
