@@ -106,6 +106,35 @@
             pairwise(SqEuclidean(), collect(x_rowvecs), collect(x_colvecs)),
         )
     end
+
+    @testset "AbstractVector + RowVecs" begin
+        x = [randn(3) for _ in 1:5]
+        x_rowvecs = RowVecs(randn(7, 3))
+
+        @test isapprox(
+            pairwise(SqEuclidean(), x, x_rowvecs),
+            pairwise(SqEuclidean(), x, collect(x_rowvecs)),
+        )
+        @test isapprox(
+            pairwise(SqEuclidean(), x_rowvecs, x),
+            pairwise(SqEuclidean(), collect(x_rowvecs), x),
+        )
+    end
+
+    @testset "AbstractVector + ColVecs" begin
+        x = [randn(3) for _ in 1:5]
+        x_colvecs = ColVecs(randn(3, 7))
+
+        @test isapprox(
+            pairwise(SqEuclidean(), x, x_colvecs),
+            pairwise(SqEuclidean(), x, collect(x_colvecs)),
+        )
+        @test isapprox(
+            pairwise(SqEuclidean(), x_colvecs, x),
+            pairwise(SqEuclidean(), collect(x_colvecs), x),
+        )
+    end
+
     @testset "input checks" begin
         D = 3
         D⁻ = 2
