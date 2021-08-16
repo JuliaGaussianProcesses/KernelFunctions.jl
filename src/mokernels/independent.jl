@@ -49,9 +49,7 @@ if VERSION >= v"1.6"
         return kron!(K, Ktmp, B)
     end
 
-    function _kronkernelmatrix!(K, Ktmp, B, ::MOInputIsotopicByOutputs)
-        return kron!(K, B, Ktmp)
-    end
+    _kronkernelmatrix!(K, Ktmp, B, ::MOInputIsotopicByOutputs) = kron!(K, B, Ktmp)
 
     function kernelmatrix!(
         K::AbstractMatrix, k::IndependentMOKernel, x::MOI, y::MOI
