@@ -40,8 +40,8 @@
         icoregionkernel, Vector{Tuple{Float64,Int}}; dim_out=dims.out
     )
 
-    # test_ADs(icoregionkernel; dims=dims)
+    test_ADs(icoregionkernel; dims=dims)
 
-    # @test string(icoregionkernel) ==
-    #       string("Intrinsic Coregion Kernel: ", kernel, " with ", dims.out, " outputs")
+    @test string(icoregionkernel) ==
+          string("Intrinsic Coregion Kernel: ", kernel, " with ", dims.out, " outputs")
 end
