@@ -60,7 +60,7 @@ if VERSION >= v"1.6"
         Ktmp = kernelmatrix(k.kernel, x.x, y.x)
         mtype = eltype(Ktmp)
         return _kernelmatrix_kron_helper!(
-            K, Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim), x
+            K, x, Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim)
         )
     end
 end

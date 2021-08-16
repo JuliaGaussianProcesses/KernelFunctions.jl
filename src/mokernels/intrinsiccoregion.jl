@@ -47,7 +47,7 @@ function kernelmatrix(
 ) where {MOI<:IsotopicMOInputsUnion}
     @assert x.out_dim == y.out_dim
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-    return _kernelmatrix_kron_helper(Kfeatures, k.B, x)
+    return _kernelmatrix_kron_helper(x, Kfeatures, k.B)
 end
 
 if VERSION >= v"1.6"
@@ -56,7 +56,7 @@ if VERSION >= v"1.6"
     ) where {MOI<:IsotopicMOInputsUnion}
         @assert x.out_dim == y.out_dim
         Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-        return _kernelmatrix_kron_helper!(K, Kfeatures, k.B, x)
+        return _kernelmatrix_kron_helper!(K, x, Kfeatures, k.B)
     end
 end
 
