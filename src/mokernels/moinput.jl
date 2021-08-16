@@ -58,7 +58,7 @@ struct MOInputIsotopicByOutputs{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{
     out_dim::Integer
 end
 
-const IsotopicMOInputs = Union{MOInputIsotopicByFeatures,MOInputIsotopicByOutputs}
+const IsotopicMOInputsUnion = Union{MOInputIsotopicByFeatures,MOInputIsotopicByOutputs}
 
 function Base.getindex(inp::MOInputIsotopicByOutputs, ind::Integer)
     @boundscheck checkbounds(inp, ind)
@@ -198,8 +198,6 @@ function prepare_isotopic_multi_output_data(x::AbstractVector, y::RowVecs)
     length(x) == length(y) || throw(ArgumentError("length(x) not equal to length(y)."))
     return MOInputIsotopicByOutputs(x, size(y.X, 2)), vec(y.X)
 end
-
-IsotopicMOInputsUnion = Union{MOInputIsotopicByFeatures,MOInputIsotopicByOutputs}
 
 """
     prepare_heterotopic_multi_output_data(
