@@ -78,4 +78,17 @@
             @test length(y_canon) == length(x_canon)
         end
     end
+    @testset "prepare_heterotopic_multi_output_data" begin
+        x = randn(3)
+        y = randn(3)
+        output_indices = [3, 1, 2]
+        x_canon, y_canon = prepare_heterotopic_multi_output_data(x, y, output_indices)
+        @test x_canon isa AbstractVector{<:Tuple{<:Real,Int}}
+        @test y isa AbstractVector{<:Real}
+
+        @test_throws ArgumentError prepare_heterotopic_multi_output_data(x, y, [3, 1])
+        @test_throws(
+            ArgumentError, prepare_heterotopic_multi_output_data(x, [1.0], output_indices),
+        )
+    end
 end

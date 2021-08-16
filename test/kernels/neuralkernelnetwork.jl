@@ -19,7 +19,7 @@ using KernelFunctions: NeuralKernelNetwork, LinearLayer, product, Primitive
         primitives = Primitive(k1, k2)
 
         # Build NKN Kernel.
-        nkn = NeuralKernelNetwork(primitives, Chain(LinearLayer(2, 2), product))
+        nkn = NeuralKernelNetwork(primitives, product)
 
         # Apply standard test suite.
         TestUtils.test_interface(nkn, Float64)

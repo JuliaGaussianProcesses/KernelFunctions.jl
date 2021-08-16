@@ -2,6 +2,7 @@ using KernelFunctions
 using AxisArrays
 using Distances
 using Documenter
+using Functors: functor
 using Kronecker: Kronecker
 using LinearAlgebra
 using LogExpFunctions
@@ -9,7 +10,6 @@ using PDMats
 using Random
 using SpecialFunctions
 using Test
-using Flux
 using Zygote: Zygote
 using ForwardDiff: ForwardDiff
 using ReverseDiff: ReverseDiff
