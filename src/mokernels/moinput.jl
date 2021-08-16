@@ -74,7 +74,7 @@ function Base.getindex(inp::MOInputIsotopicByFeatures, ind::Integer)
     return feature, output_index
 end
 
-Base.size(inp::IsotopicMOInputs) = (inp.out_dim * length(inp.x),)
+Base.size(inp::IsotopicMOInputsUnion) = (inp.out_dim * length(inp.x),)
 
 function Base.vcat(x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures)
     x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
