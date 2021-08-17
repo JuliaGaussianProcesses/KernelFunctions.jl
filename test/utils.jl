@@ -46,7 +46,7 @@
         KernelFunctions.pairwise!(K, SqEuclidean(), DX, DY)
         @test K ≈ pairwise(SqEuclidean(), X, Y; dims=2)
 
-        y = rand(N,1)
+        y = rand(N, 1)
         yv = y[:]
         @test RowVecs(y) == RowVecs(yv)
 
