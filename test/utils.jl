@@ -46,6 +46,10 @@
         KernelFunctions.pairwise!(K, SqEuclidean(), DX, DY)
         @test K ≈ pairwise(SqEuclidean(), X, Y; dims=2)
 
+        y = rand(N,1)
+        yv = y[:]
+        @test RowVecs(y) == RowVecs(yv)
+
         let
             @test Zygote.pullback(ColVecs, X)[1] == DX
             DX, back = Zygote.pullback(ColVecs, X)
@@ -112,8 +116,7 @@
     end
     @testset "AbstractVector + RowVecs" begin
         x = [randn(3) for _ in 1:5]
-        xr = [randn(3) for _ in 1:7]
-        x_rowvecs = RowVecs(xr)
+        x_rowvecs = RowVecs(randn(7, 3))
 
         @test isapprox(
             KernelFunctions.pairwise(SqEuclidean(), x, x_rowvecs),
