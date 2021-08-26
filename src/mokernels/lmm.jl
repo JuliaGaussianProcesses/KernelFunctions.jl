@@ -37,6 +37,10 @@ function (κ::LinearMixingModelKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{A
     return sum(κ.H[i, px] * κ.K[i](x, y) * κ.H[i, py] for i in 1:length(κ.K))
 end
 
+function matrixkernel(k::LinearMixingModelKernel, x, y)
+    return matrixkernel(k, x, y, size(k.H, 2))
+end
+
 function Base.show(io::IO, k::LinearMixingModelKernel)
     return print(io, "Linear Mixing Model Multi-Output Kernel")
 end

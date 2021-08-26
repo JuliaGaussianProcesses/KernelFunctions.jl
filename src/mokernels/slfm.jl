@@ -33,6 +33,10 @@ function (κ::LatentFactorMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,
     return cov_f + κ.e((x, px), (y, py))
 end
 
+function matrixkernel(k::LatentFactorMOKernel, x, y)
+    return matrixkernel(k, x, y, size(k.A, 1))
+end
+
 function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)
     x.out_dim == y.out_dim || error("`x` and `y` should have the same output dimension")
     x.out_dim == size(k.A, 1) ||
