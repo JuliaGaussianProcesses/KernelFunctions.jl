@@ -1,7 +1,8 @@
 @doc raw"""
-    LinearMixingModelKernel(g, e::MOKernel, A::AbstractMatrix)
+    LinearMixingModelKernel(k::Kernel, H::AbstractMatrix)
+    LinearMixingModelKernel(Tk::AbstractVector{<:Kernel},Th::AbstractMatrix)
 
-Kernel associated with the linear mixing model.
+Kernel associated with the linear mixing model, taking a vector of `m` kernels and a `m × p` matrix H for a function with `p` outputs. Also accepts a single kernel `k` for use across all `m` basis vectors. 
 
 # Definition
 
@@ -20,6 +21,10 @@ mixing matrix of ``m`` basis vectors spanning the output space.
 struct LinearMixingModelKernel{Tk<:AbstractVector{<:Kernel},Th<:AbstractMatrix} <: MOKernel
     K::Tk
     H::Th
+    function LinearMixingModelKernel(Tk::AbstractVector{<:Kernel}, H::AbstractMatrix)
+        @assert length(Tk) == size(H, 1) "Number of kernels and number of rows in H must match"
+        return new{typeof(Tk),typeof(H)}(Tk, H)
+    end
 end
 
 function LinearMixingModelKernel(k::Kernel, H::AbstractMatrix)

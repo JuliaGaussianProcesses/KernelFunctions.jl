@@ -30,21 +30,21 @@
     # Test implicit gradients
     @testset "Implicit gradients" begin
         k = SqExponentialKernel() ∘ ScaleTransform(2.0)
-        ps = Flux.params(k)
+        ps = params(k)
         X = rand(10, 1)
         x = vec(X)
         A = rand(10, 10)
         # Implicit
-        g1 = Flux.gradient(ps) do
+        g1 = Zygote.gradient(ps) do
             tr(kernelmatrix(k, X; obsdim=1) * A)
         end
         # Explicit
-        g2 = Flux.gradient(k) do k
+        g2 = Zygote.gradient(k) do k
             tr(kernelmatrix(k, X; obsdim=1) * A)
         end
 
         # Implicit for a vector
-        g3 = Flux.gradient(ps) do
+        g3 = Zygote.gradient(ps) do
             tr(kernelmatrix(k, x) * A)
         end
         @test g1[first(ps)] ≈ first(g2).transform.s
@@ -53,12 +53,12 @@
 
     @testset "Parameters" begin
         k = ConstantKernel(; c=rand(rng))
-        c = Chain(Dense(3, 2))
+        # c = Chain(Dense(3, 2))
 
         test_params(k ∘ ScaleTransform(s), (k, [s]))
         test_params(k ∘ ARDTransform(v), (k, v))
         test_params(k ∘ LinearTransform(P), (k, P))
         test_params(k ∘ LinearTransform(P) ∘ ScaleTransform(s), (k, [s], P))
-        test_params(k ∘ FunctionTransform(c), (k, c))
+        # test_params(k ∘ FunctionTransform(c), (k, c))
     end
 end
