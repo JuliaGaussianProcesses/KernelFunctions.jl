@@ -13,4 +13,4 @@ format:
 
 test:
 	@if [ "$(JULIA)" = "" ]; then echo 'Julia not found; run `make JULIA=/path/to/julia test`'; exit 1; fi
-	$(JULIA) --project=test/ -e 'using Pkg; Pkg.instantiate(); Pkg.test()'
+	$(JULIA) --project=. -e 'using Pkg; Pkg.test()'
