@@ -42,9 +42,7 @@ function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{
     return k.B[px, py] * k.kernel(x, y)
 end
 
-function matrixkernel(k::IntrinsicCoregionMOKernel, x, y)
-    return matrixkernel(k, x, y, size(k.B, 1))
-end
+matrixkernel(k::IntrinsicCoregionMOKernel, x, y) = k.kernel(x, y) * k.B
 
 function kernelmatrix(
     k::IntrinsicCoregionMOKernel, x::MOI, y::MOI

@@ -44,6 +44,8 @@ function kernelmatrix(
     return _kernelmatrix_kron_helper(x, Kfeatures, Eye{mtype}(x.out_dim))
 end
 
+matrixkernel(k::IndependentMOKernel, x, y) = k.kernel(x, y) * I
+
 if VERSION >= v"1.6"
     function _kernelmatrix_kron_helper!(K, ::MOInputIsotopicByFeatures, Kfeatures, B)
         return kron!(K, Kfeatures, B)
