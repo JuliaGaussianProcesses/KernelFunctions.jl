@@ -44,7 +44,7 @@ function matrixkernel(k::LatentFactorMOKernel, x, y)
     return w_h + matrixkernel(k.e, x, y)
 end
 
-function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)
+function kernelmatrix(k::LatentFactorMOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion)
     x.out_dim == y.out_dim || error("`x` and `y` should have the same output dimension")
     x.out_dim == size(k.A, 1) ||
         error("Kernel not compatible with the given multi-output inputs")
@@ -56,7 +56,7 @@ function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)
     H = [gi.(x.x, permutedims(y.x)) for gi in k.g]
 
     # Weighted latent kernel matrix ((N*out_dim) x (N*out_dim))
-    W_H = sum(kron(Wi, Hi) for (Wi, Hi) in zip(W, H))
+    W_H = sum(_kernelmatrix_kron_helper(x, Wi, Hi) for (Wi, Hi) in zip(W, H))
 
     return W_H .+ kernelmatrix(k.e, x, y)
 end

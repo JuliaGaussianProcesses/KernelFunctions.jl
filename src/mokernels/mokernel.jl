@@ -16,3 +16,12 @@ function matrixkernel(k::MOKernel, x, y, out_dim)
     yMO = MOInputIsotopicByFeatures([y], out_dim)
     return kernelmatrix(k, xMO, yMO)
 end
+
+
+function _kernelmatrix_kron_helper(::MOInputIsotopicByFeatures, Kfeatures, Koutputs)
+    return kron(Kfeatures, Koutputs)
+end
+
+function _kernelmatrix_kron_helper(::MOInputIsotopicByOutputs, Kfeatures, Koutputs)
+    return kron(Koutputs, Kfeatures)
+end

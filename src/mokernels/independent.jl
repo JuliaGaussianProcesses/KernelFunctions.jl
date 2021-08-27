@@ -27,14 +27,6 @@ function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,I
     return κ.kernel(x, y) * (px == py)
 end
 
-function _kernelmatrix_kron_helper(::MOInputIsotopicByFeatures, Kfeatures, B)
-    return kron(Kfeatures, B)
-end
-
-function _kernelmatrix_kron_helper(::MOInputIsotopicByOutputs, Kfeatures, B)
-    return kron(B, Kfeatures)
-end
-
 function kernelmatrix(
     k::IndependentMOKernel, x::MOI, y::MOI
 ) where {MOI<:IsotopicMOInputsUnion}
