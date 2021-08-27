@@ -33,8 +33,15 @@ function (κ::LatentFactorMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,
     return cov_f + κ.e((x, px), (y, py))
 end
 
+# function matrixkernel(k::LatentFactorMOKernel, x, y)
+#     return matrixkernel(k, x, y, size(k.A, 1))
+# end
+
 function matrixkernel(k::LatentFactorMOKernel, x, y)
-    return matrixkernel(k, x, y, size(k.A, 1))
+    W = [col * col' for col in eachcol(k.A)]
+    h = [gi(x, y) for gi in k.g]
+    w_h = sum(Wi * Hi for (Wi, Hi) in zip(W, h))
+    return w_h + matrixkernel(k.e, x, y)
 end
 
 function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)
