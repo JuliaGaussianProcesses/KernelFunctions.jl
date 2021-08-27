@@ -43,6 +43,7 @@ end
 _fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h) / 2
 
 _mod(x::AbstractVector{<:Real}) = abs2.(x)
+_mod(x::AbstractVector{<:AbstractVector{<:Real}}) = sum.(abs2, x)
 _mod(x::ColVecs) = vec(sum(abs2, x.X; dims=1))
 _mod(x::RowVecs) = vec(sum(abs2, x.X; dims=2))
 

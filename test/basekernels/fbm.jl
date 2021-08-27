@@ -15,6 +15,8 @@
     @test repr(k) == "Fractional Brownian Motion Kernel (h = $(h))"
     test_ADs(FBMKernel; ADs=[:ReverseDiff])
 
+    # ToDo: needs tests for _mod
+
     # Tests failing for ForwardDiff and Zygote@0.6.
     # Related to: https://github.com/FluxML/Zygote.jl/issues/1036
     f(x, y) = x^y
