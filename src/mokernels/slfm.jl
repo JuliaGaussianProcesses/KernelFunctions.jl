@@ -56,7 +56,7 @@ function kernelmatrix(k::LatentFactorMOKernel, x::IsotopicMOInputsUnion, y::Isot
     H = [gi.(x.x, permutedims(y.x)) for gi in k.g]
 
     # Weighted latent kernel matrix ((N*out_dim) x (N*out_dim))
-    W_H = sum(_kernelmatrix_kron_helper(x, Wi, Hi) for (Wi, Hi) in zip(W, H))
+    W_H = sum(_kernelmatrix_kron_helper(x, Hi, Wi) for (Wi, Hi) in zip(W, H))
 
     return W_H .+ kernelmatrix(k.e, x, y)
 end
