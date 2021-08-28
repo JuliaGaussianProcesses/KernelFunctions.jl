@@ -17,7 +17,7 @@ function matrixkernel(k::MOKernel, x, y, out_dim)
     return kernelmatrix(k, xMO, yMO)
 end
 
-function matrixkernel(k:MOKernel, x, y)
+function matrixkernel(k::MOKernel, x, y)
     return throw(
         ArgumentError(
             "This kernel does not have a specific matrixkernel implementation, you can call `matrixkernel(k, x, y, out_dim)`",
