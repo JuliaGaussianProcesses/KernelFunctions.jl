@@ -66,7 +66,9 @@ end
 function kernelmatrix2(k::LinearMixingModelKernel, X, Y)
     K = [kernelmatrix(ki, X.x, Y.x) for ki in k.K]
     L = size(k.H, 2)
-    return reduce(hcat, [reduce(vcat, [sum(k.H[:,i].*(K .* k.H[:,j])) for i in 1:L]) for j in 1:L])
+    return reduce(
+        hcat, [reduce(vcat, [sum(k.H[:, i] .* (K .* k.H[:, j])) for i in 1:L]) for j in 1:L]
+    )
 end
 
 # function matrixkernel(k::LinearMixingModelKernel, x, y)
@@ -75,7 +77,7 @@ end
 
 function matrixkernel(k::LinearMixingModelKernel, x, y)
     K = [ki(x, y) for ki in k.K]
-    return k.H' * ( K .* k.H)
+    return k.H' * (K .* k.H)
 end
 
 function Base.show(io::IO, k::LinearMixingModelKernel)

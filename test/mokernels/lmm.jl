@@ -46,7 +46,7 @@
     a = KernelFunctions.MOInputIsotopicByOutputs([rand(rng, in_dim)], out_dim)
     b = KernelFunctions.MOInputIsotopicByOutputs([rand(rng, in_dim)], out_dim)
     @test matrixkernel(k, a.x[1], b.x[1]) ≈ k.(a, permutedims(b))
-    
+
     k = LinearMixingModelKernel(SEKernel(), H)
 
     @test k isa LinearMixingModelKernel

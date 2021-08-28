@@ -31,9 +31,8 @@
     @test icoregionkernel(XIF[1], XIF[end]) ≈
           B[XIF[1][2], XIF[end][2]] * kernel(XIF[1][1], XIF[end][1])
 
-
-      @test matrixkernel(icoregionkernel, XIF.x[1], XIF.x[2]) ≈
-            icoregionkernel.kernel(XIF.x[1], XIF.x[2]) * icoregionkernel.B
+    @test matrixkernel(icoregionkernel, XIF.x[1], XIF.x[2]) ≈
+          icoregionkernel.kernel(XIF.x[1], XIF.x[2]) * icoregionkernel.B
 
     # kernelmatrix
     KernelFunctions.TestUtils.test_interface(icoregionkernel, XIF, YIF, ZIF)

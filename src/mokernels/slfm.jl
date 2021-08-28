@@ -44,7 +44,9 @@ function matrixkernel(k::LatentFactorMOKernel, x, y)
     return w_h + matrixkernel(k.e, x, y)
 end
 
-function kernelmatrix(k::LatentFactorMOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion)
+function kernelmatrix(
+    k::LatentFactorMOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
+)
     x.out_dim == y.out_dim || error("`x` and `y` should have the same output dimension")
     x.out_dim == size(k.A, 1) ||
         error("Kernel not compatible with the given multi-output inputs")
