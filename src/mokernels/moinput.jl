@@ -58,7 +58,7 @@ struct MOInputIsotopicByOutputs{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{
     out_dim::Integer
 end
 
-const IsotopicMOInputs = Union{MOInputIsotopicByFeatures,MOInputIsotopicByOutputs}
+const IsotopicMOInputsUnion = Union{MOInputIsotopicByFeatures,MOInputIsotopicByOutputs}
 
 function Base.getindex(inp::MOInputIsotopicByOutputs, ind::Integer)
     @boundscheck checkbounds(inp, ind)
@@ -74,7 +74,17 @@ function Base.getindex(inp::MOInputIsotopicByFeatures, ind::Integer)
     return feature, output_index
 end
 
-Base.size(inp::IsotopicMOInputs) = (inp.out_dim * length(inp.x),)
+Base.size(inp::IsotopicMOInputsUnion) = (inp.out_dim * length(inp.x),)
+
+function Base.vcat(x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures)
+    x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
+    return MOInputIsotopicByFeatures(vcat(x.x, y.x), x.out_dim)
+end
+
+function Base.vcat(x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs)
+    x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
+    return MOInputIsotopicByOutputs(vcat(x.x, y.x), x.out_dim)
+end
 
 """
     MOInput(x::AbstractVector, out_dim::Integer)
@@ -103,3 +113,153 @@ See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 and removed in version 0.12.
 """
 const MOInput = MOInputIsotopicByOutputs
+
+"""
+    prepare_isotopic_multi_output_data(x::AbstractVector, y::ColVecs)
+
+Utility functionality to convert a collection of `N = length(x)` inputs `x`, and a
+vector-of-vectors `y` (efficiently represented by a `ColVecs`) into a format suitable for
+use with multi-output kernels.
+
+`y[n]` is the vector-valued output corresponding to the input `x[n]`.
+Consequently, it is necessary that `length(x) == length(y)`.
+
+For example, if outputs are initially stored in a `num_outputs × N` matrix:
+```julia
+julia> x = [1.0, 2.0, 3.0];
+
+julia> Y = [1.1 2.1 3.1; 1.2 2.2 3.2]
+2×3 Matrix{Float64}:
+ 1.1  2.1  3.1
+ 1.2  2.2  3.2
+
+julia> inputs, outputs = prepare_isotopic_multi_output_data(x, ColVecs(Y));
+
+julia> inputs
+6-element KernelFunctions.MOInputIsotopicByFeatures{Float64, Vector{Float64}}:
+ (1.0, 1)
+ (1.0, 2)
+ (2.0, 1)
+ (2.0, 2)
+ (3.0, 1)
+ (3.0, 2)
+
+julia> outputs
+6-element Vector{Float64}:
+ 1.1
+ 1.2
+ 2.1
+ 2.2
+ 3.1
+ 3.2
+```
+
+See also [`prepare_heterotopic_multi_output_data`](@ref).
+"""
+function prepare_isotopic_multi_output_data(x::AbstractVector, y::ColVecs)
+    length(x) == length(y) || throw(ArgumentError("length(x) not equal to length(y)."))
+    return MOInputIsotopicByFeatures(x, size(y.X, 1)), vec(y.X)
+end
+
+"""
+    prepare_isotopic_multi_output_data(x::AbstractVector, y::RowVecs)
+
+Utility functionality to convert a collection of `N = length(x)` inputs `x` and output
+vectors `y` (efficiently represented by a `RowVecs`) into a format suitable for
+use with multi-output kernels.
+
+`y[n]` is the vector-valued output corresponding to the input `x[n]`.
+Consequently, it is necessary that `length(x) == length(y)`.
+
+For example, if outputs are initial stored in an `N × num_outputs` matrix:
+```jldoctest
+julia> x = [1.0, 2.0, 3.0];
+
+julia> Y = [1.1 1.2; 2.1 2.2; 3.1 3.2]
+3×2 Matrix{Float64}:
+ 1.1  1.2
+ 2.1  2.2
+ 3.1  3.2
+
+julia> inputs, outputs = prepare_isotopic_multi_output_data(x, RowVecs(Y));
+
+julia> inputs
+6-element KernelFunctions.MOInputIsotopicByOutputs{Float64, Vector{Float64}}:
+ (1.0, 1)
+ (2.0, 1)
+ (3.0, 1)
+ (1.0, 2)
+ (2.0, 2)
+ (3.0, 2)
+
+julia> outputs
+6-element Vector{Float64}:
+ 1.1
+ 2.1
+ 3.1
+ 1.2
+ 2.2
+ 3.2
+```
+
+See also [`prepare_heterotopic_multi_output_data`](@ref).
+"""
+function prepare_isotopic_multi_output_data(x::AbstractVector, y::RowVecs)
+    length(x) == length(y) || throw(ArgumentError("length(x) not equal to length(y)."))
+    return MOInputIsotopicByOutputs(x, size(y.X, 2)), vec(y.X)
+end
+
+"""
+    prepare_heterotopic_multi_output_data(
+        x::AbstractVector, y::AbstractVector{<:Real}, output_indices::AbstractVector{Int},
+    )
+
+Utility functionality to convert a collection of inputs `x`, observations `y`, and
+`output_indices` into a format suitable for use with multi-output kernels.
+Handles the situation in which only one (or a subset) of outputs are observed at each
+feature.
+Ensures that all arguments are compatible with one another, and returns a vector of inputs
+and a vector of outputs.
+
+`y[n]` should be the observed value associated with output `output_indices[n]` at feature
+`x[n]`.
+
+```jldoctest
+julia> x = [1.0, 2.0, 3.0];
+
+julia> y = [-1.0, 0.0, 1.0];
+
+julia> output_indices = [3, 2, 1];
+
+julia> inputs, outputs = prepare_heterotopic_multi_output_data(x, y, output_indices);
+
+julia> inputs
+3-element Vector{Tuple{Float64, Int64}}:
+ (1.0, 3)
+ (2.0, 2)
+ (3.0, 1)
+
+julia> outputs
+3-element Vector{Float64}:
+ -1.0
+  0.0
+  1.0
+```
+
+See also [`prepare_isotopic_multi_output_data`](@ref).
+"""
+function prepare_heterotopic_multi_output_data(
+    x::AbstractVector, y::AbstractVector{<:Real}, output_indices::AbstractVector{Int}
+)
+    # Ensure validity of arguments.
+    if length(x) != length(y)
+        throw(ArgumentError("length(x) != length(y)"))
+    end
+    if length(x) != length(output_indices)
+        throw(ArgumentError("length(x) != length(output_indices)"))
+    end
+
+    # Construct inputs and outputs for multi-output kernel.
+    x_mogp = map(tuple, x, output_indices)
+    return x_mogp, y
+end
