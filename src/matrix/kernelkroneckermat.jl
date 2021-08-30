@@ -26,10 +26,6 @@ end
 """
 @inline iskroncompatible(κ::Kernel) = false # Default return for kernels
 
-@inline ismatrixkroncompatible(κ::MOKernel) = false # Default return for kernels
-@inline ismatrixkroncompatible(κ::IndependentMOKernel) = true
-@inline ismatrixkroncompatible(κ::IntrinsicCoregionMOKernel) = true
-
 function _kernelmatrix_kroneckerjl_helper(::MOInputIsotopicByFeatures, Kfeatures, Koutputs)
     return Kronecker.kronecker(Kfeatures, Koutputs)
 end
