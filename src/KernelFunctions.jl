@@ -27,6 +27,7 @@ export Transform,
     IdentityTransform,
     FunctionTransform,
     PeriodicTransform
+export with_lengthscale
 
 export NystromFact, nystrom
 
@@ -35,7 +36,7 @@ export spectral_mixture_kernel, spectral_mixture_product_kernel
 
 export ColVecs, RowVecs
 
-export MOInput
+export MOInput, prepare_isotopic_multi_output_data, prepare_heterotopic_multi_output_data
 export IndependentMOKernel,
     LatentFactorMOKernel, IntrinsicCoregionMOKernel, LinearMixingModelKernel
 
@@ -52,7 +53,8 @@ using Functors
 using LinearAlgebra
 using Requires
 using SpecialFunctions: loggamma, besselk, polygamma
-using StatsFuns: logtwo, twoπ, softplus
+using IrrationalConstants: logtwo, twoπ
+using LogExpFunctions: softplus
 using StatsBase
 using TensorCore
 using ZygoteRules: ZygoteRules
@@ -75,6 +77,7 @@ include(joinpath("transform", "selecttransform.jl"))
 include(joinpath("transform", "chaintransform.jl"))
 include(joinpath("transform", "periodic_transform.jl"))
 include(joinpath("kernels", "transformedkernel.jl"))
+include(joinpath("transform", "with_lengthscale.jl"))
 
 include(joinpath("basekernels", "constant.jl"))
 include(joinpath("basekernels", "cosine.jl"))

@@ -2,6 +2,7 @@ using KernelFunctions
 using AxisArrays
 using Distances
 using Documenter
+using Functors: functor
 using Kronecker: Kronecker
 using LinearAlgebra
 using LogExpFunctions
@@ -9,7 +10,6 @@ using PDMats
 using Random
 using SpecialFunctions
 using Test
-using Flux
 using Zygote: Zygote
 using ForwardDiff: ForwardDiff
 using ReverseDiff: ReverseDiff
@@ -75,6 +75,8 @@ include("test_utils.jl")
             include(joinpath("transform", "chaintransform.jl"))
             print(" ")
             include(joinpath("transform", "periodic_transform.jl"))
+            print(" ")
+            include(joinpath("transform", "with_lengthscale.jl"))
             print(" ")
         end
         @info "Ran tests on Transform"
@@ -181,8 +183,8 @@ include("test_utils.jl")
                 KernelFunctions;
                 doctestfilters=[
                     r"{([a-zA-Z0-9]+,\s?)+[a-zA-Z0-9]+}",
-                    r"(Array{[a-zA-Z0-9]+,\s?1}|Vector{[a-zA-Z0-9]+})",
-                    r"(Array{[a-zA-Z0-9]+,\s?2}|Matrix{[a-zA-Z0-9]+})",
+                    r"(\s?Array{[a-zA-Z0-9]+,\s?1}|\s?Vector{[a-zA-Z0-9]+})",
+                    r"(\s?Array{[a-zA-Z0-9]+,\s?2}|\s?Matrix{[a-zA-Z0-9]+})",
                 ],
             )
         end
