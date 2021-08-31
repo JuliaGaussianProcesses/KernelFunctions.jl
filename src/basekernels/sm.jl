@@ -1,11 +1,11 @@
 @doc raw"""
-    spectral_mixture_kernel(
+    SpectralMixtureKernel(
         h::Kernel=SqExponentialKernel(),
         α::AbstractVector{<:Real},
         γ::AbstractMatrix{<:Real},
         ω::AbstractMatrix{<:Real},
     )
-    spectral_mixture_kernel(
+    SpectralMixtureKernel(
         h::Kernel=SqExponentialKernel(),
         α::AbstractVector{<:Real},
         γ::AbstractVector{<:AbstractVecOrMat{<:Real}},
@@ -41,37 +41,48 @@ and `K` is the number of components
     [4] http://www.cs.cmu.edu/~andrewgw/pattern/.
 
 """
-function spectral_mixture_kernel(
+struct SpectralMixtureKernel{K<:Kernel,Tα<:AbstractVector,Tγ<:AbstractVector,Tω<:AbstractVector} <: Kernel
+    kernel::K
+    α::Tα
+    γ::Tγ
+    ω::Tω
+    function SpectralMixtureKernel(
+        h::Kernel,
+        α::AbstractVector{<:Real},
+        γ::AbstractVector{<:AbstractVector},
+        ω::AbstractVector{<:AbstractVector},
+    )
+        if !(length(α) == length(γ) == length(ω))
+            throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
+        end
+        return new{typeof(h),typeof(α),typeof(γ),typeof(ω)}(h, α, γ, ω)
+    end
+end
+
+function SpectralMixtureKernel(
     h::Kernel,
     α::AbstractVector{<:Real},
     γ::AbstractMatrix{<:Real},
     ω::AbstractMatrix{<:Real},
 )
-    return spectral_mixture_kernel(h, α, ColVecs(γ), ColVecs(ω))
+    size(γ) == size(ω) || throw(DimensionMismatch("γ and ω have different dimensions"))
+    return SpectralMixtureKernel(h, α, ColVecs(γ), ColVecs(ω))
 end
 
-function spectral_mixture_kernel(
-    h::Kernel,
-    α::AbstractVector{<:Real},
-    γ::AbstractVector{<:AbstractVector},
-    ω::AbstractVector{<:AbstractVector},
-)
-    if !(length(α) == length(γ) == length(ω))
-        throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
-    end
-
-    return mapreduce(+, α, γ, ω) do αₖ, γₖ, ωₖ
-        sqkernel = TransformedKernel(h, ARDTransform(γₖ))
-        coskernel = TransformedKernel(CosineKernel(), ARDTransform(2 * ωₖ))
-        return αₖ * sqkernel * coskernel
-    end
-end
-
-function spectral_mixture_kernel(
+function SpectralMixtureKernel(
     αs::AbstractVector{<:Real}, γs::AbstractVecOrMat, ωs::AbstractVecOrMat
 )
-    return spectral_mixture_kernel(SqExponentialKernel(), αs, γs, ωs)
+    return SpectralMixtureKernel(SqExponentialKernel(), αs, γs, ωs)
 end
+
+function (κ::SpectralMixtureKernel)(x, y)
+    return mapreduce(+, κ.α, κ.γ, κ.ω) do α, γ, ω
+        k = TransformedKernel(κ.kernel, ARDTransform(γ))
+        α * k(x, y) * cospi(2 * dot(ω, x - y))
+    end
+end
+
+Base.show(io::IO, κ::SpectralMixtureKernel) = print(io, "SpectralMixtureKernel Kernel (kernel = ", κ.kernel, ", # components = ", length(κ.α), ")")
 
 @doc raw"""
     spectral_mixture_product_kernel(
@@ -114,6 +125,7 @@ function spectral_mixture_product_kernel(
     γ::AbstractMatrix{<:Real},
     ω::AbstractMatrix{<:Real},
 )
+    (size(α) == size(γ) == size(ω)) || throw(DimensionMismatch("α, γ and ω have different dimensions"))
     return spectral_mixture_product_kernel(h, RowVecs(α), RowVecs(γ), RowVecs(ω))
 end
 
@@ -123,10 +135,8 @@ function spectral_mixture_product_kernel(
     γ::AbstractVector{<:AbstractVector{<:Real}},
     ω::AbstractVector{<:AbstractVector{<:Real}},
 )
-    (length(α) == length(γ) && length(γ) == length(ω)) ||
-        throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
     return mapreduce(⊗, α, γ, ω) do αᵢ, γᵢ, ωᵢ
-        return spectral_mixture_kernel(h, αᵢ, permutedims(γᵢ), permutedims(ωᵢ))
+        return SpectralMixtureKernel(h, αᵢ, permutedims(γᵢ), permutedims(ωᵢ))
     end
 end
 

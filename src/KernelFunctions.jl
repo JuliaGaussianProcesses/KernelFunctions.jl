@@ -15,6 +15,7 @@ export LinearKernel, PolynomialKernel
 export RationalKernel, RationalQuadraticKernel, GammaRationalKernel
 export PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
+export SpectralMixtureKernel
 export KernelSum, KernelProduct, KernelTensorProduct
 export TransformedKernel, ScaledKernel, NormalizedKernel
 
@@ -32,7 +33,7 @@ export with_lengthscale
 export NystromFact, nystrom
 
 export gaborkernel
-export spectral_mixture_kernel, spectral_mixture_product_kernel
+export spectral_mixture_product_kernel
 
 export ColVecs, RowVecs
 
@@ -114,6 +115,8 @@ include(joinpath("mokernels", "lmm.jl"))
 
 include("chainrules.jl")
 include("zygoterules.jl")
+
+include("deprecated.jl")
 
 include("test_utils.jl")
 
