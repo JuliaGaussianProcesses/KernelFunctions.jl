@@ -1,4 +1,4 @@
-"""
+@doc raw"""
     spectral_mixture_kernel(
         h::Kernel=SqExponentialKernel(),
         α::AbstractVector{<:Real},
@@ -12,8 +12,8 @@
         ω::AbstractVector{<:AbstractVecOrMat{<:Real}},
     )
 
-Generalised Spectral Mixture kernel function as described in [1] (Eq. 6). This family of functions is dense
-in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
+Generalised Spectral Mixture kernel function as described in [1] (Eq. 6).
+This family of functions is dense in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
 
 ```math
    κ(x, y) = \sum_{k=1}^K \alpha_k (h(γ_k \odot x, γ_k \odot y) \cos(2π \cdot ω_k^\top (x-y)),
@@ -25,10 +25,10 @@ in the family of stationary real-valued kernels with respect to the pointwise co
 - `γ`: Linear transformation of the input for `h`.
 - `ω`: Linear transformation of the input for the [`CosineKernel`](@ref).
 
-`γ` and `ω` can either be
+`γ` and `ω` can be an
 - `AbstractMatrix` of dimension `D x K` where `D` is the dimension of the inputs 
 and `K` is the number of components
-- `AbstractVector`s (of length `A`) of `AbstractVector` of length `D`
+- `AbstractVector` of `K` `D`-dimensional `AbstractVector`
 
 
 # References:
@@ -60,10 +60,10 @@ function spectral_mixture_kernel(
         throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
     end
 
-    return mapreduce(+, α, γ, ω) do (αk, γk, ωk)
-        sqkernel = TransformedKernel(h, ARDTransform(γk))
-        coskernel = TransformedKernel(CosineKernel(), ARDTransform(2 * ωk))
-        return αk * sqkernel * coskernel
+    return mapreduce(+, α, γ, ω) do (αₖ, γₖ, ωₖ)
+        sqkernel = TransformedKernel(h, ARDTransform(γₖ))
+        coskernel = TransformedKernel(CosineKernel(), ARDTransform(2 * ωₖ))
+        return αₖ * sqkernel * coskernel
     end
 end
 
@@ -73,7 +73,7 @@ function spectral_mixture_kernel(
     return spectral_mixture_kernel(SqExponentialKernel(), αs, γs, ωs)
 end
 
-"""
+@doc raw"""
     spectral_mixture_product_kernel(
         h::Kernel=SqExponentialKernel(),
         α::AbstractMatrix{<:Real},
@@ -97,10 +97,11 @@ with a small number of components
 - `γ`: Linear transformation of the input for `h`.
 - `ω`: Linear transformation of the input for the [`CosineKernel`](@ref).
 
-`α`, `γ` and `ω` can all be
-where αs are the weights of dimension (D, A), γs is the covariance matrix of
-dimension (D, A) and ωs are the mean vectors and is of dimension (D, A).
-Here, D is input dimension and A is the number of spectral components.
+`α`, `γ` and `ω` can be an
+- `AbstractMatrix` of dimension `D x K` where `D` is the dimension of the inputs 
+and `K` is the number of components
+- `AbstractVector` of `D` `K`-dimensional `AbstractVector`
+
 
 # References:
     [1] GPatt: Fast Multidimensional Pattern Extrapolation with GPs,
@@ -109,21 +110,28 @@ Here, D is input dimension and A is the number of spectral components.
 """
 function spectral_mixture_product_kernel(
     h::Kernel,
-    αs::AbstractMatrix{<:Real},
-    γs::AbstractMatrix{<:Real},
-    ωs::AbstractMatrix{<:Real},
+    α::AbstractMatrix{<:Real},
+    γ::AbstractMatrix{<:Real},
+    ω::AbstractMatrix{<:Real},
 )
-    if !(size(αs) == size(γs) == size(ωs))
-        throw(DimensionMismatch("The dimensions of αs, γs, ans ωs do not match"))
-    end
-    return KernelTensorProduct(
-        spectral_mixture_kernel(h, α, reshape(γ, 1, :), reshape(ω, 1, :)) for
-        (α, γ, ω) in zip(eachrow(αs), eachrow(γs), eachrow(ωs))
-    )
+    return spectral_mixture_product_kernel(h, RowVecs(α), RowVecs(γ), RowVecs(ω))
 end
 
 function spectral_mixture_product_kernel(
-    αs::AbstractVecOrMat, γs::AbstractVecOrMat, ωs::AbstractVecOrMat
+    h::Kernel,
+    α::AbstractVector{<:AbstractVector{<:Real}},
+    γ::AbstractVector{<:AbstractVector{<:Real}},
+    ω::AbstractVector{<:AbstractVector{<:Real}},
 )
-    return spectral_mixture_product_kernel(SqExponentialKernel(), αs, γs, ωs)
+    (length(α) == length(γ) && length(γ) == length(ω)) ||
+        throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
+    return mapreduce(⊗, α, γ, ω) do (αᵢ, γᵢ, ωᵢ)
+        return spectral_mixture_kernel(h, αᵢ, γᵢ, ωᵢ)
+    end
+end
+
+function spectral_mixture_product_kernel(
+    α::AbstractVecOrMat, γ::AbstractVecOrMat, ω::AbstractVecOrMat
+)
+    return spectral_mixture_product_kernel(SqExponentialKernel(), α, γ, ω)
 end
