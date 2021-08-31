@@ -61,6 +61,8 @@ struct SpectralMixtureKernel{
     end
 end
 
+@functor SpectralMixtureKernel
+
 function SpectralMixtureKernel(
     h::Kernel,
     α::AbstractVector{<:Real},
