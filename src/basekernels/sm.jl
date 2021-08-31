@@ -60,7 +60,7 @@ function spectral_mixture_kernel(
         throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
     end
 
-    return mapreduce(+, α, γ, ω) do (αₖ, γₖ, ωₖ)
+    return mapreduce(+, α, γ, ω) do αₖ, γₖ, ωₖ
         sqkernel = TransformedKernel(h, ARDTransform(γₖ))
         coskernel = TransformedKernel(CosineKernel(), ARDTransform(2 * ωₖ))
         return αₖ * sqkernel * coskernel
@@ -88,7 +88,7 @@ can model any product kernel to arbitrary precision, and is flexible even
 with a small number of components
 
 ```math
-   κ(x, y) = \prod_{i=1}^D \sum_{k=1}^K \alpha_{k,i}  (h(\gamma_{k,i} x_i, \gamma_{k,i} y_i)) cos(2\pi \omega_{i, k} (x_i - y_i))))
+   κ(x, y) = \prod_{i=1}^D \sum_{k=1}^K \alpha_{k,i}  (h(\gamma_{k,i} x_i, \gamma_{k,i} y_i)) \cos(2\pi \omega_{i, k} (x_i - y_i))))
 ```
 
 ## Arguments
@@ -125,8 +125,8 @@ function spectral_mixture_product_kernel(
 )
     (length(α) == length(γ) && length(γ) == length(ω)) ||
         throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
-    return mapreduce(⊗, α, γ, ω) do (αᵢ, γᵢ, ωᵢ)
-        return spectral_mixture_kernel(h, αᵢ, γᵢ, ωᵢ)
+    return mapreduce(⊗, α, γ, ω) do αᵢ, γᵢ, ωᵢ
+        return spectral_mixture_kernel(h, αᵢ, permutedims(γᵢ), permutedims(ωᵢ))
     end
 end
 

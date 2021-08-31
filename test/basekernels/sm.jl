@@ -3,28 +3,30 @@
     v1 = rand(D_in)
     v2 = rand(D_in)
 
-    αs₁ = rand(3)
-    αs₂ = rand(D_in, 3)
-    γs = rand(D_in, 3)
-    ωs = rand(D_in, 3)
+    K = 3
+    αs₁ = rand(K)
+    αs₂ = rand(D_in, K)
+    γs = rand(D_in, K)
+    ωs = rand(D_in, K)
 
     k1 = spectral_mixture_kernel(αs₁, γs, ωs)
     k2 = spectral_mixture_product_kernel(αs₂, γs, ωs)
 
     t = v1 - v2
 
-    @test k1(v1, v2) ≈ sum(αs₁ .* exp.(-(t' * γs)' .^ 2 ./ 2) .* cospi.((t' * ωs)')) atol =
-        1e-5
+    @test k1(v1, v2) ≈ sum(
+        αs₁[k] * exp(-norm(t .* γs[:, k])^2 / 2) * cospi(2 * dot(ωs[:, k], t)) for k in 1:K
+    ) atol = 1e-5
 
     @test isapprox(
         k2(v1, v2),
-        prod([
+        prod(
             sum(
-                αs₂[i, :]' .* exp.(-(γs[i, :]' * t[i]) .^ 2 ./ 2) .*
-                cospi.(ωs[i, :]' * t[i]),
-            ) for i in 1:length(t)
-        ],);
-        atol=1e-5,
+                αs₂[i, k] * exp(-(γs[i, k] * t[i])^2 / 2) * cospi(2 * ωs[i, k] * t[i]) for
+                k in 1:K
+            ) for i in 1:D_in
+        );
+        atol=1e-8,
     )
 
     @test_throws DimensionMismatch spectral_mixture_kernel(rand(5), rand(4, 3), rand(4, 3))
