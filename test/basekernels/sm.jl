@@ -25,7 +25,7 @@
                 αs₂[i, k] * exp(-(γs[i, k] * t[i])^2 / 2) * cospi(2 * ωs[i, k] * t[i]) for
                 k in 1:K
             ) for i in 1:D_in
-        )
+        ),
     )
 
     @test_throws DimensionMismatch SpectralMixtureKernel(rand(5), rand(4, 3), rand(4, 3))

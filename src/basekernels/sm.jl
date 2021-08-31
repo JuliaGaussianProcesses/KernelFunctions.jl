@@ -41,7 +41,9 @@ and `K` is the number of components
     [4] http://www.cs.cmu.edu/~andrewgw/pattern/.
 
 """
-struct SpectralMixtureKernel{K<:Kernel,Tα<:AbstractVector,Tγ<:AbstractVector,Tω<:AbstractVector} <: Kernel
+struct SpectralMixtureKernel{
+    K<:Kernel,Tα<:AbstractVector,Tγ<:AbstractVector,Tω<:AbstractVector
+} <: Kernel
     kernel::K
     α::Tα
     γ::Tγ
@@ -82,7 +84,16 @@ function (κ::SpectralMixtureKernel)(x, y)
     end
 end
 
-Base.show(io::IO, κ::SpectralMixtureKernel) = print(io, "SpectralMixtureKernel Kernel (kernel = ", κ.kernel, ", # components = ", length(κ.α), ")")
+function Base.show(io::IO, κ::SpectralMixtureKernel)
+    return print(
+        io,
+        "SpectralMixtureKernel Kernel (kernel = ",
+        κ.kernel,
+        ", # components = ",
+        length(κ.α),
+        ")",
+    )
+end
 
 @doc raw"""
     spectral_mixture_product_kernel(
@@ -125,7 +136,8 @@ function spectral_mixture_product_kernel(
     γ::AbstractMatrix{<:Real},
     ω::AbstractMatrix{<:Real},
 )
-    (size(α) == size(γ) == size(ω)) || throw(DimensionMismatch("α, γ and ω have different dimensions"))
+    (size(α) == size(γ) == size(ω)) ||
+        throw(DimensionMismatch("α, γ and ω have different dimensions"))
     return spectral_mixture_product_kernel(h, RowVecs(α), RowVecs(γ), RowVecs(ω))
 end
 
