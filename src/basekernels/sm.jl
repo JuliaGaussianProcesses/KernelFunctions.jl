@@ -8,29 +8,28 @@
     spectral_mixture_kernel(
         h::Kernel=SqExponentialKernel(),
         α::AbstractVector{<:Real},
-        γ::AbstractVector{<:AbstractVecorMat{<:Real}},
-        ω::AbstractVector{<:AbstractVecorMat{<:Real}},
+        γ::AbstractVector{<:AbstractVecOrMat{<:Real}},
+        ω::AbstractVector{<:AbstractVecOrMat{<:Real}},
     )
 
-Given `A` the number of mixture components and `D` the dimension of the inputs:
-
-## Arguments
-- `h`: Stationary kernel (translation invariant), `SqExponentialKernel` by default
-- `α`: Weight vector of each mixture component (`length(α)==A`)
-- `γ`: Linear transformation of the input for `h`. `γ` can be an `AbstractMatrix` or 
-- `ω`: Linear transformation 
-where `α` are the weight vector of dimension `A`, `γs` is the sqrt of the covariance matrix of
-dimension `(D, A)` and `ωs` are the concatenated mean vectors of dimension (D, A).
-Here, `D` is input dimension and `A` is the number of spectral components.
-
-`h` is the stationary kernel, which defaults to [`SqExponentialKernel`](@ref) if not specified.
-
-Generalised Spectral Mixture kernel function. This family of functions is dense
+Generalised Spectral Mixture kernel function as described in [1] (Eq. 6). This family of functions is dense
 in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
 
 ```math
-   κ(x, y) = \sum_k \alpha_k^\top (h(γ_k \odot x, γ_k \odot y) \cos(π \cdot ω_k^\top (x-y)),
+   κ(x, y) = \sum_{k=1}^K \alpha_k (h(γ_k \odot x, γ_k \odot y) \cos(2π \cdot ω_k^\top (x-y)),
 ```
+
+## Arguments
+- `h`: Stationary kernel (translation invariant), [`SqExponentialKernel`](@ref) by default
+- `α`: Weight vector of each mixture component
+- `γ`: Linear transformation of the input for `h`.
+- `ω`: Linear transformation of the input for the [`CosineKernel`](@ref).
+
+`γ` and `ω` can either be
+- `AbstractMatrix` of dimension `D x K` where `D` is the dimension of the inputs 
+and `K` is the number of components
+- `AbstractVector`s (of length `A`) of `AbstractVector` of length `D`
+
 
 # References:
     [1] Generalized Spectral Kernels, by Yves-Laurent Kom Samo and Stephen J. Roberts
@@ -48,18 +47,7 @@ function spectral_mixture_kernel(
     γ::AbstractMatrix{<:Real},
     ω::AbstractMatrix{<:Real},
 )
-    if !(size(α, 1) == size(γ, 2) == size(ω, 2))
-        throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
-    end
-    if size(γ, 1) != size(ω, 1)
-        throw(DimensionMismatch("The dimensions of γ ans ω do not match"))
-    end
-
-    return sum(zip(α, eachcol(γ), eachcol(ω))) do (α, γ, ω)
-        a = TransformedKernel(h, ARDTransform(γ))
-        b = TransformedKernel(CosineKernel(), ARDTransform(ω))
-        return α * a * b
-    end
+    return spectral_mixture_kernel(h, α, ColVecs(γ), ColVecs(ω))
 end
 
 function spectral_mixture_kernel(
@@ -72,16 +60,15 @@ function spectral_mixture_kernel(
         throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
     end
 
-    return sum(zip(α, γ, ω)) do (αk, γk, ωk)
-        a = TransformedKernel(h, ARDTransform(γk))
-        b = TransformedKernel(CosineKernel(), ARDTransform(ωk))
-        return αk * a * b
+    return mapreduce(+, α, γ, ω) do (αk, γk, ωk)
+        sqkernel = TransformedKernel(h, ARDTransform(γk))
+        coskernel = TransformedKernel(CosineKernel(), ARDTransform(2 * ωk))
+        return αk * sqkernel * coskernel
     end
 end
 
-
 function spectral_mixture_kernel(
-    αs::AbstractVector{<:Real}, γs::AbstractMatrix{<:Real}, ωs::AbstractMatrix{<:Real}
+    αs::AbstractVector{<:Real}, γs::AbstractVecOrMat, ωs::AbstractVecOrMat
 )
     return spectral_mixture_kernel(SqExponentialKernel(), αs, γs, ωs)
 end
@@ -89,25 +76,31 @@ end
 """
     spectral_mixture_product_kernel(
         h::Kernel=SqExponentialKernel(),
-        αs::AbstractMatrix{<:Real},
-        γs::AbstractMatrix{<:Real},
-        ωs::AbstractMatrix{<:Real},
+        α::AbstractMatrix{<:Real},
+        γ::AbstractMatrix{<:Real},
+        ω::AbstractMatrix{<:Real},
     )
 
+The spectral mixture product is tensor product of spectral mixture kernel applied
+on each dimension as described in [1] (Eq. 13, 14).
+With enough components, the SMP kernel
+can model any product kernel to arbitrary precision, and is flexible even
+with a small number of components
+
+```math
+   κ(x, y) = \prod_{i=1}^D \sum_{k=1}^K \alpha_{k,i}  (h(\gamma_{k,i} x_i, \gamma_{k,i} y_i)) cos(2\pi \omega_{i, k} (x_i - y_i))))
+```
+
+## Arguments
+- `h`: Stationary kernel (translation invariant), [`SqExponentialKernel`](@ref) by default
+- `α`: Weight of each mixture component for each dimension
+- `γ`: Linear transformation of the input for `h`.
+- `ω`: Linear transformation of the input for the [`CosineKernel`](@ref).
+
+`α`, `γ` and `ω` can all be
 where αs are the weights of dimension (D, A), γs is the covariance matrix of
 dimension (D, A) and ωs are the mean vectors and is of dimension (D, A).
 Here, D is input dimension and A is the number of spectral components.
-
-Spectral Mixture Product Kernel. With enough components A, the SMP kernel
-can model any product kernel to arbitrary precision, and is flexible even
-with a small number of components [1]
-
-
-`h` is the kernel, which defaults to [`SqExponentialKernel`](@ref) if not specified.
-
-```math
-   κ(x, y) = Πᵢ₌₁ᴷ Σ(αsᵢᵀ .* (h(-(γsᵢᵀ * tᵢ)²) .* cos(ωsᵢᵀ * tᵢ))), tᵢ = xᵢ - yᵢ
-```
 
 # References:
     [1] GPatt: Fast Multidimensional Pattern Extrapolation with GPs,
@@ -130,7 +123,7 @@ function spectral_mixture_product_kernel(
 end
 
 function spectral_mixture_product_kernel(
-    αs::AbstractMatrix{<:Real}, γs::AbstractMatrix{<:Real}, ωs::AbstractMatrix{<:Real}
+    αs::AbstractVecOrMat, γs::AbstractVecOrMat, ωs::AbstractVecOrMat
 )
     return spectral_mixture_product_kernel(SqExponentialKernel(), αs, γs, ωs)
 end
