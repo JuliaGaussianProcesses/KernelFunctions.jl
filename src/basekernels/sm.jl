@@ -16,7 +16,7 @@ Generalised Spectral Mixture kernel function as described in [1] (Eq. 6).
 This family of functions is dense in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
 
 ```math
-   κ(x, y) = \sum_{k=1}^K \alpha_k (h(γ_k \odot x, γ_k \odot y) \cos(2π \cdot ω_k^\top (x-y)),
+   κ(x, y) = \sum_{k=1}^K \alpha_k \cdot h(γ_k \odot x, γ_k \odot y) \cdot \cos(2π \cdot ω_k^\top (x-y)),
 ```
 
 ## Arguments
@@ -88,7 +88,7 @@ can model any product kernel to arbitrary precision, and is flexible even
 with a small number of components
 
 ```math
-   κ(x, y) = \prod_{i=1}^D \sum_{k=1}^K \alpha_{k,i}  (h(\gamma_{k,i} x_i, \gamma_{k,i} y_i)) \cos(2\pi \omega_{i, k} (x_i - y_i))))
+   κ(x, y) = \prod_{i=1}^D \sum_{k=1}^K \alpha_{k,i} \cdot h(\gamma_{k,i} \cdot x_i, \gamma_{k,i} \cdot y_i)) \cdot \cos(2\pi \cdot \omega_{i, k} \cdot (x_i - y_i))))
 ```
 
 ## Arguments
