@@ -12,7 +12,7 @@
         ω::AbstractVector{<:AbstractVecOrMat{<:Real}},
     )
 
-Generalised Spectral Mixture kernel function as described in [1] (Eq. 6).
+Generalised Spectral Mixture kernel function as described in [1] in equation 6.
 This family of functions is dense in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
 
 ```math
@@ -23,7 +23,7 @@ This family of functions is dense in the family of stationary real-valued kernel
 - `h`: Stationary kernel (translation invariant), [`SqExponentialKernel`](@ref) by default
 - `α`: Weight vector of each mixture component
 - `γ`: Linear transformation of the input for `h`.
-- `ω`: Linear transformation of the input for the [`CosineKernel`](@ref).
+- `ω`: Frequencies for the cosine function.
 
 `γ` and `ω` can be an
 - `AbstractMatrix` of dimension `D x K` where `D` is the dimension of the inputs 
@@ -106,20 +106,20 @@ end
     )
 
 The spectral mixture product is tensor product of spectral mixture kernel applied
-on each dimension as described in [1] (Eq. 13, 14).
+on each dimension as described in [1] in equations 13 and 14.
 With enough components, the SMP kernel
 can model any product kernel to arbitrary precision, and is flexible even
 with a small number of components
 
 ```math
-   κ(x, y) = \prod_{i=1}^D \sum_{k=1}^K \alpha_{k,i} \cdot h(\gamma_{k,i} \cdot x_i, \gamma_{k,i} \cdot y_i)) \cdot \cos(2\pi \cdot \omega_{i, k} \cdot (x_i - y_i))))
+   κ(x, y) = \prod_{i=1}^D \sum_{k=1}^K \alpha_{ik} \cdot h(\gamma_{ik} \cdot x_i, \gamma_{ik} \cdot y_i)) \cdot \cos(2\pi \cdot \omega_{ik} \cdot (x_i - y_i))))
 ```
 
 ## Arguments
 - `h`: Stationary kernel (translation invariant), [`SqExponentialKernel`](@ref) by default
 - `α`: Weight of each mixture component for each dimension
 - `γ`: Linear transformation of the input for `h`.
-- `ω`: Linear transformation of the input for the [`CosineKernel`](@ref).
+- `ω`: Frequencies for the cosine function.
 
 `α`, `γ` and `ω` can be an
 - `AbstractMatrix` of dimension `D x K` where `D` is the dimension of the inputs 
