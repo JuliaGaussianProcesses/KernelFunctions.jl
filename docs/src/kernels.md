@@ -128,6 +128,9 @@ NormalizedKernel
 ```
 
 ## Multi-output Kernels
+Kernelfunctions implements multi-output kernels as scalar kernels on an extended output domain. For more details on this read [the section on inputs for multi-output GPs](@ref inputs_for_multiple_outputs_helpers).
+
+
 
 ```@docs
 MOKernel
