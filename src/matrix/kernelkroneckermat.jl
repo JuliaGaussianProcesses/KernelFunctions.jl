@@ -40,18 +40,40 @@ function _mo_output_covariance(k::IntrinsicCoregionMOKernel, out_dim)
     return k.B
 end
 
-function kronecker_kernelmatrix(
-    k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel},
+function kernelmatrix(
+    k::IndependentMOKernel,
     x::IsotopicMOInputsUnion,
     y::IsotopicMOInputsUnion,
 )
     @assert x.out_dim == y.out_dim
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-    Koutputs = _mo_output_covariance(k, x.out_dim)
-    return _kernelmatrix_kroneckerjl_helper(Kfeatures, Koutputs, x)
+    Koutputs = Eye{Bool}(x.out_dim)
+    return _kernelmatrix_kroneckerjl_helper(x, Kfeatures, Koutputs)
 end
 
-function kronecker_kernelmatrix(
+function kernelmatrix(
+    k::IntrinsicCoregionMOKernel,
+    x::IsotopicMOInputsUnion,
+    y::IsotopicMOInputsUnion,
+)
+    @assert x.out_dim == y.out_dim
+    Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
+    Koutputs = k.B
+    return _kernelmatrix_kroneckerjl_helper(x, Kfeatures, Koutputs)
+end
+
+# function kernelmatrix(
+#     k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel},
+#     x::IsotopicMOInputsUnion,
+#     y::IsotopicMOInputsUnion,
+# )
+#     @assert x.out_dim == y.out_dim
+#     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
+#     Koutputs = _mo_output_covariance(k, x.out_dim)
+#     return _kernelmatrix_kroneckerjl_helper(Kfeatures, Koutputs, x)
+# end
+
+function kernelmatrix(
     k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::IsotopicMOInputsUnion
 )
     Kfeatures = kernelmatrix(k.kernel, x.x)
@@ -59,14 +81,14 @@ function kronecker_kernelmatrix(
     return _kernelmatrix_kroneckerjl_helper(Kfeatures, Koutputs, x)
 end
 
-function kronecker_kernelmatrix(
-    k::MOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
-)
-    return throw(
-        ArgumentError("This kernel does not support a lazy kronecker kernelmatrix.")
-    )
-end
+# function kronecker_kernelmatrix(
+#     k::MOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
+# )
+#     return throw(
+#         ArgumentError("This kernel does not support a lazy kronecker kernelmatrix.")
+#     )
+# end
 
-function kronecker_kernelmatrix(k::MOKernel, x::IsotopicMOInputsUnion)
-    return kronecker_kernelmatrix(k, x, x)
-end
+# function kronecker_kernelmatrix(k::MOKernel, x::IsotopicMOInputsUnion)
+#     return kronecker_kernelmatrix(k, x, x)
+# end

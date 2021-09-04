@@ -43,8 +43,8 @@ function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{
 end
 
 function kernelmatrix(
-    k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
-) where {MOI<:IsotopicMOInputsUnion}
+    k::IntrinsicCoregionMOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
+)
     @assert x.out_dim == y.out_dim
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
     return _kernelmatrix_kron_helper(x, Kfeatures, k.B)

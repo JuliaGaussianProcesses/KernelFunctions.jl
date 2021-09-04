@@ -36,8 +36,8 @@ function _kernelmatrix_kron_helper(::MOInputIsotopicByOutputs, Kfeatures, B)
 end
 
 function kernelmatrix(
-    k::IndependentMOKernel, x::MOI, y::MOI
-) where {MOI<:IsotopicMOInputsUnion}
+    k::IndependentMOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
+)
     @assert x.out_dim == y.out_dim
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
     mtype = eltype(Kfeatures)
