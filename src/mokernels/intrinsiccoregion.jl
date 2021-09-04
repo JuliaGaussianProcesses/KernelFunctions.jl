@@ -60,11 +60,15 @@ end
 
 if VERSION >= v"1.6"
     function kernelmatrix!(
-        K::AbstractMatrix, k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
-    ) where {MOI<:IsotopicMOInputsUnion}
+        K::AbstractMatrix,
+        k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel},
+        x::IsotopicMOInputsUnion,
+        y::IsotopicMOInputsUnion,
+    )
         @assert x.out_dim == y.out_dim
         Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-        return _kernelmatrix_kron_helper!(K, x, Kfeatures, k.B)
+        Koutputs = _mo_output_covariance(k, x.out_dim)
+        return _kernelmatrix_kron_helper!(K, x, Kfeatures, Koutputs)
     end
 end
 
