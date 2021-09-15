@@ -4,6 +4,7 @@
 using .Kronecker: Kronecker
 
 export kernelkronmat
+export kronecker_kernelmatrix
 
 function kernelkronmat(κ::Kernel, X::AbstractVector, dims::Int)
     @assert iskroncompatible(κ) "The chosen kernel is not compatible for kroenecker matrices (see [`iskroncompatible`](@ref))"
@@ -42,7 +43,7 @@ function kronecker_kernelmatrix(
     @assert x.out_dim == y.out_dim
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
     Koutputs = _mo_output_covariance(k, x.out_dim)
-    return _kernelmatrix_kroneckerjl_helper(Kfeatures, Koutputs, x)
+    return _kernelmatrix_kroneckerjl_helper(x, Kfeatures, Koutputs)
 end
 
 function kronecker_kernelmatrix(
@@ -50,7 +51,7 @@ function kronecker_kernelmatrix(
 )
     Kfeatures = kernelmatrix(k.kernel, x.x)
     Koutputs = _mo_output_covariance(k, x.out_dim)
-    return _kernelmatrix_kroneckerjl_helper(Kfeatures, Koutputs, x)
+    return _kernelmatrix_kroneckerjl_helper(x, Kfeatures, Koutputs)
 end
 
 function kronecker_kernelmatrix(
