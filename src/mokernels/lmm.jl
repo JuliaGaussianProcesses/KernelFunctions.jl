@@ -37,6 +37,49 @@ function (κ::LinearMixingModelKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{A
     return sum(κ.H[i, px] * κ.K[i](x, y) * κ.H[i, py] for i in 1:length(κ.K))
 end
 
+## current implementation
+# julia> @benchmark KernelFunctions.kernelmatrix(k, x1IO, x2IO)
+# BenchmarkTools.Trial: 3478 samples with 1 evaluation.
+#  Range (min … max):  1.362 ms …   5.498 ms  ┊ GC (min … max): 0.00% … 72.47%
+#  Time  (median):     1.396 ms               ┊ GC (median):    0.00%
+#  Time  (mean ± σ):   1.435 ms ± 358.577 μs  ┊ GC (mean ± σ):  2.28% ±  6.70%
+
+#   ▂▆█▇▄▂  ▂▁                                                  ▁
+#   ███████▆██▅▅▁▄▁▁▁▁▁▁▁▁▄▁▁▁▁▁▁▁▁▁▃▁▁▁▁▁▁▁▁▁▁▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▃ █
+#   1.36 ms      Histogram: log(frequency) by time       2.1 ms <
+
+#  Memory estimate: 410.73 KiB, allocs estimate: 23090.
+
+## proposed improvement
+# julia> @benchmark KernelFunctions.kernelmatrix2(k, x1IO, x2IO)
+# BenchmarkTools.Trial: 10000 samples with 1 evaluation.
+#  Range (min … max):  16.871 μs …   3.440 ms  ┊ GC (min … max):  0.00% … 97.80%
+#  Time  (median):     18.625 μs               ┊ GC (median):     0.00%
+#  Time  (mean ± σ):   24.734 μs ± 129.308 μs  ┊ GC (mean ± σ):  20.63% ±  3.92%
+
+#    ▄▆███▇▆▅▄▄▂▂                           ▁ ▁                  ▂
+#   ████████████████▇▆▄▅▅▄▅▅▅▅▅▆▃▄▅▃▂▂▃▃▄▆▇▇████████▅▆▅▃▅▄▆▅▆▆▆▇ █
+#   16.9 μs       Histogram: log(frequency) by time      36.4 μs <
+
+#  Memory estimate: 84.56 KiB, allocs estimate: 338.
+
+function kernelmatrix2(k::LinearMixingModelKernel, X, Y)
+    K = [kernelmatrix(ki, X.x, Y.x) for ki in k.K]
+    L = size(k.H, 2)
+    return reduce(
+        hcat, [reduce(vcat, [sum(k.H[:, i] .* (K .* k.H[:, j])) for i in 1:L]) for j in 1:L]
+    )
+end
+
+# function matrixkernel(k::LinearMixingModelKernel, x, y)
+#     return matrixkernel(k, x, y, size(k.H, 2))
+# end
+
+function matrixkernel(k::LinearMixingModelKernel, x, y)
+    K = [ki(x, y) for ki in k.K]
+    return k.H' * (K .* k.H)
+end
+
 function Base.show(io::IO, k::LinearMixingModelKernel)
     return print(io, "Linear Mixing Model Multi-Output Kernel")
 end

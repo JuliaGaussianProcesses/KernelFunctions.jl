@@ -133,6 +133,7 @@ include("test_utils.jl")
     if GROUP == "" || GROUP == "MultiOutput"
         @testset "multi_output" begin
             include("mokernels/moinput.jl")
+            include("mokernels/mokernel.jl")
             include("mokernels/independent.jl")
             include("mokernels/slfm.jl")
             include("mokernels/intrinsiccoregion.jl")

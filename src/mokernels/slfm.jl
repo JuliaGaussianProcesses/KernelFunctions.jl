@@ -33,7 +33,20 @@ function (κ::LatentFactorMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,
     return cov_f + κ.e((x, px), (y, py))
 end
 
-function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)
+# function matrixkernel(k::LatentFactorMOKernel, x, y)
+#     return matrixkernel(k, x, y, size(k.A, 1))
+# end
+
+function matrixkernel(k::LatentFactorMOKernel, x, y)
+    W = [col * col' for col in eachcol(k.A)]
+    h = [gi(x, y) for gi in k.g]
+    w_h = sum(Wi * Hi for (Wi, Hi) in zip(W, h))
+    return w_h + matrixkernel(k.e, x, y)
+end
+
+function kernelmatrix(
+    k::LatentFactorMOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
+)
     x.out_dim == y.out_dim || error("`x` and `y` should have the same output dimension")
     x.out_dim == size(k.A, 1) ||
         error("Kernel not compatible with the given multi-output inputs")
@@ -45,7 +58,7 @@ function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)
     H = [gi.(x.x, permutedims(y.x)) for gi in k.g]
 
     # Weighted latent kernel matrix ((N*out_dim) x (N*out_dim))
-    W_H = sum(kron(Wi, Hi) for (Wi, Hi) in zip(W, H))
+    W_H = sum(_kernelmatrix_kron_helper(x, Hi, Wi) for (Wi, Hi) in zip(W, H))
 
     return W_H .+ kernelmatrix(k.e, x, y)
 end

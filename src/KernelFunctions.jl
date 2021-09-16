@@ -39,6 +39,7 @@ export ColVecs, RowVecs
 export MOInput, prepare_isotopic_multi_output_data, prepare_heterotopic_multi_output_data
 export IndependentMOKernel,
     LatentFactorMOKernel, IntrinsicCoregionMOKernel, LinearMixingModelKernel
+export matrixkernel
 
 # Reexports
 export tensor, ⊗, compose
@@ -105,8 +106,8 @@ include("kernels/neuralkernelnetwork.jl")
 include("approximations/nystrom.jl")
 include("generic.jl")
 
-include("mokernels/mokernel.jl")
 include("mokernels/moinput.jl")
+include("mokernels/mokernel.jl")
 include("mokernels/independent.jl")
 include("mokernels/slfm.jl")
 include("mokernels/intrinsiccoregion.jl")
