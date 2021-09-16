@@ -6,9 +6,9 @@ Abstract type for kernels with multiple outpus.
 abstract type MOKernel <: Kernel end
 
 """
-    matrixkernel(k::MOK, x, y)
+    matrixkernel(k::MOKernel, x, y)
 
-Convenience function to compute the matrix kernel for two inputs `x` and `y`. The `outputsize` keyword is only required for the `IndependentMOKernel` to indicated the number of outputs. 
+Convenience function to compute the matrix kernel for two inputs `x` and `y`.
 """
 function matrixkernel(k::MOKernel, x, y, out_dim)
     @assert size(x) == size(y)
