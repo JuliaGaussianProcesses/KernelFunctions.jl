@@ -27,14 +27,16 @@ function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,I
     return κ.kernel(x, y) * (px == py)
 end
 
-_mo_output_covariance(k::IndependentMOKernel, out_dim) = Eye{Bool}(out_dim)
+function _mo_output_covariance(k::IndependentMOKernel, Kfeatures, out_dim)
+    return Eye{eltype(Kfeatures)}(out_dim)
+end
 
 function kernelmatrix(
     k::IndependentMOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
 )
     @assert x.out_dim == y.out_dim
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-    Koutputs = _mo_output_covariance(k, x.out_dim)
+    Koutputs = _mo_output_covariance(k, Kfeatures, x.out_dim)
     return _kernelmatrix_kron_helper(x, Kfeatures, Koutputs)
 end
 
@@ -47,7 +49,7 @@ if VERSION >= v"1.6"
     )
         @assert x.out_dim == y.out_dim
         Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-        Koutputs = _mo_output_covariance(k, x.out_dim)
+        Koutputs = _mo_output_covariance(k, Kfeatures, x.out_dim)
         return _kernelmatrix_kron_helper!(K, x, Kfeatures, Koutputs)
     end
 end

@@ -42,7 +42,7 @@ function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{
     return k.B[px, py] * k.kernel(x, y)
 end
 
-function _mo_output_covariance(k::IntrinsicCoregionMOKernel, out_dim)
+function _mo_output_covariance(k::IntrinsicCoregionMOKernel, Kfeatures, out_dim)
     @assert size(k.B) == (out_dim, out_dim)
     return k.B
 end
@@ -52,7 +52,7 @@ function kernelmatrix(
 )
     @assert x.out_dim == y.out_dim
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-    Koutputs = _mo_output_covariance(k, x.out_dim)
+    Koutputs = _mo_output_covariance(k, Kfeatures, x.out_dim)
     return _kernelmatrix_kron_helper(x, Kfeatures, Koutputs)
 end
 
@@ -65,7 +65,7 @@ if VERSION >= v"1.6"
     )
         @assert x.out_dim == y.out_dim
         Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-        Koutputs = _mo_output_covariance(k, x.out_dim)
+        Koutputs = _mo_output_covariance(k, Kfeatures, x.out_dim)
         return _kernelmatrix_kron_helper!(K, x, Kfeatures, Koutputs)
     end
 end
