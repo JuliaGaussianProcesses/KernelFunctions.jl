@@ -30,9 +30,7 @@ end
 _mo_output_covariance(k::IndependentMOKernel, out_dim) = Eye{Bool}(out_dim)
 
 function kernelmatrix(
-    k::IndependentMOKernel,
-    x::IsotopicMOInputsUnion,
-    y::IsotopicMOInputsUnion,
+    k::IndependentMOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
 )
     @assert x.out_dim == y.out_dim
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
