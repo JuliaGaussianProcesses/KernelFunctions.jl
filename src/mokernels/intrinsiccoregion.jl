@@ -48,7 +48,7 @@ function _mo_output_covariance(k::IntrinsicCoregionMOKernel, out_dim)
 end
 
 function kernelmatrix(
-    k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel},
+    k::IntrinsicCoregionMOKernel,
     x::IsotopicMOInputsUnion,
     y::IsotopicMOInputsUnion,
 )

@@ -29,6 +29,17 @@ end
 
 _mo_output_covariance(k::IndependentMOKernel, out_dim) = Eye{Bool}(out_dim)
 
+function kernelmatrix(
+    k::IndependentMOKernel,
+    x::IsotopicMOInputsUnion,
+    y::IsotopicMOInputsUnion,
+)
+    @assert x.out_dim == y.out_dim
+    Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
+    Koutputs = _mo_output_covariance(k, x.out_dim)
+    return _kernelmatrix_kron_helper(x, Kfeatures, Koutputs)
+end
+
 # for specialized kernelmatrix implementation see intrinsiccoregion.jl
 
 function Base.show(io::IO, k::IndependentMOKernel)
