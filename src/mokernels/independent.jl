@@ -38,6 +38,20 @@ function kernelmatrix(
     return _kernelmatrix_kron_helper(x, Kfeatures, Koutputs)
 end
 
+if VERSION >= v"1.6"
+    function kernelmatrix!(
+        K::AbstractMatrix,
+        k::IndependentMOKernel,
+        x::IsotopicMOInputsUnion,
+        y::IsotopicMOInputsUnion,
+    )
+        @assert x.out_dim == y.out_dim
+        Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
+        Koutputs = _mo_output_covariance(k, x.out_dim)
+        return _kernelmatrix_kron_helper!(K, x, Kfeatures, Koutputs)
+    end
+end
+
 function Base.show(io::IO, k::IndependentMOKernel)
     return print(io, string("Independent Multi-Output Kernel\n\t", string(k.kernel)))
 end
