@@ -38,8 +38,6 @@ function kernelmatrix(
     return _kernelmatrix_kron_helper(x, Kfeatures, Koutputs)
 end
 
-# for specialized kernelmatrix implementation see intrinsiccoregion.jl
-
 function Base.show(io::IO, k::IndependentMOKernel)
     return print(io, string("Independent Multi-Output Kernel\n\t", string(k.kernel)))
 end
