@@ -59,7 +59,7 @@ end
 if VERSION >= v"1.6"
     function kernelmatrix!(
         K::AbstractMatrix,
-        k::IntrinsicCoregionMOKernel,
+        k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel},
         x::IsotopicMOInputsUnion,
         y::IsotopicMOInputsUnion,
     )
