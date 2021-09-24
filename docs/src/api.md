@@ -88,3 +88,9 @@ kernelpdmat
 nystrom
 NystromFact
 ```
+
+## Optional Utilities
+If the [Kronecker.jl](https://github.com/MichielStock/Kronecker.jl) package is loaded, KernelFunctions also provides the following functions.
+```@docs
+kronecker_kernelmatrix
+```
