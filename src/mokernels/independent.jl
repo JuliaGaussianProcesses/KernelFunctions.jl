@@ -5,7 +5,7 @@ Kernel for multiple independent outputs with kernel `k` each.
 
 # Definition
 
-For inputs ``x, x'`` and output dimensions ``p_x, p_{x'}'``, the kernel ``\\widetilde{k}``
+For inputs ``x, x'`` and output dimensions ``p, p'``, the kernel ``\\widetilde{k}``
 for independent outputs with kernel ``k`` each is defined as
 ```math
 \\widetilde{k}\\big((x, p), (x', p')\\big) = \\begin{cases}
