@@ -133,6 +133,18 @@ function test_interface(
     )
 end
 
+function test_interface(
+    rng::AbstractRNG, k::Kernel, ::Type{<:AbstractVector{AbstractVector{T}}}; dim_in=2, kwargs...
+) where {T<:Real}
+    return test_interface(
+        k,
+        [randn(rng, T, dim_in) for _ in 1:1001],
+        [randn(rng, T, dim_in) for _ in 1:1001],
+        [randn(rng, T, dim_in) for _ in 1:1000];
+        kwargs...,
+    )
+end
+
 function test_interface(k::Kernel, T::Type{<:AbstractVector}; kwargs...)
     return test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
 end
@@ -146,6 +158,9 @@ function test_interface(rng::AbstractRNG, k::Kernel, T::Type{<:Real}; kwargs...)
     end
     @testset "RowVecs{$T}" begin
         test_interface(rng, k, RowVecs{T}; kwargs...)
+    end
+    @testset "AbstractVector{AbstractVector{T}}" begin
+        test_interface(rng, k, AbstractVector{AbstractVector{T}}; kwargs...)
     end
 end
 
