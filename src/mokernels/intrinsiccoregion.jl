@@ -48,25 +48,22 @@ function _mo_output_covariance(k::IntrinsicCoregionMOKernel, out_dim)
 end
 
 function kernelmatrix(
-    k::IntrinsicCoregionMOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
-)
+    k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
+) where {MOI<:IsotopicMOInputsUnion}
     @assert x.out_dim == y.out_dim
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
     Koutputs = _mo_output_covariance(k, x.out_dim)
-    return _kernelmatrix_kron_helper(x, Kfeatures, Koutputs)
+    return _kernelmatrix_kron_helper(MOI, Kfeatures, Koutputs)
 end
 
 if VERSION >= v"1.6"
     function kernelmatrix!(
-        K::AbstractMatrix,
-        k::IntrinsicCoregionMOKernel,
-        x::IsotopicMOInputsUnion,
-        y::IsotopicMOInputsUnion,
-    )
+        K::AbstractMatrix, k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
+    ) where {MOI<:IsotopicMOInputsUnion}
         @assert x.out_dim == y.out_dim
         Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
         Koutputs = _mo_output_covariance(k, x.out_dim)
-        return _kernelmatrix_kron_helper!(K, x, Kfeatures, Koutputs)
+        return _kernelmatrix_kron_helper!(K, Type{MOI}, Kfeatures, Koutputs)
     end
 end
 
