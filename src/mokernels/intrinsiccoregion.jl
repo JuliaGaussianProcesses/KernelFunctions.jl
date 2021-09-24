@@ -63,7 +63,7 @@ if VERSION >= v"1.6"
         @assert x.out_dim == y.out_dim
         Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
         Koutputs = _mo_output_covariance(k, x.out_dim)
-        return _kernelmatrix_kron_helper!(K, Type{MOI}, Kfeatures, Koutputs)
+        return _kernelmatrix_kron_helper!(K, MOI, Kfeatures, Koutputs)
     end
 end
 
