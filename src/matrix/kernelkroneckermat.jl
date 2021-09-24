@@ -43,7 +43,7 @@ end
     kronecker_kernelmatrix(k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI, y::MOI) 
     where {MOI<:IsotopicMOInputsUnion}
 
-If Kronecker.jl is loaded, computes the `kernelmatrix` for the `IndependentMOKernel` and the `IntrinsicCoregionMOKernel`, but returns a lazy kronecker product. This object can be very efficiently inverted or decomposed. Also refer to `kernelmatrix` documentation. 
+Requires Kronecker.jl: Computes the `kernelmatrix` for the `IndependentMOKernel` and the `IntrinsicCoregionMOKernel`, but returns a lazy kronecker product. This object can be very efficiently inverted or decomposed. Also for details on `kernelmatrix` see its documentation. 
 """
 function kronecker_kernelmatrix(
     k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI, y::MOI
