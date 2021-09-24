@@ -8,8 +8,8 @@ Kernel for multiple independent outputs with kernel `k` each.
 For inputs ``x, x'`` and output dimensions ``p_x, p_{x'}'``, the kernel ``\\widetilde{k}``
 for independent outputs with kernel ``k`` each is defined as
 ```math
-\\widetilde{k}\\big((x, p_x), (x', p_{x'})\\big) = \\begin{cases}
-    k(x, x') & \\text{if } p_x = p_{x'}, \\\\
+\\widetilde{k}\\big((x, p), (x', p')\\big) = \\begin{cases}
+    k(x, x') & \\text{if } p = p', \\\\
     0 & \\text{otherwise}.
 \\end{cases}
 ```
