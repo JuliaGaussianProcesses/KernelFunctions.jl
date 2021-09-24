@@ -28,13 +28,13 @@ end
 @inline iskroncompatible(κ::Kernel) = false # Default return for kernels
 
 function _kernelmatrix_kroneckerjl_helper(
-    ::Type{MOInputIsotopicByFeatures}, Kfeatures, Koutputs
+    ::Type{<:MOInputIsotopicByFeatures}, Kfeatures, Koutputs
 )
     return Kronecker.kronecker(Kfeatures, Koutputs)
 end
 
 function _kernelmatrix_kroneckerjl_helper(
-    ::Type{MOInputIsotopicByOutputs}, Kfeatures, Koutputs
+    ::Type{<:MOInputIsotopicByOutputs}, Kfeatures, Koutputs
 )
     return Kronecker.kronecker(Koutputs, Kfeatures)
 end
