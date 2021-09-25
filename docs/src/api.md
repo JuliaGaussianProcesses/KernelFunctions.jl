@@ -50,7 +50,7 @@ The benefit of using this representation, rather than using a `Vector{Vector{<:R
 optimised matrix-matrix multiplication functionality can be utilised when computing
 pairwise distances between inputs, which are needed for `kernelmatrix` computation.
 
-### [Inputs for Multiple Outputs](@id inputs_for_multiple_outputs_helpers)
+### Inputs for Multiple Outputs
 
 KernelFunctions.jl views multi-output GPs as GPs on an extended input domain.
 For an explanation of this design choice, see [the design notes on multi-output GPs](@ref inputs_for_multiple_outputs).
