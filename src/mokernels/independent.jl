@@ -27,41 +27,28 @@ function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,I
     return κ.kernel(x, y) * (px == py)
 end
 
-function _kernelmatrix_kron_helper(::MOInputIsotopicByFeatures, Kfeatures, B)
-    return kron(Kfeatures, B)
-end
-
-function _kernelmatrix_kron_helper(::MOInputIsotopicByOutputs, Kfeatures, B)
-    return kron(B, Kfeatures)
-end
+_mo_output_covariance(k::IndependentMOKernel, out_dim) = Eye{Bool}(out_dim)
 
 function kernelmatrix(
-    k::IndependentMOKernel, x::MOI, y::MOI
-) where {MOI<:IsotopicMOInputsUnion}
+    k::IndependentMOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
+)
     @assert x.out_dim == y.out_dim
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-    mtype = eltype(Kfeatures)
-    return _kernelmatrix_kron_helper(x, Kfeatures, Eye{mtype}(x.out_dim))
+    Koutputs = _mo_output_covariance(k, x.out_dim)
+    return _kernelmatrix_kron_helper(x, Kfeatures, Koutputs)
 end
 
 if VERSION >= v"1.6"
-    function _kernelmatrix_kron_helper!(K, ::MOInputIsotopicByFeatures, Kfeatures, B)
-        return kron!(K, Kfeatures, B)
-    end
-
-    function _kernelmatrix_kron_helper!(K, ::MOInputIsotopicByOutputs, Kfeatures, B)
-        return kron!(K, B, Kfeatures)
-    end
-
     function kernelmatrix!(
-        K::AbstractMatrix, k::IndependentMOKernel, x::MOI, y::MOI
-    ) where {MOI<:IsotopicMOInputsUnion}
+        K::AbstractMatrix,
+        k::IndependentMOKernel,
+        x::IsotopicMOInputsUnion,
+        y::IsotopicMOInputsUnion,
+    )
         @assert x.out_dim == y.out_dim
-        Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-        mtype = eltype(Ktmp)
-        return _kernelmatrix_kron_helper!(
-            K, x, Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim)
-        )
+        Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
+        Koutputs = _mo_output_covariance(k, x.out_dim)
+        return _kernelmatrix_kron_helper!(K, x, Kfeatures, Koutputs)
     end
 end
 

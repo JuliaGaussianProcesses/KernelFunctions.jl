@@ -60,23 +60,23 @@ include("test_utils.jl")
 @testset "KernelFunctions" begin
     if GROUP == "" || GROUP == "Transform"
         @testset "transform" begin
-            include(joinpath("transform", "transform.jl"))
+            include("transform/transform.jl")
             print(" ")
-            include(joinpath("transform", "scaletransform.jl"))
+            include("transform/scaletransform.jl")
             print(" ")
-            include(joinpath("transform", "ardtransform.jl"))
+            include("transform/ardtransform.jl")
             print(" ")
-            include(joinpath("transform", "lineartransform.jl"))
+            include("transform/lineartransform.jl")
             print(" ")
-            include(joinpath("transform", "functiontransform.jl"))
+            include("transform/functiontransform.jl")
             print(" ")
-            include(joinpath("transform", "selecttransform.jl"))
+            include("transform/selecttransform.jl")
             print(" ")
-            include(joinpath("transform", "chaintransform.jl"))
+            include("transform/chaintransform.jl")
             print(" ")
-            include(joinpath("transform", "periodic_transform.jl"))
+            include("transform/periodic_transform.jl")
             print(" ")
-            include(joinpath("transform", "with_lengthscale.jl"))
+            include("transform/with_lengthscale.jl")
             print(" ")
         end
         @info "Ran tests on Transform"
@@ -84,33 +84,33 @@ include("test_utils.jl")
 
     if GROUP == "" || GROUP == "BaseKernels"
         @testset "basekernels" begin
-            include(joinpath("basekernels", "constant.jl"))
+            include("basekernels/constant.jl")
             print(" ")
-            include(joinpath("basekernels", "cosine.jl"))
+            include("basekernels/cosine.jl")
             print(" ")
-            include(joinpath("basekernels", "exponential.jl"))
+            include("basekernels/exponential.jl")
             print(" ")
-            include(joinpath("basekernels", "exponentiated.jl"))
+            include("basekernels/exponentiated.jl")
             print(" ")
-            include(joinpath("basekernels", "fbm.jl"))
+            include("basekernels/fbm.jl")
             print(" ")
-            include(joinpath("basekernels", "gabor.jl"))
+            include("basekernels/gabor.jl")
             print(" ")
-            include(joinpath("basekernels", "matern.jl"))
+            include("basekernels/matern.jl")
             print(" ")
-            include(joinpath("basekernels", "nn.jl"))
+            include("basekernels/nn.jl")
             print(" ")
-            include(joinpath("basekernels", "periodic.jl"))
+            include("basekernels/periodic.jl")
             print(" ")
-            include(joinpath("basekernels", "piecewisepolynomial.jl"))
+            include("basekernels/piecewisepolynomial.jl")
             print(" ")
-            include(joinpath("basekernels", "polynomial.jl"))
+            include("basekernels/polynomial.jl")
             print(" ")
-            include(joinpath("basekernels", "rational.jl"))
+            include("basekernels/rational.jl")
             print(" ")
-            include(joinpath("basekernels", "sm.jl"))
+            include("basekernels/sm.jl")
             print(" ")
-            include(joinpath("basekernels", "wiener.jl"))
+            include("basekernels/wiener.jl")
             print(" ")
         end
         @info "Ran tests on BaseKernel"
@@ -118,25 +118,25 @@ include("test_utils.jl")
 
     if GROUP == "" || GROUP == "Kernels"
         @testset "kernels" begin
-            include(joinpath("kernels", "kernelproduct.jl"))
-            include(joinpath("kernels", "kernelsum.jl"))
-            include(joinpath("kernels", "kerneltensorproduct.jl"))
-            include(joinpath("kernels", "overloads.jl"))
-            include(joinpath("kernels", "scaledkernel.jl"))
-            include(joinpath("kernels", "transformedkernel.jl"))
-            include(joinpath("kernels", "normalizedkernel.jl"))
-            include(joinpath("kernels", "neuralkernelnetwork.jl"))
+            include("kernels/kernelproduct.jl")
+            include("kernels/kernelsum.jl")
+            include("kernels/kerneltensorproduct.jl")
+            include("kernels/overloads.jl")
+            include("kernels/scaledkernel.jl")
+            include("kernels/transformedkernel.jl")
+            include("kernels/normalizedkernel.jl")
+            include("kernels/neuralkernelnetwork.jl")
         end
         @info "Ran tests on Kernel"
     end
 
     if GROUP == "" || GROUP == "MultiOutput"
         @testset "multi_output" begin
-            include(joinpath("mokernels", "moinput.jl"))
-            include(joinpath("mokernels", "independent.jl"))
-            include(joinpath("mokernels", "slfm.jl"))
-            include(joinpath("mokernels", "intrinsiccoregion.jl"))
-            include(joinpath("mokernels", "lmm.jl"))
+            include("mokernels/moinput.jl")
+            include("mokernels/independent.jl")
+            include("mokernels/slfm.jl")
+            include("mokernels/intrinsiccoregion.jl")
+            include("mokernels/lmm.jl")
         end
         @info "Ran tests on Multi-Output Kernels"
     end
@@ -145,22 +145,22 @@ include("test_utils.jl")
         include("utils.jl")
 
         @testset "distances" begin
-            include(joinpath("distances", "pairwise.jl"))
-            include(joinpath("distances", "dotproduct.jl"))
-            include(joinpath("distances", "delta.jl"))
-            include(joinpath("distances", "sinus.jl"))
+            include("distances/pairwise.jl")
+            include("distances/dotproduct.jl")
+            include("distances/delta.jl")
+            include("distances/sinus.jl")
         end
         @info "Ran tests on Distances"
 
         @testset "matrix" begin
-            include(joinpath("matrix", "kernelmatrix.jl"))
-            include(joinpath("matrix", "kernelkroneckermat.jl"))
-            include(joinpath("matrix", "kernelpdmat.jl"))
+            include("matrix/kernelmatrix.jl")
+            include("matrix/kernelkroneckermat.jl")
+            include("matrix/kernelpdmat.jl")
         end
         @info "Ran tests on matrix"
 
         @testset "approximations" begin
-            include(joinpath("approximations", "nystrom.jl"))
+            include("approximations/nystrom.jl")
         end
 
         include("generic.jl")
