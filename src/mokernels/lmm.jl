@@ -6,7 +6,7 @@ Kernel associated with the linear mixing model, taking a vector of `Q` kernels a
 
 # Definition
 
-For inputs ``x, x'`` and output dimensions ``p, p''``, the kernel is defined as[^BPTHST]
+For inputs ``x, x'`` and output dimensions ``p, p'``, the kernel is defined as[^BPTHST]
 ```math
 k\big((x, p), (x, p')\big) = H_{:,p}K(x, x')H_{:,p'}
 ```
