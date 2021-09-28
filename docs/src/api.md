@@ -89,8 +89,11 @@ nystrom
 NystromFact
 ```
 
-## Optional Utilities
-If the [Kronecker.jl](https://github.com/MichielStock/Kronecker.jl) package is loaded, KernelFunctions also provides the following functions.
+## Conditional Utilities
+To keep the dependencies of KernelFunctions lean, some functionality is only available if specific other packages are explicitly loaded (`using`).
+
+### Kronecker.jl
+[*https://github.com/MichielStock/Kronecker.jl*](https://github.com/MichielStock/Kronecker.jl)
 ```@docs
 kronecker_kernelmatrix
 ```
