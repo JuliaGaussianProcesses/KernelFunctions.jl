@@ -17,6 +17,7 @@ export PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
 export KernelSum, KernelProduct, KernelTensorProduct
 export TransformedKernel, ScaledKernel, NormalizedKernel
+export GibbsKernel
 
 export Transform,
     SelectTransform,

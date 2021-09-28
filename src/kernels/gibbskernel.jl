@@ -1,7 +1,6 @@
 """
 
     GibbsKernel(x, y)
-    
 
 # Definition
 
@@ -29,7 +28,8 @@ k(x, y) = \\sqrt{ \\left( \\frac{2 \\ell(x) \\ell(y)}{\\ell(x)^2 + \\ell(y)^2} \
     "Neural Non-Stationary Spectral Kernel". arXiv:1811.10978, 2018
 """
 
-function (k::GibbsKernel)(x, y, ell)
+#function (k::GibbsKernel)(x, y, ell)
+function GibbsKernel(x::Any, y::Any, ell::Function)
     fac = ell(x)^2 + ell(y)^2
     term1 = 2.0 * ell(x) * ell(y) / fac
     term2 = - (x-y)^2 / fac
