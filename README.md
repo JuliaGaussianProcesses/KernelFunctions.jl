@@ -46,11 +46,11 @@ plot(
   <img src="docs/src/assets/heatmap_combination.png" width=400px>
 </p>
 
-## Packages goals (by priority)
-- Ensure AD Compatibility (already the case for Zygote, ForwardDiff)
-- Toeplitz Matrices compatibility
+## Related Work
 
 Directly inspired by the [MLKernels](https://github.com/trthatcher/MLKernels.jl) package.
+
+See the JuliaGaussianProcesses [github organisation](https://github.com/JuliaGaussianProcesses) and [website](https://juliagaussianprocesses.github.io/) for more related packages.
 
 ## Issues/Contributing
 
