@@ -5,5 +5,7 @@
 
     k = SqExponentialKernel()
 
+    ell(x) = 1.0
+
     @test GibbsKernel(x, y, ell) == k(x, y)
 end
