@@ -94,6 +94,7 @@ include("basekernels/rational.jl")
 include("basekernels/sm.jl")
 include("basekernels/wiener.jl")
 
+include("kernels/gibbskernel.jl")
 include("kernels/scaledkernel.jl")
 include("kernels/normalizedkernel.jl")
 include("matrix/kernelmatrix.jl")
