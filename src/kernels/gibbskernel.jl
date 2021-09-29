@@ -1,5 +1,4 @@
 """
-
     GibbsKernel(x, y)
 
 # Definition
