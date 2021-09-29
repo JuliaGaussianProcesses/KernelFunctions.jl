@@ -50,7 +50,8 @@ end
 function kernelmatrix(
     k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
 ) where {MOI<:IsotopicMOInputsUnion}
-    x.out_dim == y.out_dim || throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
+    x.out_dim == y.out_dim ||
+        throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
     Koutputs = _mo_output_covariance(k, x.out_dim)
     return _kernelmatrix_kron_helper(MOI, Kfeatures, Koutputs)
@@ -60,7 +61,8 @@ if VERSION >= v"1.6"
     function kernelmatrix!(
         K::AbstractMatrix, k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
     ) where {MOI<:IsotopicMOInputsUnion}
-    x.out_dim == y.out_dim || throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
+        x.out_dim == y.out_dim ||
+            throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
         Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
         Koutputs = _mo_output_covariance(k, x.out_dim)
         return _kernelmatrix_kron_helper!(K, MOI, Kfeatures, Koutputs)
