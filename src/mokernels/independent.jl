@@ -32,7 +32,7 @@ _mo_output_covariance(k::IndependentMOKernel, out_dim) = Eye{Bool}(out_dim)
 function kernelmatrix(
     k::IndependentMOKernel, x::MOI, y::MOI
 ) where {MOI<:IsotopicMOInputsUnion}
-    @assert x.out_dim == y.out_dim
+    x.out_dim == y.out_dim || throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
     Koutputs = _mo_output_covariance(k, x.out_dim)
     return _kernelmatrix_kron_helper(MOI, Kfeatures, Koutputs)
@@ -42,7 +42,7 @@ if VERSION >= v"1.6"
     function kernelmatrix!(
         K::AbstractMatrix, k::IndependentMOKernel, x::MOI, y::MOI
     ) where {MOI<:IsotopicMOInputsUnion}
-        @assert x.out_dim == y.out_dim
+    x.out_dim == y.out_dim || throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
         Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
         Koutputs = _mo_output_covariance(k, x.out_dim)
         return _kernelmatrix_kron_helper!(K, MOI, Kfeatures, Koutputs)
