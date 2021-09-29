@@ -1,7 +1,9 @@
+using Test
+using KernelFunctions
+
 @testset "gibbskernel" begin
-    rng = MersenneTwister(123456)
-    x = randn(rng)
-    y = randn(rng)
+    x = 1.0
+    y = 2.0
 
     k = SqExponentialKernel()
 
