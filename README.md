@@ -12,9 +12,11 @@
 
 ## Kernel functions for machine learning
 
-KernelFunctions.jl provide a flexible and complete framework for kernel functions, pretransforming the input data.
+KernelFunctions.jl provide a flexible and complete framework for kernel functions.
 
 The aim is to make the API as model-agnostic as possible while still being user-friendly.
+
+Where appropriate, kernels are AD-compatible.
 
 ## Examples
 
