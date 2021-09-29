@@ -14,7 +14,7 @@
 
 KernelFunctions.jl provides a flexible framework for defining kernel functions, and an extensive collection of implementations.
 
-The aim is to make the API as model-agnostic as possible while still being user-friendly.
+The aim is to make the API as model-agnostic as possible while still being user-friendly, and to interoperate well with generic packages for handling parameters like [ParameterHandling.jl](https://github.com/invenia/ParameterHandling.jl/) and FluxML's [Functors.jl](https://github.com/FluxML/Functors.jl/).
 
 Where appropriate, kernels are AD-compatible.
 
