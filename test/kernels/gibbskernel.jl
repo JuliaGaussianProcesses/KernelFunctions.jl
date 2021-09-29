@@ -1,6 +1,3 @@
-using Test
-using KernelFunctions
-
 @testset "gibbskernel" begin
     x = 1.0
     y = 2.0
