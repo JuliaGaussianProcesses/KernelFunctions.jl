@@ -52,7 +52,7 @@ plot(
 
 Directly inspired by the [MLKernels](https://github.com/trthatcher/MLKernels.jl) package.
 
-See the JuliaGaussianProcesses [github organisation](https://github.com/JuliaGaussianProcesses) and [website](https://juliagaussianprocesses.github.io/) for more related packages.
+See the JuliaGaussianProcesses [Github organisation](https://github.com/JuliaGaussianProcesses) and [website](https://juliagaussianprocesses.github.io/) for more related packages.
 
 ## Issues/Contributing
 
