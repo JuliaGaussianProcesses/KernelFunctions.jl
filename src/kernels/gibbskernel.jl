@@ -4,14 +4,15 @@
 # Definition
 
 The Gibbs kernel is non-stationary generalisation of the Squared-Exponential
-kernel. The lengthscale parameter ``\\ell`` becomes a function of
-position ``\\ell(x)``.
+kernel. The lengthscale parameter ``l`` becomes a function of
+position ``l(x)``.
 
-``\\ell(x) = 1.`` then you recover the standard Squared-Exponential kernel
+``l(x) = 1.`` then you recover the standard Squared-Exponential kernel
 with constant lengthscale.
 
 ```math
-k(x, y) = \\sqrt{ \\left( \\frac{2 \\ell(x) \\ell(y)}{\\ell(x)^2 + \\ell(y)^2} \\right) } \\quad \\rm{exp} \\left( - \\frac{(x - y)^2}{\\ell(x)^2 + \\ell(y)^2} \\right)
+k(x, y) = \\sqrt{ \\left(\\frac{2 l(x) l(y)}{l(x)^2 + l(y)^2} \\right) }
+\\quad \\rm{exp} \\left( - \\frac{(x - y)^2}{l(x)^2 + l(y)^2} \\right)
 ```
 
 [1] - Mark N. Gibbs. "Bayesian Gaussian Processes for Regression and Classication."
@@ -26,9 +27,18 @@ k(x, y) = \\sqrt{ \\left( \\frac{2 \\ell(x) \\ell(y)}{\\ell(x)^2 + \\ell(y)^2} \
 [4] - Sami Remes, Markus Heinonen, Samuel Kaski.
     "Neural Non-Stationary Spectral Kernel". arXiv:1811.10978, 2018
 """
-function GibbsKernel(x::Any, y::Any, ell::Function)
-    fac = ell(x)^2 + ell(y)^2
-    term1 = 2.0 * ell(x) * ell(y) / fac
-    term2 = - (x-y)^2 / fac
-    return term1 * exp(term2)
+
+struct GibbsKernel{T} <: Kernel
+    lengthscale::T
+end
+
+GibbsKernel(; lengthscale) = GibbsKernel(lengthscale)
+
+function (k::GibbsKernel)(x, y)
+    lengthscale = k.lengthscale
+    lx = lengthscale(x)
+    ly = lengthscale(y)
+    l = hypot(lx, ly)
+    kernel = sqrt(2 * lx * ly) / l * with_lengthscale(SqExponentialKernel(), l)
+    return kernel(x, y)
 end
