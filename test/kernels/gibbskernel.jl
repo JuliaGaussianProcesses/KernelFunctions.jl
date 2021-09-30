@@ -3,7 +3,7 @@
     y = randn(2)
 
     # generate random number of standard SqExponentialKernel lengthscale
-    ell = randn(1)[1]
+    ell = sum(sin, x)
 
     # this is the gibbs lengthscale function.
     # to check that we can recover the stationary SqExponentialKernel
