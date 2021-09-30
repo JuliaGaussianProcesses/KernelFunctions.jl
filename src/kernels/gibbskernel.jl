@@ -7,8 +7,8 @@ The Gibbs kernel is non-stationary generalisation of the Squared-Exponential
 kernel. The lengthscale parameter ``l`` becomes a function of
 position ``l(x)``.
 
-``l(x) = 1.`` then you recover the standard Squared-Exponential kernel
-with constant lengthscale.
+``l(x) = l`` then you recover the standard Squared-Exponential kernel
+with constant lengthscale ``l``.
 
 ```math
 k(x, y) = \\sqrt{ \\left(\\frac{2 l(x) l(y)}{l(x)^2 + l(y)^2} \\right) }
