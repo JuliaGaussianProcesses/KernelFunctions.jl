@@ -80,8 +80,6 @@ Base.vcat(a::ColVecs, b::ColVecs) = ColVecs(hcat(a.X, b.X))
 
 dim(x::ColVecs) = size(x.X, 1)
 
-const Distances_pairwise = Distances.pairwise
-
 pairwise(d::PreMetric, x::ColVecs) = Distances_pairwise(d, x.X; dims=2)
 pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances_pairwise(d, x.X, y.X; dims=2)
 function pairwise(d::PreMetric, x::AbstractVector, y::ColVecs)
