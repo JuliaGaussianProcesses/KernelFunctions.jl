@@ -54,7 +54,7 @@ using Functors
 using LinearAlgebra
 using Requires
 using SpecialFunctions: loggamma, besselk, polygamma
-using IrrationalConstants: logtwo, twoπ
+using IrrationalConstants: logtwo, twoπ, invsqrt2
 using LogExpFunctions: softplus
 using StatsBase
 using TensorCore
