@@ -120,7 +120,7 @@ kernels = [
     LinearKernel(),
     compose(PeriodicKernel(), ScaleTransform(0.2)),
     NeuralNetworkKernel(),
-    GibbsKernel(x -> exp(sin.(x))),
+    GibbsKernel(; lengthscale = x -> sum(exp ∘ sin, x)),
 ]
 plot(
     [visualize(k) for k in kernels]...;
