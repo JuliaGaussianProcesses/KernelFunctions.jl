@@ -27,6 +27,7 @@ CosineKernel
 
 ```@docs
 ExponentialKernel
+GibbsKernel
 LaplacianKernel
 SqExponentialKernel
 SEKernel

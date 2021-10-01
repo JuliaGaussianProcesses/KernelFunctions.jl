@@ -17,6 +17,7 @@ export PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
 export KernelSum, KernelProduct, KernelTensorProduct
 export TransformedKernel, ScaledKernel, NormalizedKernel
+export GibbsKernel
 
 export Transform,
     SelectTransform,
@@ -53,7 +54,7 @@ using Functors
 using LinearAlgebra
 using Requires
 using SpecialFunctions: loggamma, besselk, polygamma
-using IrrationalConstants: logtwo, twoπ
+using IrrationalConstants: logtwo, twoπ, invsqrt2
 using LogExpFunctions: softplus
 using StatsBase
 using TensorCore
@@ -94,6 +95,7 @@ include("basekernels/rational.jl")
 include("basekernels/sm.jl")
 include("basekernels/wiener.jl")
 
+include("kernels/gibbskernel.jl")
 include("kernels/scaledkernel.jl")
 include("kernels/normalizedkernel.jl")
 include("matrix/kernelmatrix.jl")
