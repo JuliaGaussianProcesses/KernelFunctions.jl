@@ -63,7 +63,6 @@ using ZygoteRules: ZygoteRules
 # Hack to work around Zygote type inference problems.
 const Distances_pairwise = Distances.pairwise
 
-
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
 
