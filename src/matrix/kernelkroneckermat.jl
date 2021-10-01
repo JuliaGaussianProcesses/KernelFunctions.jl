@@ -27,31 +27,43 @@ end
 """
 @inline iskroncompatible(κ::Kernel) = false # Default return for kernels
 
-function _kernelmatrix_kroneckerjl_helper(::MOInputIsotopicByFeatures, Kfeatures, Koutputs)
+function _kernelmatrix_kroneckerjl_helper(
+    ::Type{<:MOInputIsotopicByFeatures}, Kfeatures, Koutputs
+)
     return Kronecker.kronecker(Kfeatures, Koutputs)
 end
 
-function _kernelmatrix_kroneckerjl_helper(::MOInputIsotopicByOutputs, Kfeatures, Koutputs)
+function _kernelmatrix_kroneckerjl_helper(
+    ::Type{<:MOInputIsotopicByOutputs}, Kfeatures, Koutputs
+)
     return Kronecker.kronecker(Koutputs, Kfeatures)
 end
 
+"""
+    kronecker_kernelmatrix(
+        k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI, y::MOI
+    ) where {MOI<:IsotopicMOInputsUnion}
+
+Requires Kronecker.jl: Computes the `kernelmatrix` for the `IndependentMOKernel` and the
+`IntrinsicCoregionMOKernel`, but returns a lazy kronecker product. This object can be very
+efficiently inverted or decomposed. See also [`kernelmatrix`](@ref).
+"""
 function kronecker_kernelmatrix(
-    k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel},
-    x::IsotopicMOInputsUnion,
-    y::IsotopicMOInputsUnion,
-)
-    @assert x.out_dim == y.out_dim
+    k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI, y::MOI
+) where {MOI<:IsotopicMOInputsUnion}
+    x.out_dim == y.out_dim ||
+        throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
     Koutputs = _mo_output_covariance(k, x.out_dim)
-    return _kernelmatrix_kroneckerjl_helper(x, Kfeatures, Koutputs)
+    return _kernelmatrix_kroneckerjl_helper(MOI, Kfeatures, Koutputs)
 end
 
 function kronecker_kernelmatrix(
-    k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::IsotopicMOInputsUnion
-)
+    k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI
+) where {MOI<:IsotopicMOInputsUnion}
     Kfeatures = kernelmatrix(k.kernel, x.x)
     Koutputs = _mo_output_covariance(k, x.out_dim)
-    return _kernelmatrix_kroneckerjl_helper(x, Kfeatures, Koutputs)
+    return _kernelmatrix_kroneckerjl_helper(MOI, Kfeatures, Koutputs)
 end
 
 function kronecker_kernelmatrix(

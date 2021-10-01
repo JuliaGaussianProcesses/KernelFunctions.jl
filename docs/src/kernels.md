@@ -129,6 +129,9 @@ NormalizedKernel
 ```
 
 ## Multi-output Kernels
+Kernelfunctions implements multi-output kernels as scalar kernels on an extended output domain. For more details on this read [the section on inputs for multi-output GPs](@ref Inputs-for-Multiple-Outputs).
+
+For a function ``f(x) \\rightarrow y`` denote the inputs as ``x, x'``, such that we compute the covariance between output components ``y_{p}`` and ``y_{p'}``. The total number of outputs is ``m``.
 
 ```@docs
 MOKernel
