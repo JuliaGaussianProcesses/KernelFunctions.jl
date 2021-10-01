@@ -1,31 +1,30 @@
 """
-    GibbsKernel(x, y)
+    GibbsKernel(; lengthscale)
 
 # Definition
 
-The Gibbs kernel is non-stationary generalisation of the Squared-Exponential
+The Gibbs kernel is non-stationary generalisation of the squared exponential
 kernel. The lengthscale parameter ``l`` becomes a function of
 position ``l(x)``.
 
-For a constant function``l(x) = c``, one recovers the standard squared exponential kernel with lengthscale `c`.
-with constant lengthscale ``l``.
+For a constant function``l(x) = c``, one recovers the standard squared exponential kernel
+with lengthscale `c`.
 
 ```math
-k(x, y) = \\sqrt{ \\left(\\frac{2 l(x) l(y)}{l(x)^2 + l(y)^2} \\right) }
+k(x, y; l) = \\sqrt{ \\left(\\frac{2 l(x) l(y)}{l(x)^2 + l(y)^2} \\right) }
 \\quad \\rm{exp} \\left( - \\frac{(x - y)^2}{l(x)^2 + l(y)^2} \\right)
 ```
 
-[1] - Mark N. Gibbs. "Bayesian Gaussian Processes for Regression and Classication."
-    PhD thesis, 1997
+# References
 
-[2] - Christopher J. Paciorek and Mark J. Schervish. "Nonstationary Covariance
-    Functions for Gaussian Process Regression". NEURIPS, 2003
+Mark N. Gibbs. "Bayesian Gaussian Processes for Regression and Classication." PhD thesis, 1997
 
-[3] - Sami Remes, Markus Heinonen, Samuel Kaski.
-    "Non-Stationary Spectral Kernels". arXiV:1705.08736, 2017
+Christopher J. Paciorek and Mark J. Schervish. "Nonstationary Covariance Functions
+for Gaussian Process Regression". NeurIPS, 2003
 
-[4] - Sami Remes, Markus Heinonen, Samuel Kaski.
-    "Neural Non-Stationary Spectral Kernel". arXiv:1811.10978, 2018
+Sami Remes, Markus Heinonen, Samuel Kaski. "Non-Stationary Spectral Kernels". arXiV:1705.08736, 2017
+
+Sami Remes, Markus Heinonen, Samuel Kaski. "Neural Non-Stationary Spectral Kernel". arXiv:1811.10978, 2018
 """
 struct GibbsKernel{T} <: Kernel
     lengthscale::T
