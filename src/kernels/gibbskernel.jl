@@ -27,7 +27,6 @@ k(x, y) = \\sqrt{ \\left(\\frac{2 l(x) l(y)}{l(x)^2 + l(y)^2} \\right) }
 [4] - Sami Remes, Markus Heinonen, Samuel Kaski.
     "Neural Non-Stationary Spectral Kernel". arXiv:1811.10978, 2018
 """
-
 struct GibbsKernel{T} <: Kernel
     lengthscale::T
 end
