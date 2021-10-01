@@ -80,13 +80,15 @@ Base.vcat(a::ColVecs, b::ColVecs) = ColVecs(hcat(a.X, b.X))
 
 dim(x::ColVecs) = size(x.X, 1)
 
-pairwise(d::PreMetric, x::ColVecs) = Distances.pairwise(d, x.X; dims=2)
-pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances.pairwise(d, x.X, y.X; dims=2)
+const Distances_pairwise = Distances.pairwise
+
+pairwise(d::PreMetric, x::ColVecs) = Distances_pairwise(d, x.X; dims=2)
+pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances_pairwise(d, x.X, y.X; dims=2)
 function pairwise(d::PreMetric, x::AbstractVector, y::ColVecs)
-    return Distances.pairwise(d, reduce(hcat, x), y.X; dims=2)
+    return Distances_pairwise(d, reduce(hcat, x), y.X; dims=2)
 end
 function pairwise(d::PreMetric, x::ColVecs, y::AbstractVector)
-    return Distances.pairwise(d, x.X, reduce(hcat, y); dims=2)
+    return Distances_pairwise(d, x.X, reduce(hcat, y); dims=2)
 end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs)
     return Distances.pairwise!(out, d, x.X; dims=2)
@@ -150,13 +152,13 @@ Base.vcat(a::RowVecs, b::RowVecs) = RowVecs(vcat(a.X, b.X))
 
 dim(x::RowVecs) = size(x.X, 2)
 
-pairwise(d::PreMetric, x::RowVecs) = Distances.pairwise(d, x.X; dims=1)
-pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = Distances.pairwise(d, x.X, y.X; dims=1)
+pairwise(d::PreMetric, x::RowVecs) = Distances_pairwise(d, x.X; dims=1)
+pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = Distances_pairwise(d, x.X, y.X; dims=1)
 function pairwise(d::PreMetric, x::AbstractVector, y::RowVecs)
-    return Distances.pairwise(d, permutedims(reduce(hcat, x)), y.X; dims=1)
+    return Distances_pairwise(d, permutedims(reduce(hcat, x)), y.X; dims=1)
 end
 function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector)
-    return Distances.pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
+    return Distances_pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
 end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs)
     return Distances.pairwise!(out, d, x.X; dims=1)
