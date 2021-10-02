@@ -31,7 +31,6 @@ end
 
 # AD utilities
 
-
 # Type to work around some performance issues that can happen on the reverse-pass of Zygote.
 using Zygote: @adjoint, accum, AContext
 
