@@ -57,8 +57,7 @@
             x = ColVecs(randn(2, 4))
             y = ColVecs(randn(2, 3))
 
-            # Why on earth I need to write KernelFunctions.pairwise, rather than just
-            # pairwise, is beyond me. Probably something to do with globals or something.
+            # Ensure KernelFunctions.pairwise rather than Distances.pairwise is used.
             check_zygote_type_stability(
                 x -> KernelFunctions.pairwise(SqEuclidean(), x), x; ctx=ctx
             )
