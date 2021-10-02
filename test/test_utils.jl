@@ -32,8 +32,6 @@ end
 # AD utilities
 
 # Type to work around some performance issues that can happen on the reverse-pass of Zygote.
-using Zygote: @adjoint, accum, AContext
-
 # This context doesn't allow any globals. Don't use this if you use globals in your
 # programme.
 struct NoContext <: Zygote.AContext end
