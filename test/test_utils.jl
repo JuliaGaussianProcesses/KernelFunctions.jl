@@ -42,7 +42,6 @@ Zygote.cache(cx::NoContext) = (cache_fields=nothing)
 Base.haskey(cx::NoContext, x) = false
 Zygote.accum_param(::NoContext, x, Δ) = Δ
 
-
 const FDM = FiniteDifferences.central_fdm(5, 1)
 
 gradient(f, s::Symbol, args) = gradient(f, Val(s), args)
