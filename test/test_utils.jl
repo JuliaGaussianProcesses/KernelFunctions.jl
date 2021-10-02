@@ -31,6 +31,19 @@ end
 
 # AD utilities
 
+
+# Type to work around some performance issues that can happen on the reverse-pass of Zygote.
+using Zygote: @adjoint, accum, AContext
+
+# This context doesn't allow any globals. Don't use this if you use globals in your
+# programme.
+struct NoContext <: Zygote.AContext end
+
+Zygote.cache(cx::NoContext) = (cache_fields=nothing)
+Base.haskey(cx::NoContext, x) = false
+Zygote.accum_param(::NoContext, x, Δ) = Δ
+
+
 const FDM = FiniteDifferences.central_fdm(5, 1)
 
 gradient(f, s::Symbol, args) = gradient(f, Val(s), args)
@@ -85,6 +98,13 @@ function test_ADs(
             test_AD(AD, kernelfunction, args, dims)
         end
     end
+end
+
+function check_zygote_type_stability(f, args...; ctx=Zygote.Context())
+    @inferred f(args...)
+    @inferred Zygote._pullback(ctx, f, args...)
+    out, pb = Zygote._pullback(ctx, f, args...)
+    @inferred pb(out)
 end
 
 function test_ADs(

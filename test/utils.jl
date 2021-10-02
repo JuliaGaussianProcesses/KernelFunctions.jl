@@ -51,6 +51,21 @@
             X_, back = Zygote.pullback(DX -> DX.X, DX)
             @test back(ones(size(X)))[1].X == ones(size(X))
         end
+
+        @testset "Zygote type-inference" begin
+            ctx = NoContext()
+            x = ColVecs(randn(2, 4))
+            y = ColVecs(randn(2, 3))
+
+            # Why on earth I need to write KernelFunctions.pairwise, rather than just
+            # pairwise, is beyond me. Probably something to do with globals or something.
+            check_zygote_type_stability(
+                x -> KernelFunctions.pairwise(SqEuclidean(), x), x; ctx=ctx
+            )
+            check_zygote_type_stability(
+                (x, y) -> KernelFunctions.pairwise(SqEuclidean(), x, y), x, y; ctx=ctx
+            )
+        end
     end
     @testset "RowVecs" begin
         DX = RowVecs(X)
