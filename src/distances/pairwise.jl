@@ -13,11 +13,11 @@ end
 pairwise!(out::AbstractMatrix, d::PreMetric, X::AbstractVector) = pairwise!(out, d, X, X)
 
 function pairwise(d::PreMetric, x::AbstractVector{<:Real})
-    return Distances.pairwise(d, reshape(x, :, 1); dims=1)
+    return Distances_pairwise(d, reshape(x, :, 1); dims=1)
 end
 
 function pairwise(d::PreMetric, x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
-    return Distances.pairwise(d, reshape(x, :, 1), reshape(y, :, 1); dims=1)
+    return Distances_pairwise(d, reshape(x, :, 1), reshape(y, :, 1); dims=1)
 end
 
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::AbstractVector{<:Real})
