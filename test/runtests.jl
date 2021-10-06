@@ -126,6 +126,7 @@ include("test_utils.jl")
             include("kernels/transformedkernel.jl")
             include("kernels/normalizedkernel.jl")
             include("kernels/neuralkernelnetwork.jl")
+            include("kernels/gibbskernel.jl")
         end
         @info "Ran tests on Kernel"
     end
