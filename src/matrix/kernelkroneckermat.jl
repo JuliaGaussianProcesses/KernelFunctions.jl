@@ -6,24 +6,41 @@ using .Kronecker: Kronecker
 export kernelkronmat
 export kronecker_kernelmatrix
 
-function kernelkronmat(κ::Kernel, X::AbstractVector, dims::Int)
-    @assert iskroncompatible(κ) "The chosen kernel is not compatible for kroenecker matrices (see [`iskroncompatible`](@ref))"
+@doc raw"""
+    kernelkronmat(κ::Kernel, X::AbstractVector, dims::Int) -> Kronecker
+
+Requires `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`
+Return a `Kronecker` matrix on the `D`-dimensional input grid constructed by ``\otimes_{i=1}^D x``,
+where `D` is given by `dims`.
+
+    kernelkronmat(κ::Kernel, X::AbstractVector{<:AbstractVector}) -> Kronecker
+
+Requires `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`:
+Returns a `Kronecker` matrix on the grid built for the collection of vectors `X`.
+"""
+function kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int)
+    iskroncompatible(κ) || error("The chosen kernel is not compatible for kroenecker matrices (see [`iskroncompatible`](@ref))")
     k = kernelmatrix(κ, X)
     return Kronecker.kronecker(k, dims)
 end
 
 function kernelkronmat(
-    κ::Kernel, X::AbstractVector{<:AbstractVector}; obsdim::Int=defaultobs
+    κ::Kernel, X::AbstractVector{<:AbstractVector}
 )
-    @assert iskroncompatible(κ) "The chosen kernel is not compatible for Kronecker matrices"
+    iskroncompatible(κ) || error("The chosen kernel is not compatible for Kronecker matrices")
     Ks = kernelmatrix.(κ, X)
     return K = reduce(Kronecker.:⊗, Ks)
 end
 
-"""
-    To be compatible with kroenecker constructions the kernel must satisfy
-    the property : for x,x' ∈ ℜᴰ
-    k(x,x') = ∏ᵢᴰ k(xᵢ,x'ᵢ)
+@doc raw"""
+    iskroncompatible(k::Kernel)
+
+To be compatible with kroenecker constructions the kernel must satisfy
+the property : for ``x,x' \in \mathbb{R}^D`
+```math
+k(x,x') = \prod_{i=1}^D k(x_i,x'_i)
+```
+Returns `false` by default.
 """
 @inline iskroncompatible(κ::Kernel) = false # Default return for kernels
 
