@@ -134,7 +134,11 @@ function test_interface(
 end
 
 function test_interface(
-    rng::AbstractRNG, k::Kernel, ::Type{<:AbstractVector{AbstractVector{T}}}; dim_in=2, kwargs...
+    rng::AbstractRNG,
+    k::Kernel,
+    ::Type{<:AbstractVector{AbstractVector{T}}};
+    dim_in=2,
+    kwargs...,
 ) where {T<:Real}
     return test_interface(
         k,
