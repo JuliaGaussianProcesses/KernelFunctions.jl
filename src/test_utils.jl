@@ -136,7 +136,7 @@ end
 function test_interface(
     rng::AbstractRNG,
     k::Kernel,
-    ::Type{<:AbstractVector{AbstractVector{T}}};
+    ::Type{<:Vector{Vector{T}}};
     dim_in=2,
     kwargs...,
 ) where {T<:Real}
@@ -163,8 +163,8 @@ function test_interface(rng::AbstractRNG, k::Kernel, T::Type{<:Real}; kwargs...)
     @testset "RowVecs{$T}" begin
         test_interface(rng, k, RowVecs{T}; kwargs...)
     end
-    @testset "AbstractVector{AbstractVector{T}}" begin
-        test_interface(rng, k, AbstractVector{AbstractVector{T}}; kwargs...)
+    @testset "Vector{Vector{T}}" begin
+        test_interface(rng, k, Vector{Vector{T}}; kwargs...)
     end
 end
 
