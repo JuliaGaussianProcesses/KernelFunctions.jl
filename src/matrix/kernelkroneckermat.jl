@@ -21,16 +21,20 @@ Requires `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
 Returns a `Kronecker` matrix on the grid built with the collection of vectors ``\{X_i\}_{i=1}^D``: ``\otimes_{i=1}^D X_i``.
 """
 function kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int)
-    iskroncompatible(κ) || error(
-        "The chosen kernel is not compatible for Kronecker matrices (see [`iskroncompatible`](@ref))",
+    iskroncompatible(κ) || throw(
+        ArgumentError(
+            "The chosen kernel is not compatible for Kronecker matrices (see [`iskroncompatible`](@ref))",
+        ),
     )
     k = kernelmatrix(κ, X)
     return Kronecker.kronecker(k, dims)
 end
 
 function kernelkronmat(κ::Kernel, X::AbstractVector{<:AbstractVector})
-    iskroncompatible(κ) || error(
-        "The chosen kernel is not compatible for Kronecker matrices (see [`iskroncompatible`](@ref))",
+    iskroncompatible(κ) || throw(
+        ArgumentError(
+            "The chosen kernel is not compatible for Kronecker matrices (see [`iskroncompatible`](@ref))",
+        ),
     )
     Ks = kernelmatrix.(κ, X)
     return reduce(Kronecker.:⊗, Ks)
