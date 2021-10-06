@@ -29,9 +29,11 @@ end
 function kernelkronmat(
     κ::Kernel, X::AbstractVector{<:AbstractVector}
 )
-    iskroncompatible(κ) || error("The chosen kernel is not compatible for Kronecker matrices")
+    iskroncompatible(κ) || error(
+        "The chosen kernel is not compatible for Kronecker matrices"
+    )
     Ks = kernelmatrix.(κ, X)
-    return K = reduce(Kronecker.:⊗, Ks)
+    return reduce(Kronecker.:⊗, Ks)
 end
 
 @doc raw"""
