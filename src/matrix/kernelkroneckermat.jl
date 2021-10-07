@@ -7,18 +7,12 @@ export kernelkronmat
 export kronecker_kernelmatrix
 
 @doc raw"""
-    kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int) -> Kronecker
+    kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int) -> KroneckerPower
 
 Requires `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
 
-Returns a `Kronecker` matrix on the `D`-dimensional input grid constructed by ``\otimes_{i=1}^D X``,
+Returns a `KroneckerPower` matrix on the `D`-dimensional input grid constructed by ``\otimes_{i=1}^D X``,
 where `D` is given by `dims`.
-
-    kernelkronmat(κ::Kernel, X::AbstractVector{<:AbstractVector}) -> Kronecker
-
-Requires `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
-
-Returns a `Kronecker` matrix on the grid built with the collection of vectors ``\{X_i\}_{i=1}^D``: ``\otimes_{i=1}^D X_i``.
 """
 function kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int)
     iskroncompatible(κ) || throw(
@@ -26,10 +20,18 @@ function kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int)
             "The chosen kernel is not compatible for Kronecker matrices (see [`iskroncompatible`](@ref))",
         ),
     )
-    k = kernelmatrix(κ, X)
-    return Kronecker.kronecker(k, dims)
+    K = kernelmatrix(κ, X)
+    return Kronecker.kronecker(K, dims)
 end
 
+@doc raw"""
+
+    kernelkronmat(κ::Kernel, X::AbstractVector{<:AbstractVector}) -> KroneckerProduct
+
+Requires `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
+
+Returns a `KroneckerProduct` matrix on the grid built with the collection of vectors ``\{X_i\}_{i=1}^D``: ``\otimes_{i=1}^D X_i``.
+"""
 function kernelkronmat(κ::Kernel, X::AbstractVector{<:AbstractVector})
     iskroncompatible(κ) || throw(
         ArgumentError(
