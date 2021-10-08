@@ -58,20 +58,8 @@ jobs:
           GROUP: ${{ matrix.group }}
       - uses: julia-actions/julia-processcoverage@v1
         if: matrix.version == '1' && matrix.os == 'ubuntu-latest'
-      - name: Coveralls parallel
+      - name: Send coverage to CodeCov
         if: matrix.version == '1' && matrix.os == 'ubuntu-latest'
-        uses: coverallsapp/github-action@master
+        uses: codecov/codecov-action@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ./lcov.info
-          flag-name: run-${{ matrix.group }}
-          parallel: true
-  finish:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send coverage
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.github_token }}
-          parallel-finished: true
+            file: lcov.info
