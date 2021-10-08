@@ -197,17 +197,27 @@ function validate_inplace_dims(K::AbstractMatrix, x::AbstractVector, y::Abstract
     end
 end
 
-function validate_inplace_dims(K::AbstractMatrix, x::AbstractVector)
-    return validate_inplace_dims(K, x, x)
-end
-
-function validate_inplace_dims(K::AbstractVector, x::AbstractVector)
-    if length(K) != length(x)
+function validate_inplace_dims(K::AbstractVector, x::AbstractVector, y::AbstractVector)
+    validate_inputs(x, y)
+    n = length(x)
+    if length(y) != n
         throw(
             DimensionMismatch(
-                "Length of target vector K ($(length(K))) not consistent with length of input" *
-                "vector x ($(length(x))",
+                "Length of input x ($n) not consistent with length of input y " *
+                "($(length(y))",
             ),
         )
     end
+    if length(K) != n
+        throw(
+            DimensionMismatch(
+                "Length of target vector K ($(length(K))) not consistent with length of " *
+                "inputs ($n)",
+            ),
+        )
+    end
+end
+
+function validate_inplace_dims(K::AbstractVecOrMat, x::AbstractVector)
+    return validate_inplace_dims(K, x, x)
 end
