@@ -87,6 +87,7 @@ function test_interface(
 
     tmp_diag = Vector{Float64}(undef, length(x0))
     @test kernelmatrix_diag!(tmp_diag, k, x0) ≈ kernelmatrix_diag(k, x0)
+    @test kernelmatrix_diag!(tmp_diag, k, x0, x1) ≈ kernelmatrix_diag(k, x0, x1)
 end
 
 function test_interface(
