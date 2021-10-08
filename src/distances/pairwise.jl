@@ -7,7 +7,7 @@ end
 pairwise(d::PreMetric, X::AbstractVector) = pairwise(d, X, X)
 
 function pairwise!(out::AbstractMatrix, d::PreMetric, X::AbstractVector, Y::AbstractVector)
-    return broadcast!(d, out, X, Y')
+    return broadcast!(d, out, X, permutedims(Y))
 end
 
 pairwise!(out::AbstractMatrix, d::PreMetric, X::AbstractVector) = pairwise!(out, d, X, X)
