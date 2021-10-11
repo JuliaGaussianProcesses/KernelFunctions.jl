@@ -51,7 +51,7 @@ k(x, x') = \prod_{i=1}^D k(x_i, x'_i).
 @inline iskroncompatible(κ::Kernel) = false # Default return for kernels
 
 function checkkroncompatible(κ::Kernel)
-    iskroncompatible(κ) || throw(
+    return iskroncompatible(κ) || throw(
         ArgumentError(
             "The chosen kernel is not compatible for Kronecker matrices (see [`iskroncompatible`](@ref))",
         ),
