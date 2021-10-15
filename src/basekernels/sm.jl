@@ -16,7 +16,12 @@ Generalised Spectral Mixture kernel function as described in [1] in equation 6.
 This family of functions is dense in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
 
 ```math
-   κ(x, y) = \sum_{k=1}^K \alpha_k \cdot h(γ_k \odot x, γ_k \odot y) \cdot \cos(2π \cdot ω_k^\top (x-y)),
+# Definition
+
+For inputs ``x, x′ \in \mathbb{R}^m``, the spectral mixture kernel ``\tilde{k}`` with ``K`` mixture components, mixture weights ``\alpha \in \mathbb{R}^K``, linear transformations ``\gamma_1, \ldots, \gamma_K \in \mathbb{R}^m``, and frequencies ``\omega_1, \ldots, \omega_K \in \mathbb{R}^m`` derived from a translation-invariant kernel ``k`` is defined as
+```math
+\tilde{k}(x, x'; \alpha, \gamma_1, \ldots, \gamma_K, \omega_1, \ldots, \omega_K, k) = \sum_{i=1}^K \alpha_i k(\gamma_i \odot x, \gamma_i \odot y) \cos(2\pi \omega_i^\top (x-y)).
+```
 ```
 
 ## Arguments
