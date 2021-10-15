@@ -15,20 +15,18 @@
 Generalised Spectral Mixture kernel function as described in [1] in equation 6.
 This family of functions is dense in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
 
-```math
-# Definition
+## Definition
 
-For inputs ``x, x′ \in \mathbb{R}^m``, the spectral mixture kernel ``\tilde{k}`` with ``K`` mixture components, mixture weights ``\alpha \in \mathbb{R}^K``, linear transformations ``\gamma_1, \ldots, \gamma_K \in \mathbb{R}^m``, and frequencies ``\omega_1, \ldots, \omega_K \in \mathbb{R}^m`` derived from a translation-invariant kernel ``k`` is defined as
+For inputs ``x, x′ \in \mathbb{R}^D``, the spectral mixture kernel ``\tilde{k}`` with ``K`` mixture components, mixture weights ``\alpha \in \mathbb{R}^K``, linear transformations ``\gamma_1, \ldots, \gamma_K \in \mathbb{R}^D``, and frequencies ``\omega_1, \ldots, \omega_K \in \mathbb{R}^D`` derived from a translation-invariant kernel ``k`` is defined as
 ```math
 \tilde{k}(x, x'; \alpha, \gamma_1, \ldots, \gamma_K, \omega_1, \ldots, \omega_K, k) = \sum_{i=1}^K \alpha_i k(\gamma_i \odot x, \gamma_i \odot y) \cos(2\pi \omega_i^\top (x-y)).
-```
 ```
 
 ## Arguments
 - `h`: Stationary kernel (translation invariant), [`SqExponentialKernel`](@ref) by default
-- `α`: Weight vector of each mixture component
+- `α`: Weight vector of each mixture component (should be positive)
 - `γ`: Linear transformation of the input for `h`.
-- `ω`: Frequencies for the cosine function.
+- `ω`: Frequencies for the cosine function. (should be positive)
 
 `γ` and `ω` can be an
 - `AbstractMatrix` of dimension `D x K` where `D` is the dimension of the inputs 
@@ -59,9 +57,9 @@ struct SpectralMixtureKernel{
         γ::AbstractVector{<:AbstractVector},
         ω::AbstractVector{<:AbstractVector},
     )
-        if !(length(α) == length(γ) == length(ω))
-            throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
-        end
+        (length(α) == length(γ) == length(ω)) || throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
+        any(<(0), α) || throw(ArgumentError("At least element of α is negative"))
+        any(any.(<(0), ω)) || throw(ArgumentError("At least one element of ω is negative"))
         return new{typeof(h),typeof(α),typeof(γ),typeof(ω)}(h, α, γ, ω)
     end
 end
@@ -116,8 +114,12 @@ With enough components, the SMP kernel
 can model any product kernel to arbitrary precision, and is flexible even
 with a small number of components
 
+## Definition
+
+For inputs ``x, x′ \in \mathbb{R}^D``, the spectral mixture product kernel ``\tilde{k}`` with ``K`` mixture components, mixture weights ``\alpha_1, \alpha_2, \ldots, \alpha_K \in \mathbb{R}^D``, linear transformations ``\gamma_1, \ldots, \gamma_K \in \mathbb{R}^D``, and frequencies ``\omega_1, \ldots, \omega_K \in \mathbb{R}^D`` derived from a translation-invariant kernel ``k`` is defined as
+
 ```math
-   κ(x, y) = \prod_{i=1}^D \sum_{k=1}^K \alpha_{ik} \cdot h(\gamma_{ik} \cdot x_i, \gamma_{ik} \cdot y_i)) \cdot \cos(2\pi \cdot \omega_{ik} \cdot (x_i - y_i))))
+   \tilde{k}(x, x'; \alpha_1, \ldots, \alpha_k, \gamma_1, \ldots, \gamma_K, \omega_1, \ldots, \omega_K, k) = \prod_{i=1}^D \sum_{k=1}^K \alpha_{ik} \cdot h(\gamma_{ik} \cdot x_i, \gamma_{ik} \cdot y_i)) \cdot \cos(2\pi \cdot \omega_{ik} \cdot (x_i - y_i))))
 ```
 
 ## Arguments
