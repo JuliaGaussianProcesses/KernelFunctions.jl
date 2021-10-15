@@ -59,8 +59,8 @@ struct SpectralMixtureKernel{
     )
         (length(α) == length(γ) == length(ω)) ||
             throw(DimensionMismatch("The dimensions of α, γ, ans ω do not match"))
-        any(<(0), α) || throw(ArgumentError("At least element of α is negative"))
-        any(any.(<(0), ω)) || throw(ArgumentError("At least one element of ω is negative"))
+        any(<(0), α) && throw(ArgumentError("At least one element of α is negative"))
+        any(any.(<(0), ω)) && throw(ArgumentError("At least one element of ω is negative"))
         return new{typeof(h),typeof(α),typeof(γ),typeof(ω)}(h, α, γ, ω)
     end
 end
