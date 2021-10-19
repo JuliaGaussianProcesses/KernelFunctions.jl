@@ -1,24 +1,21 @@
 # Add our own pairwise function to be able to apply it on vectors
 
-function pairwise(d::BinaryOp, X::AbstractVector, Y::AbstractVector)
+function pairwise(d::BinaryOp, X::AbstractVector, Y::AbstractVector=X)
     return @tullio out[i, j] := d(X[i], Y[j])
 end
 
-pairwise(d::BinaryOp, X::AbstractVector) = pairwise(d, X, X)
-
-function pairwise!(out::AbstractMatrix, d::BinaryOp, X::AbstractVector, Y::AbstractVector)
+function pairwise!(out::AbstractMatrix, d::BinaryOp, X::AbstractVector, Y::AbstractVector=X)
     return @tullio out[i, j] = d(X[i], Y[j])
 end
 
-pairwise!(out::AbstractMatrix, d::BinaryOp, X::AbstractVector) = pairwise!(out, d, X, X)
-
 # Also defines the colwise method for abstractvectors
-
-function colwise(d::PreMetric, x::AbstractVector)
+# We have different methods for PreMetric and AbstractBinaryOp
+# Since colwise on AbstractBinaryOp is not guaranteed to be equal to 0
+function colwise(d::Distances.PreMetric, x::AbstractVector)
     return zeros(Distances.result_type(d, x, x), length(x)) # Valid since d(x,x) == 0 by definition
 end
 
-function colwise(d::PreMetric, x::VecOfVecs)
+function colwise(d::Distances.PreMetric, x::VecOfVecs)
     return zeros(Distances.result_type(d, x.X, x.X), length(x)) # Valid since d(x,x) == 0 by definition
 end
 
