@@ -18,6 +18,7 @@ SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 TensorCore = "62fd8b95-f654-4bbd-a8a5-9c27f68ccd50"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Tullio = "bc48ee85-29a4-5162-ae0b-a64e1601d4bc"
 ZygoteRules = "700de1a5-db45-46bc-99cf-38207098b444"
 
 [compat]

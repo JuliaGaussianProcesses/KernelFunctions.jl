@@ -58,6 +58,7 @@ using IrrationalConstants: logtwo, twoπ, invsqrt2
 using LogExpFunctions: softplus
 using StatsBase
 using TensorCore
+using Tullio
 using ZygoteRules: ZygoteRules, AContext, literal_getproperty, literal_getfield
 
 # Hack to work around Zygote type inference problems.
@@ -67,6 +68,13 @@ abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
 
 include("utils.jl")
+
+const VecOfVecs = Union{ColVecs,RowVecs}
+
+# A general binary op type not respecting Distances metric rules
+abstract type AbstractBinaryOp end
+const BinaryOp = Union{AbstractBinaryOp,Distances.PreMetric}
+
 include("distances/pairwise.jl")
 include("distances/dotproduct.jl")
 include("distances/delta.jl")
