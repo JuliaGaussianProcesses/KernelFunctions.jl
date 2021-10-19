@@ -26,6 +26,6 @@ function colwise(d::AbstractBinaryOp, x::AbstractVector)
     return @tullio out[i] := d(x[i], x[i])
 end
 
-function colwise(d::PreMetric, x::AbstractVector, y::AbstractVector)
+function colwise(d::BinaryOp, x::AbstractVector, y::AbstractVector)
     return @tullio out[i] := d(x[i], y[i])
 end
