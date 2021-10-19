@@ -1,6 +1,6 @@
-# Delta is not following the PreMetric rules since d(x, x) == 1
-struct Delta <: Distances.UnionPreMetric end
+struct Delta <: AbstractBinaryOp end
 
+# Basic definitions
 (dist::Delta)(a::Number, b::Number) = a == b
 Base.@propagate_inbounds function (dist::Delta)(
     a::AbstractArray{<:Number}, b::AbstractArray{<:Number}
@@ -14,5 +14,3 @@ Base.@propagate_inbounds function (dist::Delta)(
     end
     return a == b
 end
-
-Distances.result_type(::Delta, Ta::Type, Tb::Type) = Bool
