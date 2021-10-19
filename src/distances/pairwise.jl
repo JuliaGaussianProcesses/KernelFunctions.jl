@@ -15,7 +15,7 @@ function colwise(d::Distances.PreMetric, x::AbstractVector)
     return zeros(Distances.result_type(d, x, x), length(x)) # Valid since d(x,x) == 0 by definition
 end
 
-function colwise(d::Distances.PreMetric, x::VecOfVecs)
+function colwise(d::Distances.PreMetric, x::Union{ColVecs,RowVecs})
     return zeros(Distances.result_type(d, x.X, x.X), length(x)) # Valid since d(x,x) == 0 by definition
 end
 

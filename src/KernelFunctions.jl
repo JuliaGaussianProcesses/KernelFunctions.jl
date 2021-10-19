@@ -67,13 +67,11 @@ const Distances_pairwise = Distances.pairwise
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
 
-include("utils.jl")
-
-const VecOfVecs = Union{ColVecs,RowVecs}
-
 # A general binary op type not respecting Distances metric rules
 abstract type AbstractBinaryOp end
 const BinaryOp = Union{AbstractBinaryOp,Distances.PreMetric}
+
+include("utils.jl")
 
 include("distances/pairwise.jl")
 include("distances/euclidean.jl")
