@@ -84,10 +84,13 @@ function SpectralMixtureKernel(
 end
 
 function (κ::SpectralMixtureKernel)(x, y)
-    return mapreduce(+, κ.α, κ.γ, κ.ω) do α, γ, ω
+    xy = x - y
+    # use pairwise summation (https://github.com/JuliaLang/julia/pull/31020)
+    broadcasted = Broadcast.broadcasted(κ.α, κ.γ, κ.ω) do α, γ, ω
         k = TransformedKernel(κ.kernel, ARDTransform(γ))
-        α * k(x, y) * cospi(2 * dot(ω, x - y))
+        return α * k(x, y) * cospi(2 * dot(ω, xy))
     end
+    return sum(Broadcast.instantiate(broadcasted))
 end
 
 function Base.show(io::IO, κ::SpectralMixtureKernel)
