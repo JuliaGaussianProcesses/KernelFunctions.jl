@@ -76,6 +76,7 @@ abstract type AbstractBinaryOp end
 const BinaryOp = Union{AbstractBinaryOp,Distances.PreMetric}
 
 include("distances/pairwise.jl")
+include("distances/euclidean.jl")
 include("distances/dotproduct.jl")
 include("distances/delta.jl")
 include("distances/sinus.jl")
