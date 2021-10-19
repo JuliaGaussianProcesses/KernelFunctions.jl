@@ -138,8 +138,12 @@ dim(x::RowVecs) = size(x.X, 2)
 # Resolve ambiguity error for ColVecs vs RowVecs. #346
 pairwise(d::BinaryOp, x::ColVecs, y::RowVecs) = pairwise(d, x, ColVecs(permutedims(y.X)))
 pairwise(d::BinaryOp, x::RowVecs, y::ColVecs) = pairwise(d, ColVecs(permutedims(x.X)), y)
-pairwise!(out::AbstractMatrix, d::BinaryOp, x::ColVecs, y::RowVecs) = pairwise!(out, d, x, ColVecs(permutedims(y.X)))
-pairwise!(out::AbstractMatrix, d::BinaryOp, x::RowVecs, y::ColVecs) = pairwise!(out, d, ColVecs(permutedims(x.X)), y)
+function pairwise!(out::AbstractMatrix, d::BinaryOp, x::ColVecs, y::RowVecs)
+    return pairwise!(out, d, x, ColVecs(permutedims(y.X)))
+end
+function pairwise!(out::AbstractMatrix, d::BinaryOp, x::RowVecs, y::ColVecs)
+    return pairwise!(out, d, ColVecs(permutedims(x.X)), y)
+end
 
 dim(x) = 0 # This is the passes-by-default choice. For a proper check, implement `KernelFunctions.dim` for your datatype.
 dim(x::AbstractVector) = dim(first(x))
