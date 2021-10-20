@@ -4,12 +4,15 @@
     vecA = (RowVecs(A), ColVecs(A))
     a = rand(rng, 10)
     k = SqExponentialKernel()
-    for obsdim in [1, 2]
-        @test all(
-            Matrix(kernelpdmat(k, A; obsdim=obsdim)) .≈
-            Matrix(PDMat(kernelmatrix(k, A; obsdim=obsdim))),
-        )
-        @test kernelpdmat(k, vecA[obsdim]) == kernelpdmat(k, A; obsdim=obsdim)
-        # @test_throws ErrorException kernelpdmat(k,ones(100,100),obsdim=obsdim)
+    for obsdim in (1, 2)
+        res = kernelmatrix(PDMat, k, A; obsdim=obsdim)
+        @test res isa PDMat
+        @test Matrix(res) ≈ Matrix(@test_deprecated(kernelpdmat(k, A; obsdim=obsdim)))
+        @test Matrix(res) ≈ kernelmatrix(k, A; obsdim=obsdim)
+
+        res2 = kernelmatrix(PDMat, k, vecA[obsdim])
+        @test res2 isa PDMat
+        @test Matrix(res2) ≈ Matrix(@test_deprecated(kernelpdmat(k, vecA[obsdim])))
+        @test Matrix(res2) ≈ Matrix(res)
     end
 end

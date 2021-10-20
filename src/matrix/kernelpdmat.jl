@@ -1,33 +1,36 @@
 using .PDMats: PDMat
 
-export kernelpdmat
-
 """
-    kernelpdmat(k::Kernel, X::AbstractMatrix; obsdim::Int=2)
-    kernelpdmat(k::Kernel, X::AbstractVector)
+    kernelmatrix(::Type{<:PDMats.PDMat}, k::Kernel, x::AbstractVector)
 
-Compute a positive-definite matrix in the form of a `PDMat` matrix (see [PDMats.jl](https://github.com/JuliaStats/PDMats.jl)),
-with the Cholesky decomposition precomputed.
-The algorithm adds a diagonal "nugget" term to the kernel matrix which is increased until positive
-definiteness is achieved. The algorithm gives up with an error if the nugget becomes larger than 1% of the largest value in the kernel matrix.
+Compute the positive-definite `kernelmatrix` as a `PDMats.PDMat` matrix with the
+Cholesky decomposition precomputed.
+
+The algorithm adds a diagonal "nugget" term to the kernel matrix which is increased until
+positive definiteness is achieved. The algorithm gives up with an error if the nugget
+becomes larger than 1% of the largest value in the kernel matrix.
+
+See also: [PDMats.jl](https://github.com/JuliaStats/PDMats.jl)
 """
-function kernelpdmat(κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs)
-    return kernelpdmat(κ, vec_of_vecs(X; obsdim=obsdim))
-end
-
-function kernelpdmat(κ::Kernel, X::AbstractVector)
+function kernelmatrix(::Type{T}, κ::Kernel, X::AbstractVector) where {T<:PDMat}
     K = kernelmatrix(κ, X)
-    Kmax = maximum(K)
+    threshold = maximum(K) / 100
     α = eps(eltype(K))
-    while !isposdef(K + α * I) && α < 0.01 * Kmax
-        α *= 2.0
+    while !isposdef(K + α * I) && α < threshold
+        α *= 2
     end
-    if α >= 0.01 * Kmax
+    if α >= threshold
         error(
             "Adding noise on the diagonal was not sufficient to build a positive-definite" *
             " matrix:\n\t- Check that your kernel parameters are not extreme\n\t- Check" *
             " that your data is sufficiently sparse\n\t- Maybe use a different kernel",
         )
     end
-    return PDMat(K + α * I)
+    return T(K + α * I)
 end
+
+# deprecations
+Base.@deprecate kernelpdmat(κ::Kernel, X::AbstractVector) kernelmatrix(PDMat, κ, X)
+Base.@deprecate kernelpdmat(κ::Kernel, X::AbstractMatrix; obsdim=defaultobs) kernelmatrix(
+    PDMat, κ, X; obsdim=obsdim
+)
