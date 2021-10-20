@@ -6,7 +6,7 @@
 
     @test all(collect(kernelkronmat(k, collect(x), 2)) .≈ kernelmatrix(k, X; obsdim=1))
     @test all(collect(kernelkronmat(k, [x, x])) .≈ kernelmatrix(k, X; obsdim=1))
-    @test_throws AssertionError kernelkronmat(LinearKernel(), collect(x), 2)
+    @test_throws ArgumentError kernelkronmat(LinearKernel(), collect(x), 2)
 
     @testset "lazy kernelmatrix" begin
         rng = MersenneTwister(123)
