@@ -6,26 +6,57 @@ using .Kronecker: Kronecker
 export kernelkronmat
 export kronecker_kernelmatrix
 
-function kernelkronmat(κ::Kernel, X::AbstractVector, dims::Int)
-    @assert iskroncompatible(κ) "The chosen kernel is not compatible for kroenecker matrices (see [`iskroncompatible`](@ref))"
-    k = kernelmatrix(κ, X)
-    return Kronecker.kronecker(k, dims)
-end
+@doc raw"""
+    kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int) -> KroneckerPower
 
-function kernelkronmat(
-    κ::Kernel, X::AbstractVector{<:AbstractVector}; obsdim::Int=defaultobs
-)
-    @assert iskroncompatible(κ) "The chosen kernel is not compatible for Kronecker matrices"
-    Ks = kernelmatrix.(κ, X)
-    return K = reduce(Kronecker.:⊗, Ks)
-end
+Return a `KroneckerPower` matrix on the `D`-dimensional input grid constructed by ``\otimes_{i=1}^D X``,
+where `D` is given by `dims`.
 
+!!! warning
+
+    Require `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
 """
-    To be compatible with kroenecker constructions the kernel must satisfy
-    the property : for x,x' ∈ ℜᴰ
-    k(x,x') = ∏ᵢᴰ k(xᵢ,x'ᵢ)
+function kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int)
+    checkkroncompatible(κ)
+    K = kernelmatrix(κ, X)
+    return Kronecker.kronecker(K, dims)
+end
+
+@doc raw"""
+
+    kernelkronmat(κ::Kernel, X::AbstractVector{<:AbstractVector}) -> KroneckerProduct
+
+Returns a `KroneckerProduct` matrix on the grid built with the collection of vectors ``\{X_i\}_{i=1}^D``: ``\otimes_{i=1}^D X_i``.
+
+!!! warning
+
+    Requires `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
+"""
+function kernelkronmat(κ::Kernel, X::AbstractVector{<:AbstractVector})
+    checkkroncompatible(κ)
+    Ks = kernelmatrix.(κ, X)
+    return reduce(Kronecker.:⊗, Ks)
+end
+
+@doc raw"""
+    iskroncompatible(k::Kernel)
+
+Determine whether kernel `k` is compatible with Kronecker constructions such as [`kernelkronmat`](@ref)
+
+The function returns `false` by default. If `k` is compatible it must satisfy for all ``x, x' \in \mathbb{R}^D`:
+```math
+k(x, x') = \prod_{i=1}^D k(x_i, x'_i).
+```
 """
 @inline iskroncompatible(κ::Kernel) = false # Default return for kernels
+
+function checkkroncompatible(κ::Kernel)
+    return iskroncompatible(κ) || throw(
+        ArgumentError(
+            "The chosen kernel is not compatible for Kronecker matrices (see [`iskroncompatible`](@ref))",
+        ),
+    )
+end
 
 function _kernelmatrix_kroneckerjl_helper(
     ::Type{<:MOInputIsotopicByFeatures}, Kfeatures, Koutputs

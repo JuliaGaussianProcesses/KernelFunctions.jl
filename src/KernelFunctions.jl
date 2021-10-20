@@ -58,7 +58,10 @@ using IrrationalConstants: logtwo, twoπ, invsqrt2
 using LogExpFunctions: softplus
 using StatsBase
 using TensorCore
-using ZygoteRules: ZygoteRules
+using ZygoteRules: ZygoteRules, AContext, literal_getproperty, literal_getfield
+
+# Hack to work around Zygote type inference problems.
+const Distances_pairwise = Distances.pairwise
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
