@@ -85,5 +85,5 @@ end
 
 # deprecations
 Base.@deprecate kronecker_kernelmatrix(
-    k::MOKernel, x::IsotopicMOInputsUnion; y::IsotopicMOInputsUnion=x
+    k::MOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion=x
 ) kernelmatrix(Kronecker.KroneckerProduct, k, x, y)
