@@ -84,16 +84,6 @@ To find out more about the background, read this [review of kernels for vector-v
 
 KernelFunctions also provides miscellaneous utility functions.
 ```@docs
-kernelpdmat
 nystrom
 NystromFact
-```
-
-## Conditional Utilities
-To keep the dependencies of KernelFunctions lean, some functionality is only available if specific other packages are explicitly loaded (`using`).
-
-### Kronecker.jl
-[*https://github.com/MichielStock/Kronecker.jl*](https://github.com/MichielStock/Kronecker.jl)
-```@docs
-kronecker_kernelmatrix
 ```
