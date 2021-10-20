@@ -102,7 +102,9 @@ function kernelmatrix!(K::AbstractMatrix, κ::Kernel, x::AbstractVector, y::Abst
 end
 
 kernelmatrix(κ::Kernel, x::AbstractVector) = kernelmatrix(κ, x, x)
-kernelmatrix(::Type{T}, κ::Kernel, x::AbstractVector) where {T} = convert(T, kernelmatrix(κ, x))
+function kernelmatrix(::Type{T}, κ::Kernel, x::AbstractVector) where {T}
+    return convert(T, kernelmatrix(κ, x))
+end
 
 function kernelmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector)
     validate_inputs(x, y)
@@ -187,14 +189,18 @@ end
 function kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs)
     return kernelmatrix(κ, vec_of_vecs(X; obsdim=obsdim))
 end
-function kernelmatrix(::Type{T}, κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs) where {T}
+function kernelmatrix(
+    ::Type{T}, κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs
+) where {T}
     return kernelmatrix(T, κ, vec_of_vecs(X; obsdim=obsdim))
 end
 
 function kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim=defaultobs)
     return kernelmatrix(κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim))
 end
-function kernelmatrix(::Type{T}, κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim=defaultobs) where {T}
+function kernelmatrix(
+    ::Type{T}, κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim=defaultobs
+) where {T}
     return kernelmatrix(T, κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim))
 end
 

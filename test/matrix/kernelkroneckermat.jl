@@ -53,9 +53,17 @@
         end
 
         struct TestMOKernel <: MOKernel end
-        @test_throws ArgumentError kernelmatrix(Kronecker.KroneckerProduct, TestMOKernel(), XIF)
-        @test_deprecated(@test_throws ArgumentError kronecker_kernelmatrix(TestMOKernel(), XIF))
-        @test_throws ArgumentError kernelmatrix(Kronecker.KroneckerProduct, TestMOKernel(), XIF, YIF)
-        @test_deprecated(@test_throws ArgumentError kronecker_kernelmatrix(TestMOKernel(), XIF, YIF))
+        @test_throws ArgumentError kernelmatrix(
+            Kronecker.KroneckerProduct, TestMOKernel(), XIF
+        )
+        @test_deprecated(
+            @test_throws ArgumentError kronecker_kernelmatrix(TestMOKernel(), XIF)
+        )
+        @test_throws ArgumentError kernelmatrix(
+            Kronecker.KroneckerProduct, TestMOKernel(), XIF, YIF
+        )
+        @test_deprecated(
+            @test_throws ArgumentError kronecker_kernelmatrix(TestMOKernel(), XIF, YIF)
+        )
     end
 end

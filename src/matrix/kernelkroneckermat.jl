@@ -73,17 +73,17 @@ function kernelmatrix(
 end
 
 function kernelmatrix(
-    ::Type{<:Kronecker.KroneckerProduct}, k::Kernel, x::AbstractVector, y::AbstractVector=x,
+    ::Type{<:Kronecker.KroneckerProduct}, k::Kernel, x::AbstractVector, y::AbstractVector=x
 )
     return throw(
         ArgumentError(
             "computation of the kernel matrix as a lazy kronecker matrix is not " *
             "supported for the given kernel and inputs",
-        )
+        ),
     )
 end
 
 # deprecations
 Base.@deprecate kronecker_kernelmatrix(
-    k::MOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion=x,
+    k::MOKernel, x::IsotopicMOInputsUnion; y::IsotopicMOInputsUnion=x
 ) kernelmatrix(Kronecker.KroneckerProduct, k, x, y)
