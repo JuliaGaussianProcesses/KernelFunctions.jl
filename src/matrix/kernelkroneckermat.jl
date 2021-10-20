@@ -30,7 +30,7 @@ Returns a `KroneckerProduct` matrix on the grid built with the collection of vec
 
 !!! warning
 
-    Require `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
+    Requires `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
 """
 function kernelkronmat(κ::Kernel, X::AbstractVector{<:AbstractVector})
     checkkroncompatible(κ)
