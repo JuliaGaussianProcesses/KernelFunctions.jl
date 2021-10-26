@@ -2,7 +2,7 @@
 
 function pairwise(::Euclidean, x::ColVecs, y::ColVecs)
     return @tullio out[i, j] :=
-        sqrt <| x.X[k, i]^2 - 2 * x.X[k, i] * y.X[k, j] + y.X[k, j]^2
+        sqrt <| (x.X[k, i] - y.X[k, j])^2
 end
 
 function pairwise(::Euclidean, x::RowVecs, y::RowVecs)
