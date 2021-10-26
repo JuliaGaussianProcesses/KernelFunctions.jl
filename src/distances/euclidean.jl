@@ -1,8 +1,7 @@
 # Tullio specialization for Euclidean and SqEuclidean metrics
 
 function pairwise(::Euclidean, x::ColVecs, y::ColVecs)
-    return @tullio out[i, j] :=
-        sqrt <| (x.X[k, i] - y.X[k, j])^2
+    return @tullio out[i, j] := sqrt <| (x.X[k, i] - y.X[k, j])^2
 end
 
 function pairwise(::Euclidean, x::RowVecs, y::RowVecs)
