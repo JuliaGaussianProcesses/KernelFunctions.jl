@@ -9,7 +9,7 @@ export kernelkronmat
     kernelkronmat(k::Kernel, x::AbstractVector{<:Real}, d::Int)
 
 Compute the [`kernelmatrix`](@ref) for kernel `k` on the `d`-dimensional grid ``\otimes_{i=1}^d x``
-as a lazy kronecker product.
+as a lazy Kronecker product.
 
 !!! warning
     You have to load [Kronecker.jl](https://github.com/MichielStock/Kronecker.jl) to use this function.
@@ -24,7 +24,7 @@ end
 @doc raw"""
     kernelkronmat(k::Kernel, x::AbstractVector{<:AbstractVector})
 
-Compute the [`kernelmatrix`](@ref) for kernel `k` on the grid ``\otimes_{i} x_i`` as a lazy kronecker product.
+Compute the [`kernelmatrix`](@ref) for kernel `k` on the grid ``\otimes_{i} x_i`` as a lazy Kronecker product.
 
 !!! warning
     You have to load [Kronecker.jl](https://github.com/MichielStock/Kronecker.jl) to use this function.
@@ -76,7 +76,7 @@ end
         y::MOI,
     ) where {MOI<:IsotopicMOInputsUnion}
 
-Compute the [`kernelmatrix`](@ref) for kernel `k` with inputs `x` and `y` as a lazy kronecker product.
+Compute the [`kernelmatrix`](@ref) for kernel `k` with inputs `x` and `y` as a lazy Kronecker product.
 
 The returned kernel matrix can be inverted or decomposed efficiently.
 
@@ -106,7 +106,7 @@ function kernelmatrix(
 )
     return throw(
         ArgumentError(
-            "computation of the kernel matrix as a lazy kronecker product is not " *
+            "computation of the kernel matrix as a lazy Kronecker product is not " *
             "supported for the given kernel and inputs",
         ),
     )

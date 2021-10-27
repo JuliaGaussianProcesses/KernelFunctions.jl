@@ -13,6 +13,6 @@
         res2 = kernelmatrix(PDMat, k, vecA[obsdim])
         @test res2 isa PDMat
         @test Matrix(res2) ≈ Matrix(@test_deprecated(kernelpdmat(k, vecA[obsdim])))
-        @test Matrix(res2) ≈ Matrix(res)
+        @test res2 == res
     end
 end

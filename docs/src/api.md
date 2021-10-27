@@ -94,7 +94,7 @@ To keep the dependencies of KernelFunctions lean, some functionality is only ava
 ### Kronecker.jl
 [*https://github.com/MichielStock/Kronecker.jl*](https://github.com/MichielStock/Kronecker.jl)
 ```@docs
-kernelmatrix(::Type{<:Kronecker.KroneckerProduct}, k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI, y::MOI) where {MOI<:KernelFunctions.IsotopicMOInputsUnion}
+kernelmatrix(::Type{<:KroneckerProduct}, k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI, y::MOI) where {MOI<:KernelFunctions.IsotopicMOInputsUnion}
 kernelkronmat
 ```
 
