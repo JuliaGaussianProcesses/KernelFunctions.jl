@@ -13,7 +13,16 @@ function pairwise(::DotProduct, x::RowVecs, y::RowVecs)
     return @tullio out[i, j] := x.X[i, k] * y.X[j, k]
 end
 
-function colwise(::DotProduct, x::RowVecs, y::RowVecs=x)
+# Simplification for x == y
+function colwise(::DotProduct, x::RowVecs)
+    return @tullio out[i] := x.X[i, k]^2
+end
+
+function colwise(::DotProduct, x::ColVecs)
+    return @tullio out[i] := x.X[k, i]^2
+end
+
+function colwise(::DotProduct, x::RowVecs, y::RowVecs)
     return @tullio out[i] := x.X[i, k] * y.X[i, k]
 end
 
