@@ -58,6 +58,43 @@ struct MOInputIsotopicByOutputs{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{
     out_dim::Integer
 end
 
+"""
+    MOInputsHeterotopic(x::AbstractVector, output_indices::Integer)
+
+`MOInputsHeterotopic(x, output_indices)` has length `length(x)`.
+
+```jldoctest
+julia> x = [1, 2, 3, 4, 5, 6];
+
+julia> out_inds = [1, 1, 2, 3, 2, 1];
+
+julia> KernelFunctions.MOInputsHeterotopic(x, out_inds)
+6-element KernelFunctions.MOInputsHeterotopic{Int64, Vector{Int64}}:
+ (1, 1)
+ (2, 1)
+ (3, 2)
+ (4, 3)
+ (5, 2)
+ (6, 1)
+```
+
+Accommodates modelling multi-dimensional output data where not all outputs are observed
+for every input.
+
+As shown above, an `MOInputsHeterotopic` represents a vector of tuples.
+The `length(x)` elements represent the inputs that are observed at the locations specified
+by `output_indices`.
+"""
+struct MOInputsHeterotopic{S ,T<:AbstractVector{S}} <: AbstractVector{Tuple{S,Int}}
+    x::T
+    output_indices::AbstractVector{Int}
+end
+
+# Return the inputs at a specific output
+function get_inputs_at_output(inp::MOInputsHeterotopic, output)
+    return [input[1] for input in inputs if input[2]==output]
+end
+
 const IsotopicMOInputsUnion = Union{MOInputIsotopicByFeatures,MOInputIsotopicByOutputs}
 
 function Base.getindex(inp::MOInputIsotopicByOutputs, ind::Integer)
@@ -74,7 +111,13 @@ function Base.getindex(inp::MOInputIsotopicByFeatures, ind::Integer)
     return feature, output_index
 end
 
+function Base.getindex(inp::MOInputsHeterotopic, ind::Integer)
+    @boundscheck checkbounds(inp, ind)
+    return inp.x[ind], inp.output_indices[ind]
+end
+
 Base.size(inp::IsotopicMOInputsUnion) = (inp.out_dim * length(inp.x),)
+Base.size(inp::MOInputsHeterotopic) = (length(inp.output_indices),)
 
 function Base.vcat(x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures)
     x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
@@ -84,6 +127,10 @@ end
 function Base.vcat(x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs)
     x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
     return MOInputIsotopicByOutputs(vcat(x.x, y.x), x.out_dim)
+end
+
+function Base.vcat(x::MOInputsHeterotopic, y::MOInputsHeterotopic)
+    return MOInputsHeterotopic(vcat(x.x, y.x), vcat(x.output_indices, y.output_indices))
 end
 
 """

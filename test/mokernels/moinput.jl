@@ -48,6 +48,27 @@
         @test all([(x_, i) for x_ in x for i in 1:3] .== ibf)
     end
 
+    @testset "heterotopic" begin
+        out_inds = [1, 2, 3, 2]
+        mo_input = KernelFunctions.MOInputsHeterotopic(x, out_inds)
+        @test isa(mo_input, type_1) == true
+        @test isa(mo_input, type_2) == false
+
+        @test length(mo_input) == 4
+        @test size(mo_input) == (4,)
+        @test size(mo_input, 1) == 4
+        @test size(mo_input, 2) == 1
+        @test lastindex(mo_input) == 4
+        @test firstindex(mo_input) == 1
+        @test_throws BoundsError mo_input[0]
+        @test vcat(mo_input, mo_input) == KernelFunctions.MOInputsHeterotopic(vcat(x, x), vcat(out_inds, out_inds))
+
+        @test mo_input[2] == (x[2], 2)
+        @test mo_input[3] == (x[3], 3)
+        @test mo_input[4] == (x[4], 2)
+        @test all([(x_, i) for (x_, i) in zip(x, out_inds)] .== mo_input)
+    end
+
     @testset "prepare_isotopic_multi_output_data" begin
         @testset "ColVecs" begin
             N = 5
