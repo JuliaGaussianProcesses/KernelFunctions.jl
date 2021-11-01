@@ -31,13 +31,13 @@ x_test = range(xmin - 0.1, xmax + 0.1; length=300)
 scatter(x_train, y_train; lab="data")
 plot!(x_test, sinc; lab="true function")
 
-# ## Kernel training, Method 1
+# ## Method 1
 # The first method is to rebuild the parametrized kernel from a vector of parameters 
 # in each evaluation of the cost fuction. This is similar to the approach taken in 
 # [Stheno.jl](https://github.com/JuliaGaussianProcesses/Stheno.jl).
 
 
-# ### Simplest Approach
+# ### Base Approach
 # A simple way to ensure that the kernel parameters are positive
 # is to optimize over the logarithm of the parameters. 
 
@@ -86,7 +86,6 @@ loss(log.(ones(4)))
 anim = Animation()
 opt = Optimise.ADAGrad(0.5)
 for i in 1:30
-    println(i)
     grads = only(Zygote.gradient(loss, θ)) # We compute the gradients given the kernel parameters and regularization
     Optimise.update!(opt, θ, grads)
     scatter(
@@ -99,7 +98,8 @@ end
 gif(anim)
 
 # ### ParameterHandling.jl
-# Alternatively, we can use the [ParameterHandling.jl](https://github.com/invenia/ParameterHandling.jl) package.
+# Alternatively, we can use the [ParameterHandling.jl](https://github.com/invenia/ParameterHandling.jl) package 
+# to handle the requirement that all kernel parameters should be positive. 
 
 raw_initial_θ = (
     k1 = positive(1.1),
@@ -137,7 +137,6 @@ loss(initial_θ)
 anim = Animation()
 opt = Optimise.ADAGrad(0.5)
 for i in 1:30
-    println(i)
     grads = only(Zygote.gradient(loss ∘ unflatten, flat_θ)) # We compute the gradients given the kernel parameters and regularization
     Optimise.update!(opt, flat_θ, grads)
     scatter(
@@ -148,3 +147,23 @@ for i in 1:30
     frame(anim)
 end
 gif(anim)
+
+
+# ## Method 2: Functor
+# An alternative method is to use tools from Flux.jl, which is a fairly heavy package. 
+
+# raw_initial_θ = (
+#     k1 = positive(1.1),
+#     k2 = positive(0.1),
+#     k3 = positive(0.01),
+#     noise_var=positive(0.001),
+# )
+k1 = 1.1
+k2 = 0.1
+k3 = 0.01
+noise_var = 0.001
+
+kernel = (k1 * SqExponentialKernel() + k2 * Matern32Kernel()) ∘
+           ScaleTransform(k3)
+
+Θ = Flux.params(k1, k2, k3) 
