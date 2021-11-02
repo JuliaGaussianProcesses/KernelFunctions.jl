@@ -15,6 +15,8 @@ Transformation that returns exactly the input.
 """
 struct IdentityTransform <: Transform end
 
+@noparams IdentityTransform
+
 (t::IdentityTransform)(x) = x
 _map(::IdentityTransform, x::AbstractVector) = x
 

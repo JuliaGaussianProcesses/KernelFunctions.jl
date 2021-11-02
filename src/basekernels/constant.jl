@@ -15,7 +15,9 @@ See also: [`ConstantKernel`](@ref)
 """
 struct ZeroKernel <: SimpleKernel end
 
-kappa(κ::ZeroKernel, d::T) where {T<:Real} = zero(T)
+@noparams ZeroKernel
+
+kappa(::ZeroKernel, d::Real) = zero(d)
 
 metric(::ZeroKernel) = Delta()
 
@@ -34,6 +36,8 @@ k(x, x') = \\delta(x, x').
 ```
 """
 struct WhiteKernel <: SimpleKernel end
+
+@noparams WhiteKernel
 
 """
     EyeKernel()
@@ -62,19 +66,27 @@ k(x, x') = c.
 
 See also: [`ZeroKernel`](@ref)
 """
-struct ConstantKernel{Tc<:Real} <: SimpleKernel
-    c::Vector{Tc}
+struct ConstantKernel{T<:Real} <: SimpleKernel
+    c::T
 
-    function ConstantKernel(; c::Real=1.0)
+    function ConstantKernel(c::Real)
         @check_args(ConstantKernel, c, c >= zero(c), "c ≥ 0")
-        return new{typeof(c)}([c])
+        return new{typeof(c)}(c)
     end
 end
 
-@functor ConstantKernel
+ConstantKernel(; c::Real=1.0) = ConstantKernel(c)
 
-kappa(κ::ConstantKernel, x::Real) = first(κ.c) * one(x)
+function ParameterHandling.flatten(::Type{T}, k::ConstantKernel{S}) where {T<:Real,S}
+    function unflatten_to_constantkernel(v::Vector{T})
+        length(v) == 1 || error("incorrect number of parameters")
+        ConstantKernel(; c=S(exp(first(v))))
+    end
+    return T[log(k.c)], unflatten_to_constantkernel
+end
+
+kappa(κ::ConstantKernel, x::Real) = κ.c * one(x)
 
 metric(::ConstantKernel) = Delta()
 
-Base.show(io::IO, κ::ConstantKernel) = print(io, "Constant Kernel (c = ", first(κ.c), ")")
+Base.show(io::IO, κ::ConstantKernel) = print(io, "Constant Kernel (c = ", κ.c, ")")

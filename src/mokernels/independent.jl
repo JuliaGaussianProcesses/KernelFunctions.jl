@@ -23,6 +23,14 @@ struct IndependentMOKernel{Tkernel<:Kernel} <: MOKernel
     kernel::Tkernel
 end
 
+@functor IndependentMOKernel
+
+function ParameterHandling.flatten(::Type{T}, k::IndependentMOKernel) where {T<:Real}
+    vec, unflatten_to_kernel = flatten(T, k.kernel)
+    unflatten_to_independentmokernel(v::Vector{T}) = IndependentMOKernel(unflatten_to_kernel(v))
+    return vec, unflatten_to_independentmokernel
+end
+
 function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
     return κ.kernel(x, y) * (px == py)
 end

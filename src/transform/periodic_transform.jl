@@ -15,26 +15,26 @@ julia> t(x) == [sinpi(2 * f * x), cospi(2 * f * x)]
 true
 ```
 """
-struct PeriodicTransform{Tf<:AbstractVector{<:Real}} <: Transform
-    f::Tf
+struct PeriodicTransform{T<:Real} <: Transform
+    f::T
 end
 
-@functor PeriodicTransform
-
-PeriodicTransform(f::Real) = PeriodicTransform([f])
+function ParameterHandling.flatten(::Type{T}, t::PeriodicTransform) where {T<:Real}
+    f = t.f
+    unflatten_to_periodictransform(v::Vector{T}) = PeriodicTransform(oftype(f, only(v)))
+    return T[f], unflatten_to_periodictransform
+end
 
 dim(t::PeriodicTransform) = 2
 
-(t::PeriodicTransform)(x::Real) = [sinpi(2 * first(t.f) * x), cospi(2 * first(t.f) * x)]
+(t::PeriodicTransform)(x::Real) = [sinpi(2 * t.f * x), cospi(2 * t.f * x)]
 
 function _map(t::PeriodicTransform, x::AbstractVector{<:Real})
-    return RowVecs(hcat(sinpi.((2 * first(t.f)) .* x), cospi.((2 * first(t.f)) .* x)))
+    return RowVecs(hcat(sinpi.((2 * t.f) .* x), cospi.((2 * t.f) .* x)))
 end
 
-function Base.isequal(t1::PeriodicTransform, t2::PeriodicTransform)
-    return isequal(first(t1.f), first(t2.f))
-end
+Base.isequal(t1::PeriodicTransform, t2::PeriodicTransform) = isequal(t1.f, t2.f)
 
 function Base.show(io::IO, t::PeriodicTransform)
-    return print(io, "Periodic Transform with frequency $(first(t.f))")
+    return print(io, "Periodic Transform with frequency ", t.f)
 end

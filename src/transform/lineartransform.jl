@@ -18,7 +18,11 @@ struct LinearTransform{T<:AbstractMatrix{<:Real}} <: Transform
     A::T
 end
 
-@functor LinearTransform
+function ParameterHandling.flatten(::Type{T}, t::LinearTransform) where {T<:Real}
+    vec, back = flatten(T, t.A)
+    unflatten_to_lineartransform(v::Vector{T}) = LinearTransform(back(v))
+    return vec, unflatten_to_lineartransform
+end
 
 function set!(t::LinearTransform{<:AbstractMatrix{T}}, A::AbstractMatrix{T}) where {T<:Real}
     size(t.A) == size(A) || error(

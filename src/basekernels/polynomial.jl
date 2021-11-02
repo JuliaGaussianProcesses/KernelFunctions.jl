@@ -13,24 +13,30 @@ k(x, x'; c) = x^\\top x' + c.
 
 See also: [`PolynomialKernel`](@ref)
 """
-struct LinearKernel{Tc<:Real} <: SimpleKernel
-    c::Vector{Tc}
+struct LinearKernel{T<:Real} <: SimpleKernel
+    c::T
 
     function LinearKernel(c::Real)
         @check_args(LinearKernel, c, c >= zero(c), "c ≥ 0")
-        return new{typeof(c)}([c])
+        return new{typeof(c)}(c)
     end
 end
 
 LinearKernel(; c::Real=0.0) = LinearKernel(c)
 
-@functor LinearKernel
+function ParameterHandling.flatten(::Type{T}, k::LinearKernel{S}) where {T<:Real,S<:Real}
+    function unflatten_to_linearkernel(v::Vector{T})
+        length(v) == 1 || error("incorrect number of parameters")
+        return LinearKernel(S(first(v)))
+    end
+    return T[k.c], unflatten_to_linearkernel
+end
 
-kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + first(κ.c)
+kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + κ.c
 
 metric(::LinearKernel) = DotProduct()
 
-Base.show(io::IO, κ::LinearKernel) = print(io, "Linear Kernel (c = ", first(κ.c), ")")
+Base.show(io::IO, κ::LinearKernel) = print(io, "Linear Kernel (c = ", κ.c, ")")
 
 """
     PolynomialKernel(; degree::Int=2, c::Real=0.0)
@@ -47,14 +53,14 @@ k(x, x'; c, \\nu) = (x^\\top x' + c)^\\nu.
 
 See also: [`LinearKernel`](@ref)
 """
-struct PolynomialKernel{Tc<:Real} <: SimpleKernel
+struct PolynomialKernel{T<:Real} <: SimpleKernel
     degree::Int
-    c::Vector{Tc}
+    c::T
 
-    function PolynomialKernel{Tc}(degree::Int, c::Vector{Tc}) where {Tc}
+    function PolynomialKernel(degree::Int, c::Real)
         @check_args(PolynomialKernel, degree, degree >= one(degree), "degree ≥ 1")
-        @check_args(PolynomialKernel, c, first(c) >= zero(Tc), "c ≥ 0")
-        return new{Tc}(degree, c)
+        @check_args(PolynomialKernel, c, c >= zero(c), "c ≥ 0")
+        return new{typeof(c)}(degree, c)
     end
 end
 
@@ -62,16 +68,19 @@ function PolynomialKernel(; degree::Int=2, c::Real=0.0)
     return PolynomialKernel{typeof(c)}(degree, [c])
 end
 
-# The degree of the polynomial kernel is a fixed discrete parameter
-function Functors.functor(::Type{<:PolynomialKernel}, x)
-    reconstruct_polynomialkernel(xs) = PolynomialKernel{typeof(xs.c)}(x.degree, xs.c)
-    return (c=x.c,), reconstruct_polynomialkernel
+function ParameterHandling.flatten(::Type{T}, k::PolynomialKernel{S}) where {T<:Real,S<:Real}
+    degree = k.degree
+    function unflatten_to_polynomialkernel(v::Vector{T})
+        length(v) == 1 || error("incorrect number of parameters")
+        return PolynomialKernel(degree, S(first(v)))
+    end
+    return T[k.c], unflatten_to_polynomialkernel
 end
 
-kappa(κ::PolynomialKernel, xᵀy::Real) = (xᵀy + first(κ.c))^κ.degree
+kappa(κ::PolynomialKernel, xᵀy::Real) = (xᵀy + κ.c)^κ.degree
 
 metric(::PolynomialKernel) = DotProduct()
 
 function Base.show(io::IO, κ::PolynomialKernel)
-    return print(io, "Polynomial Kernel (c = ", first(κ.c), ", degree = ", κ.degree, ")")
+    return print(io, "Polynomial Kernel (c = ", κ.c, ", degree = ", κ.degree, ")")
 end

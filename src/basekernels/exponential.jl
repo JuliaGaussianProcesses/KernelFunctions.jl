@@ -20,6 +20,8 @@ end
 
 SqExponentialKernel(; metric=Euclidean()) = SqExponentialKernel(metric)
 
+@noparams SqExponentialKernel
+
 kappa(::SqExponentialKernel, d::Real) = exp(-d^2 / 2)
 kappa(::SqExponentialKernel{<:Euclidean}, d²::Real) = exp(-d² / 2)
 
@@ -76,6 +78,8 @@ end
 
 ExponentialKernel(; metric=Euclidean()) = ExponentialKernel(metric)
 
+@noparams ExponentialKernel
+
 kappa(::ExponentialKernel, d::Real) = exp(-d)
 
 metric(k::ExponentialKernel) = k.metric
@@ -121,13 +125,13 @@ See also: [`ExponentialKernel`](@ref), [`SqExponentialKernel`](@ref)
 
 [^RW]: C. E. Rasmussen & C. K. I. Williams (2006). Gaussian Processes for Machine Learning.
 """
-struct GammaExponentialKernel{Tγ<:Real,M} <: SimpleKernel
-    γ::Vector{Tγ}
+struct GammaExponentialKernel{T<:Real,M} <: SimpleKernel
+    γ::T
     metric::M
 
     function GammaExponentialKernel(γ::Real, metric)
         @check_args(GammaExponentialKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
-        return new{typeof(γ),typeof(metric)}([γ], metric)
+        return new{typeof(γ),typeof(metric)}(γ, metric)
     end
 end
 
@@ -135,9 +139,17 @@ function GammaExponentialKernel(; gamma::Real=1.0, γ::Real=gamma, metric=Euclid
     return GammaExponentialKernel(γ, metric)
 end
 
-@functor GammaExponentialKernel
+function ParameterHandling.flatten(::Type{T}, k::GammaExponentialKernel{S}) where {T<:Real,S<:Real}
+    metric = k.metric
+    function unflatten_to_gammaexponentialkernel(v::Vector{T})
+        length(v) == 1 || error("incorrect number of parameters")
+        γ = S(1 + logistic(first(v)))
+        return GammaExponentialKernel(; γ=γ, metric=metric)
+    end
+    return T[logit(k.γ - 1)], unflatten_to_gammaexponentialkernel
+end
 
-kappa(κ::GammaExponentialKernel, d::Real) = exp(-d^first(κ.γ))
+kappa(κ::GammaExponentialKernel, d::Real) = exp(-d^κ.γ)
 
 metric(k::GammaExponentialKernel) = k.metric
 
@@ -145,6 +157,6 @@ iskroncompatible(::GammaExponentialKernel) = true
 
 function Base.show(io::IO, κ::GammaExponentialKernel)
     return print(
-        io, "Gamma Exponential Kernel (γ = ", first(κ.γ), ", metric = ", κ.metric, ")"
+        io, "Gamma Exponential Kernel (γ = ", κ.γ, ", metric = ", κ.metric, ")"
     )
 end

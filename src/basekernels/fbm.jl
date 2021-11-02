@@ -13,16 +13,24 @@ k(x, x'; h) =  \\frac{\\|x\\|_2^{2h} + \\|x'\\|_2^{2h} - \\|x - x'\\|^{2h}}{2}.
 ```
 """
 struct FBMKernel{T<:Real} <: Kernel
-    h::Vector{T}
+    h::T
+
     function FBMKernel(h::Real)
         @check_args(FBMKernel, h, zero(h) ≤ h ≤ one(h), "h ∈ [0, 1]")
-        return new{typeof(h)}([h])
+        return new{typeof(h)}(h)
     end
 end
 
 FBMKernel(; h::Real=0.5) = FBMKernel(h)
 
-@functor FBMKernel
+function ParameterHandling.flatten(::Type{T}, k::FBMKernel{S}) where {T<:Real,S<:Real}
+    function unflatten_to_fbmkernel(v::Vector{T})
+        length(v) == 1 || error("incorrect number of parameters")
+        h = S((1 + logistic(first(v))) / 2)
+        return FBMKernel(h)
+    end
+    return T[logit(2 * k.h - 1)], unflatten_to_fbmkernel
+end
 
 function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modX = sum(abs2, x)

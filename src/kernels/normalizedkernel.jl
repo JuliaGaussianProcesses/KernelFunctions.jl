@@ -17,6 +17,12 @@ end
 
 @functor NormalizedKernel
 
+function ParameterHandling.flatten(::Type{T}, k::NormalizedKernel) where {T<:Real}
+    vec, back = flatten(T, k.kernel)
+    unflatten_to_normalizedkernel(v::Vector{T}) = NormalizedKernel(back(v))
+    return vec, unflatten_to_normalizedkernel
+end
+
 (κ::NormalizedKernel)(x, y) = κ.kernel(x, y) / sqrt(κ.kernel(x, x) * κ.kernel(y, y))
 
 function kernelmatrix(κ::NormalizedKernel, x::AbstractVector, y::AbstractVector)

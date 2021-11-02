@@ -36,6 +36,16 @@ end
 
 GibbsKernel(; lengthscale) = GibbsKernel(lengthscale)
 
+@functor GibbsKernel
+
+# or just `@noparams GibbsKernel` - it would be safer since there is no
+# default fallback for `flatten`
+function ParameterHandling.flatten(::Type{T}, k::GibbsKernel) where {T<:Real}
+    vec, unflatten_to_lengthscale = flatten(T, k.lengthscale)
+    unflatten_to_gibbskernel(v::Vector{T}) = GibbsKernel(unflatten_to_lengthscale(v))
+    return vec, unflatten_to_gibbskernel
+end
+
 function (k::GibbsKernel)(x, y)
     lengthscale = k.lengthscale
     lx = lengthscale(x)

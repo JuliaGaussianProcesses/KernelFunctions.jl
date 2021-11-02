@@ -31,6 +31,32 @@ function LinearMixingModelKernel(k::Kernel, H::AbstractMatrix)
     return LinearMixingModelKernel(Fill(k, size(H, 1)), H)
 end
 
+@functor LinearMixingModelKernel
+
+function ParameterHandling.flatten(::Type{T}, k::LinearMixingModelKernel) where {T<:Real}
+    kernel_vecs_and_backs = map(Base.Fix1(flatten, T), k.kernels)
+    kernel_vecs = map(first, kernel_vecs_and_backs)
+    length_kernel_vecs = map(length, kernel_vecs)
+    kernel_backs = map(last, kernel_vecs_and_backs)
+    H_vec, H_back = flatten(T, k.B)
+    flat_kernel_vecs = reduce(vcat, vecs)
+    nkernel = length(flat_kernel_vecs)
+    flat_vecs = vcat(flat_kernel_vecs, H_vec)
+    n = length(flat_vecs)
+    function unflatten_to_linearmixingmodelkernel(v::Vector{T})
+        length(v) == n || error("incorrect number of parameters")
+        offset = Ref(0)
+        kernels = map(kernel_backs, length_kernel_vecs) do back, length_vec
+            oldoffset = offset[]
+            newoffset = offset[] = oldoffset + length_vec
+            return back(v[(oldoffset + 1):newoffset])
+        end
+        H = H_back(v[(nkernel + 1):end])
+        return LinearMixingModelKernel(kernels, H)
+    end
+    return flat_vecs, unflatten_to_linearmixingmodelkernel
+end
+
 function (κ::LinearMixingModelKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
     (px > size(κ.H, 2) || py > size(κ.H, 2) || px < 1 || py < 1) &&
         error("`px` and `py` must be within the range of the number of outputs")

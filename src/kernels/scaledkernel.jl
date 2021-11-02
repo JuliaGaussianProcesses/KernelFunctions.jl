@@ -13,17 +13,30 @@ multiplication with variance ``\\sigma^2 > 0`` is defined as
 """
 struct ScaledKernel{Tk<:Kernel,Tσ²<:Real} <: Kernel
     kernel::Tk
-    σ²::Vector{Tσ²}
+    σ²::Tσ²
+
+    function ScaledKernel(kernel::Kernel, σ²::Real)
+        @check_args(ScaledKernel, σ², σ² > zero(σ²), "σ² > 0")
+        return new{typeof(kernel),typeof(σ²)}(kernel, σ²)
+    end
 end
 
-function ScaledKernel(kernel::Tk, σ²::Tσ²=1.0) where {Tk<:Kernel,Tσ²<:Real}
-    @check_args(ScaledKernel, σ², σ² > zero(Tσ²), "σ² > 0")
-    return ScaledKernel{Tk,Tσ²}(kernel, [σ²])
+ScaledKernel(kernel::Kernel) = ScaledKernel(kernel, 1.0)
+
+# σ² is a positive parameter (and a scalar!) but Functors does not handle
+# parameter constraints
+@functor ScaledKernel (kernel,)
+
+function ParameterHandling.flatten(::Type{T}, k::ScaledKernel{<:Kernel,S}) where {T<:Real,S<:Real}
+    kernel_vec, kernel_back = flatten(T, k.kernel)
+    function unflatten_to_scaledkernel(v::Vector{T})
+        kernel = kernel_back(v[1:end-1])
+        return ScaledKernel(kernel, S(exp(last(v))))
+    end
+    return vcat(kernel_vec, T(log(k.σ²))), unflatten_to_scaledkernel
 end
 
-@functor ScaledKernel
-
-(k::ScaledKernel)(x, y) = first(k.σ²) * k.kernel(x, y)
+(k::ScaledKernel)(x, y) = k.σ² * k.kernel(x, y)
 
 function kernelmatrix(κ::ScaledKernel, x::AbstractVector, y::AbstractVector)
     return κ.σ² .* kernelmatrix(κ.kernel, x, y)
@@ -75,5 +88,9 @@ Base.show(io::IO, κ::ScaledKernel) = printshifted(io, κ, 0)
 
 function printshifted(io::IO, κ::ScaledKernel, shift::Int)
     printshifted(io, κ.kernel, shift)
-    return print(io, "\n" * ("\t"^(shift + 1)) * "- σ² = $(first(κ.σ²))")
+    print(io, "\n")
+    for _ in 1:(shift + 1)
+        print(io, "\t")
+    end
+    print(io, "- σ² = ", κ.σ²)
 end

@@ -6,6 +6,7 @@ const __RTOL = 1e-9
 using Distances
 using LinearAlgebra
 using KernelFunctions
+using ParameterHandling
 using Random
 using Test
 
@@ -88,6 +89,9 @@ function test_interface(
     tmp_diag = Vector{Float64}(undef, length(x0))
     @test kernelmatrix_diag!(tmp_diag, k, x0) ≈ kernelmatrix_diag(k, x0)
     @test kernelmatrix_diag!(tmp_diag, k, x0, x1) ≈ kernelmatrix_diag(k, x0, x1)
+
+    # Check flatten/unflatten
+    test_flatten_interface(k)
 end
 
 function test_interface(

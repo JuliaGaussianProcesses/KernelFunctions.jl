@@ -41,6 +41,8 @@ export MOInput, prepare_isotopic_multi_output_data, prepare_heterotopic_multi_ou
 export IndependentMOKernel,
     LatentFactorMOKernel, IntrinsicCoregionMOKernel, LinearMixingModelKernel
 
+export ParameterKernel
+
 # Reexports
 export tensor, ⊗, compose
 
@@ -51,6 +53,7 @@ using CompositionsBase
 using Distances
 using FillArrays
 using Functors
+using ParameterHandling
 using LinearAlgebra
 using Requires
 using SpecialFunctions: loggamma, besselk, polygamma
@@ -107,6 +110,7 @@ include("kernels/kernelproduct.jl")
 include("kernels/kerneltensorproduct.jl")
 include("kernels/overloads.jl")
 include("kernels/neuralkernelnetwork.jl")
+include("kernels/parameterkernel.jl")
 include("approximations/nystrom.jl")
 include("generic.jl")
 
