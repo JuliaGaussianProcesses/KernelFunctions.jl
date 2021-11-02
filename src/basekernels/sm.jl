@@ -116,7 +116,7 @@ The spectral mixture product is tensor product of spectral mixture kernel applie
 on each dimension as described in [1] in equations 13 and 14.
 With enough components, the SMP kernel
 can model any product kernel to arbitrary precision, and is flexible even
-with a small number of components
+with a small number of components.
 
 ## Definition
 
