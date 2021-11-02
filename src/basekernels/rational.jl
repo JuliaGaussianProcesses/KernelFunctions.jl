@@ -139,3 +139,71 @@ function Base.show(io::IO, κ::GammaRationalKernel)
         ")",
     )
 end
+
+@doc raw"""
+    InverseMultiQuadricKernel(; α::Real=1.0, c::Real=1.0, metric=Euclidean())
+
+Inverse multiquadric kernel with respect to the `metric` with parameters `α` and `c`.
+
+# Definition
+
+For inputs ``x, x'`` and metric ``d(\cdot, \cdot)``, the inverse multiquadric kernel with
+parameters ``\alpha, c > 0`` is defined as
+```math
+k(x, x'; \alpha, c) = \big(c + d(x, x')^2\big)^{-\alpha}.
+```
+By default, ``d`` is the Euclidean metric ``d(x, x') = \|x - x'\|_2``.
+
+For ``\alpha = c = 1``, the [`GammaRationalKernel`](@ref) with parameters ``\alpha = 1``
+and ``\gamma = 2`` is recovered.
+
+For ``\alpha = 1/2`` and ``c = 1``, the [`RationalQuadraticKernel`](@ref) with parameter
+``\alpha = 1/2`` is recovered.
+
+# References
+
+Micchelli, C.A. (1986). Interpolation of scattered data: Distance matrices and conditionally
+positive definite functions. Constructive Approximation 2, 11-22.
+"""
+struct InverseMultiQuadricKernel{Tα<:Real,Tc<:Real,M} <: SimpleKernel
+    α::Vector{Tα}
+    c::Vector{Tc}
+    metric::M
+
+    function InverseMultiQuadricKernel(α::Real, c::Real, metric)
+        @check_args(InverseMultiQuadricKernel, α, α > zero(α), "α > 0")
+        @check_args(InverseMultiQuadricKernel, c, c > zero(c), "c > 0")
+        return new{typeof(α),typeof(c),typeof(metric)}([α], [c], metric)
+    end
+end
+
+function InverseMultiQuadricKernel(;
+    alpha::Real=1.0, α::Real=alpha, c::Real=1.0, metric=Euclidean()
+)
+    return InverseMultiQuadricKernel(α, c, metric)
+end
+
+@functor InverseMultiQuadricKernel
+
+function kappa(k::InverseMultiQuadricKernel, d::Real)
+    return (first(k.c) + d^2)^(-first(k.α))
+end
+function kappa(k::InverseMultiQuadricKernel{<:Real,<:Real,<:Euclidean}, d2::Real)
+    return (first(k.c) + d2)^(-first(k.α))
+end
+
+metric(k::InverseMultiQuadricKernel) = k.metric
+metric(::InverseMultiQuadricKernel{<:Real,<:Real,<:Euclidean}) = SqEuclidean()
+
+function Base.show(io::IO, k::InverseMultiQuadricKernel)
+    return print(
+        io,
+        "Inverse Multiquadric Kernel (α = ",
+        first(k.α),
+        ", c = ",
+        first(k.c),
+        ", metric = ",
+        k.metric,
+        ")",
+    )
+end

@@ -131,4 +131,48 @@
         test_ADs(x -> GammaRationalKernel(; α=x[1], γ=x[2]), [a, 1 + 0.5 * rand()])
         test_params(GammaRationalKernel(; α=a, γ=x), ([a], [x]))
     end
+
+    @testset "InverseMultiQuadricKernel" begin
+        α = rand()
+        c = rand()
+        k = InverseMultiQuadricKernel(; α=α, c=c)
+
+        @testset "IMQ (α = c = 1) ≈ GammaRationalKernel (α = 1, γ = 2)" begin
+            @test isapprox(
+                InverseMultiQuadricKernel(; α=1, c=1)(v1, v2),
+                GammaRationalKernel(; α=1, γ=2)(v1, v2);
+                atol=1e-6,
+                rtol=1e-6,
+            )
+        end
+
+        @testset "IMQ (α = 1/2, c = 1) ≈ RationalQuadraticKernel (α = 1/2)" begin
+            @test isapprox(
+                InverseMultiQuadricKernel(; α=0.5, c=1)(v1, v2),
+                RationalQuadraticKernel(; α=0.5)(v1, v2);
+                atol=1e-6,
+                rtol=1e-6,
+            )
+        end
+
+        @testset "IMQ ≈ c^(-α) * RationalQuadraticKernel for same α and rescaled inputs" begin
+            rqkernel =
+                c^(-α) * RationalQuadraticKernel(; α=α) ∘ ScaleTransform(sqrt(2 * α / c))
+            @test isapprox(k(v1, v2), rqkernel(v1, v2); atol=1e-6, rtol=1e-6)
+        end
+
+        @test metric(InverseMultiQuadricKernel()) == SqEuclidean()
+        @test metric(InverseMultiQuadricKernel(; α=α, c=c)) == SqEuclidean()
+        @test repr(k) ==
+            "Inverse Multiquadric Kernel (α = $α, c = $c, metric = Euclidean(0.0))"
+
+        k2 = InverseMultiQuadricKernel(; α=α, c=c, metric=WeightedEuclidean(ones(3)))
+        @test metric(k2) isa WeightedEuclidean
+        @test k2(v1, v2) ≈ k(v1, v2)
+
+        # Standardised tests.
+        TestUtils.test_interface(k, Float64)
+        test_ADs(x -> InverseMultiQuadricKernel(; alpha=exp(x[1]), c=exp(x[2])), [α, c])
+        test_params(k, ([α], [c]))
+    end
 end
