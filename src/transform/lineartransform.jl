@@ -2,7 +2,10 @@
     LinearTransform(A::AbstractMatrix)
 
 Linear transformation of the input realised by the matrix `A`.
-If `a` is an `AbstractVector`, `Diagonal(a)` is passed
+
+    LinearTransform(a::AbstractVector)
+
+Linear transformation of the input with `A = Diagonal(a)`.    
 
 The second dimension of `A` must match the number of features of the target.
 
