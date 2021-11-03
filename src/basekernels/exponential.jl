@@ -139,7 +139,9 @@ function GammaExponentialKernel(; gamma::Real=1.0, γ::Real=gamma, metric=Euclid
     return GammaExponentialKernel(γ, metric)
 end
 
-function ParameterHandling.flatten(::Type{T}, k::GammaExponentialKernel{S}) where {T<:Real,S<:Real}
+function ParameterHandling.flatten(
+    ::Type{T}, k::GammaExponentialKernel{S}
+) where {T<:Real,S<:Real}
     metric = k.metric
     function unflatten_to_gammaexponentialkernel(v::Vector{T})
         length(v) == 1 || error("incorrect number of parameters")
@@ -156,7 +158,5 @@ metric(k::GammaExponentialKernel) = k.metric
 iskroncompatible(::GammaExponentialKernel) = true
 
 function Base.show(io::IO, κ::GammaExponentialKernel)
-    return print(
-        io, "Gamma Exponential Kernel (γ = ", κ.γ, ", metric = ", κ.metric, ")"
-    )
+    return print(io, "Gamma Exponential Kernel (γ = ", κ.γ, ", metric = ", κ.metric, ")")
 end

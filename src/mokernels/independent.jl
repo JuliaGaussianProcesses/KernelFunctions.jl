@@ -27,7 +27,9 @@ end
 
 function ParameterHandling.flatten(::Type{T}, k::IndependentMOKernel) where {T<:Real}
     vec, unflatten_to_kernel = flatten(T, k.kernel)
-    unflatten_to_independentmokernel(v::Vector{T}) = IndependentMOKernel(unflatten_to_kernel(v))
+    function unflatten_to_independentmokernel(v::Vector{T})
+        return IndependentMOKernel(unflatten_to_kernel(v))
+    end
     return vec, unflatten_to_independentmokernel
 end
 

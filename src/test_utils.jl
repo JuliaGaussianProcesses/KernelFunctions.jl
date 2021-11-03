@@ -28,7 +28,7 @@ be of different lengths.
 `test_interface` offers certain types of test data generation to make running these tests
 require less code for common input types. For example, `Vector{<:Real}`, `ColVecs{<:Real}`,
 and `RowVecs{<:Real}` are supported. For other input vector types, please provide the data
-manually. 
+manually.
 """
 function test_interface(
     k::Kernel,
@@ -91,7 +91,9 @@ function test_interface(
     @test kernelmatrix_diag!(tmp_diag, k, x0, x1) ≈ kernelmatrix_diag(k, x0, x1)
 
     # Check flatten/unflatten
-    test_flatten_interface(k)
+    ParameterHandling.TestUtils.test_flatten_interface(k)
+
+    return nothing
 end
 
 function test_interface(

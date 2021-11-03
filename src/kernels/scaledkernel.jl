@@ -27,10 +27,12 @@ ScaledKernel(kernel::Kernel) = ScaledKernel(kernel, 1.0)
 # parameter constraints
 @functor ScaledKernel (kernel,)
 
-function ParameterHandling.flatten(::Type{T}, k::ScaledKernel{<:Kernel,S}) where {T<:Real,S<:Real}
+function ParameterHandling.flatten(
+    ::Type{T}, k::ScaledKernel{<:Kernel,S}
+) where {T<:Real,S<:Real}
     kernel_vec, kernel_back = flatten(T, k.kernel)
     function unflatten_to_scaledkernel(v::Vector{T})
-        kernel = kernel_back(v[1:end-1])
+        kernel = kernel_back(v[1:(end - 1)])
         return ScaledKernel(kernel, S(exp(last(v))))
     end
     return vcat(kernel_vec, T(log(k.σ²))), unflatten_to_scaledkernel
@@ -92,5 +94,5 @@ function printshifted(io::IO, κ::ScaledKernel, shift::Int)
     for _ in 1:(shift + 1)
         print(io, "\t")
     end
-    print(io, "- σ² = ", κ.σ²)
+    return print(io, "- σ² = ", κ.σ²)
 end

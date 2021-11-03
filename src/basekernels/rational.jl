@@ -77,7 +77,9 @@ struct RationalQuadraticKernel{T<:Real,M} <: SimpleKernel
     end
 end
 
-function ParameterHandling.flatten(::Type{T}, k::RationalQuadraticKernel{S}) where {T<:Real,S}
+function ParameterHandling.flatten(
+    ::Type{T}, k::RationalQuadraticKernel{S}
+) where {T<:Real,S}
     metric = k.metric
     function unflatten_to_rationalquadratickernel(v::Vector{T})
         length(v) == 1 || error("incorrect number of parameters")
@@ -99,9 +101,7 @@ metric(k::RationalQuadraticKernel) = k.metric
 metric(::RationalQuadraticKernel{<:Real,<:Euclidean}) = SqEuclidean()
 
 function Base.show(io::IO, κ::RationalQuadraticKernel)
-    return print(
-        io, "Rational Quadratic Kernel (α = ", κ.α, ", metric = ", κ.metric, ")"
-    )
+    return print(io, "Rational Quadratic Kernel (α = ", κ.α, ", metric = ", κ.metric, ")")
 end
 
 """
@@ -138,7 +138,9 @@ end
 
 @functor GammaRationalKernel
 
-function ParameterHandling.flatten(::Type{T}, k::GammaRationalKernel{Tα,Tγ}) where {T<:Real,Tα,Tγ}
+function ParameterHandling.flatten(
+    ::Type{T}, k::GammaRationalKernel{Tα,Tγ}
+) where {T<:Real,Tα,Tγ}
     vec = T[log(k.α), logit(k.γ - 1)]
     metric = k.metric
     function unflatten_to_gammarationalkernel(v::Vector{T})
@@ -160,13 +162,6 @@ metric(k::GammaRationalKernel) = k.metric
 
 function Base.show(io::IO, κ::GammaRationalKernel)
     return print(
-        io,
-        "Gamma Rational Kernel (α = ",
-        κ.α,
-        ", γ = ",
-        κ.γ,
-        ", metric = ",
-        κ.metric,
-        ")",
+        io, "Gamma Rational Kernel (α = ", κ.α, ", γ = ", κ.γ, ", metric = ", κ.metric, ")"
     )
 end

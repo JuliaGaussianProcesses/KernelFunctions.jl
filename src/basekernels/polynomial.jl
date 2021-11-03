@@ -68,7 +68,9 @@ function PolynomialKernel(; degree::Int=2, c::Real=0.0)
     return PolynomialKernel{typeof(c)}(degree, [c])
 end
 
-function ParameterHandling.flatten(::Type{T}, k::PolynomialKernel{S}) where {T<:Real,S<:Real}
+function ParameterHandling.flatten(
+    ::Type{T}, k::PolynomialKernel{S}
+) where {T<:Real,S<:Real}
     degree = k.degree
     function unflatten_to_polynomialkernel(v::Vector{T})
         length(v) == 1 || error("incorrect number of parameters")
