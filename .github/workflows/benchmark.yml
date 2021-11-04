@@ -5,10 +5,17 @@ on:
     types: [opened, synchronize, reopened, labeled]
   issue_comment:
     types: [opened]
+
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
 jobs:
   Benchmark:
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'performance critical') || (${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '[benchmark]')
+    if: contains(github.event.pull_request.labels.*.name, 'performance critical') || (${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '[benchmark]'))
     env:
       JULIA_DEBUG: BenchmarkCI
     steps:
