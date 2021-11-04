@@ -1,23 +1,46 @@
 using BenchmarkTools
-using Random
-using Distances, LinearAlgebra
+using KernelFunctions
 
-const SUITE = BenchmarkGroup()
+N1 = 10
+N2 = 20
 
-Random.seed!(1234)
+X = rand(N1, N2)
+Xc = ColVecs(X)
+Xr = RowVecs(X)
+Xv = collect.(eachcol(X))
+Y = rand(N1, N2)
+Yc = ColVecs(Y)
+Yr = RowVecs(Y)
+Yv = collect.(eachcol(Y))
 
-dim = 50
-N1 = 1000;
-N2 = 500;
-alpha = 2.0
+# Create the general suite of benchmarks
+SUITE = BenchmarkGroup()
 
-X = rand(Float64, N1, dim)
-Y = rand(Float64, N2, dim)
+kernels = Dict(
+    "SqExponential" => SqExponentialKernel(), "Exponential" => ExponentialKernel()
+)
 
-KXY = rand(Float64, N1, N2)
-KX = rand(Float64, N1, N1)
-sKX = Symmetric(rand(Float64, N1, N1))
-kX = rand(Float64, N1)
+inputtypes = Dict("ColVecs" => (Xc, Yc), "RowVecs" => (Xr, Yr), "Vecs" => (Xv, Yv))
 
-include("kernelmatrix.jl")
-include("MLKernels.jl")
+functions = Dict(
+    "kernelmatrixX" => (kernel, X, Y) -> kernelmatrix(kernel, X),
+    "kernelmatrixXY" => (kernel, X, Y) -> kernelmatrix(kernel, X, Y),
+    "kernelmatrix_diagX" => (kernel, X, Y) -> kernelmatrix_diag(kernel, X),
+    "kernelmatrix_diagXY" => (kernel, X, Y) -> kernelmatrix_diag(kernel, X, Y),
+)
+
+for (kname, kernel) in kernels
+    SUITE[kname] = sk = BenchmarkGroup()
+    for (inputname, (X, Y)) in inputtypes
+        sk[inputname] = si = BenchmarkGroup()
+        for (fname, f) in functions
+            si[fname] = @benchmarkable $f($kernel, $X, $Y)
+        end
+    end
+end
+
+# Uncomment the following to run benchmark locally
+
+# tune!(SUITE)
+
+# results = run(SUITE, verbose=true)
