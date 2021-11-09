@@ -234,7 +234,7 @@ macro noparams(T)
             ::Type{S}, x::$(esc(T))
         ) where {S<:Real}
             unflatten(v::Vector{S}) = x
-            return v, unflatten
+            return x, unflatten
         end
     end
 end
