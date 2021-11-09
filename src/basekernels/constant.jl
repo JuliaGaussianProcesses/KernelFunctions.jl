@@ -79,8 +79,7 @@ ConstantKernel(; c::Real=1.0) = ConstantKernel(c)
 
 function ParameterHandling.flatten(::Type{T}, k::ConstantKernel{S}) where {T<:Real,S}
     function unflatten_to_constantkernel(v::Vector{T})
-        length(v) == 1 || error("incorrect number of parameters")
-        return ConstantKernel(; c=S(exp(first(v))))
+        return ConstantKernel(; c=S(exp(only(v))))
     end
     return T[log(k.c)], unflatten_to_constantkernel
 end

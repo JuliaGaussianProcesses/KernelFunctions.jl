@@ -33,11 +33,7 @@ MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν,
 
 function ParameterHandling.flatten(::Type{T}, k::MaternKernel{S}) where {T<:Real,S<:Real}
     metric = k.metric
-    function unflatten_to_maternkernel(v::Vector{T})
-        length(v) == 1 || error("incorrect number of parameters")
-        v = S(exp(first(v)))
-        return MaternKernel(ν, metric)
-    end
+    unflatten_to_maternkernel(v::Vector{T}) = MaternKernel(S(exp(first(v))), metric)
     return T[log(k.ν)], unflatten_to_maternkernel
 end
 

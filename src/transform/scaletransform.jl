@@ -24,12 +24,8 @@ end
 ScaleTransform() = ScaleTransform(1.0)
 
 function ParameterHandling.flatten(::Type{T}, t::ScaleTransform{S}) where {T<:Real,S<:Real}
-    s = t.s
-    function unflatten_to_scaletransform(v::Vector{T})
-        length(v) == 1 || error("incorrect number of parameters")
-        return ScaleTransform(S(first(v)))
-    end
-    return T[s], unflatten_to_scaletransform
+    unflatten_to_scaletransform(v::Vector{T}) = ScaleTransform(S(exp(only(v))))
+    return T[log(t.s)], unflatten_to_scaletransform
 end
 
 (t::ScaleTransform)(x) = t.s * x

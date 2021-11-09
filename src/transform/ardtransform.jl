@@ -23,10 +23,9 @@ Create an [`ARDTransform`](@ref) with vector `fill(s, dims)`.
 """
 ARDTransform(s::Real, dims::Integer) = ARDTransform(fill(s, dims))
 
-function ParameterHandling.flatten(::Type{T}, t::ARDTransform) where {T<:Real}
-    vec, back = flatten(T, t.v)
-    unflatten_to_ardtransform(v::Vector{T}) = ARDTransform(back(v))
-    return vec, unflatten_to_ardtransform
+function ParameterHandling.flatten(::Type{T}, t::ARDTransform{S}) where {T<:Real,S}
+    unflatten_to_ardtransform(v::Vector{T}) = ARDTransform(convert(S, map(exp, v)))
+    return convert(Vector{T}, map(log, t.v)), unflatten_to_ardtransform
 end
 
 function set!(t::ARDTransform{<:AbstractVector{T}}, ρ::AbstractVector{T}) where {T<:Real}

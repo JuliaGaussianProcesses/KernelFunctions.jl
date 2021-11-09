@@ -32,8 +32,7 @@ end
 function ParameterHandling.flatten(::Type{T}, k::RationalKernel{S}) where {T<:Real,S}
     metric = k.metric
     function unflatten_to_rationalkernel(v::Vector{T})
-        length(v) == 1 || error("incorrect number of parameters")
-        return ConstantKernel(S(exp(first(v))), metric)
+        return ConstantKernel(S(exp(only(v))), metric)
     end
     return T[log(k.α)], unflatten_to_rationalkernel
 end
@@ -82,8 +81,7 @@ function ParameterHandling.flatten(
 ) where {T<:Real,S}
     metric = k.metric
     function unflatten_to_rationalquadratickernel(v::Vector{T})
-        length(v) == 1 || error("incorrect number of parameters")
-        return RationalQuadraticKernel(; α=S(exp(first(v))), metric=metric)
+        return RationalQuadraticKernel(; α=S(exp(only(v))), metric=metric)
     end
     return T[log(k.α)], unflatten_to_rationalquadratickernel
 end
@@ -141,13 +139,13 @@ end
 function ParameterHandling.flatten(
     ::Type{T}, k::GammaRationalKernel{Tα,Tγ}
 ) where {T<:Real,Tα,Tγ}
-    vec = T[log(k.α), logit(k.γ - 1)]
+    vec = T[log(k.α), logit(k.γ / 2)]
     metric = k.metric
     function unflatten_to_gammarationalkernel(v::Vector{T})
         length(v) == 2 || error("incorrect number of parameters")
         logα, logitγ = v
         α = Tα(exp(logα))
-        γ = Tγ(1 + logistic(logitγ))
+        γ = Tγ(2 * logistic(logitγ))
         return GammaRationalKernel(; α=α, γ=γ, metric=metric)
     end
     return vec, unflatten_to_gammarationalkernel

@@ -26,10 +26,9 @@ LinearKernel(; c::Real=0.0) = LinearKernel(c)
 
 function ParameterHandling.flatten(::Type{T}, k::LinearKernel{S}) where {T<:Real,S<:Real}
     function unflatten_to_linearkernel(v::Vector{T})
-        length(v) == 1 || error("incorrect number of parameters")
-        return LinearKernel(S(first(v)))
+        return LinearKernel(S(exp(only(v))))
     end
-    return T[k.c], unflatten_to_linearkernel
+    return T[log(k.c)], unflatten_to_linearkernel
 end
 
 kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + κ.c
@@ -73,10 +72,9 @@ function ParameterHandling.flatten(
 ) where {T<:Real,S<:Real}
     degree = k.degree
     function unflatten_to_polynomialkernel(v::Vector{T})
-        length(v) == 1 || error("incorrect number of parameters")
-        return PolynomialKernel(degree, S(first(v)))
+        return PolynomialKernel(degree, S(exp(only(v))))
     end
-    return T[k.c], unflatten_to_polynomialkernel
+    return T[log(k.c)], unflatten_to_polynomialkernel
 end
 
 kappa(κ::PolynomialKernel, xᵀy::Real) = (xᵀy + κ.c)^κ.degree

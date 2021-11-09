@@ -144,11 +144,10 @@ function ParameterHandling.flatten(
 ) where {T<:Real,S<:Real}
     metric = k.metric
     function unflatten_to_gammaexponentialkernel(v::Vector{T})
-        length(v) == 1 || error("incorrect number of parameters")
-        γ = S(1 + logistic(first(v)))
+        γ = S(2 * logistic(only(v)))
         return GammaExponentialKernel(; γ=γ, metric=metric)
     end
-    return T[logit(k.γ - 1)], unflatten_to_gammaexponentialkernel
+    return T[logit(k.γ / 2)], unflatten_to_gammaexponentialkernel
 end
 
 kappa(κ::GammaExponentialKernel, d::Real) = exp(-d^κ.γ)

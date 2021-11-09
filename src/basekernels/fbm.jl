@@ -25,11 +25,10 @@ FBMKernel(; h::Real=0.5) = FBMKernel(h)
 
 function ParameterHandling.flatten(::Type{T}, k::FBMKernel{S}) where {T<:Real,S<:Real}
     function unflatten_to_fbmkernel(v::Vector{T})
-        length(v) == 1 || error("incorrect number of parameters")
-        h = S((1 + logistic(first(v))) / 2)
+        h = S(logistic(only(v)))
         return FBMKernel(h)
     end
-    return T[logit(2 * k.h - 1)], unflatten_to_fbmkernel
+    return T[logit(k.h)], unflatten_to_fbmkernel
 end
 
 function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
