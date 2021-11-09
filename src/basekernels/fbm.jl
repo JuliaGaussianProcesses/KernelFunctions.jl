@@ -28,16 +28,16 @@ function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modX = sum(abs2, x)
     modY = sum(abs2, y)
     modXY = sqeuclidean(x, y)
-    h = first(κ.h)
+    h = only(κ.h)
     return (modX^h + modY^h - modXY^h) / 2
 end
 
 function (κ::FBMKernel)(x::Real, y::Real)
-    return (abs2(x)^first(κ.h) + abs2(y)^first(κ.h) - abs2(x - y)^first(κ.h)) / 2
+    return (abs2(x)^only(κ.h) + abs2(y)^only(κ.h) - abs2(x - y)^only(κ.h)) / 2
 end
 
 function Base.show(io::IO, κ::FBMKernel)
-    return print(io, "Fractional Brownian Motion Kernel (h = ", first(κ.h), ")")
+    return print(io, "Fractional Brownian Motion Kernel (h = ", only(κ.h), ")")
 end
 
 _fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h) / 2
