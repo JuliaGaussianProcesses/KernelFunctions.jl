@@ -16,7 +16,7 @@ struct ScaleTransform{T<:Real} <: Transform
     s::T
 
     function ScaleTransform(s::Real)
-        @check_args(ScaleTransform, s > zero(s), "s > 0")
+        @check_args(ScaleTransform, s, s > zero(s), "s > 0")
         return new{typeof(s)}(s)
     end
 end
