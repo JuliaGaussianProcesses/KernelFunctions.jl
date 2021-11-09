@@ -233,8 +233,8 @@ macro noparams(T)
         Base.@__doc__ function ParameterHandling.flatten(
             ::Type{S}, x::$(esc(T))
         ) where {S<:Real}
-            unflatten(v::Vector{S}) = x
-            return x, unflatten
+            unflatten(::Vector{S}) = x
+            return S[], unflatten
         end
     end
 end
