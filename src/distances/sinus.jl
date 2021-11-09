@@ -2,6 +2,8 @@ struct Sinus{T} <: Distances.UnionSemiMetric
     r::Vector{T}
 end
 
+Sinus(r::Real) = Sinus([r])
+
 Distances.parameters(d::Sinus) = d.r
 @inline Distances.eval_op(::Sinus, a::Real, b::Real, p::Real) = abs2(sinpi(a - b) / p)
 @inline (dist::Sinus)(a::AbstractArray, b::AbstractArray) = Distances._evaluate(dist, a, b)
