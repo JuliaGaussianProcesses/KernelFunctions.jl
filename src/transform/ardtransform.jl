@@ -36,7 +36,7 @@ end
 
 dim(t::ARDTransform) = length(t.v)
 
-(t::ARDTransform)(x::Real) = first(t.v) * x
+(t::ARDTransform)(x::Real) = only(t.v) * x
 (t::ARDTransform)(x) = t.v .* x
 
 _map(t::ARDTransform, x::AbstractVector{<:Real}) = t.v' .* x
