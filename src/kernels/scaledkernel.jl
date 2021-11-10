@@ -61,6 +61,14 @@ function kernelmatrix_diag!(K::AbstractVector, κ::ScaledKernel, x::AbstractVect
     return K
 end
 
+function kernelmatrix_diag!(
+    K::AbstractVector, κ::ScaledKernel, x::AbstractVector, y::AbstractVector
+)
+    kernelmatrix_diag!(K, κ.kernel, x, y)
+    K .*= κ.σ²
+    return K
+end
+
 Base.:*(w::Real, k::Kernel) = ScaledKernel(k, w)
 
 Base.show(io::IO, κ::ScaledKernel) = printshifted(io, κ, 0)
