@@ -1,5 +1,5 @@
 """
-    MOInputIsotopicByFeatures(x::AbstractVector, out_dim::Integer)
+    MOInputIsotopicByFeatures(x::AbstractVector, out_dim::Int)
 
 `MOInputIsotopicByFeatures(x, out_dim)` has length `out_dim * length(x)`.
 
@@ -26,11 +26,11 @@ See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
 struct MOInputIsotopicByFeatures{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{S,Int}}
     x::T
-    out_dim::Integer
+    out_dim::Int
 end
 
 """
-    MOInputIsotopicByOutputs(x::AbstractVector, out_dim::Integer)
+    MOInputIsotopicByOutputs(x::AbstractVector, out_dim::Int)
 
 `MOInputIsotopicByOutputs(x, out_dim)` has length `length(x) * out_dim`.
 
@@ -55,7 +55,7 @@ The first `length(x)` elements represent the inputs for the first output, the se
 """
 struct MOInputIsotopicByOutputs{S,T<:AbstractVector{S}} <: AbstractVector{Tuple{S,Int}}
     x::T
-    out_dim::Integer
+    out_dim::Int
 end
 
 const IsotopicMOInputsUnion = Union{MOInputIsotopicByFeatures,MOInputIsotopicByOutputs}
@@ -87,7 +87,7 @@ function Base.vcat(x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs)
 end
 
 """
-    MOInput(x::AbstractVector, out_dim::Integer)
+    MOInput(x::AbstractVector, out_dim::Int)
 
 A data type to accommodate modelling multi-dimensional output data.
 `MOInput(x, out_dim)` has length `length(x) * out_dim`.
