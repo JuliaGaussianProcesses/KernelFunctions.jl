@@ -13,5 +13,6 @@
 
     # Standardised tests. This kernel appears to be fairly numerically unstable.
     TestUtils.test_interface(k; atol=1e-3)
+    test_params(k, (Float64[],))
     test_ADs(ExponentiatedKernel)
 end

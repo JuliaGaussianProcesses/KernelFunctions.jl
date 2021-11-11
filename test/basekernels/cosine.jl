@@ -19,5 +19,6 @@
 
     # Standardised tests.
     TestUtils.test_interface(k, Vector{Float64})
+    test_params(k, (Float64[],))
     test_ADs(CosineKernel)
 end

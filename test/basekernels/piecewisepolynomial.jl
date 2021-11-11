@@ -33,5 +33,5 @@
     TestUtils.test_interface(k, RowVecs{Float64}; dim_in=2)
     test_ADs(() -> PiecewisePolynomialKernel{degree}(; dim=D))
 
-    test_params(k, ())
+    test_params(k, (Float64[],))
 end

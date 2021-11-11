@@ -8,6 +8,7 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        test_params(k, (Float64[],))
         test_ADs(ZeroKernel)
     end
     @testset "WhiteKernel" begin
@@ -21,6 +22,7 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        test_params(k, (Float64[],))
         test_ADs(WhiteKernel)
     end
     @testset "ConstantKernel" begin
@@ -32,10 +34,10 @@
         @test metric(ConstantKernel()) == KernelFunctions.Delta()
         @test metric(ConstantKernel(; c=2.0)) == KernelFunctions.Delta()
         @test repr(k) == "Constant Kernel (c = $(c))"
-        test_params(k, ([log(c)],))
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        test_params(k, ([log(c)],))
         test_ADs(c -> ConstantKernel(; c=first(c)), [c])
     end
 end

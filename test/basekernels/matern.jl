@@ -39,6 +39,7 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        test_params(k, (Float64[],))
         test_ADs(Matern32Kernel)
     end
     @testset "Matern52Kernel" begin
@@ -58,6 +59,7 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        test_params(k, (Float64[],))
         test_ADs(Matern52Kernel)
     end
     @testset "Coherence Materns" begin

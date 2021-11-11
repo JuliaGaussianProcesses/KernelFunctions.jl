@@ -21,6 +21,7 @@
 
         # Standardised tests.
         TestUtils.test_interface(k)
+        test_params(k, (Float64[],))
         test_ADs(SEKernel)
     end
     @testset "ExponentialKernel" begin
@@ -39,6 +40,7 @@
 
         # Standardised tests.
         TestUtils.test_interface(k)
+        test_params(k, (Float64[],))
         test_ADs(ExponentialKernel)
     end
     @testset "GammaExponentialKernel" begin

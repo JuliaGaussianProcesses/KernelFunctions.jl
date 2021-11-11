@@ -7,5 +7,6 @@
 
     # Standardised tests.
     TestUtils.test_interface(k, Float64)
+    test_params(k, (Float64[],))
     test_ADs(NeuralNetworkKernel)
 end
