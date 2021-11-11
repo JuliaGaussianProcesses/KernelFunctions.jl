@@ -7,7 +7,7 @@
         ν = 2.0
         k = MaternKernel(; ν=ν)
         matern(x, ν) = 2^(1 - ν) / gamma(ν) * (sqrt(2ν) * x)^ν * besselk(ν, sqrt(2ν) * x)
-        @test MaternKernel(; nu=ν).ν == [ν]
+        @test MaternKernel(; nu=ν).ν == ν
         @test kappa(k, x) ≈ matern(x, ν)
         @test kappa(k, 0.0) == 1.0
         @test kappa(MaternKernel(; ν=ν), x) == kappa(k, x)

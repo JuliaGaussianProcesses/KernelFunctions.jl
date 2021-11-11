@@ -46,7 +46,7 @@
         k = GammaExponentialKernel(; γ=γ)
         @test k(v1, v2) ≈ exp(-norm(v1 - v2)^γ)
         @test kappa(GammaExponentialKernel(), x) == kappa(k, x)
-        @test GammaExponentialKernel(; gamma=γ).γ == [γ]
+        @test GammaExponentialKernel(; gamma=γ).γ == γ
         @test metric(GammaExponentialKernel()) == Euclidean()
         @test metric(GammaExponentialKernel(; γ=2.0)) == Euclidean()
         @test repr(k) == "Gamma Exponential Kernel (γ = $(γ), metric = Euclidean(0.0))"
