@@ -63,9 +63,7 @@ struct PolynomialKernel{T<:Real} <: SimpleKernel
     end
 end
 
-function PolynomialKernel(; degree::Int=2, c::Real=0.0)
-    return PolynomialKernel{typeof(c)}(degree, [c])
-end
+PolynomialKernel(; degree::Int=2, c::Real=0.0) = PolynomialKernel(degree, c)
 
 function ParameterHandling.flatten(
     ::Type{T}, k::PolynomialKernel{S}
