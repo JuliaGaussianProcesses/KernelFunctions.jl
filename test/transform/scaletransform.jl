@@ -14,10 +14,10 @@
         @test all([t(x[n]) ≈ x′[n] for n in eachindex(x)])
     end
 
-    s2 = 2.0
-    KernelFunctions.set!(t, s2)
-    @test t.s == [s2]
     @test isequal(ScaleTransform(s), ScaleTransform(s))
-    @test repr(t) == "Scale Transform (s = $(s2))"
+
+    s2 = 2.0
+    @test repr(ScaleTransform(s2)) == "Scale Transform (s = $(s2))"
+
     test_ADs(x -> SEKernel() ∘ ScaleTransform(exp(x[1])), randn(rng, 1))
 end
