@@ -32,7 +32,7 @@ end
 function ParameterHandling.flatten(::Type{T}, k::RationalKernel{S}) where {T<:Real,S}
     metric = k.metric
     function unflatten_to_rationalkernel(v::Vector{T})
-        return ConstantKernel(S(exp(only(v))), metric)
+        return RationalKernel(S(exp(only(v))), metric)
     end
     return T[log(k.α)], unflatten_to_rationalkernel
 end
@@ -133,8 +133,6 @@ struct GammaRationalKernel{Tα<:Real,Tγ<:Real,M} <: SimpleKernel
         return new{typeof(α),typeof(γ),typeof(metric)}(α, γ, metric)
     end
 end
-
-@functor GammaRationalKernel
 
 function ParameterHandling.flatten(
     ::Type{T}, k::GammaRationalKernel{Tα,Tγ}

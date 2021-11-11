@@ -58,7 +58,7 @@ using LinearAlgebra
 using Requires
 using SpecialFunctions: loggamma, besselk, polygamma
 using IrrationalConstants: logtwo, twoπ, invsqrt2
-using LogExpFunctions: softplus
+using LogExpFunctions: logit, logistic, softplus
 using StatsBase
 using TensorCore
 using ZygoteRules: ZygoteRules, AContext, literal_getproperty, literal_getfield

@@ -28,7 +28,7 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(x -> RationalKernel(; alpha=exp(x[1])), [α])
-        test_params(k, ([α],))
+        test_params(k, ([log(α)],))
     end
 
     @testset "RationalQuadraticKernel" begin
@@ -55,7 +55,7 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(x -> RationalQuadraticKernel(; alpha=exp(x[1])), [α])
-        test_params(k, ([α],))
+        test_params(k, ([log(α)],))
     end
 
     @testset "GammaRationalKernel" begin
@@ -129,6 +129,6 @@
         TestUtils.test_interface(k, Float64)
         a = 1.0 + rand()
         test_ADs(x -> GammaRationalKernel(; α=x[1], γ=x[2]), [a, 1 + 0.5 * rand()])
-        test_params(GammaRationalKernel(; α=a, γ=x), ([a], [x]))
+        test_params(GammaRationalKernel(; α=a, γ=x), ([log(a), logit(x / 2)],))
     end
 end

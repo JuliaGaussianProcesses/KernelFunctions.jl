@@ -92,6 +92,16 @@ struct ParameterKernel{P,K} <: Kernel
     kernel::K
 end
 
+# convenience function
+"""
+    ParameterKernel(kernel::Kernel)
+
+Construct a `ParameterKernel` from an existing `kernel`.
+
+The constructor is a short-hand for `ParameterKernel(ParameterHandling.flatten(kernel)...)`.
+"""
+ParameterKernel(kernel::Kernel) = ParameterKernel(flatten(kernel)...)
+
 Functors.@functor ParameterKernel (params,)
 
 function ParameterHandling.flatten(::Type{T}, kernel::ParameterKernel) where {T<:Real}
