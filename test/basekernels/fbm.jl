@@ -22,5 +22,5 @@
         Zygote.gradient((x, y) -> sum(f.(x, y)), zeros(1), fill(0.9, 1))[1][1]
     )
 
-    test_params(k, ([h],))
+    test_params(k, ([logit(h)],))
 end

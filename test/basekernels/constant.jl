@@ -32,7 +32,7 @@
         @test metric(ConstantKernel()) == KernelFunctions.Delta()
         @test metric(ConstantKernel(; c=2.0)) == KernelFunctions.Delta()
         @test repr(k) == "Constant Kernel (c = $(c))"
-        test_params(k, ([c],))
+        test_params(k, ([log(c)],))
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)

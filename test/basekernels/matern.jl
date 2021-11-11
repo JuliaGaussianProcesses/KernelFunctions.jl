@@ -23,7 +23,7 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
-        test_params(k, ([ν],))
+        test_params(k, ([log(ν)],))
     end
     @testset "Matern32Kernel" begin
         k = Matern32Kernel()

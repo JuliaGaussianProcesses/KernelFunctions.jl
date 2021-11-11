@@ -57,7 +57,7 @@
         @test k2(v1, v2) ≈ k(v1, v2)
 
         test_ADs(γ -> GammaExponentialKernel(; gamma=first(γ)), [1 + 0.5 * rand()])
-        test_params(k, ([γ],))
+        test_params(k, ([logit(γ / 2)],))
         TestUtils.test_interface(GammaExponentialKernel(; γ=1.36))
 
         #Coherence :
