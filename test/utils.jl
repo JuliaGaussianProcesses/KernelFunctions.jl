@@ -59,12 +59,16 @@
                 y = ColVecs(randn(2, 3))
 
                 # Ensure KernelFunctions.pairwise rather than Distances.pairwise is used.
-                check_zygote_type_stability(
-                    x -> KernelFunctions.pairwise(SqEuclidean(), x), x; ctx=ctx
-                )
-                check_zygote_type_stability(
-                    (x, y) -> KernelFunctions.pairwise(SqEuclidean(), x, y), x, y; ctx=ctx
-                )
+                @testset "single-argument" begin
+                    check_zygote_type_stability(
+                        x -> KernelFunctions.pairwise(SqEuclidean(), x), x; ctx=ctx
+                    )
+                end
+                @testset "two-argument" begin
+                    check_zygote_type_stability(
+                        (x, y) -> KernelFunctions.pairwise(SqEuclidean(), x, y), x, y; ctx=ctx
+                    )
+                end
             end
         end
     end
