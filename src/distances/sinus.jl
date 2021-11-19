@@ -1,5 +1,4 @@
-struct Sinus{T} <: Distances.SemiMetric
-    # struct Sinus{T} <: Distances.UnionSemiMetric
+struct Sinus{T} <: Distances.UnionSemiMetric
     r::Vector{T}
 end
 

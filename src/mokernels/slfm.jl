@@ -1,5 +1,5 @@
 @doc raw"""
-    LatentFactorMOKernel(g, e::MOKernel, A::AbstractMatrix)
+    LatentFactorMOKernel(g::AbstractVector{<:Kernel}, e::MOKernel, A::AbstractMatrix)
 
 Kernel associated with the semiparametric latent factor model.
 

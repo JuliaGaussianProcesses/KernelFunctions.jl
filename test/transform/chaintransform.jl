@@ -25,7 +25,7 @@
     @test repr(MIME("text/plain"), tp ∘ tf) ==
           "Chain of 2 input transformations:\n   $(tp ∘ tf)"
     test_ADs(
-        x -> transform(SEKernel(), ScaleTransform(exp(x[1])) ∘ ARDTransform(exp.(x[2:4]))),
+        x -> SEKernel() ∘ (ScaleTransform(exp(x[1])) ∘ ARDTransform(exp.(x[2:4]))),
         randn(rng, 4),
     )
 end

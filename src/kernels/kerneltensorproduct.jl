@@ -71,10 +71,17 @@ function kernelmatrix!(K::AbstractMatrix, k::KernelTensorProduct, x::AbstractVec
     validate_inplace_dims(K, x)
     validate_domain(k, x)
 
-    kernels_and_inputs = zip(k.kernels, slices(x))
-    kernelmatrix!(K, first(kernels_and_inputs)...)
-    for (k, xi) in Iterators.drop(kernels_and_inputs, 1)
-        K .*= kernelmatrix(k, xi)
+    first_kernels, tail_kernels = Iterators.peel(k.kernels)
+    first_x, tail_x = Iterators.peel(slices(x))
+
+    # handle first kernel and input
+    kernelmatrix!(K, first_kernels, first_x)
+
+    # handle remaining kernels and inputs
+    Ktmp = similar(K)
+    for (ki, xi) in zip(tail_kernels, tail_x)
+        kernelmatrix!(Ktmp, ki, xi)
+        hadamard!(K, K, Ktmp)
     end
 
     return K
@@ -86,23 +93,61 @@ function kernelmatrix!(
     validate_inplace_dims(K, x, y)
     validate_domain(k, x)
 
-    kernels_and_inputs = zip(k.kernels, slices(x), slices(y))
-    kernelmatrix!(K, first(kernels_and_inputs)...)
-    for (k, xi, yi) in Iterators.drop(kernels_and_inputs, 1)
-        K .*= kernelmatrix(k, xi, yi)
+    first_kernels, tail_kernels = Iterators.peel(k.kernels)
+    first_x, tail_x = Iterators.peel(slices(x))
+    first_y, tail_y = Iterators.peel(slices(y))
+
+    # handle first kernel and inputs
+    kernelmatrix!(K, first_kernels, first_x, first_y)
+
+    # handle remaining kernels and inputs
+    Ktmp = similar(K)
+    for (ki, xi, yi) in zip(tail_kernels, tail_x, tail_y)
+        kernelmatrix!(Ktmp, ki, xi, yi)
+        hadamard!(K, K, Ktmp)
     end
 
     return K
 end
 
-function kerneldiagmatrix!(K::AbstractVector, k::KernelTensorProduct, x::AbstractVector)
+function kernelmatrix_diag!(K::AbstractVector, k::KernelTensorProduct, x::AbstractVector)
     validate_inplace_dims(K, x)
     validate_domain(k, x)
 
-    kernels_and_inputs = zip(k.kernels, slices(x))
-    kerneldiagmatrix!(K, first(kernels_and_inputs)...)
-    for (k, xi) in Iterators.drop(kernels_and_inputs, 1)
-        K .*= kerneldiagmatrix(k, xi)
+    first_kernels, tail_kernels = Iterators.peel(k.kernels)
+    first_x, tail_x = Iterators.peel(slices(x))
+
+    # handle first kernel and input
+    kernelmatrix_diag!(K, first_kernels, first_x)
+
+    # handle remaining kernels and inputs
+    Ktmp = similar(K)
+    for (ki, xi) in zip(tail_kernels, tail_x)
+        kernelmatrix_diag!(Ktmp, ki, xi)
+        hadamard!(K, K, Ktmp)
+    end
+
+    return K
+end
+
+function kernelmatrix_diag!(
+    K::AbstractVector, k::KernelTensorProduct, x::AbstractVector, y::AbstractVector
+)
+    validate_inplace_dims(K, x, y)
+    validate_domain(k, x)
+
+    first_kernels, tail_kernels = Iterators.peel(k.kernels)
+    first_x, tail_x = Iterators.peel(slices(x))
+    first_y, tail_y = Iterators.peel(slices(y))
+
+    # handle first kernel and inputs
+    kernelmatrix_diag!(K, first_kernels, first_x, first_y)
+
+    # handle remaining kernels and inputs
+    Ktmp = similar(K)
+    for (ki, xi, yi) in zip(tail_kernels, tail_x, tail_y)
+        kernelmatrix_diag!(Ktmp, ki, xi, yi)
+        hadamard!(K, K, Ktmp)
     end
 
     return K
@@ -118,9 +163,14 @@ function kernelmatrix(k::KernelTensorProduct, x::AbstractVector, y::AbstractVect
     return mapreduce(kernelmatrix, hadamard, k.kernels, slices(x), slices(y))
 end
 
-function kerneldiagmatrix(k::KernelTensorProduct, x::AbstractVector)
+function kernelmatrix_diag(k::KernelTensorProduct, x::AbstractVector)
     validate_domain(k, x)
-    return mapreduce(kerneldiagmatrix, hadamard, k.kernels, slices(x))
+    return mapreduce(kernelmatrix_diag, hadamard, k.kernels, slices(x))
+end
+
+function kernelmatrix_diag(k::KernelTensorProduct, x::AbstractVector, y::AbstractVector)
+    validate_domain(k, x)
+    return mapreduce(kernelmatrix_diag, hadamard, k.kernels, slices(x), slices(y))
 end
 
 print_toplevel(io::IO, k::KernelTensorProduct) = join(io, k.kernels, " ⊗ ")

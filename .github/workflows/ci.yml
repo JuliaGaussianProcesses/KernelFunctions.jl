@@ -1,12 +1,20 @@
 name: CI
+
 on:
   push:
     branches:
       - master
   pull_request:
+
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
 jobs:
   test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    name: Julia ${{ matrix.version }} - ${{ matrix.group }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.version == 'nightly' }}
     strategy:
@@ -18,10 +26,14 @@ jobs:
           - 'nightly'
         os:
           - ubuntu-latest
-          - macOS-latest
-          - windows-latest
         arch:
           - x64
+        group:
+          - 'Transform'
+          - 'BaseKernels'
+          - 'Kernels'
+          - 'MultiOutput'
+          - 'Others'
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
@@ -40,30 +52,14 @@ jobs:
             ${{ runner.os }}-
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
+        with:
+          coverage: ${{ matrix.version == '1' && matrix.os == 'ubuntu-latest' }}
+        env:
+          GROUP: ${{ matrix.group }}
       - uses: julia-actions/julia-processcoverage@v1
-      - name: Send coverage
         if: matrix.version == '1' && matrix.os == 'ubuntu-latest'
-        uses: coverallsapp/github-action@master
+      - name: Send coverage to CodeCov
+        if: matrix.version == '1' && matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v2
         with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            path-to-lcov: ./lcov.info
-
-  format-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: julia-actions/setup-julia@latest
-        with:
-          version: 1
-      - uses: actions/checkout@v1
-      - name: Install JuliaFormatter and format
-        run: |
-          julia --project=test/ -e 'using Pkg; Pkg.instantiate()'
-          julia --project=test/ -e 'using JuliaFormatter; format(".", verbose=true)'
-      - name: Format check
-        run: |
-          CHANGED="$(git diff --name-only)"
-          if [ ! -z "$CHANGED" ]; then
-            >&2 echo "Some files have not been formatted !!!"
-            echo "$CHANGED"
-            exit 1
-          fi
+            file: lcov.info

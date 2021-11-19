@@ -14,11 +14,13 @@ k(x, x'; h) =  \\frac{\\|x\\|_2^{2h} + \\|x'\\|_2^{2h} - \\|x - x'\\|^{2h}}{2}.
 """
 struct FBMKernel{T<:Real} <: Kernel
     h::Vector{T}
-    function FBMKernel(; h::Real=0.5)
+    function FBMKernel(h::Real)
         @check_args(FBMKernel, h, zero(h) ≤ h ≤ one(h), "h ∈ [0, 1]")
         return new{typeof(h)}([h])
     end
 end
+
+FBMKernel(; h::Real=0.5) = FBMKernel(h)
 
 @functor FBMKernel
 
@@ -41,6 +43,8 @@ end
 _fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h) / 2
 
 _mod(x::AbstractVector{<:Real}) = abs2.(x)
+_mod(x::AbstractVector{<:AbstractVector{<:Real}}) = sum.(abs2, x)
+# two lines above could be combined into the second (dispatching on general AbstractVectors), but this (somewhat) more performant
 _mod(x::ColVecs) = vec(sum(abs2, x.X; dims=1))
 _mod(x::RowVecs) = vec(sum(abs2, x.X; dims=2))
 
@@ -68,4 +72,15 @@ function kernelmatrix!(
     pairwise!(K, SqEuclidean(), x, y)
     K .= _fbm.(_mod(x), _mod(y)', K, κ.h)
     return K
+end
+
+function kernelmatrix_diag(κ::FBMKernel, x::AbstractVector)
+    modx = _mod(x)
+    modxx = colwise(SqEuclidean(), x)
+    return _fbm.(modx, modx, modxx, κ.h)
+end
+
+function kernelmatrix_diag(κ::FBMKernel, x::AbstractVector, y::AbstractVector)
+    modxy = colwise(SqEuclidean(), x, y)
+    return _fbm.(_mod(x), _mod(y), modxy, κ.h)
 end

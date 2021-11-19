@@ -13,7 +13,7 @@
     @test repr(MIME("text/plain"), ks) == "Scaled kernel:\n   $ks"
 
     # Standardised tests.
-    TestUtils.test_interface(k, Float64)
+    TestUtils.test_interface(ks, Float64)
     test_ADs(x -> exp(x[1]) * SqExponentialKernel(), rand(1))
 
     test_params(s * k, (k, [s]))

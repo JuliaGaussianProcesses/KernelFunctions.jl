@@ -17,4 +17,4 @@ function print_nested(io::IO, x)
 end
 
 # Fallback implementation of evaluate for `SimpleKernel`s.
-(k::SimpleKernel)(x, y) = kappa(k, evaluate(metric(k), x, y))
+(k::SimpleKernel)(x, y) = kappa(k, metric(k)(x, y))

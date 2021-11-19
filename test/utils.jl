@@ -33,6 +33,8 @@
               pairwise(SqEuclidean(), X; dims=2)
         @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈
               pairwise(SqEuclidean(), X, Y; dims=2)
+        @test vcat(DX, DY) isa ColVecs
+        @test vcat(DX, DY).X == hcat(X, Y)
         K = zeros(N, N)
         KernelFunctions.pairwise!(K, SqEuclidean(), DX)
         @test K ≈ pairwise(SqEuclidean(), X; dims=2)
@@ -48,6 +50,22 @@
             @test Zygote.pullback(DX -> DX.X, DX)[1] == X
             X_, back = Zygote.pullback(DX -> DX.X, DX)
             @test back(ones(size(X)))[1].X == ones(size(X))
+        end
+
+        if VERSION >= v"1.6"
+            @testset "Zygote type-inference" begin
+                ctx = NoContext()
+                x = ColVecs(randn(2, 4))
+                y = ColVecs(randn(2, 3))
+
+                # Ensure KernelFunctions.pairwise rather than Distances.pairwise is used.
+                check_zygote_type_stability(
+                    x -> KernelFunctions.pairwise(SqEuclidean(), x), x; ctx=ctx
+                )
+                check_zygote_type_stability(
+                    (x, y) -> KernelFunctions.pairwise(SqEuclidean(), x, y), x, y; ctx=ctx
+                )
+            end
         end
     end
     @testset "RowVecs" begin
@@ -72,6 +90,8 @@
               pairwise(SqEuclidean(), X; dims=1)
         @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈
               pairwise(SqEuclidean(), X, Y; dims=1)
+        @test vcat(DX, DY) isa RowVecs
+        @test vcat(DX, DY).X == vcat(X, Y)
         K = zeros(D, D)
         KernelFunctions.pairwise!(K, SqEuclidean(), DX)
         @test K ≈ pairwise(SqEuclidean(), X; dims=1)
@@ -88,6 +108,19 @@
             X_, back = Zygote.pullback(DX -> DX.X, DX)
             @test back(ones(size(X)))[1].X == ones(size(X))
         end
+    end
+    @testset "ColVecs + RowVecs" begin
+        x_colvecs = ColVecs(randn(3, 5))
+        x_rowvecs = RowVecs(randn(7, 3))
+
+        @test isapprox(
+            pairwise(SqEuclidean(), x_colvecs, x_rowvecs),
+            pairwise(SqEuclidean(), collect(x_colvecs), collect(x_rowvecs)),
+        )
+        @test isapprox(
+            pairwise(SqEuclidean(), x_rowvecs, x_colvecs),
+            pairwise(SqEuclidean(), collect(x_rowvecs), collect(x_colvecs)),
+        )
     end
     @testset "input checks" begin
         D = 3

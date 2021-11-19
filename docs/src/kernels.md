@@ -27,6 +27,7 @@ CosineKernel
 
 ```@docs
 ExponentialKernel
+GibbsKernel
 LaplacianKernel
 SqExponentialKernel
 SEKernel
@@ -50,7 +51,7 @@ FBMKernel
 ### Gabor Kernel
 
 ```@docs
-GaborKernel
+gaborkernel
 ```
 
 ### Matérn Kernels
@@ -88,11 +89,12 @@ LinearKernel
 PolynomialKernel
 ```
 
-### Rational Quadratic Kernels
+### Rational Kernels
 
 ```@docs
+RationalKernel
 RationalQuadraticKernel
-GammaRationalQuadraticKernel
+GammaRationalKernel
 ```
 
 ### Spectral Mixture Kernels
@@ -118,19 +120,23 @@ of kernels together.
 
 ```@docs
 TransformedKernel
-transform(::Kernel, ::Transform)
-transform(::Kernel, ::Real)
-transform(::Kernel, ::AbstractVector)
+∘(::Kernel, ::Transform)
 ScaledKernel
 KernelSum
 KernelProduct
 KernelTensorProduct
+NormalizedKernel
 ```
 
 ## Multi-output Kernels
+Kernelfunctions implements multi-output kernels as scalar kernels on an extended output domain. For more details on this read [the section on inputs for multi-output GPs](@ref Inputs-for-Multiple-Outputs).
+
+For a function ``f(x) \\rightarrow y`` denote the inputs as ``x, x'``, such that we compute the covariance between output components ``y_{p}`` and ``y_{p'}``. The total number of outputs is ``m``.
 
 ```@docs
 MOKernel
 IndependentMOKernel
 LatentFactorMOKernel
+IntrinsicCoregionMOKernel
+LinearMixingModelKernel
 ```

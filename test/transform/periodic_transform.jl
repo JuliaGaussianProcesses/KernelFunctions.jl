@@ -5,10 +5,10 @@
         x = collect(range(0.0, 3.0 / f; length=1_000))
 
         # Construct in the usual way.
-        k_eq_periodic = transform(PeriodicKernel(; r=[sqrt(0.25)]), f)
+        k_eq_periodic = PeriodicKernel(; r=[sqrt(0.25)]) ∘ ScaleTransform(f)
 
         # Construct using the peridic transform.
-        k_eq_transform = transform(SqExponentialKernel(), PeriodicTransform(f))
+        k_eq_transform = SqExponentialKernel() ∘ PeriodicTransform(f)
 
         @test kernelmatrix(k_eq_periodic, x) ≈ kernelmatrix(k_eq_transform, x)
         # TODO - add interface_tests once #159 is merged.
