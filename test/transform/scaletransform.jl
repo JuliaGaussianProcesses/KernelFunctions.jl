@@ -26,7 +26,8 @@
             n = length(x)
             t = median_heuristic_transform(dist, x)
             @test t isa ScaleTransform
-            @test first(t.s) ≈ inv(median(dist(x[i], x[j]) for i in 1:n, j in 1:n if i != j))
+            @test first(t.s) ≈
+                inv(median(dist(x[i], x[j]) for i in 1:n, j in 1:n if i != j))
 
             y = map(t, x)
             @test median(dist(y[i], y[j]) for i in 1:n, j in 1:n if i != j) ≈ 1
