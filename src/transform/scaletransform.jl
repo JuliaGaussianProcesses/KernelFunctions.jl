@@ -65,7 +65,7 @@ function median_heuristic_transform(f, x::AbstractVector)
     # Compute pairwise distances between **different** elements
     n = length(x)
     distances = vec(pairwise(f, x))
-    deleteat!(distances, 1:(n + 1):n^2)
+    deleteat!(distances, 1:(n + 1):(n^2))
 
     return ScaleTransform(inv(median!(distances)))
 end
