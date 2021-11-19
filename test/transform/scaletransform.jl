@@ -23,12 +23,13 @@
 
     @testset "median heuristic" begin
         for x in (x, XV, XC, XR), dist in (Euclidean(), Cityblock())
+            n = length(x)
             t = median_heuristic_transform(dist, x)
             @test t isa ScaleTransform
-            @test first(t.s) ≈ inv(median(dist(a, b) for a in x, b in x))
+            @test first(t.s) ≈ inv(median(dist(x[i], x[j]) for i in 1:n, j in 1:n if i != j))
 
             y = map(t, x)
-            @test median(dist(a, b) for a in y, b in y) ≈ 1
+            @test median(dist(y[i], y[j]) for i in 1:n, j in 1:n if i != j) ≈ 1
         end
     end
 end
