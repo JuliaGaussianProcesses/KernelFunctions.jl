@@ -57,11 +57,15 @@ julia> t = median_heuristic_transform(Euclidean(), x);
 
 julia> y = map(t, x);
 
-julia> median(euclidean(yi, yj) for yi in y, yj in y) ≈ 1
+julia> median(euclidean(y[i], y[j]) for i in 1:10, j in 1:10 if i != j) ≈ 1
 true
 ```
 """
 function median_heuristic_transform(f, x::AbstractVector)
-    distances = pairwise(f, x)
+    # Compute pairwise distances between **different** elements
+    n = length(x)
+    distances = vec(pairwise(f, x))
+    deleteat!(distances, 1:(n + 1):n^2)
+
     return ScaleTransform(inv(median!(distances)))
 end
