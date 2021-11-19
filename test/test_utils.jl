@@ -1,7 +1,25 @@
 # More test utilities. Can't be included in KernelFunctions because they introduce a number
 # of additional deps that we don't want to have in the main package.
 
-# Check parameters of kernels
+# Check parameters of kernels. `trainable`, `params!`, and `params` are taken directly from
+# Flux.jl so as to avoid having to depend on Flux at test-time.
+trainable(m) = functor(m)[1]
+
+params!(p::Zygote.Params, x::AbstractArray{<:Number}, seen=Zygote.IdSet()) = push!(p, x)
+
+function params!(p::Zygote.Params, x, seen=Zygote.IdSet())
+    x in seen && return nothing
+    push!(seen, x)
+    for child in trainable(x)
+        params!(p, child, seen)
+    end
+end
+
+function params(m...)
+    ps = Zygote.Params()
+    params!(ps, m)
+    return ps
+end
 
 function test_params(kernel, reference)
     params_kernel = params(kernel)
@@ -12,6 +30,15 @@ function test_params(kernel, reference)
 end
 
 # AD utilities
+
+# Type to work around some performance issues that can happen on the reverse-pass of Zygote.
+# This context doesn't allow any globals. Don't use this if you use globals in your
+# programme.
+struct NoContext <: Zygote.AContext end
+
+Zygote.cache(cx::NoContext) = (cache_fields = nothing)
+Base.haskey(cx::NoContext, x) = false
+Zygote.accum_param(::NoContext, x, Δ) = Δ
 
 const FDM = FiniteDifferences.central_fdm(5, 1)
 
@@ -67,6 +94,13 @@ function test_ADs(
             test_AD(AD, kernelfunction, args, dims)
         end
     end
+end
+
+function check_zygote_type_stability(f, args...; ctx=Zygote.Context())
+    @inferred f(args...)
+    @inferred Zygote._pullback(ctx, f, args...)
+    out, pb = Zygote._pullback(ctx, f, args...)
+    @inferred pb(out)
 end
 
 function test_ADs(
