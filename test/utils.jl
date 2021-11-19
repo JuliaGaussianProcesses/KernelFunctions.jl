@@ -66,7 +66,10 @@
                 end
                 @testset "two-argument" begin
                     check_zygote_type_stability(
-                        (x, y) -> KernelFunctions.pairwise(SqEuclidean(), x, y), x, y; ctx=ctx
+                        (x, y) -> KernelFunctions.pairwise(SqEuclidean(), x, y),
+                        x,
+                        y;
+                        ctx=ctx,
                     )
                 end
             end
