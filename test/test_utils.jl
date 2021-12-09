@@ -100,7 +100,7 @@ function check_zygote_type_stability(f, args...; ctx=Zygote.Context())
     @inferred f(args...)
     @inferred Zygote._pullback(ctx, f, args...)
     out, pb = Zygote._pullback(ctx, f, args...)
-    @test_throws ErrorException @inferred pb(out)
+    @inferred pb(out)
 end
 
 function test_ADs(
