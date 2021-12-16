@@ -224,65 +224,77 @@ end
 
 function test_AD(AD::Symbol, kernelfunction, args=nothing, dims=[3, 3])
     @testset "$(AD)" begin
-        # Test kappa function
         k = if args === nothing
             kernelfunction()
         else
             kernelfunction(args)
         end
         rng = MersenneTwister(42)
+
         if k isa SimpleKernel
-            for d in log.([eps(), rand(rng)])
-                compare_gradient(AD, [d]) do x
-                    kappa(k, exp(x[1]))
+            @testset "kappa function" begin
+                for d in log.([eps(), rand(rng)])
+                    compare_gradient(AD, [d]) do x
+                        kappa(k, exp(x[1]))
+                    end
                 end
             end
         end
-        # Testing kernel evaluations
-        x = rand(rng, dims[1])
-        y = rand(rng, dims[1])
-        compare_gradient(AD, x) do x
-            k(x, y)
-        end
-        compare_gradient(AD, y) do y
-            k(x, y)
-        end
-        if !(args === nothing)
-            compare_gradient(AD, args) do p
-                kernelfunction(p)(x, y)
+
+        @testset "kernel evaluations" begin
+            x = rand(rng, dims[1])
+            y = rand(rng, dims[1])
+            @testset "first argument" begin
+                compare_gradient(AD, x) do x
+                    k(x, y)
+                end
             end
-        end
-        # Testing kernel matrices
-        A = rand(rng, dims...)
-        B = rand(rng, dims...)
-        for dim in 1:2
-            compare_gradient(AD, A) do a
-                testfunction(k, a, dim)
-            end
-            compare_gradient(AD, A) do a
-                testfunction(k, a, B, dim)
-            end
-            compare_gradient(AD, B) do b
-                testfunction(k, A, b, dim)
+            @testset "second argument" begin
+                compare_gradient(AD, y) do y
+                    k(x, y)
+                end
             end
             if !(args === nothing)
-                compare_gradient(AD, args) do p
-                    testfunction(kernelfunction(p), A, dim)
+                @testset "hyperparameters" begin
+                    compare_gradient(AD, args) do p
+                        kernelfunction(p)(x, y)
+                    end
                 end
             end
+        end
 
-            compare_gradient(AD, A) do a
-                testdiagfunction(k, a, dim)
-            end
-            compare_gradient(AD, A) do a
-                testdiagfunction(k, a, B, dim)
-            end
-            compare_gradient(AD, B) do b
-                testdiagfunction(k, A, b, dim)
-            end
-            if args !== nothing
-                compare_gradient(AD, args) do p
-                    testdiagfunction(kernelfunction(p), A, dim)
+        @testset "kernel matrices" begin
+            A = rand(rng, dims...)
+            B = rand(rng, dims...)
+            for dim in 1:2
+                compare_gradient(AD, A) do a
+                    testfunction(k, a, dim)
+                end
+                compare_gradient(AD, A) do a
+                    testfunction(k, a, B, dim)
+                end
+                compare_gradient(AD, B) do b
+                    testfunction(k, A, b, dim)
+                end
+                if !(args === nothing)
+                    compare_gradient(AD, args) do p
+                        testfunction(kernelfunction(p), A, dim)
+                    end
+                end
+
+                compare_gradient(AD, A) do a
+                    testdiagfunction(k, a, dim)
+                end
+                compare_gradient(AD, A) do a
+                    testdiagfunction(k, a, B, dim)
+                end
+                compare_gradient(AD, B) do b
+                    testdiagfunction(k, A, b, dim)
+                end
+                if args !== nothing
+                    compare_gradient(AD, args) do p
+                        testdiagfunction(kernelfunction(p), A, dim)
+                    end
                 end
             end
         end
