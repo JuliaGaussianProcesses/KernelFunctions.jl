@@ -25,7 +25,7 @@
     test_ADs(
         x -> SEKernel() ∘ (ScaleTransform(exp(x[1])) ∘ ARDTransform(exp.(x[2:4]))),
         randn(rng, 4);
-        ADs=[:ForwardDiff, :ReverseDiff]
+        ADs=[:ForwardDiff, :ReverseDiff],
     )
     @test_broken "test_AD of chain transform is currently broken in Zygote"
 end
