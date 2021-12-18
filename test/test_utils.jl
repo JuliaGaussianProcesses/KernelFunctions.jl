@@ -184,15 +184,11 @@ function test_AD(AD::Symbol, kernelfunction, args=nothing, dims=[3, 3])
         @testset "kernel evaluations" begin
             x = rand(rng, dims[1])
             y = rand(rng, dims[1])
-            @testset "first argument" begin
-                compare_gradient(AD, x) do x
-                    k(x, y)
-                end
+            compare_gradient(AD, x) do x
+                k(x, y)
             end
-            @testset "second argument" begin
-                compare_gradient(AD, y) do y
-                    k(x, y)
-                end
+            compare_gradient(AD, y) do y
+                k(x, y)
             end
             if !(args === nothing)
                 @testset "hyperparameters" begin
@@ -206,44 +202,31 @@ function test_AD(AD::Symbol, kernelfunction, args=nothing, dims=[3, 3])
         @testset "kernel matrices" begin
             A = rand(rng, dims...)
             B = rand(rng, dims...)
-            for dim in 1:2
-                compare_gradient(AD, A) do a
-                    testfunction(k, a, dim)
-                end
-                compare_gradient(AD, A) do a
-                    testfunction(k, a, B, dim)
-                end
-                compare_gradient(AD, B) do b
-                    testfunction(k, A, b, dim)
-                end
-                if !(args === nothing)
-                    compare_gradient(AD, args) do p
-                        testfunction(kernelfunction(p), A, dim)
+            @testset "$(_testfn)" for _testfn in (testfunction, testdiagfunction)
+                for dim in 1:2
+                    compare_gradient(AD, A) do a
+                        _testfn(k, a, dim)
                     end
-                    compare_gradient(AD, args) do p
-                        testfunction(kernelfunction(p), A, B, dim)
+                    compare_gradient(AD, A) do a
+                        _testfn(k, a, B, dim)
                     end
-                end
-
-                compare_gradient(AD, A) do a
-                    testdiagfunction(k, a, dim)
-                end
-                compare_gradient(AD, A) do a
-                    testdiagfunction(k, a, B, dim)
-                end
-                compare_gradient(AD, B) do b
-                    testdiagfunction(k, A, b, dim)
-                end
-                if args !== nothing
-                    compare_gradient(AD, args) do p
-                        testdiagfunction(kernelfunction(p), A, dim)
+                    compare_gradient(AD, B) do b
+                        _testfn(k, A, b, dim)
                     end
-                    compare_gradient(AD, args) do p
-                        testdiagfunction(kernelfunction(p), A, B, dim)
+                    if !(args === nothing)
+                        @testset "hyperparameters" begin
+                            compare_gradient(AD, args) do p
+                                _testfn(kernelfunction(p), A, dim)
+                            end
+                            compare_gradient(AD, args) do p
+                                _testfn(kernelfunction(p), A, B, dim)
+                            end
+                        end
                     end
                 end
             end
-        end
+        end # kernel matrices
+
     end
 end
 
