@@ -226,7 +226,6 @@ function test_AD(AD::Symbol, kernelfunction, args=nothing, dims=[3, 3])
                 end
             end
         end # kernel matrices
-
     end
 end
 
