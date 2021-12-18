@@ -280,6 +280,9 @@ function test_AD(AD::Symbol, kernelfunction, args=nothing, dims=[3, 3])
                     compare_gradient(AD, args) do p
                         testfunction(kernelfunction(p), A, dim)
                     end
+                    compare_gradient(AD, args) do p
+                        testfunction(kernelfunction(p), A, B, dim)
+                    end
                 end
 
                 compare_gradient(AD, A) do a
@@ -294,6 +297,9 @@ function test_AD(AD::Symbol, kernelfunction, args=nothing, dims=[3, 3])
                 if args !== nothing
                     compare_gradient(AD, args) do p
                         testdiagfunction(kernelfunction(p), A, dim)
+                    end
+                    compare_gradient(AD, args) do p
+                        testdiagfunction(kernelfunction(p), A, B, dim)
                     end
                 end
             end
