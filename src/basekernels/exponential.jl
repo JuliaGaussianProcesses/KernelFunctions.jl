@@ -137,7 +137,7 @@ end
 
 @functor GammaExponentialKernel
 
-kappa(κ::GammaExponentialKernel, d::Real) = exp(-d^first(κ.γ))
+kappa(κ::GammaExponentialKernel, d::Real) = exp(-d^only(κ.γ))
 
 metric(k::GammaExponentialKernel) = k.metric
 
@@ -145,6 +145,6 @@ iskroncompatible(::GammaExponentialKernel) = true
 
 function Base.show(io::IO, κ::GammaExponentialKernel)
     return print(
-        io, "Gamma Exponential Kernel (γ = ", first(κ.γ), ", metric = ", κ.metric, ")"
+        io, "Gamma Exponential Kernel (γ = ", only(κ.γ), ", metric = ", κ.metric, ")"
     )
 end

@@ -45,7 +45,7 @@ const FDM = FiniteDifferences.central_fdm(5, 1)
 gradient(f, s::Symbol, args) = gradient(f, Val(s), args)
 
 function gradient(f, ::Val{:Zygote}, args)
-    g = first(Zygote.gradient(f, args))
+    g = only(Zygote.gradient(f, args))
     if isnothing(g)
         if args isa AbstractArray{<:Real}
             return zeros(size(args)) # To respect the same output as other ADs
@@ -66,7 +66,7 @@ function gradient(f, ::Val{:ReverseDiff}, args)
 end
 
 function gradient(f, ::Val{:FiniteDiff}, args)
-    return first(FiniteDifferences.grad(FDM, f, args))
+    return only(FiniteDifferences.grad(FDM, f, args))
 end
 
 function compare_gradient(f, ::Val{:FiniteDiff}, args)
