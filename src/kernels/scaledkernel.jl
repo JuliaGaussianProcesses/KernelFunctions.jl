@@ -23,7 +23,7 @@ end
 
 @functor ScaledKernel
 
-(k::ScaledKernel)(x, y) = first(k.σ²) * k.kernel(x, y)
+(k::ScaledKernel)(x, y) = only(k.σ²) * k.kernel(x, y)
 
 function kernelmatrix(κ::ScaledKernel, x::AbstractVector, y::AbstractVector)
     return κ.σ² .* kernelmatrix(κ.kernel, x, y)
@@ -75,5 +75,5 @@ Base.show(io::IO, κ::ScaledKernel) = printshifted(io, κ, 0)
 
 function printshifted(io::IO, κ::ScaledKernel, shift::Int)
     printshifted(io, κ.kernel, shift)
-    return print(io, "\n" * ("\t"^(shift + 1)) * "- σ² = $(first(κ.σ²))")
+    return print(io, "\n" * ("\t"^(shift + 1)) * "- σ² = $(only(κ.σ²))")
 end
