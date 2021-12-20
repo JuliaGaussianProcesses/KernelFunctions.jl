@@ -25,16 +25,16 @@ PeriodicTransform(f::Real) = PeriodicTransform([f])
 
 dim(t::PeriodicTransform) = 2
 
-(t::PeriodicTransform)(x::Real) = [sinpi(2 * first(t.f) * x), cospi(2 * first(t.f) * x)]
+(t::PeriodicTransform)(x::Real) = [sinpi(2 * only(t.f) * x), cospi(2 * only(t.f) * x)]
 
 function _map(t::PeriodicTransform, x::AbstractVector{<:Real})
-    return RowVecs(hcat(sinpi.((2 * first(t.f)) .* x), cospi.((2 * first(t.f)) .* x)))
+    return RowVecs(hcat(sinpi.((2 * only(t.f)) .* x), cospi.((2 * only(t.f)) .* x)))
 end
 
 function Base.isequal(t1::PeriodicTransform, t2::PeriodicTransform)
-    return isequal(first(t1.f), first(t2.f))
+    return isequal(only(t1.f), only(t2.f))
 end
 
 function Base.show(io::IO, t::PeriodicTransform)
-    return print(io, "Periodic Transform with frequency $(first(t.f))")
+    return print(io, "Periodic Transform with frequency $(only(t.f))")
 end
