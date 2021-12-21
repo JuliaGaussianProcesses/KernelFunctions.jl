@@ -95,6 +95,7 @@ PolynomialKernel
 RationalKernel
 RationalQuadraticKernel
 GammaRationalKernel
+InverseMultiQuadricKernel
 ```
 
 ### Spectral Mixture Kernels

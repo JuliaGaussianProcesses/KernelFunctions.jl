@@ -13,6 +13,7 @@ export FBMKernel
 export MaternKernel, Matern12Kernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalKernel, RationalQuadraticKernel, GammaRationalKernel
+export InverseMultiQuadricKernel
 export PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
 export KernelSum, KernelProduct, KernelTensorProduct
