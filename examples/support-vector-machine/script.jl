@@ -49,6 +49,14 @@ y_pred, _ = svmpredict(model, kernelmatrix(k, x_train, x_test));
 
 # We can see that the kernelized, non-linear classification successfully separates the two classes in the training data:
 plot(; xlim=extrema(test_range), ylim=extrema(test_range), aspect_ratio=1)
-contourf!(test_range, test_range, y_pred; levels=1, color=cgrad(:redsblues), alpha=0.7, colorbar_title="prediction")
+contourf!(
+    test_range,
+    test_range,
+    y_pred;
+    levels=1,
+    color=cgrad(:redsblues),
+    alpha=0.7,
+    colorbar_title="prediction",
+)
 scatter!(X1[:, 1], X1[:, 2]; color=:red, label="training data: class –1")
 scatter!(X2[:, 1], X2[:, 2]; color=:blue, label="training data: class 1")
