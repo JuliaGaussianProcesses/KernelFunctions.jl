@@ -23,8 +23,8 @@ n1 = n2 = 50;
 
 angle1 = range(0, π; length=n1)
 angle2 = range(0, π; length=n2)
-X1 = [cos.(angle1) sin.(angle1)] .+ 0.1randn(n1, 2)
-X2 = [1 .- cos.(angle2) 1 .- sin.(angle2) .- 0.5] .+ 0.1randn(n2, 2)
+X1 = [cos.(angle1) sin.(angle1)] .+ 0.1 .* randn.()
+X2 = [1 .- cos.(angle2) 1 .- sin.(angle2) .- 0.5] .+ 0.1 .* randn.()
 X = [X1; X2]
 x_train = RowVecs(X)
 y_train = vcat(fill(-1, n1), fill(1, n2));
