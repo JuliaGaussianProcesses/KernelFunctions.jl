@@ -44,7 +44,11 @@ model = svmtrain(kernelmatrix(k, x_train), y_train; kernel=LIBSVM.Kernel.Precomp
 y_pred, _ = svmpredict(model, kernelmatrix(k, x_train, x_test));
 
 # Compute prediction on a grid:
-plot(lim=extrema(test_range))
+plot(; lim=extrema(test_range))
 contourf!(test_range, test_range, y_pred; levels=1, color=cgrad(:redsblues), alpha=0.7)
-scatter!(X[y_train.==-1, 1], X[y_train.==-1, 2]; color=:red, label="class 1", widen=false)
-scatter!(X[y_train.==+1, 1], X[y_train.==+1, 2]; color=:blue, label="class 2", widen=false)
+scatter!(
+    X[y_train .== -1, 1], X[y_train .== -1, 2]; color=:red, label="class 1", widen=false
+)
+scatter!(
+    X[y_train .== +1, 1], X[y_train .== +1, 2]; color=:blue, label="class 2", widen=false
+)
