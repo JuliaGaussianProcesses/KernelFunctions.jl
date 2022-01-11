@@ -1,19 +1,23 @@
-"""
+@doc raw"""
     GibbsKernel(; lengthscale)
 
-# Definition
+Gibbs Kernel with lengthscale function `lengthscale`.
 
-The Gibbs kernel is non-stationary generalisation of the squared exponential
+The Gibbs kernel is a non-stationary generalisation of the squared exponential
 kernel. The lengthscale parameter ``l`` becomes a function of
 position ``l(x)``.
 
-For a constant function``l(x) = c``, one recovers the standard squared exponential kernel
-with lengthscale `c`.
+# Definition
 
+For inputs ``x, x'``, the Gibbs kernel with lengthscale function ``l(\cdot)``
+is defined as
 ```math
-k(x, y; l) = \\sqrt{ \\left(\\frac{2 l(x) l(y)}{l(x)^2 + l(y)^2} \\right) }
-\\quad \\rm{exp} \\left( - \\frac{(x - y)^2}{l(x)^2 + l(y)^2} \\right)
+k(x, x'; l) = \sqrt{\left(\frac{2 l(x) l(x')}{l(x)^2 + l(x')^2}\right)}
+\quad \exp{\left(-\frac{(x - x')^2}{l(x)^2 + l(x')^2}\right)}.
 ```
+
+For a constant function ``l \equiv c``, one recovers the [`SqExponentialKernel`](@ref)
+with lengthscale `c`.
 
 # References
 
