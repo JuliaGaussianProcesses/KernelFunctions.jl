@@ -14,6 +14,7 @@ using Zygote: Zygote
 using ForwardDiff: ForwardDiff
 using ReverseDiff: ReverseDiff
 using FiniteDifferences: FiniteDifferences
+using Compat: only
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 
@@ -126,6 +127,7 @@ include("test_utils.jl")
             include("kernels/transformedkernel.jl")
             include("kernels/normalizedkernel.jl")
             include("kernels/neuralkernelnetwork.jl")
+            include("kernels/gibbskernel.jl")
         end
         @info "Ran tests on Kernel"
     end

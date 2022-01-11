@@ -80,13 +80,13 @@ Base.vcat(a::ColVecs, b::ColVecs) = ColVecs(hcat(a.X, b.X))
 
 dim(x::ColVecs) = size(x.X, 1)
 
-pairwise(d::PreMetric, x::ColVecs) = Distances.pairwise(d, x.X; dims=2)
-pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances.pairwise(d, x.X, y.X; dims=2)
+pairwise(d::PreMetric, x::ColVecs) = Distances_pairwise(d, x.X; dims=2)
+pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances_pairwise(d, x.X, y.X; dims=2)
 function pairwise(d::PreMetric, x::AbstractVector, y::ColVecs)
-    return Distances.pairwise(d, reduce(hcat, x), y.X; dims=2)
+    return Distances_pairwise(d, reduce(hcat, x), y.X; dims=2)
 end
 function pairwise(d::PreMetric, x::ColVecs, y::AbstractVector)
-    return Distances.pairwise(d, x.X, reduce(hcat, y); dims=2)
+    return Distances_pairwise(d, x.X, reduce(hcat, y); dims=2)
 end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs)
     return Distances.pairwise!(out, d, x.X; dims=2)
@@ -150,13 +150,13 @@ Base.vcat(a::RowVecs, b::RowVecs) = RowVecs(vcat(a.X, b.X))
 
 dim(x::RowVecs) = size(x.X, 2)
 
-pairwise(d::PreMetric, x::RowVecs) = Distances.pairwise(d, x.X; dims=1)
-pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = Distances.pairwise(d, x.X, y.X; dims=1)
+pairwise(d::PreMetric, x::RowVecs) = Distances_pairwise(d, x.X; dims=1)
+pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = Distances_pairwise(d, x.X, y.X; dims=1)
 function pairwise(d::PreMetric, x::AbstractVector, y::RowVecs)
-    return Distances.pairwise(d, permutedims(reduce(hcat, x)), y.X; dims=1)
+    return Distances_pairwise(d, permutedims(reduce(hcat, x)), y.X; dims=1)
 end
 function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector)
-    return Distances.pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
+    return Distances_pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
 end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs)
     return Distances.pairwise!(out, d, x.X; dims=1)
@@ -178,7 +178,7 @@ function validate_inputs(x, y)
     if dim(x) != dim(y) # Passes by default if `dim` is not defined
         throw(
             DimensionMismatch(
-                "Dimensionality of x ($(dim(x))) not equality to that of y ($(dim(y)))"
+                "dimensionality of x ($(dim(x))) is not equal to that of y ($(dim(y)))"
             ),
         )
     end
@@ -197,17 +197,27 @@ function validate_inplace_dims(K::AbstractMatrix, x::AbstractVector, y::Abstract
     end
 end
 
-function validate_inplace_dims(K::AbstractMatrix, x::AbstractVector)
-    return validate_inplace_dims(K, x, x)
-end
-
-function validate_inplace_dims(K::AbstractVector, x::AbstractVector)
-    if length(K) != length(x)
+function validate_inplace_dims(K::AbstractVector, x::AbstractVector, y::AbstractVector)
+    validate_inputs(x, y)
+    n = length(x)
+    if length(y) != n
         throw(
             DimensionMismatch(
-                "Length of target vector K ($(length(K))) not consistent with length of input" *
-                "vector x ($(length(x))",
+                "Length of input x ($n) not consistent with length of input y " *
+                "($(length(y))",
             ),
         )
     end
+    if length(K) != n
+        throw(
+            DimensionMismatch(
+                "Length of target vector K ($(length(K))) not consistent with length of " *
+                "inputs ($n)",
+            ),
+        )
+    end
+end
+
+function validate_inplace_dims(K::AbstractVecOrMat, x::AbstractVector)
+    return validate_inplace_dims(K, x, x)
 end
