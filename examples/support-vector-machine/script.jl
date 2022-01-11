@@ -17,16 +17,15 @@ Random.seed!(1234);
 # ## Generate half-moon dataset
 
 # Number of samples per class:
-nin = nout = 50;
+n1 = n2 = 50;
 
 # We generate data based on SciKit-Learn's sklearn.datasets.make_moons function:
 
-class1x = cos.(range(0, π; length=nout))
-class1y = sin.(range(0, π; length=nout))
-class2x = 1 .- cos.(range(0, π; length=nin))
-class2y = 1 .- sin.(range(0, π; length=nin)) .- 0.5
-X = hcat(vcat(class1x, class2x), vcat(class1y, class2y))
-X .+= 0.1randn(size(X))
+angle1 = range(0, π; length=n1)
+angle2 = range(0, π; length=n2)
+X1 = [cos.(angle1) sin.(angle1)] .+ 0.1randn(n1, 2)
+X2 = [1 .- cos.(angle2) 1 .- sin.(angle2) .- 0.5] .+ 0.1randn(n2, 2)
+X = [X1; X2]
 x_train = RowVecs(X)
 y_train = vcat(fill(-1, nout), fill(1, nin));
 
@@ -49,7 +48,7 @@ model = svmtrain(kernelmatrix(k, x_train), y_train; kernel=LIBSVM.Kernel.Precomp
 y_pred, _ = svmpredict(model, kernelmatrix(k, x_train, x_test));
 
 # Visualize prediction on a grid:
-plot(; lim=extrema(test_range), aspect_ratio=1)
+plot(; xlim=extrema(test_range), ylim=extrema(test_range), aspect_ratio=1)
 contourf!(test_range, test_range, y_pred; levels=1, color=cgrad(:redsblues), alpha=0.7)
-scatter!(X[y_train .== -1, 1], X[y_train .== -1, 2]; color=:red, label="class 1")
-scatter!(X[y_train .== +1, 1], X[y_train .== +1, 2]; color=:blue, label="class 2")
+scatter!(X1[:, 1], X1[:, 2]; color=:red, label="class 1")
+scatter!(X2[:, 1], X2[:, 2]; color=:blue, label="class 2")
