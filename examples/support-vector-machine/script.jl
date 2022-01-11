@@ -48,7 +48,7 @@ x_test = ColVecs(mapreduce(collect, hcat, Iterators.product(test_range, test_ran
 y_pred, _ = svmpredict(model, kernelmatrix(k, x_train, x_test));
 
 # We can see that the kernelized, non-linear classification successfully separates the two classes in the training data:
-plot(; xlim=extrema(test_range), ylim=extrema(test_range), aspect_ratio=1)
+plot(; lim=extrema(test_range), aspect_ratio=1)
 contourf!(
     test_range,
     test_range,
