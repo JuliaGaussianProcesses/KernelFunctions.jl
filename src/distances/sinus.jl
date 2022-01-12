@@ -2,10 +2,12 @@ struct Sinus{T,V<:AbstractVector{T}} <: Distances.SemiMetric
     r::V
 end
 
+Sinus(r::Real) = Sinus([r])
+
 Distances.parameters(d::Sinus) = d.r
 @inline Distances.eval_op(::Sinus, a::Real, b::Real, p::Real) = abs2(sinpi(a - b) / p)
 @inline (dist::Sinus)(a::AbstractArray, b::AbstractArray) = Distances._evaluate(dist, a, b)
-@inline (dist::Sinus)(a::Number, b::Number) = abs2(sinpi(a - b) / first(dist.r))
+@inline (dist::Sinus)(a::Number, b::Number) = abs2(sinpi(a - b) / only(dist.r))
 
 Distances.result_type(::Sinus{T}, Ta::Type, Tb::Type) where {T} = promote_type(T, Ta, Tb)
 

@@ -154,7 +154,7 @@ function validate_inputs(x, y)
     if dim(x) != dim(y) # Passes by default if `dim` is not defined
         throw(
             DimensionMismatch(
-                "Dimensionality of x ($(dim(x))) not equality to that of y ($(dim(y)))"
+                "dimensionality of x ($(dim(x))) is not equal to that of y ($(dim(y)))"
             ),
         )
     end
