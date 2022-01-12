@@ -22,12 +22,12 @@
         KernelFunctions.Sinus(r)(xy[1], xy[2])
     end
     if VERSION < v"1.6"
-        compare_gradient(:Zygote, [Q, x, y]) do xy
-            SqMahalanobis(xy[1]; skipchecks=true)(xy[2], xy[3])
+        compare_gradient(:ForwardDiff, [Q, x, y]) do Qxy
+            SqMahalanobis(Qxy[1]; skipchecks=true)(Qxy[2], Qxy[3])
         end
     else
-        compare_gradient(:Zygote, [Q, x, y]) do xy
-            SqMahalanobis(xy[1])(xy[2], xy[3])
+        compare_gradient(:Zygote, [Q, x, y]) do Qxy
+            SqMahalanobis(Qxy[1])(Qxy[2], Qxy[3])
         end
     end
 end
