@@ -17,6 +17,10 @@ By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 A Gaussian process with a Matérn kernel is ``\\lceil \\nu \\rceil - 1``-times
 differentiable in the mean-square sense.
 
+!!! note
+
+    Differentiation with respect to the ν parameter is not currently supported.
+
 See also: [`Matern12Kernel`](@ref), [`Matern32Kernel`](@ref), [`Matern52Kernel`](@ref)
 """
 struct MaternKernel{Tν<:Real,M} <: SimpleKernel
