@@ -9,7 +9,7 @@ function ChainRulesCore.rrule(::typeof(pairwise), d::Euclidean, x::ColVecs, y::C
     function pairwise_pullback(Δ)
         @tullio ΔX[l, k] := Δ[k, i] * (x.X[l, k] - y.X[l, i]) / D[k, i]
         @tullio ΔY[l, i] := Δ[k, i] * (y.X[l, i] - x.X[l, k]) / D[k, i]
-        return NoTangent(), NoTangent(), Tangent{ColVecs}(;X=ΔX), Tangent{ColVecs}(;X=ΔY)
+        return NoTangent(), NoTangent(), Tangent{ColVecs}(; X=ΔX), Tangent{ColVecs}(; X=ΔY)
     end
     return D, pairwise_pullback
 end
@@ -23,7 +23,7 @@ function ChainRulesCore.rrule(::typeof(pairwise), d::Euclidean, x::RowVecs, y::R
     function pairwise_pullback(Δ)
         @tullio ΔX[k, l] := Δ[k, i] * (x.X[k, l] - y.X[i, l]) / D[k, i]
         @tullio ΔY[i, l] := Δ[k, i] * (y.X[i, l] - x.X[k, l]) / D[k, i]
-        return NoTangent(), NoTangent(), Tangent{RowVecs}(;X=ΔX), Tangent{RowVecs}(;X=ΔY)
+        return NoTangent(), NoTangent(), Tangent{RowVecs}(; X=ΔX), Tangent{RowVecs}(; X=ΔY)
     end
     return D, pairwise_pullback
 end
