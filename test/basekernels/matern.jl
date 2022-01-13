@@ -21,7 +21,7 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
-        test_ADs(args -> MaternKernel(nu=only(args)), [ν])
+        test_ADs(args -> MaternKernel(; nu=only(args)), [ν])
         test_params(k, ([ν],))
     end
     @testset "Matern32Kernel" begin
