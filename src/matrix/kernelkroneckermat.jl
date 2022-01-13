@@ -4,56 +4,54 @@
 using .Kronecker: Kronecker
 
 export kernelkronmat
-export kronecker_kernelmatrix
 
 @doc raw"""
-    kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int) -> KroneckerPower
+    kernelkronmat(k::Kernel, x::AbstractVector{<:Real}, d::Int)
 
-Return a `KroneckerPower` matrix on the `D`-dimensional input grid constructed by ``\otimes_{i=1}^D X``,
-where `D` is given by `dims`.
+Compute the [`kernelmatrix`](@ref) for kernel `k` on the `d`-dimensional grid ``\otimes_{i=1}^d x``
+as a lazy Kronecker product.
 
 !!! warning
-
-    Require `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
+    You have to load [Kronecker.jl](https://github.com/MichielStock/Kronecker.jl) to use this function.
+    Additionally, `iskroncompatible(k)` has to be `true`.
 """
-function kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int)
-    checkkroncompatible(κ)
-    K = kernelmatrix(κ, X)
-    return Kronecker.kronecker(K, dims)
+function kernelkronmat(k::Kernel, x::AbstractVector{<:Real}, d::Int)
+    checkkroncompatible(k)
+    K = kernelmatrix(k, x)
+    return Kronecker.kronecker(K, d)
 end
 
 @doc raw"""
+    kernelkronmat(k::Kernel, x::AbstractVector{<:AbstractVector})
 
-    kernelkronmat(κ::Kernel, X::AbstractVector{<:AbstractVector}) -> KroneckerProduct
-
-Returns a `KroneckerProduct` matrix on the grid built with the collection of vectors ``\{X_i\}_{i=1}^D``: ``\otimes_{i=1}^D X_i``.
+Compute the [`kernelmatrix`](@ref) for kernel `k` on the grid ``\otimes_{i} x_i`` as a lazy Kronecker product.
 
 !!! warning
-
-    Requires `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
+    You have to load [Kronecker.jl](https://github.com/MichielStock/Kronecker.jl) to use this function.
+    Additionally, `iskroncompatible(k)` has to be `true`.
 """
-function kernelkronmat(κ::Kernel, X::AbstractVector{<:AbstractVector})
-    checkkroncompatible(κ)
-    Ks = kernelmatrix.(κ, X)
+function kernelkronmat(k::Kernel, x::AbstractVector{<:AbstractVector})
+    checkkroncompatible(k)
+    Ks = kernelmatrix.(k, x)
     return reduce(Kronecker.:⊗, Ks)
 end
 
 @doc raw"""
     iskroncompatible(k::Kernel)
 
-Determine whether kernel `k` is compatible with Kronecker constructions such as [`kernelkronmat`](@ref)
+Determine whether kernel `k` is compatible with Kronecker constructions such as [`kernelkronmat`](@ref).
 
-The function returns `false` by default. If `k` is compatible it must satisfy for all ``x, x' \in \mathbb{R}^D`:
+The function returns `false` by default. If `k` is compatible it must satisfy for all ``x, x' \in \mathbb{R}^d`:
 ```math
-k(x, x') = \prod_{i=1}^D k(x_i, x'_i).
+k(x, x') = \prod_{i=1}^d k(x_i, x'_i).
 ```
 """
-@inline iskroncompatible(κ::Kernel) = false # Default return for kernels
+@inline iskroncompatible(::Kernel) = false # Default return for kernels
 
-function checkkroncompatible(κ::Kernel)
-    return iskroncompatible(κ) || throw(
+function checkkroncompatible(k::Kernel)
+    return iskroncompatible(k) || throw(
         ArgumentError(
-            "The chosen kernel is not compatible for Kronecker matrices (see [`iskroncompatible`](@ref))",
+            "the chosen kernel is not compatible for Kronecker matrices (see [`iskroncompatible`](@ref))",
         ),
     )
 end
@@ -71,17 +69,23 @@ function _kernelmatrix_kroneckerjl_helper(
 end
 
 """
-    kronecker_kernelmatrix(
-        k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI, y::MOI
+    kernelmatrix(
+        ::Type{<:Kronecker.KroneckerProduct},
+        k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel},
+        x::MOI,
+        y::MOI,
     ) where {MOI<:IsotopicMOInputsUnion}
 
-Requires Kronecker.jl: Computes the `kernelmatrix` for the `IndependentMOKernel` and the
-`IntrinsicCoregionMOKernel`, but returns a lazy kronecker product. This object can be very
-efficiently inverted or decomposed. See also [`kernelmatrix`](@ref).
+Compute the [`kernelmatrix`](@ref) for kernel `k` with inputs `x` and `y` as a lazy Kronecker product.
+
+The returned kernel matrix can be inverted or decomposed efficiently.
+
+!!! warning
+    You have to load [Kronecker.jl](https://github.com/MichielStock/Kronecker.jl) to use this function.
 """
-function kronecker_kernelmatrix(
-    k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI, y::MOI
-) where {MOI<:IsotopicMOInputsUnion}
+function kernelmatrix(
+    ::Type{T}, k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI, y::MOI
+)::T where {T<:Kronecker.KroneckerProduct,MOI<:IsotopicMOInputsUnion}
     x.out_dim == y.out_dim ||
         throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
@@ -89,22 +93,29 @@ function kronecker_kernelmatrix(
     return _kernelmatrix_kroneckerjl_helper(MOI, Kfeatures, Koutputs)
 end
 
-function kronecker_kernelmatrix(
-    k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI
-) where {MOI<:IsotopicMOInputsUnion}
+function kernelmatrix(
+    ::Type{T}, k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI
+)::T where {T<:Kronecker.KroneckerProduct,MOI<:IsotopicMOInputsUnion}
     Kfeatures = kernelmatrix(k.kernel, x.x)
     Koutputs = _mo_output_covariance(k, x.out_dim)
     return _kernelmatrix_kroneckerjl_helper(MOI, Kfeatures, Koutputs)
 end
 
-function kronecker_kernelmatrix(
-    k::MOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
+function kernelmatrix(
+    ::Type{<:Kronecker.KroneckerProduct}, k::Kernel, x::AbstractVector, y::AbstractVector=x
 )
     return throw(
-        ArgumentError("This kernel does not support a lazy kronecker kernelmatrix.")
+        ArgumentError(
+            "computation of the kernel matrix as a lazy Kronecker product is not " *
+            "supported for the given kernel and inputs",
+        ),
     )
 end
 
-function kronecker_kernelmatrix(k::MOKernel, x::IsotopicMOInputsUnion)
-    return kronecker_kernelmatrix(k, x, x)
-end
+# deprecations
+Base.@deprecate kronecker_kernelmatrix(k::MOKernel, x::IsotopicMOInputsUnion) kernelmatrix(
+    Kronecker.KroneckerProduct, k, x
+)
+Base.@deprecate kronecker_kernelmatrix(
+    k::MOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
+) kernelmatrix(Kronecker.KroneckerProduct, k, x, y)

@@ -48,6 +48,7 @@ function test_interface(
     # Check that pairwise basically works.
     @test kernelmatrix(k, x0, x2) isa AbstractMatrix
     @test size(kernelmatrix(k, x0, x2)) == (length(x0), length(x2))
+    @test kernelmatrix(Matrix, k, x0, x2) ≈ kernelmatrix(k, x0, x2)
 
     # Check that elementwise is consistent with pairwise.
     @test kernelmatrix_diag(k, x0, x1) ≈ diag(kernelmatrix(k, x0, x1)) atol = atol
@@ -64,6 +65,7 @@ function test_interface(
     @test kernelmatrix(k, x0) isa AbstractMatrix
     @test size(kernelmatrix(k, x0)) == (length(x0), length(x0))
     @test kernelmatrix(k, x0) ≈ kernelmatrix(k, x0)' atol = atol
+    @test kernelmatrix(Matrix, k, x0) ≈ kernelmatrix(k, x0)
 
     # Check that unary elementwise is consistent with unary pairwise.
     @test kernelmatrix_diag(k, x0) ≈ diag(kernelmatrix(k, x0)) atol = atol

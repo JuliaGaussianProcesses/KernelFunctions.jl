@@ -94,12 +94,12 @@ To keep the dependencies of KernelFunctions lean, some functionality is only ava
 ### Kronecker.jl
 [*https://github.com/MichielStock/Kronecker.jl*](https://github.com/MichielStock/Kronecker.jl)
 ```@docs
-kronecker_kernelmatrix
+kernelmatrix(::Type{<:Kronecker.KroneckerProduct}, k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI, y::MOI) where {MOI<:KernelFunctions.IsotopicMOInputsUnion}
 kernelkronmat
 ```
 
 ### PDMats.jl
 [*https://github.com/JuliaStats/PDMats.jl*](https://github.com/JuliaStats/PDMats.jl)
 ```@docs
-kernelpdmat
+kernelmatrix(::Type{<:PDMat}, ::Kernel, ::AbstractVector)
 ```

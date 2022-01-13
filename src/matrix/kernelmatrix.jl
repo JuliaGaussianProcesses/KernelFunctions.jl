@@ -23,22 +23,22 @@ See also: [`ColVecs`](@ref), [`RowVecs`](@ref)
 kernelmatrix!
 
 """
-    kernelmatrix(κ::Kernel, x::AbstractVector)
+    kernelmatrix([T, ]κ::Kernel, x::AbstractVector)
 
 Compute the kernel `κ` for each pair of inputs in `x`.
-Returns a matrix of size `(length(x), length(x))` satisfying
+Returns a matrix of size `(length(x), length(x))` and type `T` (if specified) satisfying
 `kernelmatrix(κ, x)[p, q] == κ(x[p], x[q])`.
 
-    kernelmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector)
+    kernelmatrix([T, ]κ::Kernel, x::AbstractVector, y::AbstractVector)
 
 Compute the kernel `κ` for each pair of inputs in `x` and `y`.
-Returns a matrix of size `(length(x), length(y))` satisfying
+Returns a matrix of size `(length(x), length(y))` and type `T` (if specified) satisfying
 `kernelmatrix(κ, x, y)[p, q] == κ(x[p], y[q])`.
 
-    kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int=2)
-    kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int=2)
+    kernelmatrix([T, ]κ::Kernel, X::AbstractMatrix; obsdim::Int=2)
+    kernelmatrix([T, ]κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int=2)
 
-Equivalent to `kernelmatrix(κ, ColVecs(X))` and `kernelmatrix(κ, ColVecs(X), ColVecs(Y))`
+Equivalent to `kernelmatrix(T, κ, ColVecs(X))` and `kernelmatrix(T, κ, ColVecs(X), ColVecs(Y))`
 respectively.
 Set `obsdim=1` to get `RowVecs`.
 
@@ -102,10 +102,16 @@ function kernelmatrix!(K::AbstractMatrix, κ::Kernel, x::AbstractVector, y::Abst
 end
 
 kernelmatrix(κ::Kernel, x::AbstractVector) = kernelmatrix(κ, x, x)
+function kernelmatrix(::Type{T}, κ::Kernel, x::AbstractVector) where {T}
+    return convert(T, kernelmatrix(κ, x))
+end
 
 function kernelmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector)
     validate_inputs(x, y)
     return κ.(x, permutedims(y))
+end
+function kernelmatrix(::Type{T}, κ::Kernel, x::AbstractVector, y::AbstractVector) where {T}
+    return convert(T, kernelmatrix(κ, x, y))
 end
 
 function kernelmatrix_diag!(K::AbstractVector, κ::Kernel, x::AbstractVector)
@@ -183,9 +189,19 @@ end
 function kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs)
     return kernelmatrix(κ, vec_of_vecs(X; obsdim=obsdim))
 end
+function kernelmatrix(
+    ::Type{T}, κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs
+) where {T}
+    return kernelmatrix(T, κ, vec_of_vecs(X; obsdim=obsdim))
+end
 
 function kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim=defaultobs)
     return kernelmatrix(κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim))
+end
+function kernelmatrix(
+    ::Type{T}, κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim=defaultobs
+) where {T}
+    return kernelmatrix(T, κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim))
 end
 
 function kernelmatrix_diag!(

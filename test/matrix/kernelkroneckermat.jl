@@ -33,14 +33,16 @@
         icoregionkernel = IntrinsicCoregionMOKernel(skernel, B)
 
         function test_kronecker_kernelmatrix(k, x)
-            res = kronecker_kernelmatrix(k, x)
-            @test typeof(res) <: Kronecker.KroneckerProduct
-            @test res == kernelmatrix(k, x)
+            res = kernelmatrix(Kronecker.KroneckerProduct, k, x)
+            @test res isa Kronecker.KroneckerProduct
+            @test res ≈ @test_deprecated(kronecker_kernelmatrix(k, x))
+            @test res ≈ kernelmatrix(k, x)
         end
         function test_kronecker_kernelmatrix(k, x, y)
-            res = kronecker_kernelmatrix(k, x, y)
-            @test typeof(res) <: Kronecker.KroneckerProduct
-            @test res == kernelmatrix(k, x, y)
+            res = kernelmatrix(Kronecker.KroneckerProduct, k, x, y)
+            @test res isa Kronecker.KroneckerProduct
+            @test res ≈ @test_deprecated(kronecker_kernelmatrix(k, x, y))
+            @test res ≈ kernelmatrix(k, x, y)
         end
 
         for k in [kIndMO, icoregionkernel], x in [XIF, XIO]
@@ -51,6 +53,17 @@
         end
 
         struct TestMOKernel <: MOKernel end
-        @test_throws ArgumentError kronecker_kernelmatrix(TestMOKernel(), XIF)
+        @test_throws ArgumentError kernelmatrix(
+            Kronecker.KroneckerProduct, TestMOKernel(), XIF
+        )
+        @test_deprecated(
+            @test_throws ArgumentError kronecker_kernelmatrix(TestMOKernel(), XIF)
+        )
+        @test_throws ArgumentError kernelmatrix(
+            Kronecker.KroneckerProduct, TestMOKernel(), XIF, YIF
+        )
+        @test_deprecated(
+            @test_throws ArgumentError kronecker_kernelmatrix(TestMOKernel(), XIF, YIF)
+        )
     end
 end
