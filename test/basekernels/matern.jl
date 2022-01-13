@@ -14,8 +14,6 @@
         @test metric(MaternKernel()) == Euclidean()
         @test metric(MaternKernel(; ν=2.0)) == Euclidean()
         @test repr(k) == "Matern Kernel (ν = $(ν), metric = Euclidean(0.0))"
-        # test_ADs(x->MaternKernel(nu=first(x)),[ν])
-        @test_broken "All fails (because of logabsgamma for ForwardDiff and ReverseDiff and because of nu for Zygote)"
 
         k2 = MaternKernel(; ν=ν, metric=WeightedEuclidean(ones(3)))
         @test metric(k2) isa WeightedEuclidean
@@ -23,6 +21,7 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        test_ADs(args -> MaternKernel(nu=only(args)), [ν])
         test_params(k, ([ν],))
     end
     @testset "Matern32Kernel" begin
