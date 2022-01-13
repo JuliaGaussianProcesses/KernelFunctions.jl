@@ -21,7 +21,11 @@
     compare_gradient(:Zygote, [x, y]) do xy
         KernelFunctions.Sinus(r)(xy[1], xy[2])
     end
-    compare_gradient(:Zygote, [Q, x, y]) do xy
-        SqMahalanobis(xy[1])(xy[2], xy[3])
+    if VERSION < v"1.6"
+        @test_broken "Chain rule of SqMahalanobis is broken in Julia pre-1.6"
+    else
+        compare_gradient(:Zygote, [Q, x, y]) do Qxy
+            SqMahalanobis(Qxy[1])(Qxy[2], Qxy[3])
+        end
     end
 end
