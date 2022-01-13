@@ -26,6 +26,6 @@ function colwise(::DotProduct, x::RowVecs, y::RowVecs)
     return @tullio out[i] := x.X[i, k] * y.X[i, k]
 end
 
-function colwise(::DotProduct, x::ColVecs, y::ColVecs=x)
+function colwise(::DotProduct, x::ColVecs, y::ColVecs)
     return @tullio out[i] := x.X[k, i] * y.X[k, i]
 end
