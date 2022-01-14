@@ -19,7 +19,7 @@ differentiable in the mean-square sense.
 
 !!! note
 
-    Differentiation with respect to the ν parameter is not currently supported.
+    Differentiation with respect to the order ν is not currently supported.
 
 See also: [`Matern12Kernel`](@ref), [`Matern32Kernel`](@ref), [`Matern52Kernel`](@ref)
 """
