@@ -28,10 +28,26 @@ function ChainRulesCore.rrule(::typeof(pairwise), d::Euclidean, x::RowVecs, y::R
     return D, pairwise_pullback
 end
 
+function colwise(::Euclidean, x::ColVecs, y::ColVecs)
+    return @tullio out[i] := sqrt <| (x.X[k, i] - y.X[k, i])^2
+end
+
+function colwise(::Euclidean, x::RowVecs, y::RowVecs)
+    return @tullio out[i] := sqrt <| (x.X[i, k] - y.X[i, k])^2
+end
+
 function pairwise(::SqEuclidean, x::ColVecs, y::ColVecs)
     return @tullio out[i, j] := (x.X[k, i] - y.X[k, j])^2
 end
 
 function pairwise(::SqEuclidean, x::RowVecs, y::RowVecs)
     return @tullio out[i, j] := (x.X[i, k] - y.X[j, k])^2
+end
+
+function colwise(::SqEuclidean, x::ColVecs, y::ColVecs)
+    return @tullio out[i] := (x.X[k, i] - y.X[k, i])^2
+end
+
+function colwise(::SqEuclidean, x::RowVecs, y::RowVecs)
+    return @tullio out[i] := (x.X[i, k] - y.X[i, k])^2
 end
