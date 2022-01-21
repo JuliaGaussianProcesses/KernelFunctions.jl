@@ -9,9 +9,7 @@ function sampleindex(X::AbstractVector, r::Real)
     return S
 end
 
-function sampleindex(X::AbstractMatrix, r::Real; obsdim::Integer=defaultobs)
-    return sampleindex(vec_of_vecs(X; obsdim=obsdim), r)
-end
+@deprecate sampleindex(X::AbstractMatrix, r::Real; obsdim::Integer=defaultobs) sampleindex(vec_of_vecs(X; obsdim=obsdim), r) false
 
 function nystrom_sample(k::Kernel, X::AbstractVector, S::Vector{<:Integer})
     Xₘ = X[S]
@@ -20,11 +18,7 @@ function nystrom_sample(k::Kernel, X::AbstractVector, S::Vector{<:Integer})
     return (C, Cs)
 end
 
-function nystrom_sample(
-    k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsdim::Integer=defaultobs
-)
-    return nystrom_sample(k, vec_of_vecs(X; obsdim=obsdim), S)
-end
+@deprecate nystrom_sample(k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsdim::Integer=defaultobs) nystrom_sample(k, vec_of_vecs(X; obsdim=obsdim), S) false
 
 function nystrom_pinv!(Cs::Matrix{T}, tol::T=eps(T) * size(Cs, 1)) where {T<:Real}
     # Compute eigendecomposition of sampled component of K
