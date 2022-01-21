@@ -10,7 +10,7 @@ function sampleindex(X::AbstractVector, r::Real)
 end
 
 function sampleindex(X::AbstractMatrix, r::Real; obsdim::Integer=defaultobs)
-    return sampleindex(vec_of_vecs(X; obsdim), r)
+    return sampleindex(vec_of_vecs(X; obsdim=obsdim), r)
 end
 
 function nystrom_sample(k::Kernel, X::AbstractVector, S::Vector{<:Integer})
@@ -23,7 +23,7 @@ end
 function nystrom_sample(
     k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsdim::Integer=defaultobs
 )
-    return nystrom_sample(k, vec_of_vecs(X; obsdim), S)
+    return nystrom_sample(k, vec_of_vecs(X; obsdim=obsdim), S)
 end
 
 function nystrom_pinv!(Cs::Matrix{T}, tol::T=eps(T) * size(Cs, 1)) where {T<:Real}
@@ -78,7 +78,7 @@ Returns a `NystromFact` struct which stores a Nystrom factorization satisfying:
 \mathbf{K} \approx \mathbf{C}^{\intercal}\mathbf{W}\mathbf{C}
 ```
 """
-function nystrom(k::Kernel, X::AbstractVector, S::Vector{<:Integer})
+function nystrom(k::Kernel, X::AbstractVector, S::AbstractVector{<:Integer})
     C, Cs = nystrom_sample(k, X, S)
     W = nystrom_pinv!(Cs)
     return NystromFact(W, C)
@@ -100,7 +100,7 @@ function nystrom(k::Kernel, X::AbstractVector, r::Real)
 end
 
 function nystrom(k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsdim::Int=defaultobs)
-    return nystrom(k, vec_of_vecs(X; obsdim), S)
+    return nystrom(k, vec_of_vecs(X; obsdim=obsdim), S)
 end
 
 function nystrom(k::Kernel, X::AbstractMatrix, r::Real; obsdim::Int=defaultobs)
