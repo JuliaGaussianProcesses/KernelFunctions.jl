@@ -67,9 +67,9 @@ function NystromFact(W::Matrix{<:Real}, C::Matrix{<:Real})
 end
 
 @doc raw"""
-    nystrom(k::Kernel, X::Vector, S::Vector)
+    nystrom(k::Kernel, X::AbstractVector, S::AbstractVector{<:Integer})
 
-Computes a factorization of Nystrom approximation of the square kernel matrix
+Compute a factorization of a Nystrom approximation of the square kernel matrix
 of data vector `X` with respect to kernel `k`, using indices `S`.
 Returns a `NystromFact` struct which stores a Nystrom factorization satisfying:
 ```math
@@ -83,9 +83,9 @@ function nystrom(k::Kernel, X::AbstractVector, S::AbstractVector{<:Integer})
 end
 
 @doc raw"""
-    nystrom(k::Kernel, X::Vector, r::Real)
+    nystrom(k::Kernel, X::AbstractVector, r::Real)
 
-Computes a factorization of Nystrom approximation of the square kernel matrix
+Compute a factorization of a Nystrom approximation of the square kernel matrix
 of data vector `X` with respect to kernel `k` using a sample ratio of `r`.
 Returns a `NystromFact` struct which stores a Nystrom factorization satisfying:
 ```math
