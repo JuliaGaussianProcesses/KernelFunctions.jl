@@ -24,8 +24,8 @@ end
 function deprecated_obsdim(obsdim::Union{Nothing,Integer})
     if obsdim === nothing
         Base.depwarn(
-            "implicit `obsdim=2` argument now has to be passed explicitly " *
-            "to specify that columns are observation",
+            "implicit `obsdim=2` argument is deprecated and now has to be passed " *
+            "explicitly to specify that columns are observation",
             :vec_of_vecs,
         )
         return 2
