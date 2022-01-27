@@ -9,8 +9,10 @@ using LinearAlgebra
 using Distributions
 using Plots;
 default(; lw=2.0, legendfontsize=15.0);
+using BenchmarkTools
+using Flux
 using Flux: Optimise
-using ForwardDiff
+using Zygote
 using Random: seed!
 seed!(42)
 using ParameterHandling
@@ -75,18 +77,27 @@ function loss(θ)
     return sum(abs2, y_train - ŷ) + exp(θ[4]) * norm(ŷ)
 end
 
-# The loss with our starting point :
-
-loss(log.(ones(4)))
-
 # ## Training the model
 
 θ = log.([1.1, 0.1, 0.01, 0.001]) # Initial vector
-# θ = positive.([1.1, 0.1, 0.01, 0.001]) 
-anim = Animation()
 opt = Optimise.ADAGrad(0.5)
-for i in 1:30
-    grads = only(Zygote.gradient(loss, θ)) # We compute the gradients given the kernel parameters and regularization
+
+# The loss with our starting point :
+
+loss(θ)
+
+# Cost for one step
+
+@benchmark let θt = θ[:], optt = Optimise.ADAGrad(0.5)
+    grads = only((Zygote.gradient(loss, θt))) # We compute the gradients given the kernel parameters and regularization
+    Optimise.update!(optt, θt, grads)
+end
+
+# The optimization 
+
+anim = Animation()
+for i in 1:25
+    grads = only((Zygote.gradient(loss, θ))) # We compute the gradients given the kernel parameters and regularization
     Optimise.update!(opt, θ, grads)
     scatter(
         x_train, y_train; lab="data", title="i = $(i), Loss = $(round(loss(θ), digits = 4))"
@@ -96,6 +107,9 @@ for i in 1:30
     frame(anim)
 end
 gif(anim)
+
+# Final loss
+loss(θ)
 
 # ### ParameterHandling.jl
 # Alternatively, we can use the [ParameterHandling.jl](https://github.com/invenia/ParameterHandling.jl) package 
@@ -130,27 +144,30 @@ initial_θ = ParameterHandling.value(raw_initial_θ)
 
 # The loss with our starting point :
 
-loss(initial_θ)
+(loss ∘ unflatten)(flat_θ)
 
 # ## Training the model
 
-anim = Animation()
-opt = Optimise.ADAGrad(0.5)
-for i in 1:30
-    grads = only(Zygote.gradient(loss ∘ unflatten, flat_θ)) # We compute the gradients given the kernel parameters and regularization
-    Optimise.update!(opt, flat_θ, grads)
-    scatter(
-        x_train, y_train; lab="data", title="i = $(i), Loss = $(round((loss ∘ unflatten)(flat_θ), digits = 4))"
-    )
-    plot!(x_test, sinc; lab="true function")
-    plot!(x_test, f(x_test, x_train, y_train, unflatten(flat_θ)); lab="Prediction", lw=3.0)
-    frame(anim)
+# ### Cost per step
+
+@benchmark let θt = flat_θ[:], optt = Optimise.ADAGrad(0.5)
+    grads = (Zygote.gradient(loss ∘ unflatten, θt))[1] # We compute the gradients given the kernel parameters and regularization
+    Optimise.update!(optt, θt, grads)
 end
-gif(anim)
+
+opt = Optimise.ADAGrad(0.5)
+for i in 1:25
+    grads = (Zygote.gradient(loss ∘ unflatten, flat_θ))[1] # We compute the gradients given the kernel parameters and regularization
+    Optimise.update!(opt, flat_θ, grads)
+end
+
+# Final loss
+
+(loss ∘ unflatten)(flat_θ)
 
 
 # ## Method 2: Functor
-# An alternative method is to use tools from Flux.jl, which is a fairly heavy package. 
+# An alternative method is to use tools from Flux.jl.
 
 # raw_initial_θ = (
 #     k1 = positive(1.1),
@@ -158,12 +175,62 @@ gif(anim)
 #     k3 = positive(0.01),
 #     noise_var=positive(0.001),
 # )
-k1 = 1.1
-k2 = 0.1
-k3 = 0.01
-noise_var = 0.001
+k1 = [1.1]
+k2 = [0.1]
+k3 = [0.01]
+noise_var = log.([0.001])
 
-kernel = (k1 * SqExponentialKernel() + k2 * Matern32Kernel()) ∘
-           ScaleTransform(k3)
+kernel = (ScaledKernel(SqExponentialKernel(), relu.(k1)) + ScaledKernel(Matern32Kernel(), k2)) ∘
+    ScaleTransform(map(exp,k3))
 
-Θ = Flux.params(k1, k2, k3) 
+θ = Flux.params(k1, k2, k3, noise_var)
+
+# kernel = (ScaledKernel(SqExponentialKernel(), softplus(θ[1])) + ScaledKernel(Matern32Kernel(), θ[2])) ∘
+#     ScaleTransform(θ[3])
+
+# This next 
+
+# function loss2()
+#     ŷ = kernelmatrix(kernel, x_train, x_train) * ((kernelmatrix(kernel, x_train) + θ[4][1] * I) \ y_train)
+#     return sum(abs2, y_train - ŷ) + θ[4][1] * norm(ŷ)
+# end
+
+function loss()
+    ŷ = kernelmatrix(kernel, x_train, x_train) * ((kernelmatrix(kernel, x_train)) \ y_train)
+    return sum(abs2, y_train - ŷ) + only(exp.(noise_var) .* norm(ŷ))
+end
+
+function f(x, x_train, y_train)
+    return kernelmatrix(kernel, x, x_train) *
+           ((kernelmatrix(kernel, x_train) + only(exp.(noise_var)) * I) \ y_train)
+end
+
+
+grads = Flux.gradient(loss, θ)
+for p in θ
+    println(grads[p])
+end
+
+
+grads = Flux.gradient(loss, θ)
+
+η = 0.1 # Learning Rate
+opt = Optimise.ADAGrad(η)
+# for p in θ
+#   update!(p, η * grads[p])
+# end
+
+anim = Animation()
+for i in 1:25
+    Optimise.update!(opt, θ, grads)
+    println(θ)
+
+    scatter(
+        x_train, y_train; lab="data", title="i = $(i), Loss = $(round(loss(), digits = 4))"
+    )
+    plot!(x_test, sinc; lab="true function")
+    plot!(x_test, f(x_test, x_train, y_train); lab="Prediction", lw=3.0)
+    frame(anim)
+end
+
+gif(anim)
