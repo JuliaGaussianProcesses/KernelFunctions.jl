@@ -97,7 +97,9 @@ function nystrom(k::Kernel, X::AbstractVector, r::Real)
     return nystrom(k, X, S)
 end
 
-function nystrom(k::Kernel, X::AbstractMatrix, S::AbstractVector{<:Integer}; obsdim::Int=defaultobs)
+function nystrom(
+    k::Kernel, X::AbstractMatrix, S::AbstractVector{<:Integer}; obsdim::Int=defaultobs
+)
     return nystrom(k, vec_of_vecs(X; obsdim=obsdim), S)
 end
 
