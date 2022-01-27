@@ -14,7 +14,7 @@ end
 ) false
 
 function nystrom_sample(k::Kernel, X::AbstractVector, S::AbstractVector{<:Integer})
-    Xₘ = X[S]
+    Xₘ = @view X[S]
     C = kernelmatrix(k, Xₘ, X)
     Cs = C[:, S]
     return (C, Cs)
