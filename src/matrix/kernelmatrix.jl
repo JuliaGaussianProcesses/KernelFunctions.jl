@@ -211,7 +211,9 @@ function kernelmatrix_diag!(
     )
 end
 
-function kernelmatrix_diag(κ::Kernel, X::AbstractMatrix; obsdim::Union{Int,Nothing}=defaultobs)
+function kernelmatrix_diag(
+    κ::Kernel, X::AbstractMatrix; obsdim::Union{Int,Nothing}=defaultobs
+)
     return kernelmatrix_diag(κ, vec_of_vecs(X; obsdim=obsdim))
 end
 

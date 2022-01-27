@@ -9,9 +9,7 @@ function sampleindex(X::AbstractVector, r::Real)
     return S
 end
 
-function nystrom_sample(
-    k::Kernel, X::AbstractVector, S::Vector{<:Integer}
-)
+function nystrom_sample(k::Kernel, X::AbstractVector, S::Vector{<:Integer})
     C = kernelmatrix(k, X[S], X)
     Cs = C[:, S]
     return (C, Cs)
@@ -84,7 +82,12 @@ If `obsdim=2`, equivalent to `nystrom(k, ColVecs(X), S)`.
 
 See also: [`ColVecs`](@ref), [`RowVecs`](@ref)
 """
-function nystrom(k::Kernel, X::AbstractMatrix, S::AbstractVector{<:Integer}; obsdim::Union{Int,Nothing}=defaultobs)
+function nystrom(
+    k::Kernel,
+    X::AbstractMatrix,
+    S::AbstractVector{<:Integer};
+    obsdim::Union{Int,Nothing}=defaultobs,
+)
     return nystrom(k, vec_of_vecs(X; obsdim=obsdim), S)
 end
 
