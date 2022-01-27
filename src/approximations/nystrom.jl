@@ -13,7 +13,7 @@ end
     vec_of_vecs(X; obsdim=obsdim), r
 ) false
 
-function nystrom_sample(k::Kernel, X::AbstractVector, S::Vector{<:Integer})
+function nystrom_sample(k::Kernel, X::AbstractVector, S::AbstractVector{<:Integer})
     Xₘ = X[S]
     C = kernelmatrix(k, Xₘ, X)
     Cs = C[:, S]
@@ -97,7 +97,7 @@ function nystrom(k::Kernel, X::AbstractVector, r::Real)
     return nystrom(k, X, S)
 end
 
-function nystrom(k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsdim::Int=defaultobs)
+function nystrom(k::Kernel, X::AbstractMatrix, S::AbstractVector{<:Integer}; obsdim::Int=defaultobs)
     return nystrom(k, vec_of_vecs(X; obsdim=obsdim), S)
 end
 
