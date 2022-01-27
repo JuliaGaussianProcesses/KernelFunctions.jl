@@ -1,21 +1,18 @@
 # Following the algorithm by William and Seeger, 2001
 # Cs is equivalent to X_mm and C to X_mn
 
-function sampleindex(X::AbstractMatrix, r::Real; obsdim::Integer=defaultobs)
+function sampleindex(X::AbstractVector, r::Real)
     0 < r <= 1 || throw(ArgumentError("Sample rate `r` must be in range (0,1]"))
-    n = size(X, obsdim)
+    n = length(X)
     m = ceil(Int, n * r)
     S = StatsBase.sample(1:n, m; replace=false, ordered=true)
     return S
 end
 
 function nystrom_sample(
-    k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsdim::Integer=defaultobs
+    k::Kernel, X::AbstractVector, S::Vector{<:Integer}
 )
-    obsdim ∈ [1, 2] ||
-        throw(ArgumentError("`obsdim` should be 1 or 2 (see docs of kernelmatrix))"))
-    Xₘ = obsdim == 1 ? X[S, :] : X[:, S]
-    C = kernelmatrix(k, Xₘ, X; obsdim=obsdim)
+    C = kernelmatrix(k, X[S], X)
     Cs = C[:, S]
     return (C, Cs)
 end
@@ -63,34 +60,60 @@ function NystromFact(W::Matrix{<:Real}, C::Matrix{<:Real})
 end
 
 @doc raw"""
-    nystrom(k::Kernel, X::Matrix, S::Vector; obsdim::Int=defaultobs)
+    nystrom(k::Kernel, X::AbstractVector, S::AbstractVector{<:Integer})
 
-Computes a factorization of Nystrom approximation of the square kernel matrix of data
-matrix `X` with respect to kernel `k`. Returns a `NystromFact` struct which stores a
-Nystrom factorization satisfying:
-```math
-\mathbf{K} \approx \mathbf{C}^{\intercal}\mathbf{W}\mathbf{C}
-```
-"""
-function nystrom(k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsdim::Int=defaultobs)
-    C, Cs = nystrom_sample(k, X, S; obsdim=obsdim)
-    W = nystrom_pinv!(Cs)
-    return NystromFact(W, C)
-end
+Compute a factorization of Nystrom approximation of the square kernel matrix of data `X`
+with respect to kernel `k`.
 
-@doc raw"""
-    nystrom(k::Kernel, X::Matrix, r::Real; obsdim::Int=defaultobs)
-
-Computes a factorization of Nystrom approximation of the square kernel matrix of data
-matrix `X` with respect to kernel `k` using a sample ratio of `r`.
 Returns a `NystromFact` struct which stores a Nystrom factorization satisfying:
 ```math
 \mathbf{K} \approx \mathbf{C}^{\intercal}\mathbf{W}\mathbf{C}
 ```
 """
-function nystrom(k::Kernel, X::AbstractMatrix, r::Real; obsdim::Int=defaultobs)
-    S = sampleindex(X, r; obsdim=obsdim)
-    return nystrom(k, X, S; obsdim=obsdim)
+function nystrom(k::Kernel, X::AbstractVector, S::AbstractVector{<:Integer})
+    C, Cs = nystrom_sample(k, X, S)
+    W = nystrom_pinv!(Cs)
+    return NystromFact(W, C)
+end
+
+"""
+    nystrom(k::Kernel, X::AbstractMatrix, S::AbstractVector{<:Integer}; obsdim)
+
+If `obsdim=1`, equivalent to `nystrom(k, RowVecs(X), S)`.
+If `obsdim=2`, equivalent to `nystrom(k, ColVecs(X), S)`.
+
+See also: [`ColVecs`](@ref), [`RowVecs`](@ref)
+"""
+function nystrom(k::Kernel, X::AbstractMatrix, S::AbstractVector{<:Integer}; obsdim::Union{Int,Nothing}=defaultobs)
+    return nystrom(k, vec_of_vecs(X; obsdim=obsdim), S)
+end
+
+@doc raw"""
+    nystrom(k::Kernel, X::AbstractVector, r::Real)
+
+Compute a factorization of Nystrom approximation of the square kernel matrix of data `X`
+with respect to kernel `k` using a sample ratio of `r`.
+
+Returns a `NystromFact` struct which stores a Nystrom factorization satisfying:
+```math
+\mathbf{K} \approx \mathbf{C}^{\intercal}\mathbf{W}\mathbf{C}
+```
+"""
+function nystrom(k::Kernel, X::AbstractVector, r::Real)
+    S = sampleindex(X, r)
+    return nystrom(k, X, S)
+end
+
+"""
+    nystrom(k::Kernel, X::AbstractMatrix, r::Real; obsdim)
+
+If `obsdim=1`, equivalent to `nystrom(k, RowVecs(X), r)`.
+If `obsdim=2`, equivalent to `nystrom(k, ColVecs(X), r)`.
+
+See also: [`ColVecs`](@ref), [`RowVecs`](@ref)
+"""
+function nystrom(k::Kernel, X::AbstractMatrix, r::Real; obsdim::Union{Int,Nothing}=nothing)
+    return nystrom(k, vec_of_vecs(X; obsdim=obsdim), r)
 end
 
 """

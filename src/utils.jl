@@ -21,9 +21,21 @@ macro check_args(K, param, cond, desc=string(cond))
     end
 end
 
-function vec_of_vecs(X::AbstractMatrix; obsdim::Int=2)
-    @assert obsdim ∈ (1, 2) "obsdim should be 1 or 2, see docs of kernelmatrix"
-    if obsdim == 1
+function deprecated_obsdim(obsdim::Union{Nothing,Integer})
+    if obsdim === nothing
+        Base.depwarn("implicit `obsdim=2` argument now has to be passed explicitly " *
+                     "to specify that columns are observation",
+                     :vec_of_vecs)
+        return 2
+    else
+        return obsdim
+    end
+end
+
+function vec_of_vecs(X::AbstractMatrix; obsdim::Union{Nothing,Int}=nothing)
+    _obsdim = deprecated_obsdim(obsdim)
+    @assert _obsdim ∈ (1, 2) "obsdim should be 1 or 2, see docs of kernelmatrix"
+    if _obsdim == 1
         RowVecs(X)
     else
         ColVecs(X)

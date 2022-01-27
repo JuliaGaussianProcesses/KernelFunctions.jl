@@ -8,4 +8,7 @@
         @test kernelmatrix(k, X; obsdim=obsdim) ≈
               kernelmatrix(nystrom(k, X, collect(1:dims[obsdim]); obsdim=obsdim))
     end
+    r = rand()
+    @test @test_deprecated(nystrom(k, X, r)) ≈ nystrom(k, ColVecs(X), r)
+    @test @test_deprecated(nystrom(k, X, 2:4)) ≈ nystrom(k, ColVecs(X), 2:4)
 end

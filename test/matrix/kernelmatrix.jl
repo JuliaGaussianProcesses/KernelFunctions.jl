@@ -139,6 +139,36 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
                   kernelmatrix_diag(k, x, x)
             @test tmp_diag ≈ kernelmatrix_diag(k, x, x)
         end
+
+        @testset "deprecated default" begin
+            X = randn(rng, D, Nx)
+            Y = randn(rng, D, Ny)
+            x = ColVecs(X)
+            y = ColVecs(Y)
+
+            @test kernelmatrix(k, x, y) == @test_deprecated(kernelmatrix(k, X, Y))
+
+            @test kernelmatrix(k, x) ≈ @test_deprecated(kernelmatrix(k, X))
+
+            @test kernelmatrix_diag(k, x) ≈ @test_deprecaetd(kernelmatrix_diag(k, X))
+
+            tmp = Matrix{Float64}(undef, length(x), length(y))
+            @test kernelmatrix(k, x, y) ≈ @test_deprecated(kernelmatrix!(tmp, k, X, Y))
+            @test kernelmatrix(k, x, y) ≈ tmp
+
+            tmp_square = Matrix{Float64}(undef, length(x), length(x))
+            @test kernelmatrix(k, x) ≈ @test_deprecated(kernelmatrix!(tmp_square, k, X))
+            @test kernelmatrix(k, x) ≈ tmp_square
+
+            tmp_diag = Vector{Float64}(undef, length(x))
+            @test kernelmatrix_diag(k, x) ≈
+                  @test_deprecated(kernelmatrix_diag!(tmp_diag, k, X))
+            @test kernelmatrix_diag(k, x) ≈ tmp_diag
+            tmp_diag = Vector{Float64}(undef, length(x))
+            @test @test_deprecated(kernelmatrix_diag!(tmp_diag, k, X, X)) ≈
+                  kernelmatrix_diag(k, x, x)
+            @test tmp_diag ≈ kernelmatrix_diag(k, x, x)
+        end
     end
 
     @testset "Multi Output Kernels" begin
