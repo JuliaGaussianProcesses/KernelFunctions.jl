@@ -150,7 +150,7 @@ KernelFunctions.kappa(::ToySimpleKernel, d) = exp(-d / 2)
 
             @test kernelmatrix(k, x) ≈ @test_deprecated(kernelmatrix(k, X))
 
-            @test kernelmatrix_diag(k, x) ≈ @test_deprecaetd(kernelmatrix_diag(k, X))
+            @test kernelmatrix_diag(k, x) ≈ @test_deprecated(kernelmatrix_diag(k, X))
 
             tmp = Matrix{Float64}(undef, length(x), length(y))
             @test kernelmatrix(k, x, y) ≈ @test_deprecated(kernelmatrix!(tmp, k, X, Y))
