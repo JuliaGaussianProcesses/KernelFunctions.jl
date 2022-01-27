@@ -9,7 +9,7 @@ function sampleindex(X::AbstractVector, r::Real)
     return S
 end
 
-function nystrom_sample(k::Kernel, X::AbstractVector, S::Vector{<:Integer})
+function nystrom_sample(k::Kernel, X::AbstractVector, S::AbstractVector{<:Integer})
     C = kernelmatrix(k, X[S], X)
     Cs = C[:, S]
     return (C, Cs)
