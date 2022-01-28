@@ -27,10 +27,11 @@ x_train = rand(Uniform(xmin, xmax), N) # We sample 100 random samples
 y_train = sinc.(x_train) + randn(N) * σ # We create a function and add some noise
 x_test = range(xmin - 0.1, xmax + 0.1; length=300)
 nothing #hide
+
 # Plot the data
 
-## scatter(x_train, y_train; lab="data")
-## plot!(x_test, sinc; lab="true function")
+scatter(x_train, y_train; lab="data")
+plot!(x_test, sinc; lab="true function")
 
 # ## Base Approach
 # The first option is to rebuild the parametrized kernel from a vector of parameters 
@@ -62,10 +63,10 @@ nothing #hide
 # with starting parameters [1.0, 1.0, 1.0, 1.0] we get :
 
 ŷ = f(x_test, x_train, y_train, log.(ones(4)))
-## scatter(x_train, y_train; lab="data")
-## plot!(x_test, sinc; lab="true function")
-## plot!(x_test, ŷ; lab="prediction")
-nothing #hide
+scatter(x_train, y_train; lab="data")
+plot!(x_test, sinc; lab="true function")
+plot!(x_test, ŷ; lab="prediction")
+
 
 # We define the loss based on the L2 norm both
 # for the loss and the regularization
@@ -99,15 +100,14 @@ end
 for i in 1:25
     grads = only((Zygote.gradient(loss, θ)))
     Optimise.update!(opt, θ, grads)
-end;
-## scatter(
-##     x_train, y_train; lab="data", title="i = $(i), Loss = $(round(loss(θ), digits = 4))"
-## )
-## plot!(x_test, sinc; lab="true function")
-## plot!(x_test, f(x_test, x_train, y_train, θ); lab="Prediction", lw=3.0)
-## frame(anim)
-## end
-## gif(anim)
+    scatter(
+        x_train, y_train; lab="data", title="i = $(i), Loss = $(round(loss(θ), digits = 4))"
+    )
+    plot!(x_test, sinc; lab="true function")
+    plot!(x_test, f(x_test, x_train, y_train, θ); lab="Prediction", lw=3.0)
+    frame(anim)
+end
+gif(anim)
 
 # Final loss
 loss(θ)
