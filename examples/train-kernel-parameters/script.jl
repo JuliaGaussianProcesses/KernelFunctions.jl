@@ -25,7 +25,8 @@ N = 50 # Number of samples
 x_train = rand(Uniform(xmin, xmax), N) # We sample 100 random samples
 σ = 0.1
 y_train = sinc.(x_train) + randn(N) * σ # We create a function and add some noise
-x_test = range(xmin - 0.1, xmax + 0.1; length=300);
+x_test = range(xmin - 0.1, xmax + 0.1; length=300)
+nothing #hide
 # Plot the data
 
 ## scatter(x_train, y_train; lab="data")
@@ -47,7 +48,8 @@ x_test = range(xmin - 0.1, xmax + 0.1; length=300);
 function kernelcall(θ)
     return (exp(θ[1]) * SqExponentialKernel() + exp(θ[2]) * Matern32Kernel()) ∘
            ScaleTransform(exp(θ[3]))
-end;
+end
+nothing #hide
 
 # From theory we know the prediction for a test set x given
 # the kernel parameters and normalization constant
@@ -56,15 +58,17 @@ function f(x, x_train, y_train, θ)
     k = kernelcall(θ[1:3])
     return kernelmatrix(k, x, x_train) *
            ((kernelmatrix(k, x_train) + exp(θ[4]) * I) \ y_train)
-end;
+end
+nothing #hide
 
 # We look how the prediction looks like
 # with starting parameters [1.0, 1.0, 1.0, 1.0] we get :
 
-ŷ = f(x_test, x_train, y_train, log.(ones(4)));
+ŷ = f(x_test, x_train, y_train, log.(ones(4)))
 ## scatter(x_train, y_train; lab="data")
 ## plot!(x_test, sinc; lab="true function")
 ## plot!(x_test, ŷ; lab="prediction")
+nothing #hide
 
 # We define the loss based on the L2 norm both
 # for the loss and the regularization
@@ -72,12 +76,14 @@ ŷ = f(x_test, x_train, y_train, log.(ones(4)));
 function loss(θ)
     ŷ = f(x_train, x_train, y_train, θ)
     return sum(abs2, y_train - ŷ) + exp(θ[4]) * norm(ŷ)
-end;
+end
+nothing #hide
 
 # ### Training
 # Setting an initial value and initializing the optimizer: 
 θ = log.([1.1, 0.1, 0.01, 0.001]) # Initial vector
-opt = Optimise.ADAGrad(0.5);
+opt = Optimise.ADAGrad(0.5)
+nothing #hide
 
 # The loss with our starting point:
 
@@ -123,25 +129,30 @@ raw_initial_θ = (
     noise_var=positive(0.001),
 )
 
-flat_θ, unflatten = ParameterHandling.value_flatten(raw_initial_θ);
+flat_θ, unflatten = ParameterHandling.value_flatten(raw_initial_θ)
+nothing #hide
 
 function kernelcall(θ)
     return (θ.k1 * SqExponentialKernel() + θ.k2 * Matern32Kernel()) ∘
            ScaleTransform(θ.k3)
-end;
+end
+nothing #hide
 
 function f(x, x_train, y_train, θ)
     k = kernelcall(θ)
     return kernelmatrix(k, x, x_train) *
            ((kernelmatrix(k, x_train) + θ.noise_var * I) \ y_train)
-end;
+end
+nothing #hide
 
 function loss(θ)
     ŷ = f(x_train, x_train, y_train, θ)
     return sum(abs2, y_train - ŷ) + θ.noise_var * norm(ŷ)
-end;
+end
+nothing #hide
 
-initial_θ = ParameterHandling.value(raw_initial_θ);
+initial_θ = ParameterHandling.value(raw_initial_θ)
+nothing #hide
 
 # The loss with our starting point :
 
@@ -162,7 +173,8 @@ opt = Optimise.ADAGrad(0.5)
 for i in 1:25
     grads = (Zygote.gradient(loss ∘ unflatten, flat_θ))[1] 
     Optimise.update!(opt, flat_θ, grads)
-end;
+end
+nothing #hide
 
 # Final loss
 
@@ -188,7 +200,8 @@ function f(x, x_train, y_train, θ)
     k = kernelc(θ[1:3])
     return kernelmatrix(k, x, x_train) *
            ((kernelmatrix(k, x_train) + (θ[4]) * I) \ y_train)
-end;
+end
+nothing #hide
 
 
 # We define the loss based on the L2 norm both
@@ -197,7 +210,8 @@ end;
 function loss(θ)
     ŷ = f(x_train, x_train, y_train, exp.(θ))
     return sum(abs2, y_train - ŷ) + exp(θ[4]) * norm(ŷ)
-end;
+end
+nothing #hide
 
 # ## Training the model
 
@@ -221,7 +235,8 @@ end
 for i in 1:25
     grads = only((Zygote.gradient(loss, θ))) # We compute the gradients given the kernel parameters and regularization
     Optimise.update!(opt, θ, grads)
-end;
+end
+nothing #hide
 
 # Final loss
 loss(θ)
