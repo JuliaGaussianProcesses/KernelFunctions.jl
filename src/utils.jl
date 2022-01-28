@@ -21,26 +21,27 @@ macro check_args(K, param, cond, desc=string(cond))
     end
 end
 
-function deprecated_obsdim(obsdim::Union{Nothing,Integer})
-    if obsdim === nothing
+function deprecated_obsdim(obsdim::Union{Int,Nothing})
+    return if obsdim === nothing
         Base.depwarn(
             "implicit `obsdim=2` argument is deprecated and now has to be passed " *
             "explicitly to specify that each column corresponds to one observation",
             :vec_of_vecs,
         )
-        return 2
+        2
     else
-        return obsdim
+        obsdim
     end
 end
 
-function vec_of_vecs(X::AbstractMatrix; obsdim::Union{Nothing,Int}=nothing)
+function vec_of_vecs(X::AbstractMatrix; obsdim::Union{Int,Nothing}=nothing)
     _obsdim = deprecated_obsdim(obsdim)
-    @assert _obsdim ∈ (1, 2) "obsdim should be 1 or 2, see docs of kernelmatrix"
-    if _obsdim == 1
+    return if _obsdim == 1
         RowVecs(X)
-    else
+    elseif _obsdim == 2
         ColVecs(X)
+    else
+        throw(ArgumentError("`obsdim` keyword argument should be 1 or 2"))
     end
 end
 
