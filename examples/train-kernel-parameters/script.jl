@@ -32,9 +32,6 @@ nothing #hide
 ## scatter(x_train, y_train; lab="data")
 ## plot!(x_test, sinc; lab="true function")
 
-
-
-
 # ## Base Approach
 # The first option is to rebuild the parametrized kernel from a vector of parameters 
 # in each evaluation of the cost fuction. This is similar to the approach taken in 
@@ -92,7 +89,7 @@ loss(θ)
 # Computational cost for one step
 
 @benchmark let θt = θ[:], optt = Optimise.ADAGrad(0.5)
-    grads = only((Zygote.gradient(loss, θt))) 
+    grads = only((Zygote.gradient(loss, θt)))
     Optimise.update!(optt, θt, grads)
 end
 
@@ -100,21 +97,20 @@ end
 
 ## anim = Animation()
 for i in 1:25
-    grads = only((Zygote.gradient(loss, θ))) 
+    grads = only((Zygote.gradient(loss, θ)))
     Optimise.update!(opt, θ, grads)
 end;
-    ## scatter(
-    ##     x_train, y_train; lab="data", title="i = $(i), Loss = $(round(loss(θ), digits = 4))"
-    ## )
-    ## plot!(x_test, sinc; lab="true function")
-    ## plot!(x_test, f(x_test, x_train, y_train, θ); lab="Prediction", lw=3.0)
-    ## frame(anim)
+## scatter(
+##     x_train, y_train; lab="data", title="i = $(i), Loss = $(round(loss(θ), digits = 4))"
+## )
+## plot!(x_test, sinc; lab="true function")
+## plot!(x_test, f(x_test, x_train, y_train, θ); lab="Prediction", lw=3.0)
+## frame(anim)
 ## end
 ## gif(anim)
 
 # Final loss
 loss(θ)
-
 
 # ## Using ParameterHandling.jl
 # Alternatively, we can use the [ParameterHandling.jl](https://github.com/invenia/ParameterHandling.jl) package 
@@ -123,18 +119,14 @@ loss(θ)
 using ParameterHandling
 
 raw_initial_θ = (
-    k1 = positive(1.1),
-    k2 = positive(0.1),
-    k3 = positive(0.01),
-    noise_var=positive(0.001),
+    k1=positive(1.1), k2=positive(0.1), k3=positive(0.01), noise_var=positive(0.001)
 )
 
 flat_θ, unflatten = ParameterHandling.value_flatten(raw_initial_θ)
 nothing #hide
 
 function kernelcall(θ)
-    return (θ.k1 * SqExponentialKernel() + θ.k2 * Matern32Kernel()) ∘
-           ScaleTransform(θ.k3)
+    return (θ.k1 * SqExponentialKernel() + θ.k2 * Matern32Kernel()) ∘ ScaleTransform(θ.k3)
 end
 nothing #hide
 
@@ -163,7 +155,7 @@ nothing #hide
 # ### Cost per step
 
 @benchmark let θt = flat_θ[:], optt = Optimise.ADAGrad(0.5)
-    grads = (Zygote.gradient(loss ∘ unflatten, θt))[1] 
+    grads = (Zygote.gradient(loss ∘ unflatten, θt))[1]
     Optimise.update!(optt, θt, grads)
 end
 
@@ -171,7 +163,7 @@ end
 
 opt = Optimise.ADAGrad(0.5)
 for i in 1:25
-    grads = (Zygote.gradient(loss ∘ unflatten, flat_θ))[1] 
+    grads = (Zygote.gradient(loss ∘ unflatten, flat_θ))[1]
     Optimise.update!(opt, flat_θ, grads)
 end
 nothing #hide
@@ -180,16 +172,13 @@ nothing #hide
 
 (loss ∘ unflatten)(flat_θ)
 
-
 # ## Flux.destructure
 # If don't want to write an explicit function to construct the kernel, we can alternatively use the `Flux.destructure` function. 
 # Again, we need to ensure that the parameters are positive. Note that the `exp` function now has to be in a different position. 
 
+θ = [1.1, 0.1, 0.01, 0.001]
 
-θ = [1.1, 0.1, 0.01, 0.001] 
-
-kernel = (θ[1] * SqExponentialKernel() + θ[2] * Matern32Kernel()) ∘
-ScaleTransform(θ[3])
+kernel = (θ[1] * SqExponentialKernel() + θ[2] * Matern32Kernel()) ∘ ScaleTransform(θ[3])
 
 p, kernelc = Flux.destructure(kernel);
 
@@ -198,11 +187,9 @@ p, kernelc = Flux.destructure(kernel);
 
 function f(x, x_train, y_train, θ)
     k = kernelc(θ[1:3])
-    return kernelmatrix(k, x, x_train) *
-           ((kernelmatrix(k, x_train) + (θ[4]) * I) \ y_train)
+    return kernelmatrix(k, x, x_train) * ((kernelmatrix(k, x_train) + (θ[4]) * I) \ y_train)
 end
 nothing #hide
-
 
 # We define the loss based on the L2 norm both
 # for the loss and the regularization
