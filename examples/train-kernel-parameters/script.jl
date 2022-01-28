@@ -67,7 +67,6 @@ scatter(x_train, y_train; lab="data")
 plot!(x_test, sinc; lab="true function")
 plot!(x_test, ŷ; lab="prediction")
 
-
 # We define the loss based on the L2 norm both
 # for the loss and the regularization
 
@@ -214,14 +213,14 @@ nothing #hide
 # Cost for one step
 
 @benchmark let θt = θ[:], optt = Optimise.ADAGrad(0.5)
-    grads = only((Zygote.gradient(loss, θt))) 
+    grads = only((Zygote.gradient(loss, θt)))
     Optimise.update!(optt, θt, grads)
 end
 
 # The optimization 
 
 for i in 1:25
-    grads = only((Zygote.gradient(loss, θ))) 
+    grads = only((Zygote.gradient(loss, θ)))
     Optimise.update!(opt, θ, grads)
 end
 nothing #hide
