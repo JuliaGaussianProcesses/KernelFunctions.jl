@@ -95,7 +95,7 @@ end
 
 # Optimizing
 
-## anim = Animation()
+anim = Animation()
 for i in 1:25
     grads = only((Zygote.gradient(loss, θ)))
     Optimise.update!(opt, θ, grads)
