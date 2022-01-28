@@ -1,6 +1,6 @@
 # # Train Kernel Parameters
 
-# In this example we show the two main methods to perform regression on a kernel from KernelFunctions.jl.
+# In this example we show a few ways to perform regression on a kernel from KernelFunctions.jl.
 
 # We load KernelFunctions and some other packages
 
@@ -209,18 +209,19 @@ loss(θ)
 # Initialize optimizer 
 
 opt = Optimise.ADAGrad(0.5)
+nothing #hide
 
 # Cost for one step
 
 @benchmark let θt = θ[:], optt = Optimise.ADAGrad(0.5)
-    grads = only((Zygote.gradient(loss, θt))) # We compute the gradients given the kernel parameters and regularization
+    grads = only((Zygote.gradient(loss, θt))) 
     Optimise.update!(optt, θt, grads)
 end
 
 # The optimization 
 
 for i in 1:25
-    grads = only((Zygote.gradient(loss, θ))) # We compute the gradients given the kernel parameters and regularization
+    grads = only((Zygote.gradient(loss, θ))) 
     Optimise.update!(opt, θ, grads)
 end
 nothing #hide
