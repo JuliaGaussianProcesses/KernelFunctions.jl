@@ -118,7 +118,7 @@ function ChainRulesCore.rrule(s::Sinus, x::AbstractVector, y::AbstractVector)
     return val, evaluate_pullback
 end
 
-## Reverse Rulse SqMahalanobis
+## Reverse Rules SqMahalanobis
 
 function ChainRulesCore.rrule(
     dist::Distances.SqMahalanobis, a::AbstractVector, b::AbstractVector

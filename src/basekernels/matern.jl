@@ -34,7 +34,7 @@ MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν,
 @functor MaternKernel
 
 @inline function kappa(κ::MaternKernel, d::Real)
-    result = _matern(first(κ.ν), d)
+    result = _matern(only(κ.ν), d)
     return ifelse(iszero(d), one(result), result)
 end
 
@@ -46,7 +46,7 @@ end
 metric(k::MaternKernel) = k.metric
 
 function Base.show(io::IO, κ::MaternKernel)
-    return print(io, "Matern Kernel (ν = ", first(κ.ν), ", metric = ", κ.metric, ")")
+    return print(io, "Matern Kernel (ν = ", only(κ.ν), ", metric = ", κ.metric, ")")
 end
 
 ## Matern12Kernel = ExponentialKernel aliased in exponential.jl
