@@ -1,4 +1,4 @@
-# # Kernel Ridge Regression
+# # Train Kernel Parameters
 
 # In this example we show the two main methods to perform regression on a kernel from KernelFunctions.jl.
 
