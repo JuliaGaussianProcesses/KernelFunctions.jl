@@ -106,7 +106,9 @@ for i in 1:25
     plot!(x_test, f(x_test, x_train, y_train, θ); lab="Prediction", lw=3.0)
     frame(anim)
 end
-gif(anim)
+gif(anim, "train-kernel-param.gif", fps = 15); nothing #hide
+
+![](train-kernel-param.gif)
 
 # Final loss
 loss(θ)
