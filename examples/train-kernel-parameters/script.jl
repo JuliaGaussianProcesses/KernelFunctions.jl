@@ -108,7 +108,7 @@ for i in 1:25
 end
 gif(anim, "train-kernel-param.gif", fps = 15); nothing #hide
 
-![](train-kernel-param.gif)
+# ![](train-kernel-param.gif)
 
 # Final loss
 loss(θ)
