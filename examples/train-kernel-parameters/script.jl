@@ -8,7 +8,6 @@ using KernelFunctions
 using LinearAlgebra
 using Distributions
 using Plots;
-default(; lw=2.0, legendfontsize=15.0);
 using BenchmarkTools
 using Flux
 using Flux: Optimise
@@ -176,13 +175,16 @@ nothing #hide
 
 # ## Flux.destructure
 # If don't want to write an explicit function to construct the kernel, we can alternatively use the `Flux.destructure` function. 
-# Again, we need to ensure that the parameters are positive. Note that the `exp` function now has to be in a different position. 
+# Again, we need to ensure that the parameters are positive. Note that the `exp` function is now part of the loss function, instead of part of the kernel construction. 
 
 θ = [1.1, 0.1, 0.01, 0.001]
 
 kernel = (θ[1] * SqExponentialKernel() + θ[2] * Matern32Kernel()) ∘ ScaleTransform(θ[3])
 
 p, kernelc = Flux.destructure(kernel);
+
+# This returns the `trainable` parameters of the kernel and a function to reconstruct the kernel.
+kernelc(p) == kernel
 
 # From theory we know the prediction for a test set x given
 # the kernel parameters and normalization constant
