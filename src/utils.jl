@@ -33,7 +33,6 @@ function deprecated_obsdim(obsdim::Union{Int,Nothing})
         obsdim
     end
     return _obsdim
-    end
 end
 
 function vec_of_vecs(X::AbstractMatrix; obsdim::Union{Int,Nothing}=nothing)
