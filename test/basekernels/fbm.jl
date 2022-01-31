@@ -5,7 +5,7 @@
     v1 = rand(rng, 3)
     v2 = rand(rng, 3)
     @test k(v1, v2) ≈
-          (
+        (
         sqeuclidean(v1, zero(v1))^h + sqeuclidean(v2, zero(v2))^h -
         sqeuclidean(v1 - v2, zero(v1 - v2))^h
     ) / 2 atol = 1e-5

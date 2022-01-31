@@ -9,9 +9,9 @@ function sampleindex(X::AbstractVector, r::Real)
     return S
 end
 
-@deprecate sampleindex(X::AbstractMatrix, r::Real; obsdim::Integer=defaultobs) sampleindex(
-    vec_of_vecs(X; obsdim=obsdim), r
-) false
+@deprecate sampleindex(
+    X::AbstractMatrix, r::Real; obsdim::Union{Integer,Nothing}=defaultobs
+) sampleindex(vec_of_vecs(X; obsdim=obsdim === nothing ? nothing : Int(obsdim)), r) false
 
 function nystrom_sample(k::Kernel, X::AbstractVector, S::AbstractVector{<:Integer})
     Xₘ = @view X[S]
@@ -21,8 +21,11 @@ function nystrom_sample(k::Kernel, X::AbstractVector, S::AbstractVector{<:Intege
 end
 
 @deprecate nystrom_sample(
-    k::Kernel, X::AbstractMatrix, S::Vector{<:Integer}; obsdim::Integer=defaultobs
-) nystrom_sample(k, vec_of_vecs(X; obsdim=obsdim), S) false
+    k::Kernel,
+    X::AbstractMatrix,
+    S::Vector{<:Integer};
+    obsdim::Union{Integer,Nothing}=defaultobs,
+) nystrom_sample(k, vec_of_vecs(X; obsdim=obsdim === nothing ? nothing : Int(obsdim)), S) false
 
 function nystrom_pinv!(Cs::Matrix{T}, tol::T=eps(T) * size(Cs, 1)) where {T<:Real}
     # Compute eigendecomposition of sampled component of K
@@ -97,13 +100,32 @@ function nystrom(k::Kernel, X::AbstractVector, r::Real)
     return nystrom(k, X, S)
 end
 
+"""
+    nystrom(k::Kernel, X::AbstractMatrix, S::AbstractVector{<:Integer}; obsdim)
+
+If `obsdim=1`, equivalent to `nystrom(k, RowVecs(X), S)`.
+If `obsdim=2`, equivalent to `nystrom(k, ColVecs(X), S)`.
+
+See also: [`ColVecs`](@ref), [`RowVecs`](@ref)
+"""
 function nystrom(
-    k::Kernel, X::AbstractMatrix, S::AbstractVector{<:Integer}; obsdim::Int=defaultobs
+    k::Kernel,
+    X::AbstractMatrix,
+    S::AbstractVector{<:Integer};
+    obsdim::Union{Int,Nothing}=defaultobs,
 )
     return nystrom(k, vec_of_vecs(X; obsdim=obsdim), S)
 end
 
-function nystrom(k::Kernel, X::AbstractMatrix, r::Real; obsdim::Int=defaultobs)
+"""
+    nystrom(k::Kernel, X::AbstractMatrix, r::Real; obsdim)
+
+If `obsdim=1`, equivalent to `nystrom(k, RowVecs(X), r)`.
+If `obsdim=2`, equivalent to `nystrom(k, ColVecs(X), r)`.
+
+See also: [`ColVecs`](@ref), [`RowVecs`](@ref)
+"""
+function nystrom(k::Kernel, X::AbstractMatrix, r::Real; obsdim::Union{Int,Nothing}=nothing)
     return nystrom(k, vec_of_vecs(X; obsdim=obsdim), r)
 end
 

@@ -19,8 +19,8 @@
     @test ktard(v1, v2) == (k ∘ ARDTransform(v))(v1, v2)
     @test ktard(v1, v2) == k(v .* v1, v .* v2)
     @test (k ∘ LinearTransform(P') ∘ ScaleTransform(s))(v1, v2) ==
-          ((k ∘ LinearTransform(P')) ∘ ScaleTransform(s))(v1, v2) ==
-          (k ∘ (LinearTransform(P') ∘ ScaleTransform(s)))(v1, v2)
+        ((k ∘ LinearTransform(P')) ∘ ScaleTransform(s))(v1, v2) ==
+        (k ∘ (LinearTransform(P') ∘ ScaleTransform(s)))(v1, v2)
 
     @test repr(kt) == repr(k) * "\n\t- " * repr(ScaleTransform(s))
 
