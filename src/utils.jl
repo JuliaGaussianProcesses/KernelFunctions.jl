@@ -22,7 +22,7 @@ macro check_args(K, param, cond, desc=string(cond))
 end
 
 function deprecated_obsdim(obsdim::Union{Int,Nothing})
-    return if obsdim === nothing
+    _obsdim = if obsdim === nothing
         Base.depwarn(
             "implicit `obsdim=2` argument is deprecated and now has to be passed " *
             "explicitly to specify that each column corresponds to one observation",
@@ -31,6 +31,8 @@ function deprecated_obsdim(obsdim::Union{Int,Nothing})
         2
     else
         obsdim
+    end
+    return _obsdim
     end
 end
 
