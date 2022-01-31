@@ -7,8 +7,10 @@
     w = randn(rng, N)
 
     @testset "VecOfVecs" begin
-        @test vec_of_vecs(X; obsdim=2) == ColVecs(X)
         @test vec_of_vecs(X; obsdim=1) == RowVecs(X)
+        @test vec_of_vecs(X; obsdim=2) == ColVecs(X)
+        @test_throws ArgumentError vec_of_vecs(X; obsdim=0)
+        @test_throws ArgumentError vec_of_vecs(X; obsdim=3)
     end
     # Test Matrix data sets.
     @testset "ColVecs" begin
