@@ -3,8 +3,6 @@ name: Run benchmarks
 on:
   pull_request:
     types: [opened, synchronize, reopened, labeled]
-  issue_comment:
-    types: [created]
 
 concurrency:
   # Skip intermediate builds: always.
@@ -16,6 +14,7 @@ concurrency:
 jobs:
   performance-tracking:
     runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'performance critical')
     steps:
       # setup
       - uses: actions/checkout@v2
