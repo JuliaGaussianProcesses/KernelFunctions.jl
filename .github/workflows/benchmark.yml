@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, labeled]
   issue_comment:
-    types: [opened]
+    types: [created]
 
 concurrency:
   # Skip intermediate builds: always.
