@@ -1,6 +1,5 @@
 using BenchmarkTools
 using KernelFunctions
-using ParameterHandling
 using LogExpFunctions: logistic
 using Zygote
 using ForwardDiff
