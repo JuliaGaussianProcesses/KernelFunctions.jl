@@ -100,7 +100,7 @@ GammaRationalKernel
 ### Spectral Mixture Kernels
 
 ```@docs
-spectral_mixture_kernel
+SpectralMixtureKernel
 spectral_mixture_product_kernel
 ```
 

@@ -1,0 +1,1 @@
+@deprecate spectral_mixture_kernel SpectralMixtureKernel
