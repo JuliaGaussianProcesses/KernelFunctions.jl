@@ -40,7 +40,7 @@ jobs:
           using BenchmarkCI
           let
               judgement = BenchmarkCI._loadjudge(BenchmarkCI.DEFAULT_WORKSPACE)
-              title = "Benchmark Result"
+              title = "Kernel Benchmark Result"
               ciresult = BenchmarkCI.CIResult(; judgement, title)
               BenchmarkCI.printcommentmd(stdout::IO, ciresult)
           end
@@ -58,3 +58,24 @@ jobs:
         with:
           name: performance-tracking
           path: ./*.artifact
+      - name: find comment
+        uses: peter-evans/find-comment@v1
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Kernel Benchmark Result
+
+      # create/update comment
+      - name: create comment
+        if: ${{ steps.fc.outputs.comment-id == 0 }}
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.generate-result-markdown.outputs.body }}
+      - name: update comment
+        if: ${{ steps.fc.outputs.comment-id != 0 }}
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          body: ${{ steps.generate-result-markdown.outputs.body }}
