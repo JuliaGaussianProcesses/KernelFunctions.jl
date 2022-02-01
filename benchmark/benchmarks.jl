@@ -28,7 +28,7 @@ kernels = Dict(
     "Cosine" => ((), () -> CosineKernel()),
     # Exponential Kernels
     "Exponential" => ((), () -> ExponentialKernel()),
-    "Gibbs" => ((), () -> GibbsKernel(; lengthscale=x -> sin.(x))),
+    # "Gibbs" => ((), () -> GibbsKernel(; lengthscale=x -> sin.(x))),
     "SqExponential" => ((), () -> SqExponentialKernel()),
     "GammaExponential" => ((1.0,), x -> GammaExponentialKernel(; γ=2 * logistic(x))),
     # Exponentiated Kernel
