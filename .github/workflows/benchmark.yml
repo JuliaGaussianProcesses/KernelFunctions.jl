@@ -12,24 +12,50 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
+
 jobs:
-  Benchmark:
+  performance-tracking:
     runs-on: ubuntu-latest
-    if: |
-      contains(github.event.pull_request.labels.*.name, 'performance critical') || 
-      (github.event.issue.pull_request && contains(github.event.comment.body, '[benchmark]'))
-    env:
-      JULIA_DEBUG: BenchmarkCI
     steps:
+      # setup
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@latest
         with:
-          version: 1.6
-      - name: Install dependencies
+          version: '1.6'
+      - uses: julia-actions/julia-buildpkg@latest
+      - name: install dependencies
         run: julia -e 'using Pkg; pkg"add PkgBenchmark BenchmarkCI"'
-      - name: Run benchmarks
-        run: julia -e "using BenchmarkCI; BenchmarkCI.judge()"
-      - name: Post results
-        run: julia -e "using BenchmarkCI; BenchmarkCI.postjudge()"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # run the benchmark suite
+      - name: run benchmarks
+        run: |
+          julia -e '
+            using BenchmarkCI
+            BenchmarkCI.judge()
+            BenchmarkCI.displayjudgement()
+            '
+      # generate and record the benchmark result as markdown
+      - name: generate benchmark result
+        run: |
+          body=$(julia -e '
+          using BenchmarkCI
+          let
+              judgement = BenchmarkCI._loadjudge(BenchmarkCI.DEFAULT_WORKSPACE)
+              title = "JET Benchmark Result"
+              ciresult = BenchmarkCI.CIResult(; judgement, title)
+              BenchmarkCI.printcommentmd(stdout::IO, ciresult)
+          end
+          ')
+          body="${body//'%'/'%25'}"
+          body="${body//$'\n'/'%0A'}"
+          body="${body//$'\r'/'%0D'}"
+          echo $body > ./benchmark-result.artifact
+      # record the pull request number
+      - name: record pull request number
+        run: echo ${{ github.event.pull_request.number }} > ./pull-request-number.artifact
+
+      # save as artifacts (performance tracking (comment) workflow will use it)
+      - uses: actions/upload-artifact@v2
+        with:
+          name: performance-tracking
+          path: ./*.artifact
