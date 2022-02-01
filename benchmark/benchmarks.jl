@@ -1,5 +1,7 @@
 using BenchmarkTools
 using KernelFunctions
+using ParameterHandling
+using LogExpFunctions: logistic
 using Zygote
 using ForwardDiff
 
@@ -18,9 +20,10 @@ Yv = collect.(eachcol(Y))
 # Create the general suite of benchmarks
 SUITE = BenchmarkGroup()
 
+# Create a list of kernel and their constructors
 kernels = Dict(
     # Constant Kernels
-    "Constant" => ((2.0,), x->ConstantKernel(x)),
+    "Constant" => ((2.0,), x->ConstantKernel(;c=x)),
     "White" => ((), ()->WhiteKernel()),
     # Cosine Kernel
     "Cosine" => ((), ()->CosineKernel()),
@@ -43,34 +46,49 @@ functions = Dict(
 )
 
 # Test the allocated functions
-SUITE["alloc_suite"] = s_alloc = BenchmarkGroup()
+SUITE["Allocated Functions"] = suite_alloc = BenchmarkGroup()
 for (kname, (kargs, kf)) in kernels
-    s_alloc[kname] = sk = BenchmarkGroup()
+    suite_alloc[kname] = suite_kernel = BenchmarkGroup()
     for (inputname, (X, Y)) in inputtypes
-        sk[inputname] = si = BenchmarkGroup()
+        suite_kernel[inputname] = suite_input = BenchmarkGroup()
         for (fname, f) in functions
-            si[fname] = @benchmarkable $f($kf, $kargs, $X, $Y)
+            suite_input[fname] = @benchmarkable $f($kf, $kargs, $X, $Y)
         end
     end
 end
 
 # Test the AD frameworks
 ## Zygote
-SUITE["zygote"] = s_zygote = BenchmarkGroup()
+SUITE["Zygote"] = suite_zygote = BenchmarkGroup()
 for (kname, (kargs, kf)) in kernels
-    s_zygote[kname] = sk = BenchmarkGroup()
+    suite_zygote[kname] = suite_kernel = BenchmarkGroup()
     for (inputname, (X, Y)) in inputtypes
-        sk[inputname] = si = BenchmarkGroup()
+        suite_kernel[inputname] = suite_input = BenchmarkGroup()
         for (fname, f) in functions
-            si[fname] = @benchmarkable Zygote.pullback($kargs, $X, $Y) do args, x, Y
-                $f($kf(args...), x, y)
+            suite_input[fname] = @benchmarkable Zygote.pullback($kargs, $X, $Y) do args, x, y
+                $f($kf, args, x, y)
             end
         end
     end
 end
 
+## ForwardDiff
+# Right now there is no canonical way to turn (kargs, X, Y) into an array.
+# SUITE["ForwardDiff"] = suite_forwarddiff = BenchmarkGroup()
+# for (kname, (kargs, kf)) in kernels
+#     suite_forwarddiff[kname] = suite_kernel = BenchmarkGroup()
+#     for (inputname, (X, Y)) in inputtypes
+#         suite_kernel[inputname] = suite_input = BenchmarkGroup()
+#         for (fname, f) in functions
+#             suite_input[fname] = @benchmarkable ForwardDiff.gradient($kargs, $X, $Y) do args, x, y
+#                 $f($kf, args, x, y)
+#             end
+#         end
+#     end
+# end
+
 # Uncomment the following to run benchmark locally
 
-# tune!(SUITE)
+tune!(SUITE)
 
-# results = run(SUITE, verbose=true)
+results = run(SUITE, verbose=true)
