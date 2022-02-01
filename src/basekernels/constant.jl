@@ -78,12 +78,11 @@ kappa(κ::ConstantKernel, x::Real) = only(κ.c) * one(x)
 metric(::ConstantKernel) = Delta()
 
 function kernelmatrix(k::ConstantKernel, x::AbstractVector)
-    return Fill(only(k.c), length(x), length(x))
+    return fill(only(k.c), length(x), length(x))
 end
 
 function kernelmatrix(k::ConstantKernel, x::AbstractVector, y::AbstractVector)
-    return Fill(only(k.c), length(x), length(y))
+    return fill(only(k.c), length(x), length(y))
 end
-
 
 Base.show(io::IO, κ::ConstantKernel) = print(io, "Constant Kernel (c = ", only(κ.c), ")")
