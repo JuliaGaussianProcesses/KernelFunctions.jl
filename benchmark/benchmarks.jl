@@ -1,5 +1,7 @@
 using BenchmarkTools
 using KernelFunctions
+using Zygote
+using ForwardDiff
 
 N1 = 10
 N2 = 20
@@ -17,24 +19,52 @@ Yv = collect.(eachcol(Y))
 SUITE = BenchmarkGroup()
 
 kernels = Dict(
-    "SqExponential" => SqExponentialKernel(), "Exponential" => ExponentialKernel()
+    # Constant Kernels
+    "Constant" => ((2.0,), x->ConstantKernel(x)),
+    "White" => ((), ()->WhiteKernel()),
+    # Cosine Kernel
+    "Cosine" => ((), ()->CosineKernel()),
+    # Exponential Kernels
+    "Exponential" => ((), ()->ExponentialKernel()),
+    "Gibbs" => ((), ()->GibbsKernel(;lengthscale=sin)),
+    "SqExponential" => ((), ()->SqExponentialKernel()),
+    "GammaExponential" => ((1.0,), x->GammaExponentialKernel(;γ=2 * logistic(x))),
+    # Exponentiated Kernel
+    "Exponentiated" => ((), ()->ExponentiatedKernel()),
 )
 
 inputtypes = Dict("ColVecs" => (Xc, Yc), "RowVecs" => (Xr, Yr), "Vecs" => (Xv, Yv))
 
 functions = Dict(
-    "kernelmatrixX" => (kernel, X, Y) -> kernelmatrix(kernel, X),
-    "kernelmatrixXY" => (kernel, X, Y) -> kernelmatrix(kernel, X, Y),
-    "kernelmatrix_diagX" => (kernel, X, Y) -> kernelmatrix_diag(kernel, X),
-    "kernelmatrix_diagXY" => (kernel, X, Y) -> kernelmatrix_diag(kernel, X, Y),
+    "kernelmatrixX" => (fk, args, X, Y) -> kernelmatrix(fk(args...), X),
+    "kernelmatrixXY" => (fk, args, X, Y) -> kernelmatrix(fk(args...), X, Y),
+    "kernelmatrix_diagX" => (fk, args, X, Y) -> kernelmatrix_diag(fk(args...), X),
+    "kernelmatrix_diagXY" => (fk, args, X, Y) -> kernelmatrix_diag(fk(args...), X, Y),
 )
 
-for (kname, kernel) in kernels
-    SUITE[kname] = sk = BenchmarkGroup()
+# Test the allocated functions
+SUITE["alloc_suite"] = s_alloc = BenchmarkGroup()
+for (kname, (kargs, kf)) in kernels
+    s_alloc[kname] = sk = BenchmarkGroup()
     for (inputname, (X, Y)) in inputtypes
         sk[inputname] = si = BenchmarkGroup()
         for (fname, f) in functions
-            si[fname] = @benchmarkable $f($kernel, $X, $Y)
+            si[fname] = @benchmarkable $f($kf, $kargs, $X, $Y)
+        end
+    end
+end
+
+# Test the AD frameworks
+## Zygote
+SUITE["zygote"] = s_zygote = BenchmarkGroup()
+for (kname, (kargs, kf)) in kernels
+    s_zygote[kname] = sk = BenchmarkGroup()
+    for (inputname, (X, Y)) in inputtypes
+        sk[inputname] = si = BenchmarkGroup()
+        for (fname, f) in functions
+            si[fname] = @benchmarkable Zygote.pullback($kargs, $X, $Y) do args, x, Y
+                $f($kf(args...), x, y)
+            end
         end
     end
 end
