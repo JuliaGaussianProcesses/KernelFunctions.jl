@@ -85,5 +85,4 @@ function kernelmatrix(k::ConstantKernel, x::AbstractVector, y::AbstractVector)
     return Fill(only(k.c), length(x), length(y))
 end
 
-
 Base.show(io::IO, κ::ConstantKernel) = print(io, "Constant Kernel (c = ", only(κ.c), ")")
