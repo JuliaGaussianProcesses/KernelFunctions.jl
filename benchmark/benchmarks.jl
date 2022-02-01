@@ -97,6 +97,6 @@ end
 
 # Uncomment the following to run benchmark locally
 
-tune!(SUITE)
+# tune!(SUITE)
 
-results = run(SUITE; verbose=true)
+# results = run(SUITE; verbose=true)
