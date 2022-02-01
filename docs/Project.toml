@@ -7,6 +7,6 @@ PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150"
 [compat]
 Documenter = "0.27"
 KernelFunctions = "0.10"
-Kronecker = "0.4"
+Kronecker = "0.4, 0.5"
 PDMats = "0.11"
 julia = "1.3"

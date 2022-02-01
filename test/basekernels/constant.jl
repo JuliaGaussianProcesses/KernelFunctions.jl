@@ -36,6 +36,6 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
-        test_ADs(c -> ConstantKernel(; c=first(c)), [c])
+        test_ADs(c -> ConstantKernel(; c=only(c)), [c])
     end
 end
