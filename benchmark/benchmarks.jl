@@ -26,14 +26,14 @@ kernels = Dict(
     "Constant" => ((2.0,), x->ConstantKernel(;c=x)),
     "White" => ((), ()->WhiteKernel()),
     # Cosine Kernel
-    "Cosine" => ((), ()->CosineKernel()),
+    "Cosine" => ((), () -> CosineKernel()),
     # Exponential Kernels
-    "Exponential" => ((), ()->ExponentialKernel()),
-    "Gibbs" => ((), ()->GibbsKernel(;lengthscale=sin)),
-    "SqExponential" => ((), ()->SqExponentialKernel()),
-    "GammaExponential" => ((1.0,), x->GammaExponentialKernel(;γ=2 * logistic(x))),
+    "Exponential" => ((), () -> ExponentialKernel()),
+    "Gibbs" => ((), () -> GibbsKernel(; lengthscale=sin)),
+    "SqExponential" => ((), () -> SqExponentialKernel()),
+    "GammaExponential" => ((1.0,), x -> GammaExponentialKernel(; γ=2 * logistic(x))),
     # Exponentiated Kernel
-    "Exponentiated" => ((), ()->ExponentiatedKernel()),
+    "Exponentiated" => ((), () -> ExponentiatedKernel()),
 )
 
 inputtypes = Dict("ColVecs" => (Xc, Yc), "RowVecs" => (Xr, Yr), "Vecs" => (Xv, Yv))
@@ -66,7 +66,9 @@ for (kname, (kargs, kf)) in kernels
         suite_kernel[inputname] = suite_input = BenchmarkGroup()
         for (fname, f) in functions
             # Forward-pass
-            suite_input[fname * "_forward"] = @benchmarkable Zygote.pullback($kargs, $X, $Y) do args, x, y
+            suite_input[fname * "_forward"] = @benchmarkable Zygote.pullback(
+                $kargs, $X, $Y
+            ) do args, x, y
                 $f($kf, args, x, y)
             end
             # Reverse pass
@@ -97,4 +99,4 @@ end
 
 tune!(SUITE)
 
-results = run(SUITE, verbose=true)
+results = run(SUITE; verbose=true)
