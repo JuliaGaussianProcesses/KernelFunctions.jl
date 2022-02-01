@@ -65,9 +65,15 @@ for (kname, (kargs, kf)) in kernels
     for (inputname, (X, Y)) in inputtypes
         suite_kernel[inputname] = suite_input = BenchmarkGroup()
         for (fname, f) in functions
-            suite_input[fname] = @benchmarkable Zygote.pullback($kargs, $X, $Y) do args, x, y
+            # Forward-pass
+            suite_input[fname * "_forward"] = @benchmarkable Zygote.pullback($kargs, $X, $Y) do args, x, y
                 $f($kf, args, x, y)
             end
+            # Reverse pass
+            out, pb = Zygote.pullback(kargs, X, Y) do args, x, y
+                f(kf, args, x, y)
+            end
+            suite_input[fname * "_reverse"] = @benchmarkable $pb($out)
         end
     end
 end
