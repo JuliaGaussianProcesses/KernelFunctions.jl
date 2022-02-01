@@ -43,12 +43,12 @@ using KernelFunctions: NeuralKernelNetwork, LinearLayer, product, Primitive
             # Vector input.
             @test kernelmatrix_diag(nkn_add_kernel, x0) ≈ kernelmatrix_diag(sum_k, x0)
             @test kernelmatrix_diag(nkn_add_kernel, x0, x1) ≈
-                  kernelmatrix_diag(sum_k, x0, x1)
+                kernelmatrix_diag(sum_k, x0, x1)
 
             # ColVecs input.
             @test kernelmatrix_diag(nkn_add_kernel, X0) ≈ kernelmatrix_diag(sum_k, X0)
             @test kernelmatrix_diag(nkn_add_kernel, X0, X1) ≈
-                  kernelmatrix_diag(sum_k, X0, X1)
+                kernelmatrix_diag(sum_k, X0, X1)
         end
         @testset "product" begin
             nkn_prod_kernel = NeuralKernelNetwork(primitives, product)
