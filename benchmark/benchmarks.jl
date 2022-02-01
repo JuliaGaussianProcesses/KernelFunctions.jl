@@ -23,8 +23,8 @@ SUITE = BenchmarkGroup()
 # Create a list of kernel and their constructors
 kernels = Dict(
     # Constant Kernels
-    "Constant" => ((2.0,), x->ConstantKernel(;c=x)),
-    "White" => ((), ()->WhiteKernel()),
+    "Constant" => ((2.0,), x -> ConstantKernel(; c=x)),
+    "White" => ((), () -> WhiteKernel()),
     # Cosine Kernel
     "Cosine" => ((), () -> CosineKernel()),
     # Exponential Kernels
