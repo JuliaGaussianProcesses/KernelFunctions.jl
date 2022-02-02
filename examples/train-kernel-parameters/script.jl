@@ -151,16 +151,16 @@ nothing #hide
 
 (loss ∘ unflatten)(flat_θ)
 
-# ## Training the model
+# ### Training the model
 
-# ### Cost per step
+# Cost per step
 
 @benchmark let θt = flat_θ[:], optt = Optimise.ADAGrad(0.5)
     grads = (Zygote.gradient(loss ∘ unflatten, θt))[1]
     Optimise.update!(optt, θt, grads)
 end
 
-# ### Complete optimization
+# Complete optimization
 
 opt = Optimise.ADAGrad(0.5)
 for i in 1:25
@@ -176,6 +176,7 @@ nothing #hide
 # ## Flux.destructure
 # If don't want to write an explicit function to construct the kernel, we can alternatively use the `Flux.destructure` function. 
 # Again, we need to ensure that the parameters are positive. Note that the `exp` function is now part of the loss function, instead of part of the kernel construction. 
+# We could also use ParameterHandling.jl here, similar to the example above. 
 
 θ = [1.1, 0.1, 0.01, 0.001]
 
@@ -204,7 +205,7 @@ function loss(θ)
 end
 nothing #hide
 
-# ## Training the model
+# ### Training the model
 
 # The loss with our starting point :
 θ = log.([1.1, 0.1, 0.01, 0.001]) # Initial vector
