@@ -27,9 +27,9 @@
     @test icoregionkernel.B == B
     @test icoregionkernel.kernel == kernel
     @test icoregionkernel(XIF[1], XIF[1]) ≈
-          B[XIF[1][2], XIF[1][2]] * kernel(XIF[1][1], XIF[1][1])
+        B[XIF[1][2], XIF[1][2]] * kernel(XIF[1][1], XIF[1][1])
     @test icoregionkernel(XIF[1], XIF[end]) ≈
-          B[XIF[1][2], XIF[end][2]] * kernel(XIF[1][1], XIF[end][1])
+        B[XIF[1][2], XIF[end][2]] * kernel(XIF[1][1], XIF[end][1])
 
     # kernelmatrix
     KernelFunctions.TestUtils.test_interface(icoregionkernel, XIF, YIF, ZIF)
@@ -43,5 +43,5 @@
     test_ADs(icoregionkernel; dims=dims)
 
     @test string(icoregionkernel) ==
-          string("Intrinsic Coregion Kernel: ", kernel, " with ", dims.out, " outputs")
+        string("Intrinsic Coregion Kernel: ", kernel, " with ", dims.out, " outputs")
 end
