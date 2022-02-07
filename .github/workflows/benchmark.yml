@@ -19,39 +19,33 @@ jobs:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@latest
         with:
-          version: 'nightly'
+          version: '1.6'
       - uses: julia-actions/julia-buildpkg@latest
       - name: install dependencies
         run: julia -e 'using Pkg; pkg"add PkgBenchmark BenchmarkCI@0.1"'
-
       # run the benchmark suite
       - name: run benchmarks
         run: |
-          julia -e '
-            using BenchmarkCI
-            BenchmarkCI.judge()
-            BenchmarkCI.displayjudgement()
-            '
+          using BenchmarkCI
+          BenchmarkCI.judge()
+          BenchmarkCI.displayjudgement()
+        shell: julia --color=yes {0}
       # generate and record the benchmark result as markdown
       - name: generate benchmark result
         run: |
-          body=$(julia -e '
           using BenchmarkCI
-          let
-              judgement = BenchmarkCI._loadjudge(BenchmarkCI.DEFAULT_WORKSPACE)
-              title = "Kernel Benchmark Result"
-              ciresult = BenchmarkCI.CIResult(; judgement, title)
-              BenchmarkCI.printcommentmd(stdout::IO, ciresult)
+          judgement = BenchmarkCI._loadjudge(BenchmarkCI.DEFAULT_WORKSPACE)
+          title = "Kernel Benchmark Result"
+          ciresult = BenchmarkCI.CIResult(; judgement, title)
+          comment = sprint() do io
+              return BenchmarkCI.printcommentmd(io, ciresult)
           end
-          ')
-          body="${body//'%'/'%25'}"
-          body="${body//$'\n'/'%0A'}"
-          body="${body//$'\r'/'%0D'}"
-          echo $body > ./benchmark-result.artifact
+          comment = replace(comment, "%" => "%25", "\\n" => "%0A", "\\r" => "%0D")
+          write("benchmark-result.artifact", comment)
+        shell: julia --color=yes {0}
       # record the pull request number
       - name: record pull request number
         run: echo ${{ github.event.pull_request.number }} > ./pull-request-number.artifact
-
       # save as artifacts (performance tracking (comment) workflow will use it)
       - uses: actions/upload-artifact@v2
         with:

@@ -25,7 +25,6 @@ jobs:
           github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v2
-
       # restore records from the artifacts
       - uses: dawidd6/action-download-artifact@v2
         with:
@@ -48,7 +47,6 @@ jobs:
           issue-number: ${{ steps.output-pull-request-number.outputs.body }}
           comment-author: 'github-actions[bot]'
           body-includes: Kernel Benchmark Result
-
       # create/update comment
       - name: create comment
         if: ${{ steps.fc.outputs.comment-id == 0 }}
