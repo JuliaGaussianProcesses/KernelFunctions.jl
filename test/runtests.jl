@@ -63,8 +63,10 @@ include("test_utils.jl")
     if GROUP == "" || GROUP == "Aqua"
         @testset "Aqua" begin
             Aqua.test_all(KernelFunctions; ambiguities=false)
-            Aqua.test_ambiguities(KernelFunctions; recursive=false)
-            # Avoid checking extra package ambiguity issues
+            @testset "Method Ambiguity" begin
+                Aqua.test_ambiguities([KernelFunctions, Base, Core]; recursive=false)
+                # Avoid checking extra package ambiguity issues
+            end
         end
     end
     if GROUP == "" || GROUP == "Transform"
