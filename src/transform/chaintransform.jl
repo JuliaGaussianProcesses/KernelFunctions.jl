@@ -36,6 +36,7 @@ end
 Base.:∘(t₁::Transform, t₂::Transform) = ChainTransform([t₂, t₁])
 Base.:∘(t::Transform, tc::ChainTransform) = ChainTransform(vcat(tc.transforms, t))
 Base.:∘(tc::ChainTransform, t::Transform) = ChainTransform(vcat(t, tc.transforms))
+Base.:∘(tc₁::ChainTransform, tc₂::ChainTransform) = ChainTransform(vcat(tc₂.transforms, tc₁.transforms))
 
 (t::ChainTransform)(x) = foldl((x, t) -> t(x), t.transforms; init=x)
 
