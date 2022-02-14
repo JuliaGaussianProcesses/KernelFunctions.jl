@@ -1,5 +1,6 @@
 using KernelFunctions
 using AxisArrays
+using Aqua
 using Distances
 using Documenter
 using Functors: functor
@@ -59,6 +60,13 @@ const GROUP = get(ENV, "GROUP", "")
 include("test_utils.jl")
 
 @testset "KernelFunctions" begin
+    if GROUP == "" || GROUP == "Aqua"
+        @testset "Aqua" begin
+            Aqua.test_all(KernelFunctions; ambiguities=false)
+            Aqua.test_ambiguities(KernelFunctions; recursive=false)
+            # Avoid checking extra package ambiguity issues
+        end
+    end
     if GROUP == "" || GROUP == "Transform"
         @testset "transform" begin
             include("transform/transform.jl")
