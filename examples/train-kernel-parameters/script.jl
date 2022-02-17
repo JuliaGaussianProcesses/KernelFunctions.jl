@@ -1,13 +1,13 @@
 # # Train Kernel Parameters
 
-# In this example we show a few ways to perform regression on a kernel from KernelFunctions.jl.
+# Here we show a few ways to train (optimize) the kernel (hyper)parameters at the example of kernel-based regression using KernelFunctions.jl.
 
 # We load KernelFunctions and some other packages
 
 using KernelFunctions
 using LinearAlgebra
 using Distributions
-using Plots;
+using Plots
 using BenchmarkTools
 using Flux
 using Flux: Optimise
@@ -16,28 +16,27 @@ using Random: seed!
 seed!(42);
 
 # ## Data Generation
-# We generated data in 1 dimension
+# We generate a toy dataset in 1 dimension:
 
-xmin = -3;
-xmax = 3; # Bounds of the data
+xmin, xmax = -3, 3  # Bounds of the data
 N = 50 # Number of samples
-x_train = rand(Uniform(xmin, xmax), N) # We sample 100 random samples
+x_train = rand(Uniform(xmin, xmax), N)  # sample the inputs
 σ = 0.1
-y_train = sinc.(x_train) + randn(N) * σ # We create a function and add some noise
+y_train = sinc.(x_train) + randn(N) * σ  # evaluate a function and add some noise
 x_test = range(xmin - 0.1, xmax + 0.1; length=300)
 nothing #hide
 
 # Plot the data
 
-scatter(x_train, y_train; lab="data")
-plot!(x_test, sinc; lab="true function")
+scatter(x_train, y_train; label="data")
+plot!(x_test, sinc; label="true function")
 
-# ## Base Approach
+# ## Manual Approach
 # The first option is to rebuild the parametrized kernel from a vector of parameters 
 # in each evaluation of the cost fuction. This is similar to the approach taken in 
 # [Stheno.jl](https://github.com/JuliaGaussianProcesses/Stheno.jl).
 
-# To train the kernel parameters via ForwardDiff.jl
+# To train the kernel parameters via ForwardDiff.jl,
 # we need to create a function creating a kernel from an array.
 # A simple way to ensure that the kernel parameters are positive
 # is to optimize over the logarithm of the parameters. 
@@ -49,7 +48,7 @@ end
 nothing #hide
 
 # From theory we know the prediction for a test set x given
-# the kernel parameters and normalization constant
+# the kernel parameters and normalization constant:
 
 function f(x, x_train, y_train, θ)
     k = kernelcall(θ[1:3])
