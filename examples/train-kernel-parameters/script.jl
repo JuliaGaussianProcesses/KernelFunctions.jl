@@ -57,13 +57,13 @@ function f(x, x_train, y_train, θ)
 end
 nothing #hide
 
-# We look how the prediction looks like
-# with starting parameters [1.0, 1.0, 1.0, 1.0] we get :
+# Let's look at our prediction.
+# With starting parameters [1.0, 1.0, 1.0, 1.0] we get:
 
 ŷ = f(x_test, x_train, y_train, log.(ones(4)))
-scatter(x_train, y_train; lab="data")
-plot!(x_test, sinc; lab="true function")
-plot!(x_test, ŷ; lab="prediction")
+scatter(x_train, y_train; label="data")
+plot!(x_test, sinc; label="true function")
+plot!(x_test, ŷ; label="prediction")
 
 # We define the loss based on the L2 norm both
 # for the loss and the regularization
@@ -146,7 +146,7 @@ nothing #hide
 initial_θ = ParameterHandling.value(raw_initial_θ)
 nothing #hide
 
-# The loss with our starting point :
+# The loss at the initial parameter values:
 
 (loss ∘ unflatten)(flat_θ)
 
@@ -173,7 +173,7 @@ nothing #hide
 (loss ∘ unflatten)(flat_θ)
 
 # ## Flux.destructure
-# If don't want to write an explicit function to construct the kernel, we can alternatively use the `Flux.destructure` function. 
+# If we don't want to write an explicit function to construct the kernel, we can alternatively use the `Flux.destructure` function. 
 # Again, we need to ensure that the parameters are positive. Note that the `exp` function is now part of the loss function, instead of part of the kernel construction. 
 # We could also use ParameterHandling.jl here, similar to the example above. 
 
@@ -206,7 +206,7 @@ nothing #hide
 
 # ### Training the model
 
-# The loss with our starting point :
+# The loss at our initial parameter values:
 θ = log.([1.1, 0.1, 0.01, 0.001]) # Initial vector
 loss(θ)
 
