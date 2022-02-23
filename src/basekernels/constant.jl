@@ -30,7 +30,9 @@ function kernelmatrix!(K::AbstractMatrix, ::ZeroKernel, x::AbstractVector)
     validate_inplace_dims(K, x)
     return fill!(K, zero(eltype(K)))
 end
-function kernelmatrix!(K::AbstractMatrix, ::ZeroKernel, x::AbstractVector, y::AbstractVector)
+function kernelmatrix!(
+    K::AbstractMatrix, ::ZeroKernel, x::AbstractVector, y::AbstractVector
+)
     validate_inplace_dims(K, x, y)
     return fill!(K, zero(eltype(K)))
 end
@@ -119,7 +121,9 @@ function kernelmatrix!(K::AbstractMatrix, k::ConstantKernel, x::AbstractVector)
     validate_inplace_dims(K, x)
     return fill!(K, only(k.c))
 end
-function kernelmatrix!(K::AbstractMatrix, k::ConstantKernel, x::AbstractVector, y::AbstractVector)
+function kernelmatrix!(
+    K::AbstractMatrix, k::ConstantKernel, x::AbstractVector, y::AbstractVector
+)
     validate_inplace_dims(K, x, y)
     return fill!(K, only(k.c))
 end
