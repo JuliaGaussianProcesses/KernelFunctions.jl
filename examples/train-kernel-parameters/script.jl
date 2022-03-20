@@ -184,7 +184,6 @@ nothing #hide
 
 (loss ∘ unflatten)(flat_θ)
 
-
 # ## Flux.destructure
 # If we don't want to write an explicit function to construct the kernel, we can alternatively use the `Flux.destructure` function. 
 # Again, we need to ensure that the parameters are positive. Note that the `exp` function is now part of the loss function, instead of part of the kernel construction. 
