@@ -83,7 +83,7 @@ loss(θ)
 
 # Computational cost for one step:
 
-@benchmark let 
+@benchmark let
     θ = log.(p0)
     opt = Optimise.ADAGrad(0.5)
     grads = only((Zygote.gradient(loss, θ)))
@@ -149,7 +149,7 @@ nothing #hide
 
 function loss(θ)
     ŷ = f(x_train, x_train, y_train, θ)
-    return norm( y_train - ŷ) + θ.noise_var * norm(ŷ)
+    return norm(y_train - ŷ) + θ.noise_var * norm(ŷ)
 end
 nothing #hide
 
@@ -162,7 +162,7 @@ nothing #hide
 
 # Cost per step
 
-@benchmark let 
+@benchmark let
     θ = flat_θ[:]
     opt = Optimise.ADAGrad(0.5)
     grads = (Zygote.gradient(loss ∘ unflatten, θ))[1]
@@ -215,7 +215,7 @@ nothing #hide
 
 function loss(θ)
     ŷ = f(x_train, x_train, y_train, exp.(θ))
-    return norm( y_train - ŷ) + exp(θ[4]) * norm(ŷ)
+    return norm(y_train - ŷ) + exp(θ[4]) * norm(ŷ)
 end
 nothing #hide
 
