@@ -196,10 +196,10 @@ nothing #hide
 
 kernel = (θ[1] * SqExponentialKernel() + θ[2] * Matern32Kernel()) ∘ ScaleTransform(θ[3])
 
-p, kernelc = Flux.destructure(kernel);
+params, kernelc = Flux.destructure(kernel);
 
 # This returns the trainable `params` of the kernel and a function to reconstruct the kernel.
-kernelc(p)
+kernelc(params)
 
 # From theory we know the prediction for a test set x given
 # the kernel parameters and normalization constant
