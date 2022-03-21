@@ -209,8 +209,6 @@ function f(x, x_train, y_train, θ)
 end
 nothing #hide
 
-# We define the loss based on the L2 norm both
-# for the loss and the regularization
 
 function loss(θ)
     ŷ = f(x_train, x_train, y_train, exp.(θ))
