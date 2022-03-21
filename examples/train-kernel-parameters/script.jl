@@ -209,7 +209,6 @@ function f(x, x_train, y_train, θ)
 end
 nothing #hide
 
-
 function loss(θ)
     ŷ = f(x_train, x_train, y_train, exp.(θ))
     return norm(y_train - ŷ) + exp(θ[4]) * norm(ŷ)
