@@ -1,0 +1,53 @@
+name: Run benchmarks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+jobs:
+  Benchmarking:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'performance critical')
+    steps:
+      # setup
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@latest
+        with:
+          version: '1.7'
+      - uses: julia-actions/julia-buildpkg@latest
+      - name: install dependencies
+        run: julia -e 'using Pkg; pkg"add PkgBenchmark BenchmarkCI@0.1"'
+      # run the benchmark suite
+      - name: run benchmarks
+        run: |
+          using BenchmarkCI
+          BenchmarkCI.judge()
+          BenchmarkCI.displayjudgement()
+        shell: julia --color=yes {0}
+      # generate and record the benchmark result as markdown
+      - name: generate benchmark result
+        run: |
+          using BenchmarkCI
+          judgement = BenchmarkCI._loadjudge(BenchmarkCI.DEFAULT_WORKSPACE)
+          title = "Kernel Benchmark Result"
+          ciresult = BenchmarkCI.CIResult(; judgement, title)
+          comment = sprint() do io
+              return BenchmarkCI.printcommentmd(io, ciresult)
+          end
+          comment = replace(comment, "%" => "%25", "\\n" => "%0A", "\\r" => "%0D")
+          write("benchmark-result.artifact", comment)
+        shell: julia --color=yes {0}
+      # record the pull request number
+      - name: record pull request number
+        run: echo ${{ github.event.pull_request.number }} > ./pull-request-number.artifact
+      # save as artifacts (performance tracking (comment) workflow will use it)
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Benchmarking
+          path: ./*.artifact

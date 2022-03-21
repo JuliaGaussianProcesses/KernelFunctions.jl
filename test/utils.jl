@@ -7,8 +7,10 @@
     w = randn(rng, N)
 
     @testset "VecOfVecs" begin
-        @test vec_of_vecs(X; obsdim=2) == ColVecs(X)
         @test vec_of_vecs(X; obsdim=1) == RowVecs(X)
+        @test vec_of_vecs(X; obsdim=2) == ColVecs(X)
+        @test_throws ArgumentError vec_of_vecs(X; obsdim=0)
+        @test_throws ArgumentError vec_of_vecs(X; obsdim=3)
     end
     # Test Matrix data sets.
     @testset "ColVecs" begin
@@ -30,9 +32,9 @@
         Y = randn(rng, D, N + 1)
         DY = ColVecs(Y)
         @test KernelFunctions.pairwise(SqEuclidean(), DX) ≈
-              pairwise(SqEuclidean(), X; dims=2)
+            pairwise(SqEuclidean(), X; dims=2)
         @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈
-              pairwise(SqEuclidean(), X, Y; dims=2)
+            pairwise(SqEuclidean(), X, Y; dims=2)
         @test vcat(DX, DY) isa ColVecs
         @test vcat(DX, DY).X == hcat(X, Y)
         K = zeros(N, N)
@@ -50,6 +52,22 @@
             @test Zygote.pullback(DX -> DX.X, DX)[1] == X
             X_, back = Zygote.pullback(DX -> DX.X, DX)
             @test back(ones(size(X)))[1].X == ones(size(X))
+        end
+
+        if VERSION >= v"1.6"
+            @testset "Zygote type-inference" begin
+                ctx = NoContext()
+                x = ColVecs(randn(2, 4))
+                y = ColVecs(randn(2, 3))
+
+                # Ensure KernelFunctions.pairwise rather than Distances.pairwise is used.
+                check_zygote_type_stability(
+                    x -> KernelFunctions.pairwise(SqEuclidean(), x), x; ctx=ctx
+                )
+                check_zygote_type_stability(
+                    (x, y) -> KernelFunctions.pairwise(SqEuclidean(), x, y), x, y; ctx=ctx
+                )
+            end
         end
     end
     @testset "RowVecs" begin
@@ -71,9 +89,9 @@
         Y = randn(rng, D + 1, N)
         DY = RowVecs(Y)
         @test KernelFunctions.pairwise(SqEuclidean(), DX) ≈
-              pairwise(SqEuclidean(), X; dims=1)
+            pairwise(SqEuclidean(), X; dims=1)
         @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈
-              pairwise(SqEuclidean(), X, Y; dims=1)
+            pairwise(SqEuclidean(), X, Y; dims=1)
         @test vcat(DX, DY) isa RowVecs
         @test vcat(DX, DY).X == vcat(X, Y)
         K = zeros(D, D)
@@ -92,6 +110,19 @@
             X_, back = Zygote.pullback(DX -> DX.X, DX)
             @test back(ones(size(X)))[1].X == ones(size(X))
         end
+    end
+    @testset "ColVecs + RowVecs" begin
+        x_colvecs = ColVecs(randn(3, 5))
+        x_rowvecs = RowVecs(randn(7, 3))
+
+        @test isapprox(
+            pairwise(SqEuclidean(), x_colvecs, x_rowvecs),
+            pairwise(SqEuclidean(), collect(x_colvecs), collect(x_rowvecs)),
+        )
+        @test isapprox(
+            pairwise(SqEuclidean(), x_rowvecs, x_colvecs),
+            pairwise(SqEuclidean(), collect(x_rowvecs), collect(x_colvecs)),
+        )
     end
     @testset "input checks" begin
         D = 3

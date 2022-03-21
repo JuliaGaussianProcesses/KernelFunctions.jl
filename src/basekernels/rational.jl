@@ -5,11 +5,11 @@ Rational kernel with shape parameter `α` and given `metric`.
 
 # Definition
 
-For inputs ``x, x'``, the rational kernel with shape parameter
-``\\alpha > 0`` is defined as
+For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the rational kernel with shape parameter ``\\alpha > 0`` is defined as
 ```math
-k(x, x'; \\alpha) = \\bigg(1 + \\frac{\\|x - x'\\|}{\\alpha}\\bigg)^{-\\alpha}.
+k(x, x'; \\alpha) = \\bigg(1 + \\frac{d(x, x')}{\\alpha}\\bigg)^{-\\alpha}.
 ```
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 
 The [`ExponentialKernel`](@ref) is recovered in the limit as ``\\alpha \\to \\infty``.
 
@@ -32,13 +32,13 @@ end
 @functor RationalKernel
 
 function kappa(κ::RationalKernel, d::Real)
-    return (one(d) + d / first(κ.α))^(-first(κ.α))
+    return (one(d) + d / only(κ.α))^(-only(κ.α))
 end
 
 metric(k::RationalKernel) = k.metric
 
 function Base.show(io::IO, κ::RationalKernel)
-    return print(io, "Rational Kernel (α = ", first(κ.α), ", metric = ", κ.metric, ")")
+    return print(io, "Rational Kernel (α = ", only(κ.α), ", metric = ", κ.metric, ")")
 end
 
 """
@@ -72,10 +72,10 @@ end
 @functor RationalQuadraticKernel
 
 function kappa(κ::RationalQuadraticKernel, d::Real)
-    return (one(d) + d^2 / (2 * first(κ.α)))^(-first(κ.α))
+    return (one(d) + d^2 / (2 * only(κ.α)))^(-only(κ.α))
 end
 function kappa(κ::RationalQuadraticKernel{<:Real,<:Euclidean}, d²::Real)
-    return (one(d²) + d² / (2 * first(κ.α)))^(-first(κ.α))
+    return (one(d²) + d² / (2 * only(κ.α)))^(-only(κ.α))
 end
 
 metric(k::RationalQuadraticKernel) = k.metric
@@ -83,7 +83,7 @@ metric(::RationalQuadraticKernel{<:Real,<:Euclidean}) = SqEuclidean()
 
 function Base.show(io::IO, κ::RationalQuadraticKernel)
     return print(
-        io, "Rational Quadratic Kernel (α = ", first(κ.α), ", metric = ", κ.metric, ")"
+        io, "Rational Quadratic Kernel (α = ", only(κ.α), ", metric = ", κ.metric, ")"
     )
 end
 
@@ -122,7 +122,7 @@ end
 @functor GammaRationalKernel
 
 function kappa(κ::GammaRationalKernel, d::Real)
-    return (one(d) + d^first(κ.γ) / first(κ.α))^(-first(κ.α))
+    return (one(d) + d^only(κ.γ) / only(κ.α))^(-only(κ.α))
 end
 
 metric(k::GammaRationalKernel) = k.metric
@@ -131,9 +131,9 @@ function Base.show(io::IO, κ::GammaRationalKernel)
     return print(
         io,
         "Gamma Rational Kernel (α = ",
-        first(κ.α),
+        only(κ.α),
         ", γ = ",
-        first(κ.γ),
+        only(κ.γ),
         ", metric = ",
         κ.metric,
         ")",

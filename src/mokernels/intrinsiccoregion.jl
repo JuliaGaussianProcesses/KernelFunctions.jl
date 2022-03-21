@@ -34,8 +34,39 @@ function IntrinsicCoregionMOKernel(; kernel::Kernel, B::AbstractMatrix)
     return IntrinsicCoregionMOKernel{typeof(kernel),typeof(B)}(kernel, B)
 end
 
+function IntrinsicCoregionMOKernel(kernel::Kernel, B::AbstractMatrix)
+    return IntrinsicCoregionMOKernel{typeof(kernel),typeof(B)}(kernel, B)
+end
+
 function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
     return k.B[px, py] * k.kernel(x, y)
+end
+
+function _mo_output_covariance(k::IntrinsicCoregionMOKernel, out_dim)
+    @assert size(k.B) == (out_dim, out_dim)
+    return k.B
+end
+
+function kernelmatrix(
+    k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
+) where {MOI<:IsotopicMOInputsUnion}
+    x.out_dim == y.out_dim ||
+        throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
+    Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
+    Koutputs = _mo_output_covariance(k, x.out_dim)
+    return _kernelmatrix_kron_helper(MOI, Kfeatures, Koutputs)
+end
+
+if VERSION >= v"1.6"
+    function kernelmatrix!(
+        K::AbstractMatrix, k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
+    ) where {MOI<:IsotopicMOInputsUnion}
+        x.out_dim == y.out_dim ||
+            throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
+        Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
+        Koutputs = _mo_output_covariance(k, x.out_dim)
+        return _kernelmatrix_kron_helper!(K, MOI, Kfeatures, Koutputs)
+    end
 end
 
 function Base.show(io::IO, k::IntrinsicCoregionMOKernel)

@@ -1,42 +1,62 @@
 # # Support Vector Machine
 #
-# !!! warning
-#     This example is under construction
+# In this notebook we show how you can use KernelFunctions.jl to generate
+# kernel matrices for classification with a support vector machine, as
+# implemented by [LIBSVM](https://github.com/JuliaML/LIBSVM.jl).
 
-using KernelFunctions
 using Distributions
-using Plots
-
+using KernelFunctions
+using LIBSVM
 using LinearAlgebra
+using Plots
 using Random
-
-## Set plotting theme
-theme(:wong)
 
 ## Set seed
 Random.seed!(1234);
 
-# Number of samples:
-N = 100;
+# ## Generate half-moon dataset
 
-# Select randomly between two classes:
-y = rand([-1, 1], N);
+# Number of samples per class:
+n1 = n2 = 50;
 
-# Random attributes for both classes:
-X = Matrix{Float64}(undef, 2, N)
-rand!(MvNormal(randn(2), I), view(X, :, y .== 1))
-rand!(MvNormal(randn(2), I), view(X, :, y .== -1));
+# We generate data based on SciKit-Learn's sklearn.datasets.make_moons function:
 
-# Create a 2D grid:
-xgrid = range(floor(Int, minimum(X)), ceil(Int, maximum(X)); length=100)
-Xgrid = ColVecs(mapreduce(collect, hcat, Iterators.product(xgrid, xgrid)));
+angle1 = range(0, π; length=n1)
+angle2 = range(0, π; length=n2)
+X1 = [cos.(angle1) sin.(angle1)] .+ 0.1 .* randn.()
+X2 = [1 .- cos.(angle2) 1 .- sin.(angle2) .- 0.5] .+ 0.1 .* randn.()
+X = [X1; X2]
+x_train = RowVecs(X)
+y_train = vcat(fill(-1, n1), fill(1, n2));
 
-# Create kernel function:
-k = SqExponentialKernel() ∘ ScaleTransform(2.0)
+# ## Training
+#
+# We create a kernel function:
+k = SqExponentialKernel() ∘ ScaleTransform(1.5)
 
-# Optimal prediction:
-f(x, X, k, λ) = kernelmatrix(k, x, X) / (kernelmatrix(k, X) + exp(λ) * I) * y
+# LIBSVM can make use of a pre-computed kernel matrix.
+# KernelFunctions.jl can be used to produce that using `kernelmatrix`:
+model = svmtrain(kernelmatrix(k, x_train), y_train; kernel=LIBSVM.Kernel.Precomputed)
 
-# Compute prediction on a grid:
-contourf(xgrid, xgrid, f(Xgrid, ColVecs(X), k, 0.1))
-scatter!(X[1, :], X[2, :]; color=y, lab="data", widen=false)
+# ## Prediction
+#
+# For evaluation, we create a 100×100 2D grid based on the extent of the training data:
+test_range = range(floor(Int, minimum(X)), ceil(Int, maximum(X)); length=100)
+x_test = ColVecs(mapreduce(collect, hcat, Iterators.product(test_range, test_range)));
+
+# Again, we pass the result of KernelFunctions.jl's `kernelmatrix` to LIBSVM:
+y_pred, _ = svmpredict(model, kernelmatrix(k, x_train, x_test));
+
+# We can see that the kernelized, non-linear classification successfully separates the two classes in the training data:
+plot(; lim=extrema(test_range), aspect_ratio=1)
+contourf!(
+    test_range,
+    test_range,
+    y_pred;
+    levels=1,
+    color=cgrad(:redsblues),
+    alpha=0.7,
+    colorbar_title="prediction",
+)
+scatter!(X1[:, 1], X1[:, 2]; color=:red, label="training data: class –1")
+scatter!(X2[:, 1], X2[:, 2]; color=:blue, label="training data: class 1")
