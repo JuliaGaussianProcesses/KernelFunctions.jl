@@ -12,4 +12,5 @@
         @test kernelpdmat(k, vecA[obsdim]) == kernelpdmat(k, A; obsdim=obsdim)
         # @test_throws ErrorException kernelpdmat(k,ones(100,100),obsdim=obsdim)
     end
+    @test @test_deprecated(kernelpdmat(k, A)) == kernelpdmat(k, ColVecs(A))
 end
