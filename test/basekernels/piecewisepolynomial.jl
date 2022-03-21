@@ -20,7 +20,7 @@
     @test PiecewisePolynomialKernel(; dim=D) isa PiecewisePolynomialKernel{0}
 
     @test repr(k) ==
-          "Piecewise Polynomial Kernel (degree = $(degree), ⌊dim/2⌋ = $(div(D, 2)), metric = Euclidean(0.0))"
+        "Piecewise Polynomial Kernel (degree = $(degree), ⌊dim/2⌋ = $(div(D, 2)), metric = Euclidean(0.0))"
 
     k3 = PiecewisePolynomialKernel(;
         degree=degree, dim=D, metric=WeightedEuclidean(ones(D))

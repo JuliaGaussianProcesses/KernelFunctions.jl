@@ -43,7 +43,7 @@
         k = Matern52Kernel()
         @test kappa(k, x) ≈ (1 + sqrt(5) * x + 5 / 3 * x^2)exp(-sqrt(5) * x)
         @test k(v1, v2) ≈
-              (
+            (
             1 + sqrt(5) * norm(v1 - v2) + 5 / 3 * norm(v1 - v2)^2
         )exp(-sqrt(5) * norm(v1 - v2))
         @test kappa(Matern52Kernel(), x) == kappa(k, x)
