@@ -1,7 +1,7 @@
 # KernelFunctions.jl
 
 ![CI](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl/workflows/CI/badge.svg?branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/JuliaGaussianProcesses/KernelFunctions.jl/badge.svg?branch=master)](https://coveralls.io/github/JuliaGaussianProcesses/KernelFunctions.jl?branch=master)
+[![codecov](https://codecov.io/gh/JuliaGaussianProcesses/KernelFunctions.jl/branch/master/graph/badge.svg?token=rmDh3gb7hN)](https://codecov.io/gh/JuliaGaussianProcesses/KernelFunctions.jl)
 [![Documentation (stable)](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliagaussianprocesses.github.io/KernelFunctions.jl/stable)
 [![Documentation (latest)](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliagaussianprocesses.github.io/KernelFunctions.jl/dev)
 [![ColPrac: Contributor's Guide on Collaborative Practices for Community Packages](https://img.shields.io/badge/ColPrac-Contributor's%20Guide-blueviolet)](https://github.com/SciML/ColPrac)
@@ -12,9 +12,11 @@
 
 ## Kernel functions for machine learning
 
-KernelFunctions.jl provide a flexible and complete framework for kernel functions, pretransforming the input data.
+KernelFunctions.jl provides a flexible framework for defining kernel functions, and an extensive collection of implementations.
 
-The aim is to make the API as model-agnostic as possible while still being user-friendly.
+The aim is to make the API as model-agnostic as possible while still being user-friendly, and to interoperate well with generic packages for handling parameters like [ParameterHandling.jl](https://github.com/invenia/ParameterHandling.jl/) and FluxML's [Functors.jl](https://github.com/FluxML/Functors.jl/).
+
+Where appropriate, kernels are AD-compatible.
 
 ## Examples
 
@@ -46,11 +48,11 @@ plot(
   <img src="docs/src/assets/heatmap_combination.png" width=400px>
 </p>
 
-## Packages goals (by priority)
-- Ensure AD Compatibility (already the case for Zygote, ForwardDiff)
-- Toeplitz Matrices compatibility
+## Related Work
 
 Directly inspired by the [MLKernels](https://github.com/trthatcher/MLKernels.jl) package.
+
+See the JuliaGaussianProcesses [Github organisation](https://github.com/JuliaGaussianProcesses) and [website](https://juliagaussianprocesses.github.io/) for more related packages.
 
 ## Issues/Contributing
 

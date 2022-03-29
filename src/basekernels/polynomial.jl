@@ -26,11 +26,11 @@ LinearKernel(; c::Real=0.0) = LinearKernel(c)
 
 @functor LinearKernel
 
-kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + first(κ.c)
+kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + only(κ.c)
 
 metric(::LinearKernel) = DotProduct()
 
-Base.show(io::IO, κ::LinearKernel) = print(io, "Linear Kernel (c = ", first(κ.c), ")")
+Base.show(io::IO, κ::LinearKernel) = print(io, "Linear Kernel (c = ", only(κ.c), ")")
 
 """
     PolynomialKernel(; degree::Int=2, c::Real=0.0)
@@ -53,7 +53,7 @@ struct PolynomialKernel{Tc<:Real} <: SimpleKernel
 
     function PolynomialKernel{Tc}(degree::Int, c::Vector{Tc}) where {Tc}
         @check_args(PolynomialKernel, degree, degree >= one(degree), "degree ≥ 1")
-        @check_args(PolynomialKernel, c, first(c) >= zero(Tc), "c ≥ 0")
+        @check_args(PolynomialKernel, c, only(c) >= zero(Tc), "c ≥ 0")
         return new{Tc}(degree, c)
     end
 end
@@ -68,10 +68,10 @@ function Functors.functor(::Type{<:PolynomialKernel}, x)
     return (c=x.c,), reconstruct_polynomialkernel
 end
 
-kappa(κ::PolynomialKernel, xᵀy::Real) = (xᵀy + first(κ.c))^κ.degree
+kappa(κ::PolynomialKernel, xᵀy::Real) = (xᵀy + only(κ.c))^κ.degree
 
 metric(::PolynomialKernel) = DotProduct()
 
 function Base.show(io::IO, κ::PolynomialKernel)
-    return print(io, "Polynomial Kernel (c = ", first(κ.c), ", degree = ", κ.degree, ")")
+    return print(io, "Polynomial Kernel (c = ", only(κ.c), ", degree = ", κ.degree, ")")
 end

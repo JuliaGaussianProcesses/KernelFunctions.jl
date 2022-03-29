@@ -87,6 +87,7 @@ function test_interface(
 
     tmp_diag = Vector{Float64}(undef, length(x0))
     @test kernelmatrix_diag!(tmp_diag, k, x0) ≈ kernelmatrix_diag(k, x0)
+    @test kernelmatrix_diag!(tmp_diag, k, x0, x1) ≈ kernelmatrix_diag(k, x0, x1)
 end
 
 function test_interface(
@@ -133,6 +134,18 @@ function test_interface(
     )
 end
 
+function test_interface(
+    rng::AbstractRNG, k::Kernel, ::Type{<:Vector{Vector{T}}}; dim_in=2, kwargs...
+) where {T<:Real}
+    return test_interface(
+        k,
+        [randn(rng, T, dim_in) for _ in 1:1001],
+        [randn(rng, T, dim_in) for _ in 1:1001],
+        [randn(rng, T, dim_in) for _ in 1:1000];
+        kwargs...,
+    )
+end
+
 function test_interface(k::Kernel, T::Type{<:AbstractVector}; kwargs...)
     return test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
 end
@@ -146,6 +159,9 @@ function test_interface(rng::AbstractRNG, k::Kernel, T::Type{<:Real}; kwargs...)
     end
     @testset "RowVecs{$T}" begin
         test_interface(rng, k, RowVecs{T}; kwargs...)
+    end
+    @testset "Vector{Vector{T}}" begin
+        test_interface(rng, k, Vector{Vector{T}}; kwargs...)
     end
 end
 

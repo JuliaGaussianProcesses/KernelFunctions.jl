@@ -26,7 +26,7 @@ function ChainRulesCore.rrule(
     ::typeof(Distances.pairwise), d::Delta, X::AbstractMatrix, Y::AbstractMatrix; dims=2
 )
     P = Distances.pairwise(d, X, Y; dims=dims)
-    function pairwise_pullback(::AbstractMatrix)
+    function pairwise_pullback(::Any)
         return NoTangent(), NoTangent(), ZeroTangent(), ZeroTangent()
     end
     return P, pairwise_pullback
@@ -36,7 +36,7 @@ function ChainRulesCore.rrule(
     ::typeof(Distances.pairwise), d::Delta, X::AbstractMatrix; dims=2
 )
     P = Distances.pairwise(d, X; dims=dims)
-    function pairwise_pullback(::AbstractMatrix)
+    function pairwise_pullback(::Any)
         return NoTangent(), NoTangent(), ZeroTangent()
     end
     return P, pairwise_pullback
@@ -46,7 +46,7 @@ function ChainRulesCore.rrule(
     ::typeof(Distances.colwise), d::Delta, X::AbstractMatrix, Y::AbstractMatrix
 )
     C = Distances.colwise(d, X, Y)
-    function colwise_pullback(::AbstractVector)
+    function colwise_pullback(::Any)
         return NoTangent(), NoTangent(), ZeroTangent(), ZeroTangent()
     end
     return C, colwise_pullback
@@ -70,7 +70,7 @@ function ChainRulesCore.rrule(
     dims=2,
 )
     P = Distances.pairwise(d, X, Y; dims=dims)
-    function pairwise_pullback_cols(Δ::AbstractMatrix)
+    function pairwise_pullback_cols(Δ::Any)
         if dims == 1
             return NoTangent(), NoTangent(), Δ * Y, Δ' * X
         else
@@ -84,7 +84,7 @@ function ChainRulesCore.rrule(
     ::typeof(Distances.pairwise), d::DotProduct, X::AbstractMatrix; dims=2
 )
     P = Distances.pairwise(d, X; dims=dims)
-    function pairwise_pullback_cols(Δ::AbstractMatrix)
+    function pairwise_pullback_cols(Δ::Any)
         if dims == 1
             return NoTangent(), NoTangent(), 2 * Δ * X
         else
@@ -98,7 +98,7 @@ function ChainRulesCore.rrule(
     ::typeof(Distances.colwise), d::DotProduct, X::AbstractMatrix, Y::AbstractMatrix
 )
     C = Distances.colwise(d, X, Y)
-    function colwise_pullback(Δ::AbstractVector)
+    function colwise_pullback(Δ::Any)
         return NoTangent(), NoTangent(), Δ' .* Y, Δ' .* X
     end
     return C, colwise_pullback
@@ -118,7 +118,7 @@ function ChainRulesCore.rrule(s::Sinus, x::AbstractVector, y::AbstractVector)
     return val, evaluate_pullback
 end
 
-## Reverse Rulse SqMahalanobis
+## Reverse Rules SqMahalanobis
 
 function ChainRulesCore.rrule(
     dist::Distances.SqMahalanobis, a::AbstractVector, b::AbstractVector

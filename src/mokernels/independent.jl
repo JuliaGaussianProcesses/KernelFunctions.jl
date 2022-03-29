@@ -5,11 +5,11 @@ Kernel for multiple independent outputs with kernel `k` each.
 
 # Definition
 
-For inputs ``x, x'`` and output dimensions ``p_x, p_{x'}'``, the kernel ``\\widetilde{k}``
+For inputs ``x, x'`` and output dimensions ``p, p'``, the kernel ``\\widetilde{k}``
 for independent outputs with kernel ``k`` each is defined as
 ```math
-\\widetilde{k}\\big((x, p_x), (x', p_{x'})\\big) = \\begin{cases}
-    k(x, x') & \\text{if } p_x = p_{x'}, \\\\
+\\widetilde{k}\\big((x, p), (x', p')\\big) = \\begin{cases}
+    k(x, x') & \\text{if } p = p', \\\\
     0 & \\text{otherwise}.
 \\end{cases}
 ```
@@ -27,41 +27,27 @@ function (κ::IndependentMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,I
     return κ.kernel(x, y) * (px == py)
 end
 
-function _kernelmatrix_kron_helper(::MOInputIsotopicByFeatures, Kfeatures, B)
-    return kron(Kfeatures, B)
-end
-
-function _kernelmatrix_kron_helper(::MOInputIsotopicByOutputs, Kfeatures, B)
-    return kron(B, Kfeatures)
-end
+_mo_output_covariance(k::IndependentMOKernel, out_dim) = Eye{Bool}(out_dim)
 
 function kernelmatrix(
     k::IndependentMOKernel, x::MOI, y::MOI
 ) where {MOI<:IsotopicMOInputsUnion}
-    @assert x.out_dim == y.out_dim
+    x.out_dim == y.out_dim ||
+        throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-    mtype = eltype(Kfeatures)
-    return _kernelmatrix_kron_helper(x, Kfeatures, Eye{mtype}(x.out_dim))
+    Koutputs = _mo_output_covariance(k, x.out_dim)
+    return _kernelmatrix_kron_helper(MOI, Kfeatures, Koutputs)
 end
 
 if VERSION >= v"1.6"
-    function _kernelmatrix_kron_helper!(K, ::MOInputIsotopicByFeatures, Kfeatures, B)
-        return kron!(K, Kfeatures, B)
-    end
-
-    function _kernelmatrix_kron_helper!(K, ::MOInputIsotopicByOutputs, Kfeatures, B)
-        return kron!(K, B, Kfeatures)
-    end
-
     function kernelmatrix!(
         K::AbstractMatrix, k::IndependentMOKernel, x::MOI, y::MOI
     ) where {MOI<:IsotopicMOInputsUnion}
-        @assert x.out_dim == y.out_dim
-        Ktmp = kernelmatrix(k.kernel, x.x, y.x)
-        mtype = eltype(Ktmp)
-        return _kernelmatrix_kron_helper!(
-            K, x, Ktmp, Matrix{mtype}(I, x.out_dim, x.out_dim)
-        )
+        x.out_dim == y.out_dim ||
+            throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
+        Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
+        Koutputs = _mo_output_covariance(k, x.out_dim)
+        return _kernelmatrix_kron_helper!(K, MOI, Kfeatures, Koutputs)
     end
 end
 
