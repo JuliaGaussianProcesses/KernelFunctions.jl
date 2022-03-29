@@ -9,7 +9,7 @@ help:
 
 format:
 	@if [ "$(JULIA)" = "" ]; then echo 'Julia not found; run `make JULIA=/path/to/julia format`'; exit 1; fi
-	$(JULIA) --project=test/ -e 'using Pkg; Pkg.instantiate(); using JuliaFormatter; format(".")'
+	$(JULIA) -e 'using Pkg; Pkg.activate(; temp=true); Pkg.add("JuliaFormatter"); using JuliaFormatter; format(".")'
 
 test:
 	@if [ "$(JULIA)" = "" ]; then echo 'Julia not found; run `make JULIA=/path/to/julia test`'; exit 1; fi
