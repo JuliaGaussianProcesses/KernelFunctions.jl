@@ -8,7 +8,7 @@ using Documenter
 using JuliaGPsDocs
 using KernelFunctions
 
-JuliaGPsDocs.generate_examples(ApproximateGPs)
+JuliaGPsDocs.generate_examples(KernelFunctions)
 
 using PDMats, Kronecker  # we have to load all optional packages to generate the full API documentation
 
