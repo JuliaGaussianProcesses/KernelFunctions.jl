@@ -2,15 +2,15 @@
 using Pkg
 Pkg.add(Pkg.PackageSpec(; url="https://github.com/JuliaGaussianProcesses/JuliaGPsDocs.jl")) # While the package is unregistered, it's a workaround
 
-### Build documentation
-using Documenter
-
 using JuliaGPsDocs
+
 using KernelFunctions
+using PDMats, Kronecker  # we have to load all optional packages to generate the full API documentation
 
 JuliaGPsDocs.generate_examples(KernelFunctions)
 
-using PDMats, Kronecker  # we have to load all optional packages to generate the full API documentation
+### Build documentation
+using Documenter
 
 # Doctest setup
 DocMeta.setdocmeta!(
