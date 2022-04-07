@@ -1,10 +1,3 @@
-function test_zero(DX::Union{ColVecs,RowVecs})
-    zero_DX = zero(DX)
-    @test all(iszero, zero_DX)
-    @test zero_DX isa typeof(DX)
-    @test size(zero_DX.X) == size(DX.X)
-end
-
 @testset "utils" begin
     using KernelFunctions: vec_of_vecs, ColVecs, RowVecs
     rng, N, D = MersenneTwister(123456), 10, 4
@@ -19,7 +12,15 @@ end
         @test_throws ArgumentError vec_of_vecs(X; obsdim=0)
         @test_throws ArgumentError vec_of_vecs(X; obsdim=3)
     end
+
     # Test Matrix data sets.
+    function test_zero(DX::Union{ColVecs,RowVecs})
+        zero_DX = zero(DX)
+        @test all(iszero, zero_DX)
+        @test zero_DX isa typeof(DX)
+        @test size(zero_DX.X) == size(DX.X)
+    end
+
     @testset "ColVecs" begin
         DX = ColVecs(X)
         @test DX == DX
