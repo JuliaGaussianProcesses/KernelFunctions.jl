@@ -1,3 +1,10 @@
+function test_zero(DX::Union{ColVecs,RowVecs})
+    zero_DX = zero(DX)
+    @test all(iszero, zero_DX)
+    @test zero_DX isa typeof(DX)
+    @test size(zero_DX.X) == size(DX.X)
+end
+
 @testset "utils" begin
     using KernelFunctions: vec_of_vecs, ColVecs, RowVecs
     rng, N, D = MersenneTwister(123456), 10, 4
@@ -28,7 +35,7 @@
         DX[2] = v
         @test DX[2] == v
         @test X[:, 2] == v
-        @test all(zero(DX) .== Ref(zeros(D)))
+        test_zero(DX)
 
         Y = randn(rng, D, N + 1)
         DY = ColVecs(Y)
@@ -86,7 +93,7 @@
         DX[2] = w
         @test DX[2] == w
         @test X[2, :] == w
-        @test all(zero(DX) .== Ref(zeros(N)))
+        test_zero(DX)
 
         Y = randn(rng, D + 1, N)
         DY = RowVecs(Y)
