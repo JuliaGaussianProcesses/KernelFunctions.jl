@@ -28,6 +28,7 @@
         DX[2] = v
         @test DX[2] == v
         @test X[:, 2] == v
+        @test all(zero(DX) .== Ref(zeros(D)))
 
         Y = randn(rng, D, N + 1)
         DY = ColVecs(Y)
@@ -85,6 +86,7 @@
         DX[2] = w
         @test DX[2] == w
         @test X[2, :] == w
+        @test all(zero(DX) .== Ref(zeros(N)))
 
         Y = randn(rng, D + 1, N)
         DY = RowVecs(Y)
