@@ -35,13 +35,7 @@ makedocs(;
         "create_kernel.md",
         "API" => "api.md",
         "Design" => "design.md",
-        "Examples" => map(
-            basename.(
-                filter!(isdir, readdir(joinpath(@__DIR__, "src", "examples"); join=true)),
-            ),
-        ) do x
-            joinpath("examples", x, "index.md")
-        end,
+        "Examples" => JuliaGPsDocs.find_generated_examples(KernelFunctions),
     ],
     strict=true,
     checkdocs=:exports,
