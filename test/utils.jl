@@ -7,10 +7,20 @@
     w = randn(rng, N)
 
     @testset "VecOfVecs" begin
-        @test vec_of_vecs(X; obsdim=2) == ColVecs(X)
         @test vec_of_vecs(X; obsdim=1) == RowVecs(X)
+        @test vec_of_vecs(X; obsdim=2) == ColVecs(X)
+        @test_throws ArgumentError vec_of_vecs(X; obsdim=0)
+        @test_throws ArgumentError vec_of_vecs(X; obsdim=3)
     end
+
     # Test Matrix data sets.
+    function test_zero(DX::Union{ColVecs,RowVecs})
+        zero_DX = zero(DX)
+        @test all(iszero, zero_DX)
+        @test zero_DX isa typeof(DX)
+        @test size(zero_DX.X) == size(DX.X)
+    end
+
     @testset "ColVecs" begin
         DX = ColVecs(X)
         @test DX == DX
@@ -26,13 +36,14 @@
         DX[2] = v
         @test DX[2] == v
         @test X[:, 2] == v
+        test_zero(DX)
 
         Y = randn(rng, D, N + 1)
         DY = ColVecs(Y)
         @test KernelFunctions.pairwise(SqEuclidean(), DX) ≈
-              pairwise(SqEuclidean(), X; dims=2)
+            pairwise(SqEuclidean(), X; dims=2)
         @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈
-              pairwise(SqEuclidean(), X, Y; dims=2)
+            pairwise(SqEuclidean(), X, Y; dims=2)
         @test vcat(DX, DY) isa ColVecs
         @test vcat(DX, DY).X == hcat(X, Y)
         K = zeros(N, N)
@@ -83,13 +94,14 @@
         DX[2] = w
         @test DX[2] == w
         @test X[2, :] == w
+        test_zero(DX)
 
         Y = randn(rng, D + 1, N)
         DY = RowVecs(Y)
         @test KernelFunctions.pairwise(SqEuclidean(), DX) ≈
-              pairwise(SqEuclidean(), X; dims=1)
+            pairwise(SqEuclidean(), X; dims=1)
         @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈
-              pairwise(SqEuclidean(), X, Y; dims=1)
+            pairwise(SqEuclidean(), X, Y; dims=1)
         @test vcat(DX, DY) isa RowVecs
         @test vcat(DX, DY).X == vcat(X, Y)
         K = zeros(D, D)
