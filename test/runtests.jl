@@ -9,6 +9,7 @@ using LogExpFunctions
 using PDMats
 using Random
 using SpecialFunctions
+using Statistics
 using Test
 using Zygote: Zygote
 using ForwardDiff: ForwardDiff
