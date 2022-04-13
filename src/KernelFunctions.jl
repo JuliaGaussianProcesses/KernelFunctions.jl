@@ -30,6 +30,8 @@ export Transform,
     PeriodicTransform
 export with_lengthscale
 
+export median_heuristic_transform
+
 export NystromFact, nystrom
 
 export gaborkernel
@@ -62,6 +64,8 @@ using ZygoteRules: ZygoteRules, AContext, literal_getproperty, literal_getfield
 
 # Hack to work around Zygote type inference problems.
 const Distances_pairwise = Distances.pairwise
+
+using Statistics: median!
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
