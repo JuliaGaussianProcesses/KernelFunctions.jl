@@ -94,7 +94,7 @@ function test_interface(
     rng::AbstractRNG, k::Kernel, ::Type{Vector{T}}; kwargs...
 ) where {T<:Real}
     return test_interface(
-        k, randn(rng, T, 1001), randn(rng, T, 1001), randn(rng, T, 1000); kwargs...
+        k, randn(rng, T, 11), randn(rng, T, 11), randn(rng, T, 13); kwargs...
     )
 end
 
@@ -103,9 +103,9 @@ function test_interface(
 ) where {T<:Real}
     return test_interface(
         k,
-        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:51],
-        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:51],
-        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:50];
+        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:11],
+        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:11],
+        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:13];
         kwargs...,
     )
 end
@@ -115,9 +115,9 @@ function test_interface(
 ) where {T<:Real}
     return test_interface(
         k,
-        ColVecs(randn(rng, T, dim_in, 1001)),
-        ColVecs(randn(rng, T, dim_in, 1001)),
-        ColVecs(randn(rng, T, dim_in, 1000));
+        ColVecs(randn(rng, T, dim_in, 11)),
+        ColVecs(randn(rng, T, dim_in, 11)),
+        ColVecs(randn(rng, T, dim_in, 13));
         kwargs...,
     )
 end
@@ -127,9 +127,9 @@ function test_interface(
 ) where {T<:Real}
     return test_interface(
         k,
-        RowVecs(randn(rng, T, 1001, dim_in)),
-        RowVecs(randn(rng, T, 1001, dim_in)),
-        RowVecs(randn(rng, T, 1000, dim_in));
+        RowVecs(randn(rng, T, 11, dim_in)),
+        RowVecs(randn(rng, T, 11, dim_in)),
+        RowVecs(randn(rng, T, 13, dim_in));
         kwargs...,
     )
 end
@@ -139,9 +139,9 @@ function test_interface(
 ) where {T<:Real}
     return test_interface(
         k,
-        [randn(rng, T, dim_in) for _ in 1:1001],
-        [randn(rng, T, dim_in) for _ in 1:1001],
-        [randn(rng, T, dim_in) for _ in 1:1000];
+        [randn(rng, T, dim_in) for _ in 1:11],
+        [randn(rng, T, dim_in) for _ in 1:11],
+        [randn(rng, T, dim_in) for _ in 1:13];
         kwargs...,
     )
 end
