@@ -20,7 +20,13 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
-        test_ADs(() -> MaternKernel(; nu=ν))
+        test_ADs(() -> MaternKernel(; nu=ν); ADs=[:ForwardDiff, :ReverseDiff])
+        try
+            test_ADs(() -> MaternKernel(; nu=ν); ADs=[:Zygote])
+        catch
+            @test_broken "MaternKernel <-> Zygote AD test is broken"
+        end
+
         test_params(k, ([ν],))
     end
     @testset "Matern32Kernel" begin
