@@ -18,6 +18,9 @@
         @test metric(k2) isa WeightedEuclidean
         @test k2(v1, v2) ≈ k(v1, v2)
 
+        # Test custom `rrule` (Zygote workaround).
+        test_rrule(KernelFunctions._get_ν, MaternKernel(; nu=rand()))
+
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(() -> MaternKernel(; nu=ν))
