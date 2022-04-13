@@ -4,18 +4,15 @@
     v1 = rand(rng, 3)
     v2 = rand(rng, 3)
     @testset "MaternKernel" begin
-        ν = 2.0
+        ν = 2.1
         k = MaternKernel(; ν=ν)
         matern(x, ν) = 2^(1 - ν) / gamma(ν) * (sqrt(2ν) * x)^ν * besselk(ν, sqrt(2ν) * x)
         @test MaternKernel(; nu=ν).ν == [ν]
         @test kappa(k, x) ≈ matern(x, ν)
         @test kappa(k, 0.0) == 1.0
-        @test kappa(MaternKernel(; ν=ν), x) == kappa(k, x)
         @test metric(MaternKernel()) == Euclidean()
         @test metric(MaternKernel(; ν=2.0)) == Euclidean()
         @test repr(k) == "Matern Kernel (ν = $(ν), metric = Euclidean(0.0))"
-        # test_ADs(x->MaternKernel(nu=first(x)),[ν])
-        @test_broken "All fails (because of logabsgamma for ForwardDiff and ReverseDiff and because of nu for Zygote)"
 
         k2 = MaternKernel(; ν=ν, metric=WeightedEuclidean(ones(3)))
         @test metric(k2) isa WeightedEuclidean
@@ -23,6 +20,8 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        test_ADs(() -> MaternKernel(; nu=ν))
+
         test_params(k, ([ν],))
     end
     @testset "Matern32Kernel" begin

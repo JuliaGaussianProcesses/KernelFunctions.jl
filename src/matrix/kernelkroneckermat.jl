@@ -14,7 +14,7 @@ where `D` is given by `dims`.
 
 !!! warning
 
-    Require `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
+    Requires `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
 """
 function kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int)
     checkkroncompatible(κ)
