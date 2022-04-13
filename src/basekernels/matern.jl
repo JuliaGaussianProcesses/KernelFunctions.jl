@@ -37,7 +37,8 @@ MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν,
 
 @functor MaternKernel
 
-@inline _get_ν(k::MaternKernel) = ChainRulesCore.@ignore_derivatives only(k.ν)  # work-around for Zygote AD
+@inline _get_ν(k::MaternKernel) = only(k.ν)
+ChainRulesCore.@non_differentiable _get_ν(k)  # work-around; should be "NotImplemented" rather than NoTangent
 
 @inline function kappa(k::MaternKernel, d::Real)
     result = _matern(_get_ν(k), d)
