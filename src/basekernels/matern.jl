@@ -49,8 +49,7 @@ function ChainRulesCore.rrule(::typeof(_get_ν), k::T) where {T<:MaternKernel}
 end
 
 @inline function kappa(k::MaternKernel, d::Real)
-    nu = _get_ν(k)
-    result = _matern(nu, d)
+    result = _matern(_get_ν(k), d)
     return ifelse(iszero(d), one(result), result)
 end
 
