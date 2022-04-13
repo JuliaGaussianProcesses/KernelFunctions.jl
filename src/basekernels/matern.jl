@@ -37,16 +37,7 @@ MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν,
 
 @functor MaternKernel
 
-# Work-around for Zygote -- `NotImplemented` doesn't appear to play nicely with whatever
-# rule currently exists for `only`.
-_get_ν(k::MaternKernel) = only(k.ν)
-function ChainRulesCore.rrule(::typeof(_get_ν), k::T) where {T<:MaternKernel}
-    function _get_ν_pullback(Δ)
-        dν = ChainRulesCore.@not_implemented("Derivatives w.r.t. ν are not implemented.")
-        return Tangent{T}(ν=dν, metric=NoTangent())
-    end
-    return _get_ν(k), _get_ν_pullback
-end
+@inline _get_ν(k::MaternKernel) = ChainRulesCore.@ignore_derivatives only(k.ν)  # work-around for Zygote AD
 
 @inline function kappa(k::MaternKernel, d::Real)
     result = _matern(_get_ν(k), d)
