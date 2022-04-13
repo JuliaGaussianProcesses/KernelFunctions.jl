@@ -20,7 +20,9 @@
 
         # Test custom `rrule` (Zygote workaround).
         k = MaternKernel(; ν=rand())
-        test_rrule(KernelFunctions._get_ν, k ⊢ Tangent{typeof(k)}(; ν=randn(), metric=NoTangent()))
+        test_rrule(
+            KernelFunctions._get_ν, k ⊢ Tangent{typeof(k)}(; ν=randn(), metric=NoTangent())
+        )
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
