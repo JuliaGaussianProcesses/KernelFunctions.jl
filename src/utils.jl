@@ -93,6 +93,7 @@ Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
 Base.setindex!(D::ColVecs, v::AbstractVector, i) = setindex!(D.X, v, :, i)
 
 Base.vcat(a::ColVecs, b::ColVecs) = ColVecs(hcat(a.X, b.X))
+Base.zero(x::ColVecs) = ColVecs(zero(x.X))
 
 dim(x::ColVecs) = size(x.X, 1)
 
@@ -163,6 +164,7 @@ Base.getindex(D::RowVecs, i) = RowVecs(view(D.X, i, :))
 Base.setindex!(D::RowVecs, v::AbstractVector, i) = setindex!(D.X, v, i, :)
 
 Base.vcat(a::RowVecs, b::RowVecs) = RowVecs(vcat(a.X, b.X))
+Base.zero(x::RowVecs) = RowVecs(zero(x.X))
 
 dim(x::RowVecs) = size(x.X, 2)
 

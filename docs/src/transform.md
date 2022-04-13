@@ -41,4 +41,5 @@ PeriodicTransform
 
 ```@docs
 with_lengthscale
+median_heuristic_transform
 ```
