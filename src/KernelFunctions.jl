@@ -122,7 +122,6 @@ include("mokernels/intrinsiccoregion.jl")
 include("mokernels/lmm.jl")
 
 include("chainrules.jl")
-include("zygoterules.jl")
 
 include("test_utils.jl")
 
