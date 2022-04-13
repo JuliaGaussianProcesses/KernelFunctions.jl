@@ -19,7 +19,8 @@
         @test k2(v1, v2) ≈ k(v1, v2)
 
         # Test custom `rrule` (Zygote workaround).
-        test_rrule(KernelFunctions._get_ν, MaternKernel(; nu=rand()))
+        k = MaternKernel(; ν=rand())
+        test_rrule(KernelFunctions._get_ν, k ⊢ Tangent{typeof(k)}(; ν=randn(), metric=NoTangent()))
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
