@@ -42,8 +42,10 @@ MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν,
 @inline _get_ν(k::MaternKernel) = only(k.ν)
 function ChainRulesCore.rrule(::typeof(_get_ν), k::T) where {T<:MaternKernel}
     function _get_ν_pullback(Δ)
-        dν = ChainRulesCore.@not_implemented("derivatives of `MaternKernel` w.r.t. order `ν` are not implemented.")
-        return Tangent{T}(ν=dν, metric=NoTangent())
+        dν = ChainRulesCore.@not_implemented(
+            "derivatives of `MaternKernel` w.r.t. order `ν` are not implemented."
+        )
+        return Tangent{T}(; ν=dν, metric=NoTangent())
     end
     return _get_ν(k), _get_ν_pullback
 end
