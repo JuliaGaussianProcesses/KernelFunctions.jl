@@ -7,10 +7,13 @@
         # Construct in the usual way.
         k_eq_periodic = PeriodicKernel(; r=[sqrt(0.25)]) ∘ ScaleTransform(f)
 
-        # Construct using the peridic transform.
+        # Construct using the periodic transform.
         k_eq_transform = SqExponentialKernel() ∘ PeriodicTransform(f)
 
         @test kernelmatrix(k_eq_periodic, x) ≈ kernelmatrix(k_eq_transform, x)
-        # TODO - add interface_tests once #159 is merged.
+    end
+
+    @testset "AD" begin
+        test_ADs(x -> SEKernel() ∘ PeriodicTransform(exp(x[1])), [2.3])
     end
 end
