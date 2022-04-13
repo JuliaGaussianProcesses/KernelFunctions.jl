@@ -21,7 +21,10 @@
         # Test custom `rrule` (Zygote workaround).
         k = MaternKernel(; ν=rand())
         test_rrule(
-            KernelFunctions._get_ν, k ⊢ ChainRulesTestUtils.Tangent{typeof(k)}(; ν=randn(), metric=ChainRulesTestUtils.NoTangent())
+            KernelFunctions._get_ν,
+            k ⊢ ChainRulesTestUtils.Tangent{typeof(k)}(;
+                ν=randn(), metric=ChainRulesTestUtils.NoTangent()
+            ),
         )
 
         # Standardised tests.
