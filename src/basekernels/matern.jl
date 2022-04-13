@@ -37,8 +37,16 @@ MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν,
 
 @functor MaternKernel
 
+# workaround for Zygote
+# unclear why it's needed but it is fine since it's stated officially that we don't support differentiation with respect to ν
 @inline _get_ν(k::MaternKernel) = only(k.ν)
-ChainRulesCore.@non_differentiable _get_ν(k)  # work-around; should be "NotImplemented" rather than NoTangent
+function ChainRulesCore.rrule(::typeof(_get_ν), k::T) where {T<:MaternKernel}
+    function _get_ν_pullback(Δ)
+        dν = ChainRulesCore.@not_implemented("derivatives of `MaternKernel` w.r.t. order `ν` are not implemented.")
+        return Tangent{T}(ν=dν, metric=NoTangent())
+    end
+    return _get_ν(k), _get_ν_pullback
+end
 
 @inline function kappa(k::MaternKernel, d::Real)
     result = _matern(_get_ν(k), d)
