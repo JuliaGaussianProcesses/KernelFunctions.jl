@@ -18,15 +18,6 @@
         @test metric(k2) isa WeightedEuclidean
         @test k2(v1, v2) ≈ k(v1, v2)
 
-        # Test custom `rrule` (Zygote workaround).
-        k = MaternKernel(; ν=rand())
-        test_rrule(
-            KernelFunctions._get_ν,
-            k ⊢ ChainRulesTestUtils.Tangent{typeof(k)}(;
-                ν=randn(), metric=ChainRulesTestUtils.NoTangent()
-            ),
-        )
-
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(() -> MaternKernel(; nu=ν))
