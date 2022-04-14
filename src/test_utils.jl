@@ -16,18 +16,18 @@ using Test
         x1::AbstractVector,
         x2::AbstractVector;
         atol=__ATOL,
+        rtol=__RTOL,
     )
 
 Run various consistency checks on `k` at the inputs `x0`, `x1`, and `x2`.
 `x0` and `x1` should be of the same length with different values, while `x0` and `x2` should
 be of different lengths.
 
-    test_interface([rng::AbstractRNG], k::Kernel, T::Type{<:AbstractVector}; atol=__ATOL)
+    test_interface([rng::AbstractRNG], k::Kernel, T::Type{<:Real}; atol=__ATOL, rtol=__RTOL)
 
-`test_interface` offers certain types of test data generation to make running these tests
-require less code for common input types. For example, `Vector{<:Real}`, `ColVecs{<:Real}`,
-and `RowVecs{<:Real}` are supported. For other input vector types, please provide the data
-manually. 
+`test_interface` offers automated test data generation for kernels whose inputs are reals.
+This will run the tests for `Vector{<:Real}`, `Vector{Vector{<:Real}}`, `ColVecs{<:Real}`,
+and `RowVecs{<:Real}`. For other input vector types, please provide the data manually.
 """
 function test_interface(
     k::Kernel,
