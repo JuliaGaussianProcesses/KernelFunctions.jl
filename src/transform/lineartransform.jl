@@ -34,9 +34,9 @@ end
 (t::LinearTransform)(x::Real) = vec(t.A * x)
 (t::LinearTransform)(x::AbstractVector{<:Real}) = t.A * x
 
-_map(t::LinearTransform, x::AbstractVector{<:Real}) = ColVecs(t.A * collect(x'))
-_map(t::LinearTransform, x::ColVecs) = ColVecs(t.A * x.X)
-_map(t::LinearTransform, x::RowVecs) = RowVecs(x.X * t.A')
+Base.map(t::LinearTransform, x::AbstractVector{<:Real}) = ColVecs(t.A * collect(x'))
+Base.map(t::LinearTransform, x::ColVecs) = ColVecs(t.A * x.X)
+Base.map(t::LinearTransform, x::RowVecs) = RowVecs(x.X * t.A')
 
 function Base.show(io::IO, t::LinearTransform)
     return print(io::IO, "Linear transform (size(A) = ", size(t.A), ")")

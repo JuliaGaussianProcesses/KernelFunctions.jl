@@ -27,7 +27,7 @@ dim(t::PeriodicTransform) = 2
 
 (t::PeriodicTransform)(x::Real) = [sinpi(2 * only(t.f) * x), cospi(2 * only(t.f) * x)]
 
-function _map(t::PeriodicTransform, x::AbstractVector{<:Real})
+function Base.map(t::PeriodicTransform, x::AbstractVector{<:Real})
     return RowVecs(hcat(sinpi.((2 * only(t.f)) .* x), cospi.((2 * only(t.f)) .* x)))
 end
 

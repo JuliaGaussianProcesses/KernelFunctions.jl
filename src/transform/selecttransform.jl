@@ -25,8 +25,8 @@ duplicate(t::SelectTransform, θ) = t
 _maybe_unwrap(x) = x
 _maybe_unwrap(x::AbstractArray{<:Any,0}) = x[]
 
-_map(t::SelectTransform, x::ColVecs) = _wrap(view(x.X, t.select, :), ColVecs)
-_map(t::SelectTransform, x::RowVecs) = _wrap(view(x.X, :, t.select), RowVecs)
+Base.map(t::SelectTransform, x::ColVecs) = _wrap(view(x.X, t.select, :), ColVecs)
+Base.map(t::SelectTransform, x::RowVecs) = _wrap(view(x.X, :, t.select), RowVecs)
 
 _wrap(x::AbstractVector{<:Real}, ::Any) = x
 _wrap(X::AbstractMatrix{<:Real}, ::Type{T}) where {T} = T(X)
