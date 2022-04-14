@@ -26,8 +26,8 @@ be of different lengths.
     test_interface([rng::AbstractRNG], k::Kernel, T::Type{<:Real}; atol=__ATOL, rtol=__RTOL)
 
 `test_interface` offers automated test data generation for kernels whose inputs are reals.
-This will run the tests for `Vector{<:Real}`, `Vector{Vector{<:Real}}`, `ColVecs{<:Real}`,
-and `RowVecs{<:Real}`. For other input vector types, please provide the data manually.
+This will run the tests for `Vector{T}`, `Vector{Vector{T}}`, `ColVecs{T}`,
+and `RowVecs{T}`. For other input vector types, please provide the data manually.
 """
 function test_interface(
     k::Kernel,
