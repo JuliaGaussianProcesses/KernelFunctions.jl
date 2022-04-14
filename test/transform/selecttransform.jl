@@ -117,7 +117,7 @@
             ("ColVecs", ColVecs(randn(5, 10))),
             ("RowVecs", RowVecs(randn(11, 4))),
         ]
-            @test KernelFunctions._map(t, x) isa AbstractVector{Float64}
+            @test map(t, x) isa AbstractVector{Float64}
         end
     end
 end

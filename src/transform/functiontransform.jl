@@ -23,16 +23,16 @@ end
 
 (t::FunctionTransform)(x) = t.f(x)
 
-_map(t::FunctionTransform, x::AbstractVector{<:Real}) = map(t.f, x)
+Base.map(t::FunctionTransform, x::AbstractVector{<:Real}) = map(t.f, x)
 
-function _map(t::FunctionTransform, x::ColVecs)
+function Base.map(t::FunctionTransform, x::ColVecs)
     vals = map(axes(x.X, 2)) do i
         t.f(view(x.X, :, i))
     end
     return ColVecs(reduce(hcat, vals))
 end
 
-function _map(t::FunctionTransform, x::RowVecs)
+function Base.map(t::FunctionTransform, x::RowVecs)
     vals = map(axes(x.X, 1)) do i
         t.f(view(x.X, i, :))
     end

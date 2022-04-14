@@ -5,8 +5,7 @@ Abstract type defining a transformation of the input.
 """
 abstract type Transform end
 
-Base.map(t::Transform, x::AbstractVector) = _map(t, x)
-_map(t::Transform, x::AbstractVector) = t.(x)
+Base.map(t::Transform, x::AbstractVector) = t.(x)
 
 """
     IdentityTransform()
@@ -16,7 +15,7 @@ Transformation that returns exactly the input.
 struct IdentityTransform <: Transform end
 
 (t::IdentityTransform)(x) = x
-_map(::IdentityTransform, x::AbstractVector) = x
+Base.map(::IdentityTransform, x::AbstractVector) = x
 
 ### TODO Maybe defining adjoints could help but so far it's not working
 

@@ -39,7 +39,7 @@ Base.:∘(tc::ChainTransform, t::Transform) = ChainTransform(vcat(t, tc.transfor
 
 (t::ChainTransform)(x) = foldl((x, t) -> t(x), t.transforms; init=x)
 
-function _map(t::ChainTransform, x::AbstractVector)
+function Base.map(t::ChainTransform, x::AbstractVector)
     return foldl((x, t) -> map(t, x), t.transforms; init=x)
 end
 
