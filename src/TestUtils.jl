@@ -50,7 +50,8 @@ function test_interface(
     @test size(kernelmatrix(k, x0, x2)) == (length(x0), length(x2))
 
     # Check that elementwise is consistent with pairwise.
-    @test kernelmatrix_diag(k, x0, x1) ≈ diag(kernelmatrix(k, x0, x1)) atol = atol rtol = rtol
+    @test kernelmatrix_diag(k, x0, x1) ≈ diag(kernelmatrix(k, x0, x1)) atol = atol rtol =
+        rtol
 
     # Check additional binary elementwise properties for kernels.
     @test kernelmatrix_diag(k, x0, x1) ≈ kernelmatrix_diag(k, x1, x0)
