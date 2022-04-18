@@ -1,7 +1,7 @@
 module TestUtils
 
-const __ATOL = 1e-9
-const __RTOL = 1e-9
+const __ATOL = sqrt(eps(Float64))
+const __RTOL = sqrt(eps(Float64))
 
 using Distances
 using LinearAlgebra
