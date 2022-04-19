@@ -6,20 +6,14 @@ using KernelFunctions
 using Random
 using Test
 
-# default tolerance values for test_interface:
-const __ATOL = sqrt(eps(Float64))
-const __RTOL = sqrt(eps(Float64))
-# ≈ 1.5e-8; chosen for no particular reason other than because it seems to
-# satisfy our own test cases within KernelFunctions.jl
-
 """
     test_interface(
         k::Kernel,
         x0::AbstractVector,
         x1::AbstractVector,
         x2::AbstractVector;
-        atol=__ATOL,
-        rtol=__RTOL,
+        rtol=1e-6,
+        atol=rtol,
     )
 
 Run various consistency checks on `k` at the inputs `x0`, `x1`, and `x2`.
@@ -29,22 +23,14 @@ be of different lengths.
 These tests are intended to pick up on really substantial issues with a kernel implementation
 (e.g. substantial asymmetry in the kernel matrix, large negative eigenvalues), rather than to
 test the numerics in detail, which can be kernel-specific.
-The default value of `__ATOL` and `__RTOL` is `sqrt(eps(Float64)) ≈ 1.5e-8`, which satisfied
-this intention in the cases tested within KernelFunctions.jl itself.
-
-    test_interface([rng::AbstractRNG], k::Kernel, T::Type{<:Real}; atol=__ATOL, rtol=__RTOL)
-
-`test_interface` offers automated test data generation for kernels whose inputs are reals.
-This will run the tests for `Vector{T}`, `Vector{Vector{T}}`, `ColVecs{T}`, and `RowVecs{T}`.
-For other input vector types, please provide the data manually.
 """
 function test_interface(
     k::Kernel,
     x0::AbstractVector,
     x1::AbstractVector,
     x2::AbstractVector;
-    atol=__ATOL,
-    rtol=__RTOL,
+    rtol=1e-6,
+    atol=rtol,
 )
     # Ensure that we have the required inputs.
     @assert length(x0) == length(x1)
@@ -160,7 +146,16 @@ function test_interface(k::Kernel, T::Type{<:AbstractVector}; kwargs...)
     return test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
 end
 
-function test_interface(rng::AbstractRNG, k::Kernel, T::Type{<:Real}; kwargs...)
+"""
+    test_interface([rng::AbstractRNG], k::Kernel, ::Type{T}; kwargs...) where {T<:Real}
+
+Run the [`test_interface`](@ref) tests for randomly generated inputs of types `Vector{T}`, `Vector{Vector{T}}`, `ColVecs{T}`, and `RowVecs{T}`.
+
+For other input types, please provide the data manually.
+
+The keyword arguments are forwarded to the invocations of [`test_interface`](@ref) with the randomly generated inputs.
+"""
+function test_interface(rng::AbstractRNG, k::Kernel, ::Type{T}; kwargs...) where {T<:Real}
     @testset "Vector{$T}" begin
         test_interface(rng, k, Vector{T}; kwargs...)
     end
