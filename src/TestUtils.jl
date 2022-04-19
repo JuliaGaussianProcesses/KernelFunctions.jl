@@ -23,6 +23,12 @@ Run various consistency checks on `k` at the inputs `x0`, `x1`, and `x2`.
 `x0` and `x1` should be of the same length with different values, while `x0` and `x2` should
 be of different lengths.
 
+These tests are intended to pick up on really substantial issues with a kernel implementation
+(e.g. substantial asymmetry in the kernel matrix, large negative eigenvalues), rather than to
+test the numerics in detail, which can be kernel-specific.
+The default value of `__ATOL` and `__RTOL` is `sqrt(eps(Float64)) ≈ 1.5e-8`, which satisfied
+this intention in the cases tested within KernelFunctions.jl itself.
+
     test_interface([rng::AbstractRNG], k::Kernel, T::Type{<:Real}; atol=__ATOL, rtol=__RTOL)
 
 `test_interface` offers automated test data generation for kernels whose inputs are reals.
