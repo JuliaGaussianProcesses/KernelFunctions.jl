@@ -1,13 +1,16 @@
 module TestUtils
 
-const __ATOL = sqrt(eps(Float64))
-const __RTOL = sqrt(eps(Float64))
-
 using Distances
 using LinearAlgebra
 using KernelFunctions
 using Random
 using Test
+
+# default tolerance values for test_interface:
+const __ATOL = sqrt(eps(Float64))
+const __RTOL = sqrt(eps(Float64))
+# ≈ 1.5e-8; chosen for no particular reason other than because it seems to
+# satisfy our own test cases within KernelFunctions.jl
 
 """
     test_interface(
