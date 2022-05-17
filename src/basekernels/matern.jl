@@ -37,11 +37,8 @@ MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν,
 
 @functor MaternKernel
 
-@inline _get_ν(k::MaternKernel) = only(k.ν)
-ChainRulesCore.@non_differentiable _get_ν(k)  # work-around; should be "NotImplemented" rather than NoTangent
-
 @inline function kappa(k::MaternKernel, d::Real)
-    result = _matern(_get_ν(k), d)
+    result = _matern(only(k.ν), d)
     return ifelse(iszero(d), one(result), result)
 end
 
