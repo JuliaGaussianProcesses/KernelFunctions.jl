@@ -19,7 +19,7 @@ Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
 AxisArrays = "0.4.3"
-Compat = "3"
+Compat = "3, 4"
 Distances = "0.10"
 Documenter = "0.25, 0.26, 0.27"
 FiniteDifferences = "0.10.8, 0.11, 0.12"
