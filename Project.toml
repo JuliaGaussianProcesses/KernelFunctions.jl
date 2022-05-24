@@ -1,6 +1,6 @@
 name = "KernelFunctions"
 uuid = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
-version = "0.10.39"
+version = "0.10.40"
 
 [deps]
 ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
@@ -23,7 +23,7 @@ ZygoteRules = "700de1a5-db45-46bc-99cf-38207098b444"
 
 [compat]
 ChainRulesCore = "1"
-Compat = "3.7"
+Compat = "3.7, 4"
 CompositionsBase = "0.1"
 Distances = "0.10"
 FillArrays = "0.10, 0.11, 0.12, 0.13"
