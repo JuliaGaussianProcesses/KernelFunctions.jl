@@ -15,4 +15,23 @@
     test_ADs(x -> KernelSum(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))), rand(1))
 
     test_params(k1 + k2, (k1, k2))
+
+    @testset "Type stability" begin
+        function check_type_stability(k)
+            @inferred k(0.1, 0.2)
+            x = rand(10)
+            y = rand(10)
+            @inferred kernelmatrix(k, x)
+            @inferred kernelmatrix(k, x, y)
+            @inferred kernelmatrix_diag(k, x)
+            @inferred kernelmatrix_diag(k, x, y)
+        end
+        @testset for k in (
+            RBFKernel() + RBFKernel() * LinearKernel(),
+            RBFKernel() + RBFKernel() * ExponentialKernel(),
+            RBFKernel() * (LinearKernel() + ExponentialKernel())
+        )
+            check_type_stability(k)
+        end
+    end
 end
