@@ -53,7 +53,8 @@ As shown above, an `MOInputIsotopicByOutputs` represents a vector of tuples.
 The first `length(x)` elements represent the inputs for the first output, the second
 `length(x)` elements represent the inputs for the second output, etc.
 """
-struct MOInputIsotopicByOutputs{S,T<:AbstractVector{S},Tout_dim<:Integer} <: AbstractVector{Tuple{S,Int}}
+struct MOInputIsotopicByOutputs{S,T<:AbstractVector{S},Tout_dim<:Integer} <:
+       AbstractVector{Tuple{S,Int}}
     x::T
     out_dim::Tout_dim
 end
