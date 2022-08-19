@@ -29,7 +29,7 @@
     )
 
     @testset "AD performance" begin
-        primal, forward, pb = ad_constant_allocs_heuristic((randn(5), ), (randn(10), )) do x
+        primal, forward, pb = ad_constant_allocs_heuristic((randn(5),), (randn(10),)) do x
             k = SEKernel() ∘ (ScaleTransform(0.1) ∘ PeriodicTransform(10.0))
             return kernelmatrix(k, x)
         end

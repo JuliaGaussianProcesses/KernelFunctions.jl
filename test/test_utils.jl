@@ -336,7 +336,6 @@ function ad_constant_allocs_heuristic(
     pb2(Δ2_val)
     allocs_2 = count_allocs(pb2, Δ2 === nothing ? out2 : Δ2)
 
-
     pullback_heuristic = allocs_1 == allocs_2
     return primal_heuristic, forwards_heuristic, pullback_heuristic
 end
