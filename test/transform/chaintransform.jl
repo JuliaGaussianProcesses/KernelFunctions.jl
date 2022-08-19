@@ -7,11 +7,11 @@
     f(x) = sin.(x)
     tf = FunctionTransform(f)
 
-    t = ChainTransform([tp, tf])
+    t = ChainTransform((tp, tf))
 
     # Check composition constructors.
-    @test (tf ∘ ChainTransform([tp])).transforms == [tp, tf]
-    @test (ChainTransform([tf]) ∘ tp).transforms == [tp, tf]
+    @test (tf ∘ ChainTransform([tp])).transforms == (tp, tf)
+    @test (ChainTransform([tf]) ∘ tp).transforms == (tp, tf)
 
     # Verify correctness.
     x = ColVecs(randn(rng, 2, 3))
@@ -27,5 +27,14 @@
         randn(rng, 4);
         ADs=[:ForwardDiff, :ReverseDiff],  # explicitly pass ADs to exclude :Zygote
     )
-    @test_broken "test_AD of chain transform is currently broken in Zygote, see GitHub issue #263"
+
+    @testset "AD performance" begin
+        primal, forward, pb = ad_constant_allocs_heuristic((randn(5), ), (randn(10), )) do x
+            k = SEKernel() ∘ (ScaleTransform(0.1) ∘ PeriodicTransform(10.0))
+            return kernelmatrix(k, x)
+        end
+        @test primal
+        @test forward
+        @test pb
+    end
 end
