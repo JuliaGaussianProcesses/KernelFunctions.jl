@@ -286,8 +286,6 @@ end
 True if number of allocations associated with evaluating `f(args1...)` is equal to those
 required to evaluate `f(args2...)`. Runs `f` beforehand to ensure that compilation-related
 allocations are not included.
-<<<<<<< HEAD
-=======
 
 Why is this a good test? In lots of situations it will be the case that the total amount of
 memory allocated by a function will vary as the input sizes vary, but the total _number_
@@ -301,7 +299,6 @@ is certainly a necessary condition.
 This kind of test is very quick to conduct (just requires running `f` 4 times). It's also
 easier to write than simply checking that the total number of allocations used to execute
 a function is below some arbitrary `f`-dependent threshold.
->>>>>>> master
 """
 function constant_allocs_heuristic(f, args1::T, args2::T) where {T}
 
@@ -311,7 +308,7 @@ function constant_allocs_heuristic(f, args1::T, args2::T) where {T}
 
     allocs_1 = count_allocs(f, args1...)
     allocs_2 = count_allocs(f, args2...)
-    return allocs_1 == allocs_2
+    return (allocs_1, allocs_2)
 end
 
 """
@@ -352,34 +349,57 @@ function ad_constant_allocs_heuristic(
     pb2(Δ2_val)
     allocs_2 = count_allocs(pb2, Δ2 === nothing ? out2 : Δ2)
 
-    pullback_heuristic = allocs_1 == allocs_2
-    return primal_heuristic, forwards_heuristic, pullback_heuristic
+    return primal_heuristic, forwards_heuristic, (allocs_1, allocs_2)
 end
 
-function test_zygote_perf_heuristic(f, name::String, args1, args2, Δ1=nothing, Δ2=nothing)
+function test_zygote_perf_heuristic(
+    f, name::String, args1, args2, passes, Δ1=nothing, Δ2=nothing
+)
     @testset "$name" begin
         primal, fwd, pb = ad_constant_allocs_heuristic(f, args1, args2; Δ1, Δ2)
-        @test primal
-        @test fwd
-        @test pb
+        @test primal[1] == primal[2] broken=!passes[1]
+        @test fwd[1] == fwd[2] broken=!passes[2]
+        @test pb[1] == pb[2] broken=!passes[3]
     end
 end
 
 function test_interface_ad_perf(
-    f, θ, x1::AbstractVector, x2::AbstractVector, x3::AbstractVector, x4::AbstractVector
+    f, θ, x1::AbstractVector, x2::AbstractVector, x3::AbstractVector, x4::AbstractVector;
+    passes=(
+        unary=(true, true, true),
+        binary=(true, true, true),
+        diag_unary=(true, true, true),
+        diag_binary=(true, true, true),
+    ),
 )
-    test_zygote_perf_heuristic("kernelmatrix (unary)", (θ, x1), (θ, x2)) do θ, x
-        kernelmatrix(f(θ), x)
-    end
-    test_zygote_perf_heuristic("kernelmatrix (binary)", (θ, x1, x2), (θ, x3, x4)) do θ, x, y
-        kernelmatrix(f(θ), x, y)
-    end
-    test_zygote_perf_heuristic("kernelmatrix_diag (unary)", (θ, x1), (θ, x2)) do θ, x
-        kernelmatrix_diag(f(θ), x)
-    end
-    test_zygote_perf_heuristic("kernelmatrix_diag (binary)", (θ, x1), (θ, x2)) do θ, x
-        kernelmatrix_diag(f(θ), x, x)
-    end
+    test_zygote_perf_heuristic(
+        (θ, x) -> kernelmatrix(f(θ), x),
+        "kernelmatrix (unary)",
+        (θ, x1),
+        (θ, x2),
+        passes.unary,
+    )
+    test_zygote_perf_heuristic(
+        (θ, x, y) -> kernelmatrix(f(θ), x, y),
+        "kernelmatrix (binary)",
+        (θ, x1, x2),
+        (θ, x3, x4),
+        passes.binary,
+    )
+    test_zygote_perf_heuristic(
+        (θ, x) -> kernelmatrix_diag(f(θ), x),
+        "kernelmatrix_diag (unary)",
+        (θ, x1),
+        (θ, x2),
+        passes.diag_unary,
+    )
+    test_zygote_perf_heuristic(
+        (θ, x) -> kernelmatrix_diag(f(θ), x, x),
+        "kernelmatrix_diag (binary)",
+        (θ, x1),
+        (θ, x2),
+        passes.diag_binary,
+    )
 end
 
 function test_interface_ad_perf(f, θ, rng::AbstractRNG, types=__default_input_types())
