@@ -349,36 +349,30 @@ function test_zygote_perf_heuristic(f, name::String, args1, args2, Δ1=nothing, 
 end
 
 function test_interface_ad_perf(
-    k::Kernel,
-    x1::AbstractVector,
-    x2::AbstractVector,
-    x3::AbstractVector,
-    x4::AbstractVector,
+    f, θ, x1::AbstractVector, x2::AbstractVector, x3::AbstractVector, x4::AbstractVector
 )
-    test_zygote_perf_heuristic("kernelmatrix (unary)", (x1,), (x2,)) do x
-        kernelmatrix(k, x)
+    test_zygote_perf_heuristic("kernelmatrix (unary)", (θ, x1), (θ, x2)) do θ, x
+        kernelmatrix(f(θ), x)
     end
-    test_zygote_perf_heuristic("kernelmatrix (binary)", (x1, x2), (x3, x4)) do x, x′
-        kernelmatrix(k, x, x′)
+    test_zygote_perf_heuristic("kernelmatrix (binary)", (θ, x1, x2), (θ, x3, x4)) do θ, x, y
+        kernelmatrix(f(θ), x, y)
     end
-    test_zygote_perf_heuristic("kernelmatrix_diag (unary)", (x1,), (x2,)) do x
-        kernelmatrix_diag(k, x)
+    test_zygote_perf_heuristic("kernelmatrix_diag (unary)", (θ, x1), (θ, x2)) do θ, x
+        kernelmatrix_diag(f(θ), x)
     end
-    test_zygote_perf_heuristic("kernelmatrix_diag (binary)", (x1,), (x2,)) do x
-        kernelmatrix_diag(k, x, x)
+    test_zygote_perf_heuristic("kernelmatrix_diag (binary)", (θ, x1), (θ, x2)) do θ, x
+        kernelmatrix_diag(f(θ), x, x)
     end
 end
 
-test_interface_ad_perf(k::Kernel, xs::Tuple) = test_interface_ad_perf(k, xs...)
+function test_interface_ad_perf(f, θ, rng::AbstractRNG, types=__default_input_types())
+    @testset "AD Alloc Performance ($T)" for T in types
+        test_interface_ad_perf(f, θ, __example_inputs(rng, T)...)
+    end
+end
 
 __default_input_types() = [
     Vector{Float64},
     ColVecs{Float64, Matrix{Float64}},
     RowVecs{Float64, Matrix{Float64}},
 ]
-
-function test_interface_ad_perf(k::Kernel, rng::AbstractRNG, types=__default_input_types())
-    @testset "AD Alloc Performance ($T)" for T in types
-        test_interface_ad_perf(k, __example_inputs(rng, T))
-    end
-end
