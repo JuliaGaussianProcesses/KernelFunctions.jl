@@ -20,6 +20,9 @@
     @test isequal(ScaleTransform(s), ScaleTransform(s))
     @test repr(t) == "Scale Transform (s = $(s2))"
     test_ADs(x -> SEKernel() ∘ ScaleTransform(exp(x[1])), randn(rng, 1))
+    test_interface_ad_perf(0.3, StableRNG(123456)) do c
+        SEKernel() ∘ ScaleTransform(c)
+    end
 
     @testset "median heuristic" begin
         for x in (x, XV, XC, XR), dist in (Euclidean(), Cityblock())

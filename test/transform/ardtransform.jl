@@ -43,4 +43,11 @@
 
     @test repr(t) == "ARD Transform (dims: $D)"
     test_ADs(x -> SEKernel() ∘ ARDTransform(exp.(x)), randn(rng, 3))
+    types = [ColVecs{Float64, Matrix{Float64}}, RowVecs{Float64, Matrix{Float64}}]
+    test_interface_ad_perf([1.0, 2.0], StableRNG(123456), types) do ls
+        SEKernel() ∘ ARDTransform(ls)
+    end
+    test_interface_ad_perf([1.0], StableRNG(123456), [Vector{Float64}]) do ls
+        SEKernel() ∘ ARDTransform(ls)
+    end
 end

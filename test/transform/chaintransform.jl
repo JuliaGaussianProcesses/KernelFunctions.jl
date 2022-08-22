@@ -27,14 +27,7 @@
         randn(rng, 4);
         ADs=[:ForwardDiff, :ReverseDiff],  # explicitly pass ADs to exclude :Zygote
     )
-
-    @testset "AD performance" begin
-        primal, forward, pb = ad_constant_allocs_heuristic((randn(5),), (randn(10),)) do x
-            k = SEKernel() ∘ (ScaleTransform(0.1) ∘ PeriodicTransform(10.0))
-            return kernelmatrix(k, x)
-        end
-        @test primal
-        @test forward
-        @test pb
+    test_interface_ad_perf((1.0, 2.0), StableRNG(123456), [Vector{Float64}]) do θ
+        SEKernel() ∘ (ScaleTransform(θ[1]) ∘ PeriodicTransform(θ[2]))
     end
 end

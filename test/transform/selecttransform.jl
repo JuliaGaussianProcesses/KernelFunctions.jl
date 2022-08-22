@@ -45,6 +45,12 @@
     @test repr(ts) == "Select Transform (dims: $(select_symbols2))"
 
     test_ADs(() -> SEKernel() ∘ SelectTransform([1, 2]))
+    test_interface_ad_perf(
+        _ -> SEKernel(),
+        nothing,
+        StableRNG(123456),
+        [ColVecs{Float64, Matrix{Float64}}, RowVecs{Float64, Matrix{Float64}}],
+    )
 
     X = randn(rng, (4, 3))
     A = AxisArray(X; row=[:a, :b, :c, :d], col=[:x, :y, :z])
