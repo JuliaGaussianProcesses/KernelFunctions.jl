@@ -34,4 +34,7 @@
     test_ADs(() -> PiecewisePolynomialKernel{degree}(; dim=D))
 
     test_params(k, ())
+    test_interface_ad_perf(nothing, StableRNG(123456)) do _
+        PiecewisePolynomialKernel{degree}(; dim=D)
+    end
 end

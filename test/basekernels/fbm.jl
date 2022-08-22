@@ -23,4 +23,6 @@
     )
 
     test_params(k, ([h],))
+
+    test_interface_ad_perf(h -> FBMKernel(; h=h), h, StableRNG(123456))
 end

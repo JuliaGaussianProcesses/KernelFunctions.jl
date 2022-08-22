@@ -14,4 +14,5 @@
     # Standardised tests. This kernel appears to be fairly numerically unstable.
     TestUtils.test_interface(k; atol=1e-3)
     test_ADs(ExponentiatedKernel)
+    test_interface_ad_perf(_ -> ExponentiatedKernel(), nothing, StableRNG(123456))
 end
