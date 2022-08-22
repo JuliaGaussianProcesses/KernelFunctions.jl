@@ -9,6 +9,7 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(ZeroKernel)
+        test_interface_ad_perf(k, StableRNG(123456))
     end
     @testset "WhiteKernel" begin
         k = WhiteKernel()
@@ -22,6 +23,7 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(WhiteKernel)
+        test_interface_ad_perf(k, StableRNG(123456))
     end
     @testset "ConstantKernel" begin
         c = 2.0
@@ -37,5 +39,6 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(c -> ConstantKernel(; c=only(c)), [c])
+        test_interface_ad_perf(k, StableRNG(123456))
     end
 end
