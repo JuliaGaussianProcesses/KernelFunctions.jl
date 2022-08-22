@@ -149,11 +149,13 @@ end
 """
     test_interface([rng::AbstractRNG], k::Kernel, ::Type{T}; kwargs...) where {T<:Real}
 
-Run the [`test_interface`](@ref) tests for randomly generated inputs of types `Vector{T}`, `Vector{Vector{T}}`, `ColVecs{T}`, and `RowVecs{T}`.
+Run the [`test_interface`](@ref) tests for randomly generated inputs of types `Vector{T}`,
+`Vector{Vector{T}}`, `ColVecs{T}`, and `RowVecs{T}`.
 
 For other input types, please provide the data manually.
 
-The keyword arguments are forwarded to the invocations of [`test_interface`](@ref) with the randomly generated inputs.
+The keyword arguments are forwarded to the invocations of [`test_interface`](@ref) with the
+randomly generated inputs.
 """
 function test_interface(rng::AbstractRNG, k::Kernel, ::Type{T}; kwargs...) where {T<:Real}
     @testset "Vector{$T}" begin
