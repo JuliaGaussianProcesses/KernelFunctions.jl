@@ -14,6 +14,8 @@
     test_ADs(
         x -> KernelProduct(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))), rand(1)
     )
-
+    test_interface_ad_perf(2.4, StableRNG(123456)) do c
+        KernelProduct(SqExponentialKernel(), LinearKernel(; c=c))
+    end
     test_params(k1 * k2, (k1, k2))
 end
