@@ -37,6 +37,26 @@ function (κ::NeuralNetworkKernel)(x, y)
     return asin(dot(x, y) / sqrt((1 + sum(abs2, x)) * (1 + sum(abs2, y))))
 end
 
+function kernelmatrix(
+    k::NeuralNetworkKernel, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}
+)
+    return kernelmatrix(k, ColVecs(reshape(x, 1, :)), ColVecs(reshape(y, 1, :)))
+end
+
+function kernelmatrix(k::NeuralNetworkKernel, x::AbstractVector{<:Real})
+    return kernelmatrix(k, ColVecs(reshape(x, 1, :)))
+end
+
+function kernelmatrix_diag(
+    k::NeuralNetworkKernel, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}
+)
+    return kernelmatrix_diag(k, ColVecs(reshape(x, 1, :)), ColVecs(reshape(y, 1, :)))
+end
+
+function kernelmatrix_diag(k::NeuralNetworkKernel, x::AbstractVector{<:Real})
+    return kernelmatrix_diag(k, ColVecs(reshape(x, 1, :)))
+end
+
 function kernelmatrix(::NeuralNetworkKernel, x::ColVecs, y::ColVecs)
     validate_inputs(x, y)
     X_2 = sum(x.X .* x.X; dims=1)
