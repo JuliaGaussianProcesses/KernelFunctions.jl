@@ -357,9 +357,21 @@ function test_zygote_perf_heuristic(
 )
     @testset "$name" begin
         primal, fwd, pb = ad_constant_allocs_heuristic(f, args1, args2; Δ1, Δ2)
-        @test primal[1] == primal[2] broken=!passes[1]
-        @test fwd[1] == fwd[2] broken=!passes[2]
-        @test pb[1] == pb[2] broken=!passes[3]
+        if passes[1]
+            @test primal[1] == primal[2]
+        else
+            @test_broken primal[1] == primal[2]
+        end
+        if passes[2]
+            @test fwd[1] == fwd[2]
+        else
+            @test_broken fwd[1] == fwd[2]
+        end
+        if passes[3]
+            @test pb[1] == pb[2]
+        else
+            @test_broken pb[1] == pb[2]
+        end
     end
 end
 
