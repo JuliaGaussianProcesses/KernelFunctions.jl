@@ -312,7 +312,6 @@ pullback.
 function ad_constant_allocs_heuristic(
     f, args1::T, args2::T; Δ1=nothing, Δ2=nothing
 ) where {T}
-
     # Check that primal has constant allocations.
     primal_heuristic = constant_allocs_heuristic(f, args1, args2)
 
@@ -338,4 +337,48 @@ function ad_constant_allocs_heuristic(
 
     pullback_heuristic = allocs_1 == allocs_2
     return primal_heuristic, forwards_heuristic, pullback_heuristic
+end
+
+function test_zygote_perf_heuristic(f, name::String, args1, args2, Δ1=nothing, Δ2=nothing)
+    @testset "$name" begin
+        primal, fwd, pb = ad_constant_allocs_heuristic(f, args1, args2; Δ1, Δ2)
+        @test primal
+        @test fwd
+        @test pb
+    end
+end
+
+function test_interface_ad_perf(
+    k::Kernel,
+    x1::AbstractVector,
+    x2::AbstractVector,
+    x3::AbstractVector,
+    x4::AbstractVector,
+)
+    test_zygote_perf_heuristic("kernelmatrix (unary)", (x1,), (x2,)) do x
+        kernelmatrix(k, x)
+    end
+    test_zygote_perf_heuristic("kernelmatrix (binary)", (x1, x2), (x3, x4)) do x, x′
+        kernelmatrix(k, x, x′)
+    end
+    test_zygote_perf_heuristic("kernelmatrix_diag (unary)", (x1,), (x2,)) do x
+        kernelmatrix_diag(k, x)
+    end
+    test_zygote_perf_heuristic("kernelmatrix_diag (binary)", (x1,), (x2,)) do x
+        kernelmatrix_diag(k, x, x)
+    end
+end
+
+test_interface_ad_perf(k::Kernel, xs::Tuple) = test_interface_ad_perf(k, xs...)
+
+__default_input_types() = [
+    Vector{Float64},
+    ColVecs{Float64, Matrix{Float64}},
+    RowVecs{Float64, Matrix{Float64}},
+]
+
+function test_interface_ad_perf(k::Kernel, rng::AbstractRNG, types=__default_input_types())
+    @testset "AD Alloc Performance ($T)" for T in types
+        test_interface_ad_perf(k, __example_inputs(rng, T))
+    end
 end
