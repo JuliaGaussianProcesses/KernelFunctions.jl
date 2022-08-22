@@ -286,6 +286,22 @@ end
 True if number of allocations associated with evaluating `f(args1...)` is equal to those
 required to evaluate `f(args2...)`. Runs `f` beforehand to ensure that compilation-related
 allocations are not included.
+<<<<<<< HEAD
+=======
+
+Why is this a good test? In lots of situations it will be the case that the total amount of
+memory allocated by a function will vary as the input sizes vary, but the total _number_
+of allocations ought to be constant. A common performance bug is that the number of
+allocations actually does scale with the size of the inputs (e.g. due to a type
+instability), and we would very much like to know if this is happening.
+
+Typically this kind of condition is not a sufficient condition for good performance, but it
+is certainly a necessary condition.
+
+This kind of test is very quick to conduct (just requires running `f` 4 times). It's also
+easier to write than simply checking that the total number of allocations used to execute
+a function is below some arbitrary `f`-dependent threshold.
+>>>>>>> master
 """
 function constant_allocs_heuristic(f, args1::T, args2::T) where {T}
 
@@ -312,6 +328,7 @@ pullback.
 function ad_constant_allocs_heuristic(
     f, args1::T, args2::T; Δ1=nothing, Δ2=nothing
 ) where {T}
+
     # Check that primal has constant allocations.
     primal_heuristic = constant_allocs_heuristic(f, args1, args2)
 
