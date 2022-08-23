@@ -188,7 +188,7 @@ function __example_inputs(rng::AbstractRNG, ::Type{Vector{Float64}})
 end
 
 function __example_inputs(
-    rng::AbstractRNG, ::Type{ColVecs{Float64, Matrix{Float64}}}; dim::Int=2
+    rng::AbstractRNG, ::Type{ColVecs{Float64,Matrix{Float64}}}; dim::Int=2
 )
     return map(n -> ColVecs(randn(rng, dim, n)), (1, 2, 3, 4))
 end
