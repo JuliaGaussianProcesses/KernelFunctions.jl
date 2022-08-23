@@ -93,7 +93,7 @@ const _RQ_Euclidean = RationalQuadraticKernel{<:Real,<:Euclidean}
 
 @functor RationalQuadraticKernel
 
-__rq_kappa(α::Real, d::Real) = (one(d) + d^2 / (2 * α))^α
+__rq_kappa(α::Real, d::Real) = (one(d) + d^2 / (2 * α))^(-α)
 __rq_kappa_euclidean(α::Real, d²::Real) = (one(d²) + d² / (2 * α))^(-α)
 
 kappa(κ::RationalQuadraticKernel, d::Real) = __rq_kappa(only(κ.α), d)
