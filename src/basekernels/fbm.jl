@@ -50,7 +50,7 @@ _mod(x::RowVecs) = vec(sum(abs2, x.X; dims=2))
 
 function kernelmatrix(κ::FBMKernel, x::AbstractVector)
     modx = _mod(x)
-    modx_wide = modx * ones(1, length(modx)) # ad perf hack -- is unit tested
+    modx_wide = modx * ones(eltype(modx), 1, length(modx)) # ad perf hack -- is unit tested
     modxx = pairwise(SqEuclidean(), x)
     return _fbm.(modx_wide, modx_wide', modxx, only(κ.h))
 end
@@ -64,8 +64,8 @@ end
 
 function kernelmatrix(κ::FBMKernel, x::AbstractVector, y::AbstractVector)
     modxy = pairwise(SqEuclidean(), x, y)
-    modx_wide = _mod(x) * ones(1, length(y)) # ad perf hack -- is unit tested
-    mody_wide = _mod(y) * ones(1, length(x)) # ad perf hack -- is unit tested
+    modx_wide = _mod(x) * ones(eltype(modxy), 1, length(y)) # ad perf hack -- is unit tested
+    mody_wide = _mod(y) * ones(eltype(modxy), 1, length(x)) # ad perf hack -- is unit tested
     return _fbm.(modx_wide, mody_wide', modxy, only(κ.h))
 end
 
