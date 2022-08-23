@@ -93,7 +93,7 @@ const _RQ_Euclidean = RationalQuadraticKernel{<:Real,<:Euclidean}
 
 @functor RationalQuadraticKernel
 
-__rq_kappa(α::Real, d::Real) = (one(d) + d^2 / (2 * only(α)))^(-only(α))
+__rq_kappa(α::Real, d::Real) = (one(d) + d^2 / (2 * α))^α
 __rq_kappa_euclidean(α::Real, d²::Real) = (one(d²) + d² / (2 * α))^(-α)
 
 kappa(κ::RationalQuadraticKernel, d::Real) = __rq_kappa(only(κ.α), d)
@@ -182,7 +182,7 @@ end
 
 @functor GammaRationalKernel
 
-__grk_kappa(α::Real, γ::Real, d::Real) = (one(d) + d^only(γ) / α)^(-α)
+__grk_kappa(α::Real, γ::Real, d::Real) = (one(d) + d^γ / α)^(-α)
 
 kappa(κ::GammaRationalKernel, d::Real) = __grk_kappa(only(κ.α), only(κ.γ), d)
 
