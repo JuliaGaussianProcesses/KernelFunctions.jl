@@ -49,7 +49,7 @@
         _ -> SEKernel(),
         nothing,
         StableRNG(123456),
-        [ColVecs{Float64, Matrix{Float64}}, RowVecs{Float64, Matrix{Float64}}],
+        [ColVecs{Float64,Matrix{Float64}}, RowVecs{Float64,Matrix{Float64}}],
     )
 
     X = randn(rng, (4, 3))

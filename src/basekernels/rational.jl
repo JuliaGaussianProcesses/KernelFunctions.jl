@@ -89,7 +89,7 @@ struct RationalQuadraticKernel{Tα<:Real,M} <: SimpleKernel
     end
 end
 
-const _RQ_Euclidean = RationalQuadraticKernel{<:Real, <:Euclidean}
+const _RQ_Euclidean = RationalQuadraticKernel{<:Real,<:Euclidean}
 
 @functor RationalQuadraticKernel
 

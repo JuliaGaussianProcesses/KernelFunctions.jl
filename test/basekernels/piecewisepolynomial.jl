@@ -41,8 +41,8 @@
     else
         @testset "AD Alloc Performance ($T)" for T in [
             Vector{Float64},
-            ColVecs{Float64, Matrix{Float64}},
-            RowVecs{Float64, Matrix{Float64}},
+            ColVecs{Float64,Matrix{Float64}},
+            RowVecs{Float64,Matrix{Float64}},
         ]
             test_interface_ad_perf(
                 _ -> PiecewisePolynomialKernel{degree}(; dim=D),

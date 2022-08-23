@@ -28,18 +28,20 @@
         # requires us to specify whether performance tests pass or not.
         @testset "performance ($T)" for T in [
             Vector{Float64},
-            ColVecs{Float64, Matrix{Float64}},
-            RowVecs{Float64, Matrix{Float64}},
+            ColVecs{Float64,Matrix{Float64}},
+            RowVecs{Float64,Matrix{Float64}},
         ]
             xs = __example_inputs(StableRNG(123456), Vector{Float64})
             test_interface_ad_perf(
-                ν -> MaternKernel(; nu=ν), ν, xs...;
+                ν -> MaternKernel(; nu=ν),
+                ν,
+                xs...;
                 passes=(
                     unary=(false, false, false),
                     binary=(false, false, false),
                     diag_unary=(true, false, false),
                     diag_binary=(true, false, false),
-                )
+                ),
             )
         end
     end

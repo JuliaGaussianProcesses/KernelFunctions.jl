@@ -376,7 +376,12 @@ function test_zygote_perf_heuristic(
 end
 
 function test_interface_ad_perf(
-    f, θ, x1::AbstractVector, x2::AbstractVector, x3::AbstractVector, x4::AbstractVector;
+    f,
+    θ,
+    x1::AbstractVector,
+    x2::AbstractVector,
+    x3::AbstractVector,
+    x4::AbstractVector;
     passes=(
         unary=(true, true, true),
         binary=(true, true, true),
@@ -405,7 +410,7 @@ function test_interface_ad_perf(
         (θ, x2),
         passes.diag_unary,
     )
-    test_zygote_perf_heuristic(
+    return test_zygote_perf_heuristic(
         (θ, x) -> kernelmatrix_diag(f(θ), x, x),
         "kernelmatrix_diag (binary)",
         (θ, x1),
@@ -420,8 +425,8 @@ function test_interface_ad_perf(f, θ, rng::AbstractRNG, types=__default_input_t
     end
 end
 
-__default_input_types() = [
-    Vector{Float64},
-    ColVecs{Float64, Matrix{Float64}},
-    RowVecs{Float64, Matrix{Float64}},
-]
+function __default_input_types()
+    return [
+        Vector{Float64}, ColVecs{Float64,Matrix{Float64}}, RowVecs{Float64,Matrix{Float64}}
+    ]
+end

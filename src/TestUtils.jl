@@ -196,9 +196,7 @@ function __example_inputs(
 end
 
 function __example_inputs(
-    rng::AbstractRNG,
-    ::Type{RowVecs{Float64, Matrix{Float64}}};
-    dim::Int=2,
+    rng::AbstractRNG, ::Type{RowVecs{Float64,Matrix{Float64}}}; dim::Int=2
 )
     return map(n -> RowVecs(randn(rng, n, dim)), (1, 2, 3, 4))
 end

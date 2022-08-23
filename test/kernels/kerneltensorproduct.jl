@@ -37,7 +37,7 @@
         rand(1);
         dims=[2, 2],
     )
-    types = [ColVecs{Float64, Matrix{Float64}}, RowVecs{Float64, Matrix{Float64}}]
+    types = [ColVecs{Float64,Matrix{Float64}}, RowVecs{Float64,Matrix{Float64}}]
     test_interface_ad_perf(2.1, StableRNG(123456), types) do c
         KernelTensorProduct(SqExponentialKernel(), LinearKernel(; c=c))
     end

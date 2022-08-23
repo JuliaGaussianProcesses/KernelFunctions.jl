@@ -44,7 +44,7 @@
     @test repr(t) == "Linear transform (size(A) = ($Dout, $Din))"
     test_ADs(x -> SEKernel() ∘ LinearTransform(x), randn(rng, 3, 3))
     rng = StableRNG(123456)
-    types = [ColVecs{Float64, Matrix{Float64}}, RowVecs{Float64, Matrix{Float64}}]
+    types = [ColVecs{Float64,Matrix{Float64}}, RowVecs{Float64,Matrix{Float64}}]
     test_interface_ad_perf(randn(rng, 3, 2), rng, types) do θ
         SEKernel() ∘ LinearTransform(θ)
     end
