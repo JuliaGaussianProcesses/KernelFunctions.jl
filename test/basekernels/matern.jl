@@ -31,7 +31,7 @@
             ColVecs{Float64,Matrix{Float64}},
             RowVecs{Float64,Matrix{Float64}},
         ]
-            xs = __example_inputs(StableRNG(123456), Vector{Float64})
+            xs = example_inputs(StableRNG(123456), Vector{Float64})
             test_interface_ad_perf(
                 ν -> MaternKernel(; nu=ν),
                 ν,

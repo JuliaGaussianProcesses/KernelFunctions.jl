@@ -47,7 +47,7 @@
             test_interface_ad_perf(
                 _ -> PiecewisePolynomialKernel{degree}(; dim=D),
                 nothing,
-                __example_inputs(StableRNG(123456), T)...;
+                example_inputs(StableRNG(123456), T)...;
                 passes=(
                     unary=(true, true, false),
                     binary=(true, true, false),

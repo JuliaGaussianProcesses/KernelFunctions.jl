@@ -468,7 +468,7 @@ kernel e.g. where it's only valid for 1-dimensional inputs.
 """
 function test_interface_ad_perf(f, θ, rng::AbstractRNG, types=__default_input_types())
     @testset "AD Alloc Performance ($T)" for T in types
-        test_interface_ad_perf(f, θ, __example_inputs(rng, T)...)
+        test_interface_ad_perf(f, θ, example_inputs(rng, T)...)
     end
 end
 
