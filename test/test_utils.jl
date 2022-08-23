@@ -357,7 +357,7 @@ end
         f, name::String, args1, args2, passes, Δ1=nothing, Δ2=nothing
     )
 
-Executes `ad_constant_allocs_heuristc(f, args1, args2; Δ1, Δ2)` and creates a testset out
+Executes `ad_constant_allocs_heuristic(f, args1, args2; Δ1, Δ2)` and creates a testset out
 of the results.
 `passes` is a 3-tuple of booleans. `passes[1]` indicates whether the checks should pass
 for `f(args1...)` etc, `passes[2]` for `Zygote.pullback(f, args1...)`, and `passes[3]` the
