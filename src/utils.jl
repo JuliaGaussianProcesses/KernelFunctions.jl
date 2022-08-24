@@ -97,21 +97,6 @@ Base.zero(x::ColVecs) = ColVecs(zero(x.X))
 
 dim(x::ColVecs) = size(x.X, 1)
 
-pairwise(d::PreMetric, x::ColVecs) = Distances_pairwise(d, x.X; dims=2)
-pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances_pairwise(d, x.X, y.X; dims=2)
-function pairwise(d::PreMetric, x::AbstractVector, y::ColVecs)
-    return Distances_pairwise(d, reduce(hcat, x), y.X; dims=2)
-end
-function pairwise(d::PreMetric, x::ColVecs, y::AbstractVector)
-    return Distances_pairwise(d, x.X, reduce(hcat, y); dims=2)
-end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs)
-    return Distances.pairwise!(out, d, x.X; dims=2)
-end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs, y::ColVecs)
-    return Distances.pairwise!(out, d, x.X, y.X; dims=2)
-end
-
 """
     RowVecs(X::AbstractMatrix)
 
@@ -168,24 +153,15 @@ Base.zero(x::RowVecs) = RowVecs(zero(x.X))
 
 dim(x::RowVecs) = size(x.X, 2)
 
-pairwise(d::PreMetric, x::RowVecs) = Distances_pairwise(d, x.X; dims=1)
-pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = Distances_pairwise(d, x.X, y.X; dims=1)
-function pairwise(d::PreMetric, x::AbstractVector, y::RowVecs)
-    return Distances_pairwise(d, permutedims(reduce(hcat, x)), y.X; dims=1)
-end
-function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector)
-    return Distances_pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
-end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs)
-    return Distances.pairwise!(out, d, x.X; dims=1)
-end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs, y::RowVecs)
-    return Distances.pairwise!(out, d, x.X, y.X; dims=1)
-end
-
 # Resolve ambiguity error for ColVecs vs RowVecs. #346
-pairwise(d::PreMetric, x::ColVecs, y::RowVecs) = pairwise(d, x, ColVecs(permutedims(y.X)))
-pairwise(d::PreMetric, x::RowVecs, y::ColVecs) = pairwise(d, ColVecs(permutedims(x.X)), y)
+pairwise(d::BinaryOp, x::ColVecs, y::RowVecs) = pairwise(d, x, ColVecs(permutedims(y.X)))
+pairwise(d::BinaryOp, x::RowVecs, y::ColVecs) = pairwise(d, ColVecs(permutedims(x.X)), y)
+function pairwise!(out::AbstractMatrix, d::BinaryOp, x::ColVecs, y::RowVecs)
+    return pairwise!(out, d, x, ColVecs(permutedims(y.X)))
+end
+function pairwise!(out::AbstractMatrix, d::BinaryOp, x::RowVecs, y::ColVecs)
+    return pairwise!(out, d, ColVecs(permutedims(x.X)), y)
+end
 
 dim(x) = 0 # This is the passes-by-default choice. For a proper check, implement `KernelFunctions.dim` for your datatype.
 dim(x::AbstractVector) = dim(first(x))

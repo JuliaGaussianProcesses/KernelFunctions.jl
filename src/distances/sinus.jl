@@ -1,5 +1,5 @@
-struct Sinus{T} <: Distances.UnionSemiMetric
-    r::Vector{T}
+struct Sinus{T,V<:AbstractVector{T}} <: Distances.SemiMetric
+    r::V
 end
 
 Sinus(r::Real) = Sinus([r])
