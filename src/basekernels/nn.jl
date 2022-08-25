@@ -40,21 +40,21 @@ end
 function kernelmatrix(
     k::NeuralNetworkKernel, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}
 )
-    return kernelmatrix(k, ColVecs(reshape(x, 1, :)), ColVecs(reshape(y, 1, :)))
+    return kernelmatrix(k, _to_colvecs(x), _to_colvecs(y))
 end
 
 function kernelmatrix(k::NeuralNetworkKernel, x::AbstractVector{<:Real})
-    return kernelmatrix(k, ColVecs(reshape(x, 1, :)))
+    return kernelmatrix(k, _to_colvecs(x))
 end
 
 function kernelmatrix_diag(
     k::NeuralNetworkKernel, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}
 )
-    return kernelmatrix_diag(k, ColVecs(reshape(x, 1, :)), ColVecs(reshape(y, 1, :)))
+    return kernelmatrix_diag(k, _to_colvecs(x), _to_colvecs(y))
 end
 
 function kernelmatrix_diag(k::NeuralNetworkKernel, x::AbstractVector{<:Real})
-    return kernelmatrix_diag(k, ColVecs(reshape(x, 1, :)))
+    return kernelmatrix_diag(k, _to_colvecs(x))
 end
 
 function kernelmatrix(::NeuralNetworkKernel, x::ColVecs, y::ColVecs)
