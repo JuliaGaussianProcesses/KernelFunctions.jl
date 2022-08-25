@@ -86,26 +86,30 @@ function Functors.functor(::Type{<:PolynomialKernel}, x)
     return (c=x.c,), reconstruct_polynomialkernel
 end
 
-@noinline __make_polynomial_kappa(degree) = (c::Real, xᵀy::Real) -> (xᵀy + c)^degree
+struct _PolynomialKappa
+    degree::Int
+end
 
-kappa(κ::PolynomialKernel, xᵀy::Real) = __make_polynomial_kappa(κ.degree)(only(κ.c), xᵀy)
+(κ::_PolynomialKappa)(c::Real, xᵀy::Real) = (xᵀy + c)^κ.degree
+
+kappa(κ::PolynomialKernel, xᵀy::Real) = _PolynomialKappa(κ.degree)(only(κ.c), xᵀy)
 
 metric(::PolynomialKernel) = DotProduct()
 
 function kernelmatrix(k::PolynomialKernel, x::AbstractVector, y::AbstractVector)
-    return __make_polynomial_kappa(k.degree).(only(k.c), pairwise(metric(k), x, y))
+    return _PolynomialKappa(k.degree).(only(k.c), pairwise(metric(k), x, y))
 end
 
 function kernelmatrix(k::PolynomialKernel, x::AbstractVector)
-    return __make_polynomial_kappa(k.degree).(only(k.c), pairwise(metric(k), x))
+    return _PolynomialKappa(k.degree).(only(k.c), pairwise(metric(k), x))
 end
 
 function kernelmatrix_diag(k::PolynomialKernel, x::AbstractVector, y::AbstractVector)
-    return __make_polynomial_kappa(k.degree).(only(k.c), colwise(metric(k), x, y))
+    return _PolynomialKappa(k.degree).(only(k.c), colwise(metric(k), x, y))
 end
 
 function kernelmatrix_diag(k::PolynomialKernel, x::AbstractVector)
-    return __make_polynomial_kappa(k.degree).(only(k.c), colwise(metric(k), x))
+    return _PolynomialKappa(k.degree).(only(k.c), colwise(metric(k), x))
 end
 
 function Base.show(io::IO, κ::PolynomialKernel)
