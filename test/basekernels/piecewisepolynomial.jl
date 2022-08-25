@@ -34,4 +34,27 @@
     test_ADs(() -> PiecewisePolynomialKernel{degree}(; dim=D))
 
     test_params(k, ())
+    if VERSION >= v"1.8.0"
+        test_interface_ad_perf(nothing, StableRNG(123456)) do _
+            PiecewisePolynomialKernel{degree}(; dim=D)
+        end
+    else
+        @testset "AD Alloc Performance ($T)" for T in [
+            Vector{Float64},
+            ColVecs{Float64,Matrix{Float64}},
+            RowVecs{Float64,Matrix{Float64}},
+        ]
+            test_interface_ad_perf(
+                _ -> PiecewisePolynomialKernel{degree}(; dim=D),
+                nothing,
+                example_inputs(StableRNG(123456), T)...;
+                passes=(
+                    unary=(true, true, false),
+                    binary=(true, true, false),
+                    diag_unary=(true, true, false),
+                    diag_binary=(true, true, false),
+                ),
+            )
+        end
+    end
 end

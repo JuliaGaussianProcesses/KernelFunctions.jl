@@ -149,11 +149,13 @@ end
 """
     test_interface([rng::AbstractRNG], k::Kernel, ::Type{T}; kwargs...) where {T<:Real}
 
-Run the [`test_interface`](@ref) tests for randomly generated inputs of types `Vector{T}`, `Vector{Vector{T}}`, `ColVecs{T}`, and `RowVecs{T}`.
+Run the [`test_interface`](@ref) tests for randomly generated inputs of types `Vector{T}`,
+`Vector{Vector{T}}`, `ColVecs{T}`, and `RowVecs{T}`.
 
 For other input types, please provide the data manually.
 
-The keyword arguments are forwarded to the invocations of [`test_interface`](@ref) with the randomly generated inputs.
+The keyword arguments are forwarded to the invocations of [`test_interface`](@ref) with the
+randomly generated inputs.
 """
 function test_interface(rng::AbstractRNG, k::Kernel, ::Type{T}; kwargs...) where {T<:Real}
     @testset "Vector{$T}" begin
@@ -172,6 +174,29 @@ end
 
 function test_interface(k::Kernel, T::Type{<:Real}=Float64; kwargs...)
     return test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
+end
+
+"""
+    example_inputs(rng::AbstractRNG, type)
+
+Return a tuple of 4 inputs of type `type`. See `methods(example_inputs)` for information
+around supported types. It is recommended that you utilise `StableRNGs.jl` for `rng` here
+to ensure consistency across Julia versions.
+"""
+function example_inputs(rng::AbstractRNG, ::Type{Vector{Float64}})
+    return map(n -> randn(rng, Float64, n), (1, 2, 3, 4))
+end
+
+function example_inputs(
+    rng::AbstractRNG, ::Type{ColVecs{Float64,Matrix{Float64}}}; dim::Int=2
+)
+    return map(n -> ColVecs(randn(rng, dim, n)), (1, 2, 3, 4))
+end
+
+function example_inputs(
+    rng::AbstractRNG, ::Type{RowVecs{Float64,Matrix{Float64}}}; dim::Int=2
+)
+    return map(n -> RowVecs(randn(rng, n, dim)), (1, 2, 3, 4))
 end
 
 end # module

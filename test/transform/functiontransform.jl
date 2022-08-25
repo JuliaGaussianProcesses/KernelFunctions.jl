@@ -29,4 +29,7 @@
     @test repr(FunctionTransform(sin)) == "Function Transform: $(sin)"
     f(a, x) = sin.(a .* x)
     test_ADs(x -> SEKernel() ∘ FunctionTransform(y -> f(x, y)), randn(rng, 3))
+    test_interface_ad_perf(nothing, StableRNG(123456), [Vector{Float64}]) do _
+        SEKernel() ∘ FunctionTransform(sin)
+    end
 end
