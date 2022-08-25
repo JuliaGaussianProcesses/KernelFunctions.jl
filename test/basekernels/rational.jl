@@ -70,7 +70,7 @@
             RationalQuadraticKernel(; alpha=α, metric=WeightedEuclidean([1.0, 2.0])),
             RowVecs{Float64},
         )
-        types = [ColVecs{Float64, Matrix{Float64}}, RowVecs{Float64, Matrix{Float64}}]
+        types = [ColVecs{Float64,Matrix{Float64}}, RowVecs{Float64,Matrix{Float64}}]
         test_interface_ad_perf(α, StableRNG(123456)) do α
             RationalQuadraticKernel(; alpha=α, metric=KernelFunctions.DotProduct())
         end
