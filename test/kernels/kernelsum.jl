@@ -19,6 +19,7 @@
 
     test_params(k1 + k2, (k1, k2))
 
+    # Regression tests for https://github.com//issues/458
     @testset "Type stability" begin
         function check_type_stability(k)
             @inferred k(0.1, 0.2)
