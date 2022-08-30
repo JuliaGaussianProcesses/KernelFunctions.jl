@@ -133,20 +133,6 @@ function __init__()
     @require PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150" begin
         include("matrix/kernelpdmat.jl")
     end
-
-    for k in (
-        RBFKernel() + RBFKernel() * LinearKernel(),
-        RBFKernel() + RBFKernel() * ExponentialKernel(),
-        RBFKernel() * (LinearKernel() + ExponentialKernel())
-    )
-        x = rand(4)
-        y = rand(4)
-        sum(f -> f(0.1, 0.2), k.kernels)
-        sum(f -> kernelmatrix(f, x), k. kernels)
-        sum(f -> kernelmatrix(f, x, y), k. kernels)
-        sum(f -> kernelmatrix_diag(f, x), k. kernels)
-        sum(f -> kernelmatrix_diag(f, x, y), k. kernels)
-    end
 end
 
 end
