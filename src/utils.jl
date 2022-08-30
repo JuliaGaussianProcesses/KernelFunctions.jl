@@ -97,6 +97,8 @@ Base.zero(x::ColVecs) = ColVecs(zero(x.X))
 
 dim(x::ColVecs) = size(x.X, 1)
 
+_to_colvecs(x::AbstractVector{<:Real}) = ColVecs(reshape(x, 1, :))
+
 pairwise(d::PreMetric, x::ColVecs) = Distances_pairwise(d, x.X; dims=2)
 pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances_pairwise(d, x.X, y.X; dims=2)
 function pairwise(d::PreMetric, x::AbstractVector, y::ColVecs)

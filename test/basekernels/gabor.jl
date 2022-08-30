@@ -32,4 +32,10 @@
         ),
         [ell, p],
     )
+    test_interface_ad_perf((ell, p), StableRNG(123456)) do θ
+        gaborkernel(;
+            sqexponential_transform=ScaleTransform(θ[1]),
+            cosine_transform=ScaleTransform(θ[2]),
+        )
+    end
 end
