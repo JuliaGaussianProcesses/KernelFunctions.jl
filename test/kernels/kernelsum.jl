@@ -32,7 +32,7 @@
         @testset for k in (
             RBFKernel() + RBFKernel() * LinearKernel(),
             RBFKernel() + RBFKernel() * ExponentialKernel(),
-            RBFKernel() * (LinearKernel() + ExponentialKernel())
+            RBFKernel() * (LinearKernel() + ExponentialKernel()),
         )
             check_type_stability(k)
         end
