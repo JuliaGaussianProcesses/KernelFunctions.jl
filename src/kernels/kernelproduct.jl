@@ -46,7 +46,6 @@ Base.length(k::KernelProduct) = length(k.kernels)
 (κ::KernelProduct)(x, y) = prod(k(x, y) for k in κ.kernels)
 
 function kernelmatrix(κ::KernelProduct, x::AbstractVector)
-    # return reduce(hadamard, map(Base.Fix2(kernelmatrix, x), κ.kernels))
     return reduce(hadamard, kernelmatrix(k, x) for k in κ.kernels)
 end
 
