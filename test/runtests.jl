@@ -25,7 +25,7 @@ using KernelFunctions.TestUtils: test_interface, example_inputs
 
 # The GROUP is used to run different sets of tests in parallel on the GitHub Actions CI.
 # If you want to introduce a new group, ensure you also add it to .github/workflows/ci.yml
-const GROUP = get(ENV, "GROUP", "CUDA")
+const GROUP = get(ENV, "GROUP", "")
 
 # Writing tests:
 # 1. The file structure of the test should match precisely the file structure of src.
