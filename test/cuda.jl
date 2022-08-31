@@ -13,7 +13,7 @@
                 GammaExponentialKernel(; gamma=T(0.5)),
                 GammaRationalKernel(),
                 LinearKernel(T(0.3)),
-                # MaternKernel(T(0.7)), # also doesn't work with AD, so not going to bother for now
+                # MaternKernel(T(0.7)), # doesn't work with AD, so not going to bother for now
                 Matern12Kernel(),
                 Matern32Kernel(),
                 Matern52Kernel(),
