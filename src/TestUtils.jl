@@ -231,7 +231,9 @@ function example_inputs(
     return map(_to_cuda_gpu, example_inputs(rng, RowVecs{T, Matrix{T}}; dim=dim))
 end
 
-function test_gpu_against_cpu(k::Kernel, x1::AbstractVector, x2::AbstractVector; atol=1e-6)
+function test_gpu_against_cpu(
+    k::Kernel, T::Type, x1::AbstractVector, x2::AbstractVector; atol=1e-3
+)
     @assert length(x1) != length(x2)
 
     k_cpu = _to_cpu(k)
@@ -241,6 +243,7 @@ function test_gpu_against_cpu(k::Kernel, x1::AbstractVector, x2::AbstractVector;
         K_cpu = kernelmatrix(k_cpu, x1_cpu)
         K_gpu = kernelmatrix(k, x1)
         @test size(K_cpu) == size(K_gpu)
+        @test eltype(K_cpu) == T
         @test eltype(K_cpu) == eltype(K_gpu)
         @test isapprox(K_cpu, _to_cpu(K_gpu); atol=atol)
     end
@@ -248,6 +251,7 @@ function test_gpu_against_cpu(k::Kernel, x1::AbstractVector, x2::AbstractVector;
         K_cpu = kernelmatrix(k_cpu, x1_cpu, x2_cpu)
         K_gpu = kernelmatrix(k, x1, x2)
         @test size(K_cpu) == size(K_gpu)
+        @test eltype(K_cpu) == T
         @test eltype(K_cpu) == eltype(K_gpu)
         @test isapprox(K_cpu, _to_cpu(K_gpu); atol=atol)
     end
@@ -255,6 +259,7 @@ function test_gpu_against_cpu(k::Kernel, x1::AbstractVector, x2::AbstractVector;
         K_cpu = kernelmatrix_diag(k_cpu, x1_cpu)
         K_gpu = kernelmatrix_diag(k, x1)
         @test size(K_cpu) == size(K_gpu)
+        @test eltype(K_cpu) == T
         @test eltype(K_cpu) == eltype(K_gpu)
         @test isapprox(K_cpu, _to_cpu(K_gpu); atol=atol)
     end
@@ -262,14 +267,15 @@ function test_gpu_against_cpu(k::Kernel, x1::AbstractVector, x2::AbstractVector;
         K_cpu = kernelmatrix_diag(k_cpu, x1_cpu, x1_cpu)
         K_gpu = kernelmatrix_diag(k, x1, x1)
         @test size(K_cpu) == size(K_gpu)
+        @test eltype(K_cpu) == T
         @test eltype(K_cpu) == eltype(K_gpu)
         @test isapprox(K_cpu, _to_cpu(K_gpu); atol=atol)
     end
 end
 
-function test_gpu_against_cpu(rng::AbstractRNG, k::Kernel, data_type::Type)
+function test_gpu_against_cpu(rng::AbstractRNG, T::Type, k::Kernel, data_type::Type)
     _, x1, x2, _ = example_inputs(rng, data_type)
-    test_gpu_against_cpu(k, x1, x2)
+    test_gpu_against_cpu(k, T, x1, x2)
 end
 
 _to_cpu(x::CuArray{<:Real}) = Array(x)
