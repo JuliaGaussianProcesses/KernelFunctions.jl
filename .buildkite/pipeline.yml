@@ -11,4 +11,4 @@ steps:
     timeout_in_minutes: 60
 
 env:
-  GROUP: GPU
+  GROUP: CUDA
