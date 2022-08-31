@@ -22,13 +22,13 @@
     # Regression tests for https://github.com//issues/458
     @testset "Type stability" begin
         function check_type_stability(k)
-            @inferred k(0.1, 0.2)
+            @test (@inferred k(0.1, 0.2)) isa Real
             x = rand(10)
             y = rand(10)
-            @inferred kernelmatrix(k, x)
-            @inferred kernelmatrix(k, x, y)
-            @inferred kernelmatrix_diag(k, x)
-            @inferred kernelmatrix_diag(k, x, y)
+            @test (@inferred kernelmatrix(k, x)) isa Matrix{<:Real}
+            @test (@inferred kernelmatrix(k, x, y)) isa Matrix{<:Real}
+            @test (@inferred kernelmatrix_diag(k, x)) isa Vector{<:Real}
+            @test (@inferred kernelmatrix_diag(k, x, y)) isa Vector{<:Real}
         end
         @testset for k in (
             RBFKernel() + RBFKernel() * LinearKernel(),
