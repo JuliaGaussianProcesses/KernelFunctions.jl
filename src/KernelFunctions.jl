@@ -47,6 +47,7 @@ export IndependentMOKernel,
 export tensor, ⊗, compose
 
 using Compat
+using CUDA
 using ChainRulesCore: ChainRulesCore, Tangent, ZeroTangent, NoTangent
 using ChainRulesCore: @thunk, InplaceableThunk
 using CompositionsBase
@@ -75,6 +76,7 @@ include("distances/pairwise.jl")
 include("distances/dotproduct.jl")
 include("distances/delta.jl")
 include("distances/sinus.jl")
+include("distances/cuda.jl")
 
 include("transform/transform.jl")
 include("transform/scaletransform.jl")

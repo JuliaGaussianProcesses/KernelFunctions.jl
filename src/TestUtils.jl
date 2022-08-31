@@ -1,10 +1,13 @@
 module TestUtils
 
+using CUDA
 using Distances
+using FillArrays
 using LinearAlgebra
 using KernelFunctions
 using Random
 using Test
+using InteractiveUtils
 
 """
     test_interface(
@@ -20,9 +23,9 @@ Run various consistency checks on `k` at the inputs `x0`, `x1`, and `x2`.
 `x0` and `x1` should be of the same length with different values, while `x0` and `x2` should
 be of different lengths.
 
-These tests are intended to pick up on really substantial issues with a kernel implementation
-(e.g. substantial asymmetry in the kernel matrix, large negative eigenvalues), rather than to
-test the numerics in detail, which can be kernel-specific.
+These tests are intended to pick up on really substantial issues with a kernel
+implementation (e.g. substantial asymmetry in the kernel matrix, large negative
+eigenvalues), rather than to test the numerics in detail, which can be kernel-specific.
 """
 function test_interface(
     k::Kernel,
@@ -119,6 +122,18 @@ function test_interface(
 end
 
 function test_interface(
+    rng::AbstractRNG, k::Kernel, ::Type{<:ColVecs{T, CuMatrix{T}}}; dim_in=2, kwargs...
+) where {T<:Real}
+    return test_interface(
+        k,
+        _to_cuda_gpu(ColVecs(randn(rng, T, dim_in, 11))),
+        _to_cuda_gpu(ColVecs(randn(rng, T, dim_in, 11))),
+        _to_cuda_gpu(ColVecs(randn(rng, T, dim_in, 13)));
+        kwargs...,
+    )
+end
+
+function test_interface(
     rng::AbstractRNG, k::Kernel, ::Type{<:RowVecs{T}}; dim_in=2, kwargs...
 ) where {T<:Real}
     return test_interface(
@@ -176,6 +191,8 @@ function test_interface(k::Kernel, T::Type{<:Real}=Float64; kwargs...)
     return test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
 end
 
+const FloatType = Union{Float32, Float64}
+
 """
     example_inputs(rng::AbstractRNG, type)
 
@@ -183,20 +200,93 @@ Return a tuple of 4 inputs of type `type`. See `methods(example_inputs)` for inf
 around supported types. It is recommended that you utilise `StableRNGs.jl` for `rng` here
 to ensure consistency across Julia versions.
 """
-function example_inputs(rng::AbstractRNG, ::Type{Vector{Float64}})
-    return map(n -> randn(rng, Float64, n), (1, 2, 3, 4))
+function example_inputs(rng::AbstractRNG, ::Type{Vector{T}}) where {T<:FloatType}
+    return map(n -> randn(rng, T, n), (1, 2, 3, 4))
 end
 
 function example_inputs(
-    rng::AbstractRNG, ::Type{ColVecs{Float64,Matrix{Float64}}}; dim::Int=2
-)
-    return map(n -> ColVecs(randn(rng, dim, n)), (1, 2, 3, 4))
+    rng::AbstractRNG, ::Type{ColVecs{T,Matrix{T}}}; dim::Int=2
+) where {T<:FloatType}
+    return map(n -> ColVecs(randn(rng, T, dim, n)), (1, 2, 3, 4))
 end
 
 function example_inputs(
-    rng::AbstractRNG, ::Type{RowVecs{Float64,Matrix{Float64}}}; dim::Int=2
-)
-    return map(n -> RowVecs(randn(rng, n, dim)), (1, 2, 3, 4))
+    rng::AbstractRNG, ::Type{RowVecs{T,Matrix{T}}}; dim::Int=2
+) where {T<:FloatType}
+    return map(n -> RowVecs(randn(rng, T, n, dim)), (1, 2, 3, 4))
 end
+
+function example_inputs(rng::AbstractRNG, ::Type{CuVector{T}}) where {T<:FloatType}
+    return map(_to_cuda_gpu, example_inputs(rng, Vector{T}))
+end
+
+function example_inputs(
+    rng::AbstractRNG, ::Type{ColVecs{T, CuMatrix{T}}}; dim::Int=2
+) where {T<:FloatType}
+    return map(_to_cuda_gpu, example_inputs(rng, ColVecs{T, Matrix{T}}; dim=dim))
+end
+
+function example_inputs(
+    rng::AbstractRNG, ::Type{RowVecs{T, CuMatrix{T}}}; dim::Int=2
+) where {T<:FloatType}
+    return map(_to_cuda_gpu, example_inputs(rng, RowVecs{T, Matrix{T}}; dim=dim))
+end
+
+function test_gpu_against_cpu(k::Kernel, x1::AbstractVector, x2::AbstractVector; atol=1e-6)
+    @assert length(x1) != length(x2)
+
+    k_cpu = _to_cpu(k)
+    x1_cpu = _to_cpu(x1)
+    x2_cpu = _to_cpu(x2)
+    let
+        K_cpu = kernelmatrix(k_cpu, x1_cpu)
+        K_gpu = kernelmatrix(k, x1)
+        @test size(K_cpu) == size(K_gpu)
+        @test eltype(K_cpu) == eltype(K_gpu)
+        @test isapprox(K_cpu, _to_cpu(K_gpu); atol=atol)
+    end
+    let
+        K_cpu = kernelmatrix(k_cpu, x1_cpu, x2_cpu)
+        K_gpu = kernelmatrix(k, x1, x2)
+        @test size(K_cpu) == size(K_gpu)
+        @test eltype(K_cpu) == eltype(K_gpu)
+        @test isapprox(K_cpu, _to_cpu(K_gpu); atol=atol)
+    end
+    let
+        K_cpu = kernelmatrix_diag(k_cpu, x1_cpu)
+        K_gpu = kernelmatrix_diag(k, x1)
+        @test size(K_cpu) == size(K_gpu)
+        @test eltype(K_cpu) == eltype(K_gpu)
+        @test isapprox(K_cpu, _to_cpu(K_gpu); atol=atol)
+    end
+    let
+        K_cpu = kernelmatrix_diag(k_cpu, x1_cpu, x1_cpu)
+        K_gpu = kernelmatrix_diag(k, x1, x1)
+        @test size(K_cpu) == size(K_gpu)
+        @test eltype(K_cpu) == eltype(K_gpu)
+        @test isapprox(K_cpu, _to_cpu(K_gpu); atol=atol)
+    end
+end
+
+function test_gpu_against_cpu(rng::AbstractRNG, k::Kernel, data_type::Type)
+    _, x1, x2, _ = example_inputs(rng, data_type)
+    test_gpu_against_cpu(k, x1, x2)
+end
+
+_to_cpu(x::CuArray{<:Real}) = Array(x)
+_to_cpu(x::ColVecs{<:Real, <:CuMatrix}) = ColVecs(_to_cpu(x.X))
+_to_cpu(x::RowVecs{<:Real, <:CuMatrix}) = RowVecs(_to_cpu(x.X))
+_to_cpu(x::FillArrays.AbstractFill{<:Real}) = x
+
+_to_cpu(k::Kernel) = k
+_to_cpu(k::TransformedKernel) = TransformedKernel(_to_cpu(k.kernel), _to_cpu(k.transform))
+_to_cpu(t::Transform) = t
+_to_cpu(t::LinearTransform) = LinearTransform(_to_cpu(t.A))
+_to_cpu(t::ChainTransform) = ChainTransform(map(_to_cpu, t.transforms))
+
+_to_cuda_gpu(x::Array{<:Real}) = CuArray(x)
+_to_cuda_gpu(x::ColVecs{T, Matrix{T}} where {T<:Real}) = ColVecs(_to_cuda_gpu(x.X))
+_to_cuda_gpu(x::RowVecs{T, Matrix{T}} where {T<:Real}) = RowVecs(_to_cuda_gpu(x.X))
+_to_cuda_gpu(x::FillArrays.AbstractFill{<:Real}) = x
 
 end # module

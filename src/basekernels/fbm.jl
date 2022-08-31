@@ -48,9 +48,19 @@ _mod(x::AbstractVector{<:AbstractVector{<:Real}}) = sum.(abs2, x)
 _mod(x::ColVecs) = vec(sum(abs2, x.X; dims=1))
 _mod(x::RowVecs) = vec(sum(abs2, x.X; dims=2))
 
+_ones(el_type, x::AbstractVector, sz...) = ones(el_type, sz...)
+function _ones(
+    el_type,
+    x::Union{CuVector{<:Real}, ColVecs{<:Real, <:CuMatrix}, RowVecs{<:Real, <:CuMatrix}},
+    sz...,
+)
+    return CUDA.ones(el_type, sz...)
+end
+
 function kernelmatrix(κ::FBMKernel, x::AbstractVector)
     modx = _mod(x)
-    modx_wide = modx * ones(eltype(modx), 1, length(modx)) # ad perf hack -- is unit tested
+    _v = _ones(eltype(modx), x, 1, length(modx))
+    modx_wide = modx * _v # ad perf hack -- is unit tested
     modxx = pairwise(SqEuclidean(), x)
     return _fbm.(modx_wide, modx_wide', modxx, only(κ.h))
 end
@@ -64,8 +74,10 @@ end
 
 function kernelmatrix(κ::FBMKernel, x::AbstractVector, y::AbstractVector)
     modxy = pairwise(SqEuclidean(), x, y)
-    modx_wide = _mod(x) * ones(eltype(modxy), 1, length(y)) # ad perf hack -- is unit tested
-    mody_wide = _mod(y) * ones(eltype(modxy), 1, length(x)) # ad perf hack -- is unit tested
+    _vx = _ones(eltype(modxy), x, 1, length(y))
+    _vy = _ones(eltype(modxy), y, 1, length(x))
+    modx_wide = _mod(x) * _vx # ad perf hack -- is unit tested
+    mody_wide = _mod(y) * _vy # ad perf hack -- is unit tested
     return _fbm.(modx_wide, mody_wide', modxy, only(κ.h))
 end
 

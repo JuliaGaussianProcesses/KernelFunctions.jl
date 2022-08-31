@@ -137,9 +137,27 @@ end
 
 @functor GammaExponentialKernel
 
-kappa(κ::GammaExponentialKernel, d::Real) = exp(-d^only(κ.γ))
+_gamma_kappa(γ::Real, d::Real) = exp(-d^γ)
+
+kappa(κ::GammaExponentialKernel, d::Real) = _gamma_kappa(κ.γ, d)
 
 metric(k::GammaExponentialKernel) = k.metric
+
+function kernelmatrix(k::GammaExponentialKernel, x::AbstractVector)
+    return _gamma_kappa.(only(k.γ), pairwise(metric(k), x))
+end
+
+function kernelmatrix(k::GammaExponentialKernel, x::AbstractVector, y::AbstractVector)
+    return _gamma_kappa.(only(k.γ), pairwise(metric(k), x, y))
+end
+
+function kernelmatrix_diag(k::GammaExponentialKernel, x::AbstractVector)
+    return _gamma_kappa.(only(k.γ), colwise(metric(k), x))
+end
+
+function kernelmatrix_diag(k::GammaExponentialKernel, x::AbstractVector, y::AbstractVector)
+    return _gamma_kappa.(only(k.γ), colwise(metric(k), x, y))
+end
 
 iskroncompatible(::GammaExponentialKernel) = true
 
