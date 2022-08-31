@@ -1,4 +1,8 @@
 using CUDA
+using Test
+
+@show get(ENV, "GROUP", "foo")
+
 
 if CUDA.functional()
     @test 1 == 1

@@ -9,3 +9,6 @@ steps:
       cuda: "*"
     if: build.message !~ /\[skip tests\]/
     timeout_in_minutes: 60
+
+env:
+  GROUP: GPU
