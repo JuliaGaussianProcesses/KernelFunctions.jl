@@ -139,7 +139,7 @@ end
 
 _gamma_kappa(γ::Real, d::Real) = exp(-d^γ)
 
-kappa(κ::GammaExponentialKernel, d::Real) = _gamma_kappa(κ.γ, d)
+kappa(κ::GammaExponentialKernel, d::Real) = _gamma_kappa(only(κ.γ), d)
 
 metric(k::GammaExponentialKernel) = k.metric
 
