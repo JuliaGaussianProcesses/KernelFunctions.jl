@@ -7,7 +7,6 @@ using LinearAlgebra
 using KernelFunctions
 using Random
 using Test
-using InteractiveUtils
 
 """
     test_interface(
