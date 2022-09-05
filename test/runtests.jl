@@ -1,5 +1,6 @@
 using KernelFunctions
 using AxisArrays
+using CUDA
 using Distances
 using Documenter
 using Functors: functor
@@ -143,6 +144,13 @@ include("test_utils.jl")
             include("mokernels/lmm.jl")
         end
         @info "Ran tests on Multi-Output Kernels"
+    end
+
+    if GROUP == "CUDA"
+        CUDA.allowscalar(false)
+        @testset "CUDA" begin
+            include("cuda.jl")
+        end
     end
 
     if GROUP == "" || GROUP == "Others"

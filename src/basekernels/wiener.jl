@@ -62,22 +62,22 @@ function (::WienerKernel{1})(x, y)
     X = sqrt(sum(abs2, x))
     Y = sqrt(sum(abs2, y))
     minXY = min(X, Y)
-    return 1 / 3 * minXY^3 + 1 / 2 * minXY^2 * euclidean(x, y)
+    return minXY^3 / 3 + minXY^2 * euclidean(x, y) / 2
 end
 
 function (::WienerKernel{2})(x, y)
     X = sqrt(sum(abs2, x))
     Y = sqrt(sum(abs2, y))
     minXY = min(X, Y)
-    return 1 / 20 * minXY^5 + 1 / 12 * minXY^3 * euclidean(x, y) * (X + Y - 1 / 2 * minXY)
+    return minXY^5 / 20 + minXY^3 * euclidean(x, y) * (X + Y - minXY / 2) / 12
 end
 
 function (::WienerKernel{3})(x, y)
     X = sqrt(sum(abs2, x))
     Y = sqrt(sum(abs2, y))
     minXY = min(X, Y)
-    return 1 / 252 * minXY^7 +
-           1 / 720 * minXY^4 * euclidean(x, y) * (5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2)
+    return minXY^7 / 252 +
+           minXY^4 * euclidean(x, y) * (5 * max(X, Y)^2 + 2 * X * Y + 3 * minXY^2) / 720
 end
 
 function Base.show(io::IO, ::WienerKernel{I}) where {I}
