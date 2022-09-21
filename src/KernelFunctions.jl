@@ -10,6 +10,7 @@ export SqExponentialKernel, RBFKernel, GaussianKernel, SEKernel
 export LaplacianKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
 export FBMKernel
+export LinearSplineKernel
 export MaternKernel, Matern12Kernel, Matern32Kernel, Matern52Kernel
 export LinearKernel, PolynomialKernel
 export RationalKernel, RationalQuadraticKernel, GammaRationalKernel
@@ -93,6 +94,7 @@ include("basekernels/exponential.jl")
 include("basekernels/exponentiated.jl")
 include("basekernels/fbm.jl")
 include("basekernels/gabor.jl")
+include("basekernels/linear_spline.jl")
 include("basekernels/matern.jl")
 include("basekernels/nn.jl")
 include("basekernels/periodic.jl")

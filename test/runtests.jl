@@ -61,136 +61,138 @@ const GROUP = get(ENV, "GROUP", "")
 include("test_utils.jl")
 
 @testset "KernelFunctions" begin
-    if GROUP == "" || GROUP == "Transform"
-        @testset "transform" begin
-            include("transform/transform.jl")
-            print(" ")
-            include("transform/scaletransform.jl")
-            print(" ")
-            include("transform/ardtransform.jl")
-            print(" ")
-            include("transform/lineartransform.jl")
-            print(" ")
-            include("transform/functiontransform.jl")
-            print(" ")
-            include("transform/selecttransform.jl")
-            print(" ")
-            include("transform/chaintransform.jl")
-            print(" ")
-            include("transform/periodic_transform.jl")
-            print(" ")
-            include("transform/with_lengthscale.jl")
-            print(" ")
-        end
-        @info "Ran tests on Transform"
-    end
+    # if GROUP == "" || GROUP == "Transform"
+    #     @testset "transform" begin
+    #         include("transform/transform.jl")
+    #         print(" ")
+    #         include("transform/scaletransform.jl")
+    #         print(" ")
+    #         include("transform/ardtransform.jl")
+    #         print(" ")
+    #         include("transform/lineartransform.jl")
+    #         print(" ")
+    #         include("transform/functiontransform.jl")
+    #         print(" ")
+    #         include("transform/selecttransform.jl")
+    #         print(" ")
+    #         include("transform/chaintransform.jl")
+    #         print(" ")
+    #         include("transform/periodic_transform.jl")
+    #         print(" ")
+    #         include("transform/with_lengthscale.jl")
+    #         print(" ")
+    #     end
+    #     @info "Ran tests on Transform"
+    # end
 
     if GROUP == "" || GROUP == "BaseKernels"
         @testset "basekernels" begin
-            include("basekernels/constant.jl")
+            # include("basekernels/constant.jl")
+            # print(" ")
+            # include("basekernels/cosine.jl")
+            # print(" ")
+            # include("basekernels/exponential.jl")
+            # print(" ")
+            # include("basekernels/exponentiated.jl")
+            # print(" ")
+            # include("basekernels/fbm.jl")
+            # print(" ")
+            # include("basekernels/gabor.jl")
+            # print(" ")
+            include("basekernels/linear_spline.jl")
             print(" ")
-            include("basekernels/cosine.jl")
-            print(" ")
-            include("basekernels/exponential.jl")
-            print(" ")
-            include("basekernels/exponentiated.jl")
-            print(" ")
-            include("basekernels/fbm.jl")
-            print(" ")
-            include("basekernels/gabor.jl")
-            print(" ")
-            include("basekernels/matern.jl")
-            print(" ")
-            include("basekernels/nn.jl")
-            print(" ")
-            include("basekernels/periodic.jl")
-            print(" ")
-            include("basekernels/piecewisepolynomial.jl")
-            print(" ")
-            include("basekernels/polynomial.jl")
-            print(" ")
-            include("basekernels/rational.jl")
-            print(" ")
-            include("basekernels/sm.jl")
-            print(" ")
-            include("basekernels/wiener.jl")
-            print(" ")
+            # include("basekernels/matern.jl")
+            # print(" ")
+            # include("basekernels/nn.jl")
+            # print(" ")
+            # include("basekernels/periodic.jl")
+            # print(" ")
+            # include("basekernels/piecewisepolynomial.jl")
+            # print(" ")
+            # include("basekernels/polynomial.jl")
+            # print(" ")
+            # include("basekernels/rational.jl")
+            # print(" ")
+            # include("basekernels/sm.jl")
+            # print(" ")
+            # include("basekernels/wiener.jl")
+            # print(" ")
         end
         @info "Ran tests on BaseKernel"
     end
 
-    if GROUP == "" || GROUP == "Kernels"
-        @testset "kernels" begin
-            include("kernels/kernelproduct.jl")
-            include("kernels/kernelsum.jl")
-            include("kernels/kerneltensorproduct.jl")
-            include("kernels/overloads.jl")
-            include("kernels/scaledkernel.jl")
-            include("kernels/transformedkernel.jl")
-            include("kernels/normalizedkernel.jl")
-            include("kernels/neuralkernelnetwork.jl")
-            include("kernels/gibbskernel.jl")
-        end
-        @info "Ran tests on Kernel"
-    end
+    # if GROUP == "" || GROUP == "Kernels"
+    #     @testset "kernels" begin
+    #         include("kernels/kernelproduct.jl")
+    #         include("kernels/kernelsum.jl")
+    #         include("kernels/kerneltensorproduct.jl")
+    #         include("kernels/overloads.jl")
+    #         include("kernels/scaledkernel.jl")
+    #         include("kernels/transformedkernel.jl")
+    #         include("kernels/normalizedkernel.jl")
+    #         include("kernels/neuralkernelnetwork.jl")
+    #         include("kernels/gibbskernel.jl")
+    #     end
+    #     @info "Ran tests on Kernel"
+    # end
 
-    if GROUP == "" || GROUP == "MultiOutput"
-        @testset "multi_output" begin
-            include("mokernels/moinput.jl")
-            include("mokernels/independent.jl")
-            include("mokernels/slfm.jl")
-            include("mokernels/intrinsiccoregion.jl")
-            include("mokernels/lmm.jl")
-        end
-        @info "Ran tests on Multi-Output Kernels"
-    end
+    # if GROUP == "" || GROUP == "MultiOutput"
+    #     @testset "multi_output" begin
+    #         include("mokernels/moinput.jl")
+    #         include("mokernels/independent.jl")
+    #         include("mokernels/slfm.jl")
+    #         include("mokernels/intrinsiccoregion.jl")
+    #         include("mokernels/lmm.jl")
+    #     end
+    #     @info "Ran tests on Multi-Output Kernels"
+    # end
 
-    if GROUP == "" || GROUP == "Others"
-        include("utils.jl")
+    # if GROUP == "" || GROUP == "Others"
+    #     include("utils.jl")
 
-        @testset "distances" begin
-            include("distances/pairwise.jl")
-            include("distances/dotproduct.jl")
-            include("distances/delta.jl")
-            include("distances/sinus.jl")
-        end
-        @info "Ran tests on Distances"
+    #     @testset "distances" begin
+    #         include("distances/pairwise.jl")
+    #         include("distances/dotproduct.jl")
+    #         include("distances/delta.jl")
+    #         include("distances/sinus.jl")
+    #     end
+    #     @info "Ran tests on Distances"
 
-        @testset "matrix" begin
-            include("matrix/kernelmatrix.jl")
-            include("matrix/kernelkroneckermat.jl")
-            include("matrix/kernelpdmat.jl")
-        end
-        @info "Ran tests on matrix"
+    #     @testset "matrix" begin
+    #         include("matrix/kernelmatrix.jl")
+    #         include("matrix/kernelkroneckermat.jl")
+    #         include("matrix/kernelpdmat.jl")
+    #     end
+    #     @info "Ran tests on matrix"
 
-        @testset "approximations" begin
-            include("approximations/nystrom.jl")
-        end
+    #     @testset "approximations" begin
+    #         include("approximations/nystrom.jl")
+    #     end
 
-        include("generic.jl")
-        include("chainrules.jl")
-        include("zygoterules.jl")
+    #     include("generic.jl")
+    #     include("chainrules.jl")
+    #     include("zygoterules.jl")
 
-        @testset "doctests" begin
-            DocMeta.setdocmeta!(
-                KernelFunctions,
-                :DocTestSetup,
-                quote
-                    using KernelFunctions
-                    using LinearAlgebra
-                    using Random
-                    using PDMats: PDMats
-                end;
-                recursive=true,
-            )
-            doctest(
-                KernelFunctions;
-                doctestfilters=[
-                    r"{([a-zA-Z0-9]+,\s?)+[a-zA-Z0-9]+}",
-                    r"(\s?Array{[a-zA-Z0-9]+,\s?1}|\s?Vector{[a-zA-Z0-9]+})",
-                    r"(\s?Array{[a-zA-Z0-9]+,\s?2}|\s?Matrix{[a-zA-Z0-9]+})",
-                ],
-            )
-        end
-    end
+    #     @testset "doctests" begin
+    #         DocMeta.setdocmeta!(
+    #             KernelFunctions,
+    #             :DocTestSetup,
+    #             quote
+    #                 using KernelFunctions
+    #                 using LinearAlgebra
+    #                 using Random
+    #                 using PDMats: PDMats
+    #             end;
+    #             recursive=true,
+    #         )
+    #         doctest(
+    #             KernelFunctions;
+    #             doctestfilters=[
+    #                 r"{([a-zA-Z0-9]+,\s?)+[a-zA-Z0-9]+}",
+    #                 r"(\s?Array{[a-zA-Z0-9]+,\s?1}|\s?Vector{[a-zA-Z0-9]+})",
+    #                 r"(\s?Array{[a-zA-Z0-9]+,\s?2}|\s?Matrix{[a-zA-Z0-9]+})",
+    #             ],
+    #         )
+    #     end
+    # end
 end
