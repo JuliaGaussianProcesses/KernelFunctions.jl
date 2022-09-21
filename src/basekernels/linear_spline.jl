@@ -7,3 +7,20 @@ struct LinearSplineKernel{Tc<:Real} <: Kernel
 end
 
 (k::LinearSplineKernel)(x::Real, y::Real) = 1 + k.c - (k.c / 10) * abs(x - y)
+
+
+# Specialised implementations required for Zygote performance.
+
+function kernelmatrix(k::LinearSplineKernel, x::AbstractVector{<:Real})
+    c = k.c
+    c10 = c / 10
+    return map(d -> 1 + c - c10 * d, pairwise(Euclidean(), x))
+end
+
+function kernelmatrix(
+    k::LinearSplineKernel, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}
+)
+    c = k.c
+    c10 = c / 10
+    return map(d -> 1 + c - c10 * d, pairwise(Euclidean(), x, y))
+end
