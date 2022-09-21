@@ -24,3 +24,8 @@ function kernelmatrix(
     c10 = c / 10
     return map(d -> 1 + c - c10 * d, pairwise(Euclidean(), x, y))
 end
+
+# Necessary for performance on 1.6.
+function kernelmatrix_diag(k::LinearSplineKernel, x::AbstractVector{<:Real})
+    return fill(1 + k.c, length(x))
+end
