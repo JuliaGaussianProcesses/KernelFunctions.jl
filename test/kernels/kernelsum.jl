@@ -18,4 +18,24 @@
     end
 
     test_params(k1 + k2, (k1, k2))
+
+    # Regression tests for https://github.com//issues/458
+    @testset "Type stability" begin
+        function check_type_stability(k)
+            @test (@inferred k(0.1, 0.2)) isa Real
+            x = rand(10)
+            y = rand(10)
+            @test (@inferred kernelmatrix(k, x)) isa Matrix{<:Real}
+            @test (@inferred kernelmatrix(k, x, y)) isa Matrix{<:Real}
+            @test (@inferred kernelmatrix_diag(k, x)) isa Vector{<:Real}
+            @test (@inferred kernelmatrix_diag(k, x, y)) isa Vector{<:Real}
+        end
+        @testset for k in (
+            RBFKernel() + RBFKernel() * LinearKernel(),
+            RBFKernel() + RBFKernel() * ExponentialKernel(),
+            RBFKernel() * (LinearKernel() + ExponentialKernel()),
+        )
+            check_type_stability(k)
+        end
+    end
 end
