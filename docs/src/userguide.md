@@ -19,21 +19,13 @@ For example, a squared exponential kernel is created by
     ```julia
     k = with_lengthscale(SqExponentialKernel(), 0.5)
     ```
-    [`with_lengthscale`](@ref) also works with vector-valued lengthscales for ARD.
+    [`with_lengthscale`](@ref) also works with vector-valued lengthscales for multiple-dimensional inputs:
+    ```julia
+    length_scales = [1.0, 2.0]
+    k = with_lengthscale(SqExponentialKernel(), length_scales)
+    k = SqExponentialKernel() ∘ ARDTransform(1 ./ length_scales)
+    ```
     Check the [Input Transforms](@ref input_transforms) page for more details.
-    Per-dimension lengthscales for automatic relevance determination work in a similar manner:
-    ```julia
-      inverse_length_scales = [1.0, 2.0]
-      k = SqExponentialKernel() ∘ ARDTransform(inverse_length_scales)
-      k = compose(SqExponentialKernel(), ARDTransform(inverse_length_scales))
-    ```
-    More generally, you can utilise arbitrary matrices via [`LinearTransform`](@ref).
-    For example, this can be used to project inputs from high- to low- dimensions:
-    ```julia
-      A = randn(1, 2)
-      k = compose(SqExponentialKernel(), LinearTransform(A))
-    ```
-    In this case, we map from `2` to `1` dimension.
 
 !!! tip "How do I set the kernel variance?"
     To premultiply the kernel by a variance, you can use `*` with a scalar number:
