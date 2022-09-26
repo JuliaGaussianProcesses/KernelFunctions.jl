@@ -8,7 +8,7 @@ For example, a squared exponential kernel is created by
   k = SqExponentialKernel()
 ```
 
-!!! tip "How do I set the lengthscale?"
+!!! tip "How do I set the lengthscale(s)?"
     Instead of having lengthscale(s) for each kernel we use [`Transform`](@ref) objects which act on the inputs before passing them to the kernel. Note that the transforms such as [`ScaleTransform`](@ref) and [`ARDTransform`](@ref) _multiply_ the input by a scale factor, which corresponds to the _inverse_ of the lengthscale.
     For example, a lengthscale of 0.5 is equivalent to premultiplying the input by 2.0, and you can create the corresponding kernel in either of the following equivalent ways:
     ```julia
@@ -19,7 +19,12 @@ For example, a squared exponential kernel is created by
     ```julia
     k = with_lengthscale(SqExponentialKernel(), 0.5)
     ```
-    [`with_lengthscale`](@ref) also works with vector-valued lengthscales for ARD.
+    [`with_lengthscale`](@ref) also works with vector-valued lengthscales for multiple-dimensional inputs, and is equivalent to pre-composing with an [`ARDTransform`](@ref):
+    ```julia
+    length_scales = [1.0, 2.0]
+    k = with_lengthscale(SqExponentialKernel(), length_scales)
+    k = SqExponentialKernel() ∘ ARDTransform(1 ./ length_scales)
+    ```
     Check the [Input Transforms](@ref input_transforms) page for more details.
 
 !!! tip "How do I set the kernel variance?"
