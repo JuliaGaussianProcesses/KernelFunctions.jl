@@ -37,14 +37,15 @@ MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν,
 
 @functor MaternKernel
 
-@inline function kappa(k::MaternKernel, d::Real)
-    result = _matern(only(k.ν), d)
-    return ifelse(iszero(d), one(result), result)
-end
+@inline kappa(k::MaternKernel, d::Real) = _matern(only(k.ν), d)
 
 function _matern(ν::Real, d::Real)
-    y = sqrt(2ν) * d
-    return exp((one(d) - ν) * logtwo - loggamma(ν) + ν * log(y) + log(besselk(ν, y)))
+    if iszero(d)
+        return one(d)
+    else
+        y = sqrt(2ν) * d
+        return exp((one(d) - ν) * logtwo - loggamma(ν) + ν * log(y) + log(besselk(ν, y)))
+    end
 end
 
 metric(k::MaternKernel) = k.metric
