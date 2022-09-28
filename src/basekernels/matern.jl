@@ -44,7 +44,8 @@ function _matern(ν::Real, d::Real)
         return one(d)
     else
         y = sqrt(2ν) * d
-        return exp((one(d) - ν) * logtwo - loggamma(ν) + ν * log(y) + log(besselk(ν, y)))
+        b = log(besselk(ν, y))
+        return exp((one(d) - ν) * oftype(y, logtwo) - loggamma(ν) + ν * log(y) + b)
     end
 end
 
