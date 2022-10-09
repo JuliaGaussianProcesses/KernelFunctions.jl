@@ -8,6 +8,7 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        TestUtils.test_interface(k, Vector{String})
         test_ADs(ZeroKernel)
         test_interface_ad_perf(_ -> k, nothing, StableRNG(123456))
     end
