@@ -26,6 +26,15 @@
         end
     end
 
+    @testset "String input" begin
+        f = x -> x * "hello"
+        t = FunctionTransform(f)
+        x = [randstring(rng) for _ in 1:3]
+        x′ = map(t, x)
+        @test all([t(x[n]) == x′[n] for n in eachindex(x)])
+        @test all([f(x[n]) == x′[n] for n in eachindex(x)])
+    end
+
     @test repr(FunctionTransform(sin)) == "Function Transform: $(sin)"
     f(a, x) = sin.(a .* x)
     test_ADs(x -> SEKernel() ∘ FunctionTransform(y -> f(x, y)), randn(rng, 3))
