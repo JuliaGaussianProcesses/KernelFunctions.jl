@@ -30,9 +30,9 @@
         f = x -> x * "hello"
         t = FunctionTransform(f)
         x = [randstring(rng) for _ in 1:3]
-        x′ = map(t, x)
-        @test all([t(x[n]) == x′[n] for n in eachindex(x)])
-        @test all([f(x[n]) == x′[n] for n in eachindex(x)])
+        y = map(t, x)
+        @test all([t(x[n]) == y[n] for n in eachindex(x)])
+        @test all([f(x[n]) == y[n] for n in eachindex(x)])
     end
 
     @test repr(FunctionTransform(sin)) == "Function Transform: $(sin)"
