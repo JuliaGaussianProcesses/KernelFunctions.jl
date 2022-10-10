@@ -26,7 +26,7 @@
 
     TestUtils.test_interface(k, Float64)
     TestUtils.test_interface(
-        TransformedKernel(ConstantKernel(c=1.5), FunctionTransform(x -> x * "hi")),
+        TransformedKernel(ConstantKernel(; c=1.5), FunctionTransform(x -> x * "hi")),
         Vector{String},
     )
     test_ADs(x -> SqExponentialKernel() ∘ ScaleTransform(x[1]), rand(1))
