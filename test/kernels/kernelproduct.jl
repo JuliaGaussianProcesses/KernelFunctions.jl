@@ -11,7 +11,7 @@
 
     # Standardised tests.
     TestUtils.test_interface(k, Float64)
-    TestUtils.test_interface(ConstantKernel(c=1.0) * WhiteKernel(), Vector{String})
+    TestUtils.test_interface(ConstantKernel(; c=1.0) * WhiteKernel(), Vector{String})
     test_ADs(
         x -> KernelProduct(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))), rand(1)
     )
