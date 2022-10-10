@@ -2,9 +2,8 @@
 struct Delta <: Distances.UnionPreMetric end
 
 (dist::Delta)(a, b) = a == b
-Base.@propagate_inbounds function (dist::Delta)(
-    a::AbstractArray, b::AbstractArray
-)
+
+Base.@propagate_inbounds function (dist::Delta)(a::AbstractArray, b::AbstractArray)
     @boundscheck if length(a) != length(b)
         throw(
             DimensionMismatch(
