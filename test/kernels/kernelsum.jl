@@ -12,6 +12,7 @@
 
     # Standardised tests.
     TestUtils.test_interface(k, Float64)
+    TestUtils.test_interface(ConstantKernel(; c=1.5) * WhiteKernel(), Vector{String})
     test_ADs(x -> KernelSum(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))), rand(1))
     test_interface_ad_perf(2.4, StableRNG(123456)) do c
         KernelSum(SqExponentialKernel(), LinearKernel(; c=c))

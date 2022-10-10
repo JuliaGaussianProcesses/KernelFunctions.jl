@@ -142,6 +142,28 @@ function test_interface(
     )
 end
 
+function test_interface(rng::AbstractRNG, k::Kernel, ::Type{Vector{String}}; kwargs...)
+    return test_interface(
+        k,
+        [randstring(rng) for _ in 1:3],
+        [randstring(rng) for _ in 1:3],
+        [randstring(rng) for _ in 1:4];
+        kwargs...,
+    )
+end
+
+function test_interface(
+    rng::AbstractRNG, k::Kernel, ::Type{ColVecs{String}}; dim_in=2, kwargs...
+)
+    return test_interface(
+        k,
+        ColVecs([randstring(rng) for _ in 1:dim_in, _ in 1:3]),
+        ColVecs([randstring(rng) for _ in 1:dim_in, _ in 1:3]),
+        ColVecs([randstring(rng) for _ in 1:dim_in, _ in 1:4]);
+        kwargs...,
+    )
+end
+
 function test_interface(k::Kernel, T::Type{<:AbstractVector}; kwargs...)
     return test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
 end

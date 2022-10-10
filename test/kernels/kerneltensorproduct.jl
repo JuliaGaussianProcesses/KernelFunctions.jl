@@ -32,6 +32,9 @@
     # Standardised tests.
     TestUtils.test_interface(kernel1, ColVecs{Float64})
     TestUtils.test_interface(kernel1, RowVecs{Float64})
+    TestUtils.test_interface(
+        KernelTensorProduct(WhiteKernel(), ConstantKernel(; c=1.1)), ColVecs{String}
+    )
     test_ADs(
         x -> KernelTensorProduct(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))),
         rand(1);
