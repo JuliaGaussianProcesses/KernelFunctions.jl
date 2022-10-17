@@ -148,6 +148,8 @@ include("test_utils.jl")
     if GROUP == "" || GROUP == "Others"
         include("utils.jl")
 
+        @test isempty(detect_unbound_args(KernelFunctions))
+
         @testset "distances" begin
             include("distances/pairwise.jl")
             include("distances/dotproduct.jl")

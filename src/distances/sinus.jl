@@ -13,7 +13,7 @@ Distances.result_type(::Sinus{T}, Ta::Type, Tb::Type) where {T} = promote_type(T
 
 @inline function Distances._evaluate(
     d::Sinus, a::AbstractVector, b::AbstractVector
-) where {T}
+)
     @boundscheck if (length(a) != length(b)) || length(a) != length(d.r)
         throw(
             DimensionMismatch(
