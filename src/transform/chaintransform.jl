@@ -34,8 +34,11 @@ function ChainTransform(v, θ::AbstractVector)
 end
 
 Base.:∘(t₁::Transform, t₂::Transform) = ChainTransform((t₂, t₁))
-Base.:∘(t::Transform, tc::ChainTransform) = ChainTransform(tuple(tc.transforms..., t))
-Base.:∘(tc::ChainTransform, t::Transform) = ChainTransform(tuple(t, tc.transforms...))
+Base.:∘(t::Transform, tc::ChainTransform) = ChainTransform((tc.transforms..., t))
+Base.:∘(tc::ChainTransform, t::Transform) = ChainTransform((t, tc.transforms...))
+function Base.:∘(tc1::ChainTransform, tc2::ChainTransform)
+    return ChainTransform((tc2.transforms..., tc1.transforms...))
+end
 
 (t::ChainTransform)(x) = foldl((x, t) -> t(x), t.transforms; init=x)
 

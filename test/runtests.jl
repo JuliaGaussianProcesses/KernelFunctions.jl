@@ -148,7 +148,10 @@ include("test_utils.jl")
     if GROUP == "" || GROUP == "Others"
         include("utils.jl")
 
-        @test isempty(detect_unbound_args(KernelFunctions))
+        @testset "general" begin
+            @test isempty(detect_unbound_args(KernelFunctions))
+            @test isempty(detect_ambiguities(KernelFunctions))
+        end
 
         @testset "distances" begin
             include("distances/pairwise.jl")

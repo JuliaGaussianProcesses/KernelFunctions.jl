@@ -11,6 +11,9 @@ abstract type Transform end
 Base.map(t::Transform, x::AbstractVector) = _map(t, x)
 _map(t::Transform, x::AbstractVector) = t.(x)
 
+# Fix method ambiguity issues
+Base.map(t::Transform, x::SparseArrays.SparseVector) = _map(t, x)
+
 """
     IdentityTransform()
 

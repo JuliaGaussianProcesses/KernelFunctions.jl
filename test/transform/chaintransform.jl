@@ -12,6 +12,7 @@
     # Check composition constructors.
     @test (tf ∘ ChainTransform([tp])).transforms == (tp, tf)
     @test (ChainTransform([tf]) ∘ tp).transforms == (tp, tf)
+    @test (ChainTransform([tf]) ∘ ChainTransform([tp])).transforms == (tp, tf)
 
     # Verify correctness.
     x = ColVecs(randn(rng, 2, 3))
