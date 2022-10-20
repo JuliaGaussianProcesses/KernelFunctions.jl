@@ -1,27 +1,28 @@
 """
-    SqExponentialKernel(; metric=Euclidean())
+    SqExponentialKernel(; metric=Euclidean(), ℓ = 1.0)
 
-Squared exponential kernel with respect to the `metric`.
+Squared exponential kernel with respect to the `metric` and with a characteristic lengthscale `ℓ`.
 
 # Definition
 
 For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the squared exponential kernel is
 defined as
 ```math
-k(x, x') = \\exp\\bigg(- \\frac{d(x, x')^2}{2}\\bigg).
+k(x, x') = \\exp\\bigg(- \\frac{d(x, x')^2}{2\\ell}\\bigg).
 ```
-By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2`` and ``\\ell = 1``.
 
 See also: [`GammaExponentialKernel`](@ref)
 """
-struct SqExponentialKernel{M} <: SimpleKernel
+struct SqExponentialKernel{M,lT<:Real} <: SimpleKernel
     metric::M
+    lengthscale::lT
 end
 
-SqExponentialKernel(; metric=Euclidean()) = SqExponentialKernel(metric)
+SqExponentialKernel(; metric=Euclidean(), ℓ=1.0) = SqExponentialKernel(metric, ℓ)
 
-kappa(::SqExponentialKernel, d::Real) = exp(-d^2 / 2)
-kappa(::SqExponentialKernel{<:Euclidean}, d²::Real) = exp(-d² / 2)
+kappa(k::SqExponentialKernel, d::Real) = exp(-d^2 / (2 * k.lengthscale))
+kappa(k::SqExponentialKernel{<:Euclidean}, d²::Real) = exp(-d² / (2 * k.lengthscale))
 
 metric(k::SqExponentialKernel) = k.metric
 metric(::SqExponentialKernel{<:Euclidean}) = SqEuclidean()
@@ -29,7 +30,7 @@ metric(::SqExponentialKernel{<:Euclidean}) = SqEuclidean()
 iskroncompatible(::SqExponentialKernel) = true
 
 function Base.show(io::IO, k::SqExponentialKernel)
-    return print(io, "Squared Exponential Kernel (metric = ", k.metric, ")")
+    return print(io, "Squared Exponential Kernel (metric = ", k.metric, ", ℓ = ", k.lengthscale, ")")
 end
 
 ## Aliases ##

@@ -12,12 +12,17 @@
         @test RBFKernel == SqExponentialKernel
         @test GaussianKernel == SqExponentialKernel
         @test SEKernel == SqExponentialKernel
-        @test repr(k) == "Squared Exponential Kernel (metric = Euclidean(0.0))"
+        @test repr(k) == "Squared Exponential Kernel (metric = Euclidean(0.0), ℓ = 1.0)"
         @test KernelFunctions.iskroncompatible(k) == true
 
         k2 = SqExponentialKernel(; metric=WeightedEuclidean(ones(3)))
         @test metric(k2) isa WeightedEuclidean
         @test k2(v1, v2) ≈ k(v1, v2)
+
+        k3 = SqExponentialKernel(; ℓ=π)
+        @test k3.lengthscale == π
+        @test kappa(k3, x) ≈ exp(-x / 2π)
+        @test k3(v1, v2) ≈ exp(-norm(v1 - v2)^2 / 2π)
 
         # Standardised tests.
         TestUtils.test_interface(k)
