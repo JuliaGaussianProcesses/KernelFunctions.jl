@@ -30,7 +30,9 @@ metric(::SqExponentialKernel{<:Euclidean}) = SqEuclidean()
 iskroncompatible(::SqExponentialKernel) = true
 
 function Base.show(io::IO, k::SqExponentialKernel)
-    return print(io, "Squared Exponential Kernel (metric = ", k.metric, ", ℓ = ", k.lengthscale, ")")
+    return print(
+        io, "Squared Exponential Kernel (metric = ", k.metric, ", ℓ = ", k.lengthscale, ")"
+    )
 end
 
 ## Aliases ##
