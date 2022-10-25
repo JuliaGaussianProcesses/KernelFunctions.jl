@@ -19,4 +19,8 @@
         KernelProduct(SqExponentialKernel(), LinearKernel(; c=c))
     end
     test_params(k1 * k2, (k1, k2))
+
+    nested_k = RBFKernel() * ((LinearKernel() + CosineKernel() * RBFKernel()) ∘ SelectTransform(1))
+    x = RowVecs(rand(10, 2))
+    @test (@inferred kernelmatrix(nested_k, x)) isa Matrix{Float64}
 end
