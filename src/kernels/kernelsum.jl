@@ -43,21 +43,21 @@ end
 
 Base.length(k::KernelSum) = length(k.kernels)
 
-_sum(f::Tf, x::Tuple) where {Tf} = f(x[1]) + _sum(f, Base.tail(x))
-_sum(f::Tf, x::Tuple{Tx}) where {Tf,Tx} = f(x[1])
+_sum(f, ks::Tuple, args...) = f(first(ks), args...) + _sum(f, Base.tail(ks). args...)
+_sum(f, ks::Tuple{Tx}, args...) where {Tx} = f(only(ks), args...)
 
-(κ::KernelSum)(x, y) = _sum(k -> k(x, y), κ.kernels)
+(κ::KernelSum)(x, y) = _sum((k, x, y) -> k(x, y), κ.kernels, x, y)
 
 function kernelmatrix(κ::KernelSum, x::AbstractVector)
-    return _sum(Base.Fix2(kernelmatrix, x), κ.kernels)
+    return _sum(kernelmatrix, κ.kernels, x)
 end
 
 function kernelmatrix(κ::KernelSum, x::AbstractVector, y::AbstractVector)
-    return _sum(k -> kernelmatrix(k, x, y), κ.kernels)
+    return _sum(kernelmatrix, κ.kernels, x, y)
 end
 
 function kernelmatrix_diag(κ::KernelSum, x::AbstractVector)
-    return _sum(Base.Fix2(kernelmatrix_diag, x), κ.kernels)
+    return _sum(k -> kernelmatrix_diag(k, x), κ.kernels)
 end
 
 function kernelmatrix_diag(κ::KernelSum, x::AbstractVector, y::AbstractVector)
