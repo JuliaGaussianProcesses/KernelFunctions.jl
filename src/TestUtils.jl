@@ -164,9 +164,7 @@ end
 function test_with_type(
     f, rng::AbstractRNG, k::Kernel, ::Type{Vector{T}}; kwargs...
 ) where {T<:Real}
-    return f(
-        k, randn(rng, T, 11), randn(rng, T, 11), randn(rng, T, 13); kwargs...
-    )
+    return f(k, randn(rng, T, 11), randn(rng, T, 11), randn(rng, T, 13); kwargs...)
 end
 
 function test_with_type(
