@@ -13,12 +13,12 @@
     # Standardised tests.
     test_interface(k, Float64)
     test_interface(ConstantKernel(; c=1.5) + WhiteKernel(), Vector{String})
-    # test_ADs(x -> KernelSum(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))), rand(1))
-    # test_interface_ad_perf(2.4, StableRNG(123456)) do c
-        # KernelSum(SqExponentialKernel(), LinearKernel(; c=c))
-    # end
+    test_ADs(x -> KernelSum(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))), rand(1))
+    test_interface_ad_perf(2.4, StableRNG(123456)) do c
+        KernelSum(SqExponentialKernel(), LinearKernel(; c=c))
+    end
 
-    # test_params(k1 + k2, (k1, k2))
+    test_params(k1 + k2, (k1, k2))
 
     # Regression tests for https://github.com//issues/458
     @testset for k in (
