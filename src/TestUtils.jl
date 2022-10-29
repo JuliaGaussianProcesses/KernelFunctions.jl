@@ -116,7 +116,9 @@ test_type_stability(
 Run type stability checks over `k(x,y)` and the different functions of the API (`kernelmatrix`, `kernelmatrix_diag`).
 `x0` and `x1` should be of the same length with different values, while `x0` and `x2` should be of different lengths.
 """
-function test_type_stability(k::Kernel, x0::AbstractVector, x1::AbstractVector, x2::AbstractVector)
+function test_type_stability(
+    k::Kernel, x0::AbstractVector, x1::AbstractVector, x2::AbstractVector
+)
     # Ensure that we have the required inputs.
     @assert length(x0) == length(x1)
     @assert length(x0) ≠ length(x2)
