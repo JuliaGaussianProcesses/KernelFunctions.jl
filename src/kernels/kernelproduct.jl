@@ -45,7 +45,9 @@ Base.length(k::KernelProduct) = length(k.kernels)
 
 (κ::KernelProduct)(x, y) = prod(k(x, y) for k in κ.kernels)
 
-_hadamard(f, ks::Tuple, args...) = f(first(ks), args...) .* _hadamard(f, Base.tail(ks), args...)
+function _hadamard(f, ks::Tuple, args...)
+    return f(first(ks), args...) .* _hadamard(f, Base.tail(ks), args...)
+end
 _hadamard(f, ks::Tuple{Tx}, args...) where {Tx} = f(only(ks), args...)
 
 (κ::KernelProduct)(x, y) = _hadamard((k, x, y) -> k(x, y), κ.kernels, x, y)
