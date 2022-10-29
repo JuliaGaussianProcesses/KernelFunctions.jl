@@ -86,90 +86,9 @@ function test_interface(
     @test kernelmatrix_diag!(tmp_diag, k, x0, x1) ≈ kernelmatrix_diag(k, x0, x1)
 end
 
-function test_interface(
-    rng::AbstractRNG, k::Kernel, ::Type{Vector{T}}; kwargs...
-) where {T<:Real}
-    return test_interface(
-        k, randn(rng, T, 11), randn(rng, T, 11), randn(rng, T, 13); kwargs...
-    )
-end
-
-function test_interface(
-    rng::AbstractRNG, k::MOKernel, ::Type{Vector{Tuple{T,Int}}}; dim_out=3, kwargs...
-) where {T<:Real}
-    return test_interface(
-        k,
-        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:11],
-        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:11],
-        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:13];
-        kwargs...,
-    )
-end
-
-function test_interface(
-    rng::AbstractRNG, k::Kernel, ::Type{<:ColVecs{T}}; dim_in=2, kwargs...
-) where {T<:Real}
-    return test_interface(
-        k,
-        ColVecs(randn(rng, T, dim_in, 11)),
-        ColVecs(randn(rng, T, dim_in, 11)),
-        ColVecs(randn(rng, T, dim_in, 13));
-        kwargs...,
-    )
-end
-
-function test_interface(
-    rng::AbstractRNG, k::Kernel, ::Type{<:RowVecs{T}}; dim_in=2, kwargs...
-) where {T<:Real}
-    return test_interface(
-        k,
-        RowVecs(randn(rng, T, 11, dim_in)),
-        RowVecs(randn(rng, T, 11, dim_in)),
-        RowVecs(randn(rng, T, 13, dim_in));
-        kwargs...,
-    )
-end
-
-function test_interface(
-    rng::AbstractRNG, k::Kernel, ::Type{<:Vector{Vector{T}}}; dim_in=2, kwargs...
-) where {T<:Real}
-    return test_interface(
-        k,
-        [randn(rng, T, dim_in) for _ in 1:11],
-        [randn(rng, T, dim_in) for _ in 1:11],
-        [randn(rng, T, dim_in) for _ in 1:13];
-        kwargs...,
-    )
-end
-
-function test_interface(rng::AbstractRNG, k::Kernel, ::Type{Vector{String}}; kwargs...)
-    return test_interface(
-        k,
-        [randstring(rng) for _ in 1:3],
-        [randstring(rng) for _ in 1:3],
-        [randstring(rng) for _ in 1:4];
-        kwargs...,
-    )
-end
-
-function test_interface(
-    rng::AbstractRNG, k::Kernel, ::Type{ColVecs{String}}; dim_in=2, kwargs...
-)
-    return test_interface(
-        k,
-        ColVecs([randstring(rng) for _ in 1:dim_in, _ in 1:3]),
-        ColVecs([randstring(rng) for _ in 1:dim_in, _ in 1:3]),
-        ColVecs([randstring(rng) for _ in 1:dim_in, _ in 1:4]);
-        kwargs...,
-    )
-end
-
-function test_interface(k::Kernel, T::Type{<:AbstractVector}; kwargs...)
-    return test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
-end
 
 """
-    test_interface([rng::AbstractRNG], k::Kernel, ::Type{T}; kwargs...) where {T<:Real}
+    test_interface([rng::AbstractRNG], k::Kernel, ::Type{T}=Float64; kwargs...) where {T}
 
 Run the [`test_interface`](@ref) tests for randomly generated inputs of types `Vector{T}`,
 `Vector{Vector{T}}`, `ColVecs{T}`, and `RowVecs{T}`.
@@ -179,23 +98,150 @@ For other input types, please provide the data manually.
 The keyword arguments are forwarded to the invocations of [`test_interface`](@ref) with the
 randomly generated inputs.
 """
-function test_interface(rng::AbstractRNG, k::Kernel, ::Type{T}; kwargs...) where {T<:Real}
+function test_interface(k::Kernel, T::Type=Float64; kwargs...)
+    return test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
+end
+
+function test_interface(rng::AbstractRNG, k::Kernel, T::Type=Float64; kwargs...)
+    return test_with_type(test_interface, rng, k, T; kwargs...)
+end
+
+"""
+test_type_stability(
+    k::Kernel,
+    x0::AbstractVector,
+    x1::AbstractVector,
+    x2::AbstractVector
+)
+
+Run type stability checks over `k(x,y)` and the different functions of the API (`kernelmatrix`, `kernelmatrix_diag`).
+`x0` and `x1` should be of the same length with different values, while `x0` and `x2` should be of different lengths.
+"""
+function test_type_stability(k::Kernel, x0::AbstractVector, x1::AbstractVector, x2::AbstractVector)
+    # Ensure that we have the required inputs.
+    @assert length(x0) == length(x1)
+    @assert length(x0) ≠ length(x2)
+    # @test @inferred(k(first(x0), first(x1))) isa Real
+    @test @inferred(kernelmatrix(k, x0)) isa AbstractMatrix
+    @test @inferred(kernelmatrix(k, x0, x2)) isa AbstractMatrix
+    @test @inferred(kernelmatrix_diag(k, x0)) isa AbstractVector
+    @test @inferred(kernelmatrix_diag(k, x0, x1)) isa AbstractVector
+end
+
+function test_type_stability(k::Kernel, ::Type{T}=Float64; kwargs...) where {T}
+    return test_type_stability(Random.GLOBAL_RNG, k, T; kwargs...)
+end
+
+function test_type_stability(rng::AbstractRNG, k::Kernel, ::Type{T}; kwargs...) where {T}
+    return test_with_type(test_type_stability, rng, k, T; kwargs...)
+end
+
+"""
+    test_with_type(f, rng::AbstractRNG, k::Kernel, ::Type{T}; kwargs...) where {T<:Real}
+
+Run the functions `f`, (for example [`test_interface`](@ref) or [`test_type_stable`](@ref)) for randomly generated inputs of types `Vector{T}`,
+`Vector{Vector{T}}`, `ColVecs{T}`, and `RowVecs{T}`.
+
+For other input types, please provide the data manually.
+
+The keyword arguments are forwarded to the invocations of `f` with the
+randomly generated inputs.
+"""
+function test_with_type(f, rng::AbstractRNG, k::Kernel, ::Type{T}; kwargs...) where {T}
     @testset "Vector{$T}" begin
-        test_interface(rng, k, Vector{T}; kwargs...)
+        test_with_type(f, rng, k, Vector{T}; kwargs...)
     end
     @testset "ColVecs{$T}" begin
-        test_interface(rng, k, ColVecs{T}; kwargs...)
+        test_with_type(f, rng, k, ColVecs{T}; kwargs...)
     end
     @testset "RowVecs{$T}" begin
-        test_interface(rng, k, RowVecs{T}; kwargs...)
+        test_with_type(f, rng, k, RowVecs{T}; kwargs...)
     end
-    @testset "Vector{Vector{T}}" begin
-        test_interface(rng, k, Vector{Vector{T}}; kwargs...)
+    @testset "Vector{Vector{$T}}" begin
+        test_with_type(f, rng, k, Vector{Vector{T}}; kwargs...)
     end
 end
 
-function test_interface(k::Kernel, T::Type{<:Real}=Float64; kwargs...)
-    return test_interface(Random.GLOBAL_RNG, k, T; kwargs...)
+function test_with_type(
+    f, rng::AbstractRNG, k::Kernel, ::Type{Vector{T}}; kwargs...
+) where {T<:Real}
+    return f(
+        k, randn(rng, T, 11), randn(rng, T, 11), randn(rng, T, 13); kwargs...
+    )
+end
+
+function test_with_type(
+    f, rng::AbstractRNG, k::MOKernel, ::Type{Vector{Tuple{T,Int}}}; dim_out=3, kwargs...
+) where {T<:Real}
+    return f(
+        k,
+        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:11],
+        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:11],
+        [(randn(rng, T), rand(rng, 1:dim_out)) for i in 1:13];
+        kwargs...,
+    )
+end
+
+function test_with_type(
+    f, rng::AbstractRNG, k::Kernel, ::Type{<:ColVecs{T}}; dim_in=2, kwargs...
+) where {T<:Real}
+    return f(
+        k,
+        ColVecs(randn(rng, T, dim_in, 11)),
+        ColVecs(randn(rng, T, dim_in, 11)),
+        ColVecs(randn(rng, T, dim_in, 13));
+        kwargs...,
+    )
+end
+
+function test_with_type(
+    f, rng::AbstractRNG, k::Kernel, ::Type{<:RowVecs{T}}; dim_in=2, kwargs...
+) where {T<:Real}
+    return f(
+        k,
+        RowVecs(randn(rng, T, 11, dim_in)),
+        RowVecs(randn(rng, T, 11, dim_in)),
+        RowVecs(randn(rng, T, 13, dim_in));
+        kwargs...,
+    )
+end
+
+function test_with_type(
+    f, rng::AbstractRNG, k::Kernel, ::Type{<:Vector{Vector{T}}}; dim_in=2, kwargs...
+) where {T<:Real}
+    return f(
+        k,
+        [randn(rng, T, dim_in) for _ in 1:11],
+        [randn(rng, T, dim_in) for _ in 1:11],
+        [randn(rng, T, dim_in) for _ in 1:13];
+        kwargs...,
+    )
+end
+
+function test_with_type(f, rng::AbstractRNG, k::Kernel, ::Type{Vector{String}}; kwargs...)
+    return f(
+        k,
+        [randstring(rng) for _ in 1:3],
+        [randstring(rng) for _ in 1:3],
+        [randstring(rng) for _ in 1:4];
+        kwargs...,
+    )
+end
+
+function test_with_type(
+    f, rng::AbstractRNG, k::Kernel, ::Type{ColVecs{String}}; dim_in=2, kwargs...
+)
+    return f(
+        k,
+        ColVecs([randstring(rng) for _ in 1:dim_in, _ in 1:3]),
+        ColVecs([randstring(rng) for _ in 1:dim_in, _ in 1:3]),
+        ColVecs([randstring(rng) for _ in 1:dim_in, _ in 1:4]);
+        kwargs...,
+    )
+end
+
+function test_with_type(f, k::Kernel, T::Type{<:Real}; kwargs...)
+    return test_with_type(f, Random.GLOBAL_RNG, k, T; kwargs...)
 end
 
 """

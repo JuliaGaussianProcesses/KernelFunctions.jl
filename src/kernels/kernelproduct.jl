@@ -59,11 +59,11 @@ function kernelmatrix(κ::KernelProduct, x::AbstractVector, y::AbstractVector)
 end
 
 function kernelmatrix_diag(κ::KernelProduct, x::AbstractVector)
-    return _hadamard(kernelmatrix_diag, κ.kernels, x, y)
+    return _hadamard(kernelmatrix_diag, κ.kernels, x)
 end
 
 function kernelmatrix_diag(κ::KernelProduct, x::AbstractVector, y::AbstractVector)
-    return reduce(hadamard, kernelmatrix_diag(k, x, y) for k in κ.kernels)
+    return _hadamard(kernelmatrix_diag, κ.kernels, x, y)
 end
 
 function Base.show(io::IO, κ::KernelProduct)
