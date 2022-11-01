@@ -20,7 +20,7 @@ using Compat: only
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 
-using KernelFunctions.TestUtils: test_interface, example_inputs
+using KernelFunctions.TestUtils: test_interface, test_type_stability, example_inputs
 
 # The GROUP is used to run different sets of tests in parallel on the GitHub Actions CI.
 # If you want to introduce a new group, ensure you also add it to .github/workflows/ci.yml

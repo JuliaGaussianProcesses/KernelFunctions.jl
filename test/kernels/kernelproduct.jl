@@ -10,8 +10,8 @@
     )
 
     # Standardised tests.
-    TestUtils.test_interface(k, Float64)
-    TestUtils.test_interface(ConstantKernel(; c=1.0) * WhiteKernel(), Vector{String})
+    test_interface(k, Float64)
+    test_interface(ConstantKernel(; c=1.0) * WhiteKernel(), Vector{String})
     test_ADs(
         x -> KernelProduct(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))), rand(1)
     )
@@ -19,4 +19,7 @@
         KernelProduct(SqExponentialKernel(), LinearKernel(; c=c))
     end
     test_params(k1 * k2, (k1, k2))
+
+    nested_k = RBFKernel() * (LinearKernel() + CosineKernel() * RBFKernel())
+    test_type_stability(nested_k)
 end
