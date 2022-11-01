@@ -48,6 +48,7 @@ _sum(f, ks::Tuple{Tx}, args...) where {Tx} = f(only(ks), args...)
 
 (κ::KernelSum)(x, y) = _sum((k, x, y) -> k(x, y), κ.kernels, x, y)
 
+
 function kernelmatrix(κ::KernelSum, x::AbstractVector)
     return _sum(kernelmatrix, κ.kernels, x)
 end
@@ -57,11 +58,11 @@ function kernelmatrix(κ::KernelSum, x::AbstractVector, y::AbstractVector)
 end
 
 function kernelmatrix_diag(κ::KernelSum, x::AbstractVector)
-    return _sum(k -> kernelmatrix_diag(k, x), κ.kernels)
+    return _sum(kernelmatrix_diag, κ.kernels, x)
 end
 
 function kernelmatrix_diag(κ::KernelSum, x::AbstractVector, y::AbstractVector)
-    return _sum(k -> kernelmatrix_diag(k, x, y), κ.kernels)
+    return _sum(kernelmatrix_diag, κ.kernels, x, y)
 end
 
 function Base.show(io::IO, κ::KernelSum)

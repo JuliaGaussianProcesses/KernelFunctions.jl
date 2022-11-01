@@ -106,15 +106,16 @@ function test_interface(rng::AbstractRNG, k::Kernel, T::Type=Float64; kwargs...)
 end
 
 """
-test_type_stability(
-    k::Kernel,
-    x0::AbstractVector,
-    x1::AbstractVector,
-    x2::AbstractVector
-)
+    test_type_stability(
+        k::Kernel,
+        x0::AbstractVector,
+        x1::AbstractVector,
+        x2::AbstractVector,
+    )
 
-Run type stability checks over `k(x,y)` and the different functions of the API (`kernelmatrix`, `kernelmatrix_diag`).
-`x0` and `x1` should be of the same length with different values, while `x0` and `x2` should be of different lengths.
+Run type stability checks over `k(x,y)` and the different functions of the API 
+(`kernelmatrix`, `kernelmatrix_diag`). `x0` and `x1` should be of the same 
+length with different values, while `x0` and `x2` should be of different lengths.
 """
 function test_type_stability(
     k::Kernel, x0::AbstractVector, x1::AbstractVector, x2::AbstractVector
@@ -122,7 +123,6 @@ function test_type_stability(
     # Ensure that we have the required inputs.
     @assert length(x0) == length(x1)
     @assert length(x0) ≠ length(x2)
-    # @test @inferred(k(first(x0), first(x1))) isa Real
     @test @inferred(kernelmatrix(k, x0)) isa AbstractMatrix
     @test @inferred(kernelmatrix(k, x0, x2)) isa AbstractMatrix
     @test @inferred(kernelmatrix_diag(k, x0)) isa AbstractVector
