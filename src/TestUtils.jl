@@ -138,9 +138,10 @@ function test_type_stability(rng::AbstractRNG, k::Kernel, ::Type{T}; kwargs...) 
 end
 
 """
-    test_with_type(f, rng::AbstractRNG, k::Kernel, ::Type{T}; kwargs...) where {T<:Real}
+    test_with_type(f, rng::AbstractRNG, k::Kernel, ::Type{T}; kwargs...) where {T}
 
-Run the functions `f`, (for example [`test_interface`](@ref) or [`test_type_stable`](@ref)) for randomly generated inputs of types `Vector{T}`,
+Run the functions `f`, (for example [`test_interface`](@ref) or
+[`test_type_stable`](@ref)) for randomly generated inputs of types `Vector{T}`,
 `Vector{Vector{T}}`, `ColVecs{T}`, and `RowVecs{T}`.
 
 For other input types, please provide the data manually.
