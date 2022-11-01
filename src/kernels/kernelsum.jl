@@ -48,7 +48,6 @@ _sum(f, ks::Tuple{Tx}, args...) where {Tx} = f(only(ks), args...)
 
 (κ::KernelSum)(x, y) = _sum((k, x, y) -> k(x, y), κ.kernels, x, y)
 
-
 function kernelmatrix(κ::KernelSum, x::AbstractVector)
     return _sum(kernelmatrix, κ.kernels, x)
 end
