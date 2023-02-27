@@ -32,5 +32,5 @@
 
     @test string(k) ==
         "Independent Multi-Output Kernel\n" *
-            "\tSquared Exponential Kernel (metric = Euclidean(0.0))"
+          "\tSquared Exponential Kernel (metric = Euclidean(0.0))"
 end
