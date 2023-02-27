@@ -16,8 +16,7 @@
     @test k.kernel isa Kernel
 
     @test isapprox(
-        kernelmatrix(k, x, y), kernelmatrix(k, collect(x), collect(y));
-        rtol=1e-6,
+        kernelmatrix(k, x, y), kernelmatrix(k, collect(x), collect(y)); rtol=1e-6
     )
 
     ## accuracy
