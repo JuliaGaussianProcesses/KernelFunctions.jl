@@ -49,10 +49,10 @@
                 nothing,
                 example_inputs(StableRNG(123456), T)...;
                 passes=(
-                    unary=(true, true, false),
-                    binary=(true, true, false),
-                    diag_unary=(true, true, false),
-                    diag_binary=(true, true, false),
+                    unary=(true, true, true),
+                    binary=(true, true, true),
+                    diag_unary=(true, true, true),
+                    diag_binary=(true, true, true),
                 ),
             )
         end
