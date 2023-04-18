@@ -10,6 +10,7 @@ using PDMats
 using Random
 using SpecialFunctions
 using StableRNGs
+using StaticArrays
 using Statistics
 using Test
 using Zygote: Zygote
