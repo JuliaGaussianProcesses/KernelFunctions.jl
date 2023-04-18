@@ -19,14 +19,16 @@ struct RationalKernel{Tα<:Real,M} <: SimpleKernel
     α::Vector{Tα}
     metric::M
 
-    function RationalKernel(α::Real, metric)
-        @check_args(RationalKernel, α, α > zero(α), "α > 0")
+    function RationalKernel(α::Real, metric; check_args::Bool=true)
+        check_args && @check_args(RationalKernel, α, α > zero(α), "α > 0")
         return new{typeof(α),typeof(metric)}([α], metric)
     end
 end
 
-function RationalKernel(; alpha::Real=2.0, α::Real=alpha, metric=Euclidean())
-    return RationalKernel(α, metric)
+function RationalKernel(;
+    alpha::Real=2.0, α::Real=alpha, metric=Euclidean(), check_args::Bool=true
+)
+    return RationalKernel(α, metric; check_args)
 end
 
 @functor RationalKernel
@@ -83,8 +85,10 @@ struct RationalQuadraticKernel{Tα<:Real,M} <: SimpleKernel
     α::Vector{Tα}
     metric::M
 
-    function RationalQuadraticKernel(; alpha::Real=2.0, α::Real=alpha, metric=Euclidean())
-        @check_args(RationalQuadraticKernel, α, α > zero(α), "α > 0")
+    function RationalQuadraticKernel(;
+        alpha::Real=2.0, α::Real=alpha, metric=Euclidean(), check_args::Bool=true
+    )
+        check_args && @check_args(RationalQuadraticKernel, α, α > zero(α), "α > 0")
         return new{typeof(α),typeof(metric)}([α], metric)
     end
 end
@@ -172,10 +176,15 @@ struct GammaRationalKernel{Tα<:Real,Tγ<:Real,M} <: SimpleKernel
     metric::M
 
     function GammaRationalKernel(;
-        alpha::Real=2.0, gamma::Real=1.0, α::Real=alpha, γ::Real=gamma, metric=Euclidean()
+        alpha::Real=2.0,
+        gamma::Real=1.0,
+        α::Real=alpha,
+        γ::Real=gamma,
+        metric=Euclidean(),
+        check_args::Bool=true,
     )
-        @check_args(GammaRationalKernel, α, α > zero(α), "α > 0")
-        @check_args(GammaRationalKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
+        check_args && @check_args(GammaRationalKernel, α, α > zero(α), "α > 0")
+        check_args && @check_args(GammaRationalKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
         return new{typeof(α),typeof(γ),typeof(metric)}([α], [γ], metric)
     end
 end

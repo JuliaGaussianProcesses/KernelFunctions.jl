@@ -125,14 +125,16 @@ struct GammaExponentialKernel{Tγ<:Real,M} <: SimpleKernel
     γ::Vector{Tγ}
     metric::M
 
-    function GammaExponentialKernel(γ::Real, metric)
-        @check_args(GammaExponentialKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
+    function GammaExponentialKernel(γ::Real, metric; check_args::Bool=true)
+        check_args && @check_args(GammaExponentialKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
         return new{typeof(γ),typeof(metric)}([γ], metric)
     end
 end
 
-function GammaExponentialKernel(; gamma::Real=1.0, γ::Real=gamma, metric=Euclidean())
-    return GammaExponentialKernel(γ, metric)
+function GammaExponentialKernel(;
+    gamma::Real=1.0, γ::Real=gamma, metric=Euclidean(), check_args::Bool=true
+)
+    return GammaExponentialKernel(γ, metric; check_args)
 end
 
 @functor GammaExponentialKernel

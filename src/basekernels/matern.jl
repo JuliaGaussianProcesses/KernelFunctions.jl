@@ -27,13 +27,15 @@ struct MaternKernel{Tν<:Real,M} <: SimpleKernel
     ν::Vector{Tν}
     metric::M
 
-    function MaternKernel(ν::Real, metric)
-        @check_args(MaternKernel, ν, ν > zero(ν), "ν > 0")
+    function MaternKernel(ν::Real, metric; check_args::Bool=true)
+        check_args && @check_args(MaternKernel, ν, ν > zero(ν), "ν > 0")
         return new{typeof(ν),typeof(metric)}([ν], metric)
     end
 end
 
-MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν, metric)
+function MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean(), check_args::Bool=true)
+    return MaternKernel(ν, metric; check_args)
+end
 
 @functor MaternKernel
 

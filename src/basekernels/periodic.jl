@@ -15,8 +15,11 @@ k(x, x'; r) = \\exp\\bigg(- \\frac{1}{2} \\sum_{i=1}^d \\bigg(\\frac{\\sin\\big(
 """
 struct PeriodicKernel{T} <: SimpleKernel
     r::Vector{T}
-    function PeriodicKernel(; r::AbstractVector{<:Real}=ones(Float64, 1))
-        @check_args(PeriodicKernel, r, all(ri > zero(ri) for ri in r), "r > 0")
+    function PeriodicKernel(;
+        r::AbstractVector{<:Real}=ones(Float64, 1), check_args::Bool=true
+    )
+        check_args &&
+            @check_args(PeriodicKernel, r, all(ri > zero(ri) for ri in r), "r > 0")
         return new{eltype(r)}(r)
     end
 end
@@ -28,7 +31,9 @@ PeriodicKernel(dims::Int) = PeriodicKernel(Float64, dims)
 
 Create a [`PeriodicKernel`](@ref) with parameter `r=ones(T, dims)`.
 """
-PeriodicKernel(T::DataType, dims::Int=1) = PeriodicKernel(; r=ones(T, dims))
+function PeriodicKernel(T::DataType, dims::Int=1)
+    return PeriodicKernel(; r=ones(T, dims), check_args=false)
+end
 
 @functor PeriodicKernel
 

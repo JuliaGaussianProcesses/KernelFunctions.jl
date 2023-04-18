@@ -14,13 +14,13 @@ k(x, x'; h) =  \\frac{\\|x\\|_2^{2h} + \\|x'\\|_2^{2h} - \\|x - x'\\|^{2h}}{2}.
 """
 struct FBMKernel{T<:Real} <: Kernel
     h::Vector{T}
-    function FBMKernel(h::Real)
-        @check_args(FBMKernel, h, zero(h) ≤ h ≤ one(h), "h ∈ [0, 1]")
+    function FBMKernel(h::Real; check_args::Bool=true)
+        check_args && @check_args(FBMKernel, h, zero(h) ≤ h ≤ one(h), "h ∈ [0, 1]")
         return new{typeof(h)}([h])
     end
 end
 
-FBMKernel(; h::Real=0.5) = FBMKernel(h)
+FBMKernel(; h::Real=0.5, check_args::Bool=true) = FBMKernel(h; check_args)
 
 @functor FBMKernel
 

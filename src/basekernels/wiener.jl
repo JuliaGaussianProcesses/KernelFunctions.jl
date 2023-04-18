@@ -39,8 +39,9 @@ The [`WhiteKernel`](@ref) is recovered for ``i = -1``.
 [^SDH]: Schober, Duvenaud & Hennig (2014). Probabilistic ODE Solvers with Runge-Kutta Means.
 """
 struct WienerKernel{I} <: Kernel
-    function WienerKernel{I}() where {I}
-        @check_args(WienerKernel, I, I ∈ (-1, 0, 1, 2, 3), "I ∈ {-1, 0, 1, 2, 3}")
+    function WienerKernel{I}(; check_args::Bool=true) where {I}
+        check_args &&
+            @check_args(WienerKernel, I, I ∈ (-1, 0, 1, 2, 3), "I ∈ {-1, 0, 1, 2, 3}")
         if I == -1
             return WhiteKernel()
         end
