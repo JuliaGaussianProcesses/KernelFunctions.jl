@@ -10,12 +10,13 @@ using PDMats
 using Random
 using SpecialFunctions
 using StableRNGs
+using StaticArrays
 using Statistics
 using Test
-using Zygote: Zygote
-using ForwardDiff: ForwardDiff
-using ReverseDiff: ReverseDiff
-using FiniteDifferences: FiniteDifferences
+import Zygote
+import ForwardDiff
+import ReverseDiff
+import FiniteDifferences
 using Compat: only
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
