@@ -48,6 +48,14 @@
         TestUtils.test_interface(k1, x0, x1, x2)
         TestUtils.test_interface(k2, x0, x1, x2)
     end
+
+    @testset "Type stability given static arrays" begin
+        αs = @SVector rand(3)
+        γs = @SMatrix rand(D_in, 3)
+        ωs = @SMatrix rand(D_in, 3)
+        @inferred spectral_mixture_kernel(αs, γs, ωs)
+    end
+
     # test_ADs(x->spectral_mixture_kernel(exp.(x[1:3]), reshape(x[4:18], 5, 3), reshape(x[19:end], 5, 3)), vcat(log.(αs₁), γs[:], ωs[:]), dims = [5,5])
     @test_broken "No tests passing (BaseKernel)"
 end
