@@ -33,7 +33,7 @@ struct IntrinsicCoregionMOKernel{K<:Kernel,T<:AbstractMatrix} <: MOKernel
 end
 
 function IntrinsicCoregionMOKernel(;
-    kernel::Kernel, B::AbstractMatrix; check_args::Bool=true
+    kernel::Kernel, B::AbstractMatrix, check_args::Bool=true
 )
     return IntrinsicCoregionMOKernel{typeof(kernel),typeof(B)}(kernel, B; check_args)
 end
