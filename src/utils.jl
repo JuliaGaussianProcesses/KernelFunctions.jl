@@ -8,19 +8,19 @@ end
 
 """
     @check_args(
-        D,
+        K,
         @setup(statements...),
         (arg₁, cond₁, message₁),
         (cond₂, message₂),
         ...,
     )
 
-A convenience macro that generates checks of arguments for a distribution of type `D`.
+A convenience macro that generates checks of arguments for a kernel of type `K`.
 
 The macro expects that a boolean variable of name `check_args` is defined and generates
 the following Julia code:
 ```julia
-Distributions.check_args(check_args) do
+KernelFunctions.check_args(check_args) do
     \$(statements...)
     cond₁ || throw(DomainError(arg₁, \$(string(D, ": ", message₁))))
     cond₂ || throw(ArgumentError(\$(string(D, ": ", message₂))))
@@ -72,7 +72,7 @@ macro check_args(D, setup_or_check, checks...)
     end
 
     return @strip_linenos quote
-        Distributions.check_args($(esc(:check_args))) do
+        KernelFunctions.check_args($(esc(:check_args))) do
             $(__source__)
             $(setup_stmts...)
             $(conds_exprs...)
