@@ -13,10 +13,10 @@ using StableRNGs
 using StaticArrays
 using Statistics
 using Test
-import Zygote
-import ForwardDiff
-import ReverseDiff
-import FiniteDifferences
+using Zygote: Zygote
+using ForwardDiff: ForwardDiff
+using ReverseDiff: ReverseDiff
+using FiniteDifferences: FiniteDifferences
 using Compat: only
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
