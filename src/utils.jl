@@ -1,7 +1,6 @@
 # strip_linenos and check_args both come from Distributions.jl,
 # see https://github.com/JuliaStats/Distributions.jl/blob/master/src/utils.jl
 
-
 macro strip_linenos(expr)
     return esc(Base.remove_linenums!(expr))
 end
@@ -89,7 +88,7 @@ If `check` is `false`, the checks are skipped.
 """
 function check_args(f::F, check::Bool) where {F}
     check && f()
-    nothing
+    return nothing
 end
 
 function deprecated_obsdim(obsdim::Union{Int,Nothing})
