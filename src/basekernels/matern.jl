@@ -28,7 +28,7 @@ struct MaternKernel{Tν<:Real,M} <: SimpleKernel
     metric::M
 
     function MaternKernel(ν::Real, metric; check_args::Bool=true)
-        check_args && @check_args(MaternKernel, ν, ν > zero(ν), "ν > 0")
+        @check_args(MaternKernel, (ν, ν > zero(ν), "ν > 0"))
         return new{typeof(ν),typeof(metric)}([ν], metric)
     end
 end

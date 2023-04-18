@@ -40,8 +40,7 @@ The [`WhiteKernel`](@ref) is recovered for ``i = -1``.
 """
 struct WienerKernel{I} <: Kernel
     function WienerKernel{I}(; check_args::Bool=true) where {I}
-        check_args &&
-            @check_args(WienerKernel, I, I ∈ (-1, 0, 1, 2, 3), "I ∈ {-1, 0, 1, 2, 3}")
+        @check_args(WienerKernel, (I, I ∈ (-1, 0, 1, 2, 3), "I ∈ {-1, 0, 1, 2, 3}"))
         if I == -1
             return WhiteKernel()
         end

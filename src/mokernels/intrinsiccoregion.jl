@@ -22,11 +22,9 @@ struct IntrinsicCoregionMOKernel{K<:Kernel,T<:AbstractMatrix} <: MOKernel
     function IntrinsicCoregionMOKernel{K,T}(
         kernel::K, B::T; check_args::Bool=true
     ) where {K,T}
-        check_args && @check_args(
+        @check_args(
             IntrinsicCoregionMOKernel,
-            B,
-            eigmin(B) >= 0,
-            "B has to be positive semi-definite"
+            (B, eigmin(B) >= 0, "B has to be positive semi-definite")
         )
         return new{K,T}(kernel, B)
     end

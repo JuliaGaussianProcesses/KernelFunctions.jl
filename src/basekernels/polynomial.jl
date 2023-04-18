@@ -17,7 +17,7 @@ struct LinearKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
 
     function LinearKernel(c::Real; check_args::Bool=true)
-        check_args && @check_args(LinearKernel, c, c >= zero(c), "c ≥ 0")
+        @check_args(LinearKernel, (c, c >= zero(c), "c ≥ 0"))
         return new{typeof(c)}([c])
     end
 end
@@ -72,9 +72,11 @@ struct PolynomialKernel{Tc<:Real} <: SimpleKernel
     function PolynomialKernel{Tc}(
         degree::Int, c::Vector{Tc}; check_args::Bool=true
     ) where {Tc}
-        check_args &&
-            @check_args(PolynomialKernel, degree, degree >= one(degree), "degree ≥ 1")
-        check_args && @check_args(PolynomialKernel, c, only(c) >= zero(Tc), "c ≥ 0")
+        @check_args(
+            PolynomialKernel,
+            (degree, degree >= one(degree), "degree ≥ 1"),
+            (c, only(c) >= zero(Tc), "c ≥ 0")
+        )
         return new{Tc}(degree, c)
     end
 end

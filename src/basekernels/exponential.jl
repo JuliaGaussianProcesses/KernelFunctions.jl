@@ -126,7 +126,7 @@ struct GammaExponentialKernel{Tγ<:Real,M} <: SimpleKernel
     metric::M
 
     function GammaExponentialKernel(γ::Real, metric; check_args::Bool=true)
-        check_args && @check_args(GammaExponentialKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
+        @check_args(GammaExponentialKernel, (γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]"))
         return new{typeof(γ),typeof(metric)}([γ], metric)
     end
 end

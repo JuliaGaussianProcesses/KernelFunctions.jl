@@ -18,8 +18,7 @@ struct PeriodicKernel{T} <: SimpleKernel
     function PeriodicKernel(;
         r::AbstractVector{<:Real}=ones(Float64, 1), check_args::Bool=true
     )
-        check_args &&
-            @check_args(PeriodicKernel, r, all(ri > zero(ri) for ri in r), "r > 0")
+        @check_args(PeriodicKernel, (r, all(ri > zero(ri) for ri in r), "r > 0")w)
         return new{eltype(r)}(r)
     end
 end

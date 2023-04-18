@@ -99,7 +99,7 @@ struct ConstantKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
 
     function ConstantKernel(; c::Real=1.0, check_args::Bool=true)
-        check_args && @check_args(ConstantKernel, c, c >= zero(c), "c ≥ 0")
+        @check_args(ConstantKernel, (c, c >= zero(c), "c ≥ 0"))
         return new{typeof(c)}([c])
     end
 end

@@ -20,7 +20,7 @@ struct RationalKernel{Tα<:Real,M} <: SimpleKernel
     metric::M
 
     function RationalKernel(α::Real, metric; check_args::Bool=true)
-        check_args && @check_args(RationalKernel, α, α > zero(α), "α > 0")
+        @check_args(RationalKernel, (α, α > zero(α), "α > 0"))
         return new{typeof(α),typeof(metric)}([α], metric)
     end
 end
@@ -88,7 +88,7 @@ struct RationalQuadraticKernel{Tα<:Real,M} <: SimpleKernel
     function RationalQuadraticKernel(;
         alpha::Real=2.0, α::Real=alpha, metric=Euclidean(), check_args::Bool=true
     )
-        check_args && @check_args(RationalQuadraticKernel, α, α > zero(α), "α > 0")
+        @check_args(RationalQuadraticKernel, (α, α > zero(α), "α > 0"))
         return new{typeof(α),typeof(metric)}([α], metric)
     end
 end
@@ -183,8 +183,11 @@ struct GammaRationalKernel{Tα<:Real,Tγ<:Real,M} <: SimpleKernel
         metric=Euclidean(),
         check_args::Bool=true,
     )
-        check_args && @check_args(GammaRationalKernel, α, α > zero(α), "α > 0")
-        check_args && @check_args(GammaRationalKernel, γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
+        @check_args(
+            GammaRationalKernel,
+            (α, α > zero(α), "α > 0"),
+            (γ, zero(γ) < γ ≤ 2, "γ ∈ (0, 2]")
+        )
         return new{typeof(α),typeof(γ),typeof(metric)}([α], [γ], metric)
     end
 end

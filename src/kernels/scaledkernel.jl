@@ -19,7 +19,7 @@ end
 function ScaledKernel(
     kernel::Tk, σ²::Tσ²=1.0; check_args::Bool=true
 ) where {Tk<:Kernel,Tσ²<:Real}
-    check_args && @check_args(ScaledKernel, σ², σ² > zero(Tσ²), "σ² > 0")
+    @check_args(ScaledKernel, (σ², σ² > zero(Tσ²), "σ² > 0"))
     return ScaledKernel{Tk,Tσ²}(kernel, [σ²])
 end
 
