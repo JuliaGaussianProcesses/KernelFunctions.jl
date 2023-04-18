@@ -14,8 +14,8 @@
     k3 = WienerKernel(; i=3)
     @test k3 isa WienerKernel{3}
 
-    @test_throws ArgumentError WienerKernel(; i=4)
-    @test_throws ArgumentError WienerKernel(; i=-2)
+    @test_throws DomainError WienerKernel(; i=4)
+    @test_throws DomainError WienerKernel(; i=-2)
 
     v1 = rand(4)
     v2 = rand(4)

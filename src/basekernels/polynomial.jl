@@ -16,13 +16,13 @@ See also: [`PolynomialKernel`](@ref)
 struct LinearKernel{Tc<:Real} <: SimpleKernel
     c::Vector{Tc}
 
-    function LinearKernel(c::Real)
-        @check_args(LinearKernel, c, c >= zero(c), "c ≥ 0")
+    function LinearKernel(c::Real; check_args::Bool=true)
+        @check_args(LinearKernel, (c, c >= zero(c), "c ≥ 0"))
         return new{typeof(c)}([c])
     end
 end
 
-LinearKernel(; c::Real=0.0) = LinearKernel(c)
+LinearKernel(; c::Real=0.0, check_args::Bool=true) = LinearKernel(c; check_args)
 
 @functor LinearKernel
 
@@ -69,15 +69,20 @@ struct PolynomialKernel{Tc<:Real} <: SimpleKernel
     degree::Int
     c::Vector{Tc}
 
-    function PolynomialKernel{Tc}(degree::Int, c::Vector{Tc}) where {Tc}
-        @check_args(PolynomialKernel, degree, degree >= one(degree), "degree ≥ 1")
-        @check_args(PolynomialKernel, c, only(c) >= zero(Tc), "c ≥ 0")
+    function PolynomialKernel{Tc}(
+        degree::Int, c::Vector{Tc}; check_args::Bool=true
+    ) where {Tc}
+        @check_args(
+            PolynomialKernel,
+            (degree, degree >= one(degree), "degree ≥ 1"),
+            (c, only(c) >= zero(Tc), "c ≥ 0")
+        )
         return new{Tc}(degree, c)
     end
 end
 
-function PolynomialKernel(; degree::Int=2, c::Real=0.0)
-    return PolynomialKernel{typeof(c)}(degree, [c])
+function PolynomialKernel(; degree::Int=2, c::Real=0.0, check_args::Bool=true)
+    return PolynomialKernel{typeof(c)}(degree, [c]; check_args)
 end
 
 # The degree of the polynomial kernel is a fixed discrete parameter

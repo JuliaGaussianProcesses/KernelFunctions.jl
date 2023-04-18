@@ -13,16 +13,14 @@ function _kernelmatrix_kron_helper(::Type{<:MOInputIsotopicByOutputs}, Kfeatures
     return kron(Koutputs, Kfeatures)
 end
 
-if VERSION >= v"1.6"
-    function _kernelmatrix_kron_helper!(
-        K, ::Type{<:MOInputIsotopicByFeatures}, Kfeatures, Koutputs
-    )
-        return kron!(K, Kfeatures, Koutputs)
-    end
+function _kernelmatrix_kron_helper!(
+    K, ::Type{<:MOInputIsotopicByFeatures}, Kfeatures, Koutputs
+)
+    return kron!(K, Kfeatures, Koutputs)
+end
 
-    function _kernelmatrix_kron_helper!(
-        K, ::Type{<:MOInputIsotopicByOutputs}, Kfeatures, Koutputs
-    )
-        return kron!(K, Koutputs, Kfeatures)
-    end
+function _kernelmatrix_kron_helper!(
+    K, ::Type{<:MOInputIsotopicByOutputs}, Kfeatures, Koutputs
+)
+    return kron!(K, Koutputs, Kfeatures)
 end

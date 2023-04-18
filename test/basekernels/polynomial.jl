@@ -14,7 +14,7 @@
         @test repr(k) == "Linear Kernel (c = 0.0)"
 
         # Errors.
-        @test_throws ArgumentError LinearKernel(; c=-0.5)
+        @test_throws DomainError LinearKernel(; c=-0.5)
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
@@ -36,8 +36,8 @@
         @test metric(PolynomialKernel(; degree=3, c=c)) == KernelFunctions.DotProduct()
 
         # Errors.
-        @test_throws ArgumentError PolynomialKernel(; degree=0)
-        @test_throws ArgumentError PolynomialKernel(; c=-0.5)
+        @test_throws DomainError PolynomialKernel(; degree=0)
+        @test_throws DomainError PolynomialKernel(; c=-0.5)
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
