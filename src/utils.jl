@@ -88,7 +88,7 @@ If `check` is `false`, the checks are skipped.
 """
 function check_args(f::F, check::Bool) where {F}
     check && f()
-    nothing
+    return nothing
 end
 
 function deprecated_obsdim(obsdim::Union{Int,Nothing})
