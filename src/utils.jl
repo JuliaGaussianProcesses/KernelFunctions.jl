@@ -1,7 +1,6 @@
 # strip_linenos and check_args both come from Distributions.jl,
 # see https://github.com/JuliaStats/Distributions.jl/blob/master/src/utils.jl
 
-
 macro strip_linenos(expr)
     return esc(Base.remove_linenums!(expr))
 end
