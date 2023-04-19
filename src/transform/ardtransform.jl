@@ -36,7 +36,6 @@ dim(t::ARDTransform) = length(t.v)
 (t::ARDTransform)(x) = t.v .* x
 
 # Quite specific implementations required to pass correctness and performance tests.
-_map(t::ARDTransform, x::AbstractVector{<:Real}) = x * only(t.v)
 function _map(t::ARDTransform, x::ColVecs)
     return ColVecs((t.v * ones(eltype(t.v), 1, size(x.X, 2))) .* x.X)
 end
