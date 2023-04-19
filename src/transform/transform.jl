@@ -8,7 +8,14 @@ abstract type Transform end
 # We introduce our own _map for Transform so that we can work around
 # https://github.com/FluxML/Zygote.jl/issues/646 and define our own pullback
 # (see zygoterules.jl)
+Base.map(t::Transform, x::ColVecs) = _map(t, x)
+Base.map(t::Transform, x::RowVecs) = _map(t, x)
+
+# Fallback
 _map(t::Transform, x::AbstractVector) = map(t, x)
+# Avoid stackoverflow issues
+_map(t::Transform, x::RowVecs) = map(t, eachrow(x.X))
+_map(t::Transform, x::ColVecs) = map(t, eachcol(x.X))
 
 """
     IdentityTransform()
