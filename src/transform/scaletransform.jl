@@ -26,6 +26,7 @@ set!(t::ScaleTransform, ρ::Real) = t.s .= [ρ]
 
 (t::ScaleTransform)(x) = only(t.s) * x
 
+_map(t::ScaleTransform, x::AbstractVector{<:Real}) = only(t.s) .* x
 _map(t::ScaleTransform, x::ColVecs) = ColVecs(only(t.s) .* x.X)
 _map(t::ScaleTransform, x::RowVecs) = RowVecs(only(t.s) .* x.X)
 

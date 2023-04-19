@@ -23,6 +23,8 @@ end
 
 (t::FunctionTransform)(x) = t.f(x)
 
+_map(t::FunctionTransform, x::AbstractVector{<:Real}) = map(t.f, x)
+
 function _map(t::FunctionTransform, x::ColVecs)
     vals = map(axes(x.X, 2)) do i
         t.f(view(x.X, :, i))
