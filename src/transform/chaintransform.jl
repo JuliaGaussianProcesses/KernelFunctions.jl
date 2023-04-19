@@ -42,11 +42,7 @@ end
 
 (t::ChainTransform)(x) = foldl((x, t) -> t(x), t.transforms; init=x)
 
-# Define separate methods for `ColVecs` and `RowVecs` to fix method ambiguity
-_map(t::ChainTransform, x::AbstractVector) = _chain_map(t, x)
-_map(t::ChainTransform, x::RowVecs) = _chain_map(t, x)
-_map(t::ChainTransform, x::ColVecs) = _chain_map(t, x)
-function _chain_map(t::ChainTransform, x::AbstractVector)
+function _map(t::ChainTransform, x::AbstractVector)
     return foldl((x, t) -> _map(t, x), t.transforms; init=x)
 end
 

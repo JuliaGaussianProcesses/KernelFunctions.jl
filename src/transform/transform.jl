@@ -12,10 +12,17 @@ Base.map(t::Transform, x::ColVecs) = _map(t, x)
 Base.map(t::Transform, x::RowVecs) = _map(t, x)
 
 # Fallback
-_map(t::Transform, x::AbstractVector) = map(t, x)
-# Avoid stackoverflow issues
-_map(t::Transform, x::RowVecs) = map(t, eachrow(x.X))
-_map(t::Transform, x::ColVecs) = map(t, eachcol(x.X))
+# No separate methods for `x::ColVecs` and `x::RowVecs` to avoid method ambiguities
+function _map(t::Transform, x::AbstractVector)
+    # Avoid stackoverflow
+    if x isa RowVecs
+        return map(t, eachrow(x.X))
+    elseif x isa ColVecs
+        return map(t, eachcol(x.X))
+    else
+        return map(t, x)
+    end
+end
 
 """
     IdentityTransform()
