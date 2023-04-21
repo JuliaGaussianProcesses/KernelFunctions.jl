@@ -101,10 +101,10 @@ _to_colvecs(x::AbstractVector{<:Real}) = ColVecs(reshape(x, 1, :))
 
 pairwise(d::PreMetric, x::ColVecs) = Distances_pairwise(d, x.X; dims=2)
 pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances_pairwise(d, x.X, y.X; dims=2)
-function pairwise(d::PreMetric, x::AbstractVector, y::ColVecs)
+function pairwise(d::PreMetric, x::AbstractVector{<:AbstractVector{<:Real}}, y::ColVecs)
     return Distances_pairwise(d, reduce(hcat, x), y.X; dims=2)
 end
-function pairwise(d::PreMetric, x::ColVecs, y::AbstractVector)
+function pairwise(d::PreMetric, x::ColVecs, y::AbstractVector{<:AbstractVector{<:Real}})
     return Distances_pairwise(d, x.X, reduce(hcat, y); dims=2)
 end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs)
@@ -172,10 +172,10 @@ dim(x::RowVecs) = size(x.X, 2)
 
 pairwise(d::PreMetric, x::RowVecs) = Distances_pairwise(d, x.X; dims=1)
 pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = Distances_pairwise(d, x.X, y.X; dims=1)
-function pairwise(d::PreMetric, x::AbstractVector, y::RowVecs)
+function pairwise(d::PreMetric, x::AbstractVector{<:AbstractVector{<:Real}}, y::RowVecs)
     return Distances_pairwise(d, permutedims(reduce(hcat, x)), y.X; dims=1)
 end
-function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector)
+function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector{<:AbstractVector{<:Real}})
     return Distances_pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
 end
 function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs)

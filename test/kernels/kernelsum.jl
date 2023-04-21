@@ -3,6 +3,11 @@
     k2 = SqExponentialKernel()
     k = KernelSum(k1, k2)
     @test k == KernelSum([k1, k2]) == KernelSum((k1, k2))
+    for (_k1, _k2) in Iterators.product(
+        (k1, KernelSum((k1,)), KernelSum([k1])), (k2, KernelSum((k2,)), KernelSum([k2]))
+    )
+        @test k == _k1 + _k2
+    end
     @test length(k) == 2
     @test repr(k) == (
         "Sum of 2 kernels:\n" *

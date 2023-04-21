@@ -3,6 +3,12 @@
     k2 = SqExponentialKernel()
     k = KernelProduct(k1, k2)
     @test k == KernelProduct([k1, k2]) == KernelProduct((k1, k2))
+    for (_k1, _k2) in Iterators.product(
+        (k1, KernelProduct((k1,)), KernelProduct([k1])),
+        (k2, KernelProduct((k2,)), KernelProduct([k2])),
+    )
+        @test k == _k1 * _k2
+    end
     @test length(k) == 2
     @test string(k) == (
         "Product of 2 kernels:\n\tLinear Kernel (c = 0.0)\n\tSquared " *
