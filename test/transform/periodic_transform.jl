@@ -15,5 +15,8 @@
 
     @testset "AD" begin
         test_ADs(x -> SEKernel() ∘ PeriodicTransform(exp(x[1])), [2.3])
+        test_interface_ad_perf(0.95, StableRNG(123456), [Vector{Float64}]) do θ
+            SEKernel() ∘ PeriodicTransform(θ)
+        end
     end
 end

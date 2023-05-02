@@ -274,3 +274,206 @@ function test_AD(AD::Symbol, k::MOKernel, dims=(in=3, out=2, obs=3))
         end
     end
 end
+
+function count_allocs(f, args...)
+    stats = @timed f(args...)
+    return Base.gc_alloc_count(stats.gcstats)
+end
+
+"""
+    constant_allocs_heuristic(f, args1::T, args2::T) where {T}
+
+True if number of allocations associated with evaluating `f(args1...)` is equal to those
+required to evaluate `f(args2...)`. Runs `f` beforehand to ensure that compilation-related
+allocations are not included.
+
+Why is this a good test? In lots of situations it will be the case that the total amount of
+memory allocated by a function will vary as the input sizes vary, but the total _number_
+of allocations ought to be constant. A common performance bug is that the number of
+allocations actually does scale with the size of the inputs (e.g. due to a type
+instability), and we would very much like to know if this is happening.
+
+Typically this kind of condition is not a sufficient condition for good performance, but it
+is certainly a necessary condition.
+
+This kind of test is very quick to conduct (just requires running `f` 4 times). It's also
+easier to write than simply checking that the total number of allocations used to execute
+a function is below some arbitrary `f`-dependent threshold.
+"""
+function constant_allocs_heuristic(f, args1::T, args2::T) where {T}
+
+    # Ensure that we're not counting allocations associated with compilation.
+    f(args1...)
+    f(args2...)
+
+    allocs_1 = count_allocs(f, args1...)
+    allocs_2 = count_allocs(f, args2...)
+    return (allocs_1, allocs_2)
+end
+
+"""
+    ad_constant_allocs_heuristic(f, args1::T, args2::T; Δ1=nothing, Δ2=nothing) where {T}
+
+Assesses `constant_allocs_heuristic` for `f`, `Zygote.pullback(f, args...)` and its
+pullback for both of `args1` and `args2`.
+
+`Δ1` and `Δ2` are passed to the pullback associated with `Zygote.pullback(f, args1...)`
+and `Zygote.pullback(f, args2...)` respectively. If left as `nothing`, it is assumed that
+the output of the primal is an acceptable cotangent to be passed to the corresponding
+pullback.
+"""
+function ad_constant_allocs_heuristic(
+    f, args1::T, args2::T; Δ1=nothing, Δ2=nothing
+) where {T}
+
+    # Check that primal has constant allocations.
+    primal_heuristic = constant_allocs_heuristic(f, args1, args2)
+
+    # Check that forwards-pass has constant allocations.
+    forwards_heuristic = constant_allocs_heuristic(
+        (args...) -> Zygote.pullback(f, args...), args1, args2
+    )
+
+    # Check that pullback has constant allocations for both arguments. Run twice to remove
+    # compilation-related allocations.
+
+    # First thing
+    out1, pb1 = Zygote.pullback(f, args1...)
+    Δ1_val = Δ1 === nothing ? out1 : Δ1
+    pb1(Δ1_val)
+    allocs_1 = count_allocs(pb1, Δ1_val)
+
+    # Second thing
+    out2, pb2 = Zygote.pullback(f, args2...)
+    Δ2_val = Δ2 === nothing ? out2 : Δ2
+    pb2(Δ2_val)
+    allocs_2 = count_allocs(pb2, Δ2 === nothing ? out2 : Δ2)
+
+    return primal_heuristic, forwards_heuristic, (allocs_1, allocs_2)
+end
+
+"""
+    test_zygote_perf_heuristic(
+        f, name::String, args1, args2, passes, Δ1=nothing, Δ2=nothing
+    )
+
+Executes `ad_constant_allocs_heuristic(f, args1, args2; Δ1, Δ2)` and creates a testset out
+of the results.
+`passes` is a 3-tuple of booleans. `passes[1]` indicates whether the checks should pass
+for `f(args1...)` etc, `passes[2]` for `Zygote.pullback(f, args1...)`. Let
+```julia
+out, pb = Zygote.pullback(f, args1...)
+````
+then `passes[3]` indicates whether `pb(out)` checks should pass.
+This is useful when it is known that
+some of the tests fail and a fix isn't immediately available.
+"""
+function test_zygote_perf_heuristic(
+    f, name::String, args1, args2, passes, Δ1=nothing, Δ2=nothing
+)
+    @testset "$name" begin
+        primal, fwd, pb = ad_constant_allocs_heuristic(f, args1, args2; Δ1, Δ2)
+        if passes[1]
+            @test primal[1] == primal[2]
+        else
+            @test_broken primal[1] == primal[2]
+        end
+        if passes[2]
+            @test fwd[1] == fwd[2]
+        else
+            @test_broken fwd[1] == fwd[2]
+        end
+        if passes[3]
+            @test pb[1] == pb[2]
+        else
+            @test_broken pb[1] == pb[2]
+        end
+    end
+end
+
+"""
+    test_interface_ad_perf(
+        f,
+        θ,
+        x1::AbstractVector,
+        x2::AbstractVector,
+        x3::AbstractVector,
+        x4::AbstractVector;
+        passes=(
+            unary=(true, true, true),
+            binary=(true, true, true),
+            diag_unary=(true, true, true),
+            diag_binary=(true, true, true),
+        ),
+    )
+
+Runs `test_zygote_perf_heuristic` for unary / binary methods of `kernelmatrix` and
+`kernelmatrix_diag`. `f(θ)` must, therefore, output a `Kernel`.
+`passes` should be a `NamedTuple` of the form above, providing the `passes` argument
+for `test_zygote_perf_heuristic` for each of the methods of `kernelmatrix` and
+`kernelmatrix_diag`.
+"""
+function test_interface_ad_perf(
+    f,
+    θ,
+    x1::AbstractVector,
+    x2::AbstractVector,
+    x3::AbstractVector,
+    x4::AbstractVector;
+    passes=(
+        unary=(true, true, true),
+        binary=(true, true, true),
+        diag_unary=(true, true, true),
+        diag_binary=(true, true, true),
+    ),
+)
+    test_zygote_perf_heuristic(
+        (θ, x) -> kernelmatrix(f(θ), x),
+        "kernelmatrix (unary)",
+        (θ, x1),
+        (θ, x2),
+        passes.unary,
+    )
+    test_zygote_perf_heuristic(
+        (θ, x, y) -> kernelmatrix(f(θ), x, y),
+        "kernelmatrix (binary)",
+        (θ, x1, x2),
+        (θ, x3, x4),
+        passes.binary,
+    )
+    test_zygote_perf_heuristic(
+        (θ, x) -> kernelmatrix_diag(f(θ), x),
+        "kernelmatrix_diag (unary)",
+        (θ, x1),
+        (θ, x2),
+        passes.diag_unary,
+    )
+    return test_zygote_perf_heuristic(
+        (θ, x) -> kernelmatrix_diag(f(θ), x, x),
+        "kernelmatrix_diag (binary)",
+        (θ, x1),
+        (θ, x2),
+        passes.diag_binary,
+    )
+end
+
+"""
+    test_interface_ad_perf(f, θ, rng::AbstractRNG, types=__default_input_types())
+
+Runs `test_interface_ad_perf` for each of the types in `types`.
+Often a good idea to just provide `f`, `θ` and `rng`, as `__default_input_types()` is
+intended to cover commonly used types.
+Sometimes it's necessary to specify that only a subset should be used for a particular
+kernel e.g. where it's only valid for 1-dimensional inputs.
+"""
+function test_interface_ad_perf(f, θ, rng::AbstractRNG, types=__default_input_types())
+    @testset "AD Alloc Performance ($T)" for T in types
+        test_interface_ad_perf(f, θ, example_inputs(rng, T)...)
+    end
+end
+
+function __default_input_types()
+    return [
+        Vector{Float64}, ColVecs{Float64,Matrix{Float64}}, RowVecs{Float64,Matrix{Float64}}
+    ]
+end

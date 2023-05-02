@@ -42,7 +42,7 @@ plot!(x_test, sinc; label="true function")
 # A simple way to ensure that the kernel parameters are positive
 # is to optimize over the logarithm of the parameters. 
 
-function kernelcall(θ)
+function kernel_creator(θ)
     return (exp(θ[1]) * SqExponentialKernel() + exp(θ[2]) * Matern32Kernel()) ∘
            ScaleTransform(exp(θ[3]))
 end
@@ -52,7 +52,7 @@ nothing #hide
 # the kernel parameters and normalization constant:
 
 function f(x, x_train, y_train, θ)
-    k = kernelcall(θ[1:3])
+    k = kernel_creator(θ[1:3])
     return kernelmatrix(k, x, x_train) *
            ((kernelmatrix(k, x_train) + exp(θ[4]) * I) \ y_train)
 end
@@ -133,15 +133,15 @@ raw_initial_θ = (
 flat_θ, unflatten = ParameterHandling.value_flatten(raw_initial_θ)
 flat_θ #hide
 
-# We define a few relevant functions and note that compared to the previous `kernelcall` function, we do not need explicit `exp`s. 
+# We define a few relevant functions and note that compared to the previous `kernel_creator` function, we do not need explicit `exp`s. 
 
-function kernelcall(θ)
+function kernel_creator(θ)
     return (θ.k1 * SqExponentialKernel() + θ.k2 * Matern32Kernel()) ∘ ScaleTransform(θ.k3)
 end
 nothing #hide
 
 function f(x, x_train, y_train, θ)
-    k = kernelcall(θ)
+    k = kernel_creator(θ)
     return kernelmatrix(k, x, x_train) *
            ((kernelmatrix(k, x_train) + θ.noise_var * I) \ y_train)
 end

@@ -8,4 +8,5 @@
     # Standardised tests.
     TestUtils.test_interface(k, Float64)
     test_ADs(NeuralNetworkKernel)
+    test_interface_ad_perf(_ -> NeuralNetworkKernel(), nothing, StableRNG(123456))
 end

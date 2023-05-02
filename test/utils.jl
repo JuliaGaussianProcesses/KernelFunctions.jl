@@ -63,7 +63,7 @@
             @test back(ones(size(X)))[1].X == ones(size(X))
         end
 
-        if VERSION >= v"1.6"
+        if VERSION >= v"1.7"
             @testset "Zygote type-inference" begin
                 ctx = NoContext()
                 x = ColVecs(randn(2, 4))

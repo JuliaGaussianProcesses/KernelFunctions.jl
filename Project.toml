@@ -1,6 +1,6 @@
 name = "KernelFunctions"
 uuid = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
-version = "0.10.36"
+version = "0.10.55"
 
 [deps]
 ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
@@ -23,12 +23,12 @@ ZygoteRules = "700de1a5-db45-46bc-99cf-38207098b444"
 
 [compat]
 ChainRulesCore = "1"
-Compat = "3.7"
+Compat = "3.7, 4"
 CompositionsBase = "0.1"
 Distances = "0.10"
-FillArrays = "0.10, 0.11, 0.12, 0.13"
-Functors = "0.1, 0.2"
-IrrationalConstants = "0.1"
+FillArrays = "0.10, 0.11, 0.12, 0.13, 1"
+Functors = "0.1, 0.2, 0.3, 0.4"
+IrrationalConstants = "0.1, 0.2"
 LogExpFunctions = "0.2.1, 0.3"
 Requires = "1.0.1"
 SpecialFunctions = "0.8, 0.9, 0.10, 1, 2"
