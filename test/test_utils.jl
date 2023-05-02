@@ -104,7 +104,10 @@ testdiagfunction(k::MOKernel, A) = sum(kernelmatrix_diag(k, A))
 testdiagfunction(k::MOKernel, A, B) = sum(kernelmatrix_diag(k, A, B))
 
 function test_ADs(
-    kernelfunction, args=nothing; ADs=[:Zygote, :ForwardDiff, :ReverseDiff, :EnzymeReverse, :EnzymeForward], dims=[3, 3]
+    kernelfunction,
+    args=nothing;
+    ADs=[:Zygote, :ForwardDiff, :ReverseDiff, :EnzymeReverse, :EnzymeForward],
+    dims=[3, 3],
 )
     test_fd = test_AD(:FiniteDiff, kernelfunction, args, dims)
     if !test_fd.anynonpass
@@ -122,7 +125,9 @@ function check_zygote_type_stability(f, args...; ctx=Zygote.Context())
 end
 
 function test_ADs(
-    k::MOKernel; ADs=[:Zygote, :ForwardDiff, :ReverseDiff, :EnzymeReverse, :EnzymeForward], dims=(in=3, out=2, obs=3)
+    k::MOKernel;
+    ADs=[:Zygote, :ForwardDiff, :ReverseDiff, :EnzymeReverse, :EnzymeForward],
+    dims=(in=3, out=2, obs=3),
 )
     test_fd = test_FiniteDiff(k, dims)
     if !test_fd.anynonpass
