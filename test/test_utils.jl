@@ -59,12 +59,7 @@ function gradient(f, ::Val{:Zygote}, args)
 end
 
 function gradient(f, ::Val{:EnzymeForward}, args)
-    # shape = size(args)
-    # f_prime(flatargs) = f(reshape(flatargs, shape...))
-    # return Enzyme.gradient(Enzyme.Forward, f_prime, reshape(args, prod(shape)))
-    d_args = zero(args)
-    Enzyme.autodiff(Enzyme.Forward, f, Enzyme.Active, Enzyme.Duplicated(args, d_args))
-    return d_args
+    return Enzyme.gradient(Enzyme.Forward, f, args)
 end
 
 function gradient(f, ::Val{:EnzymeReverse}, args)
