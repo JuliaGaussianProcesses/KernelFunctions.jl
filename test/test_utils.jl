@@ -47,14 +47,33 @@ gradient(f, s::Symbol, args) = gradient(f, Val(s), args)
 function gradient(f, ::Val{:Zygote}, args)
     g = only(Zygote.gradient(f, args))
     if isnothing(g)
+        # To respect the same output as other ADs
         if args isa AbstractArray{<:Real}
-            return zeros(size(args)) # To respect the same output as other ADs
+            return zeros(size(args))
         else
             return zeros.(size.(args))
         end
     else
         return g
     end
+end
+
+function gradient(f, ::Val{:EnzymeForward}, args)
+    # shape = size(args)
+    # f_prime(flatargs) = f(reshape(flatargs, shape...))
+    # return Enzyme.gradient(Enzyme.Forward, f_prime, reshape(args, prod(shape)))
+    d_args = zero(args)
+    Enzyme.autodiff(Enzyme.Forward, f, Enzyme.Active, Enzyme.Duplicated(args, d_args))
+    return d_args
+end
+
+function gradient(f, ::Val{:EnzymeReverse}, args)
+    # shape = size(args)
+    # f_prime(flatargs) = f(reshape(flatargs, shape...))
+    # return Enzyme.gradient(Enzyme.Reverse, f_prime, reshape(args, prod(shape)))
+    d_args = zero(args)
+    Enzyme.autodiff(Enzyme.Reverse, f, Enzyme.Active, Enzyme.Duplicated(args, d_args))
+    return d_args
 end
 
 function gradient(f, ::Val{:ForwardDiff}, args)
@@ -90,7 +109,7 @@ testdiagfunction(k::MOKernel, A) = sum(kernelmatrix_diag(k, A))
 testdiagfunction(k::MOKernel, A, B) = sum(kernelmatrix_diag(k, A, B))
 
 function test_ADs(
-    kernelfunction, args=nothing; ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=[3, 3]
+    kernelfunction, args=nothing; ADs=[:Zygote, :ForwardDiff, :ReverseDiff, :EnzymeReverse, :EnzymeForward], dims=[3, 3]
 )
     test_fd = test_AD(:FiniteDiff, kernelfunction, args, dims)
     if !test_fd.anynonpass
@@ -108,7 +127,7 @@ function check_zygote_type_stability(f, args...; ctx=Zygote.Context())
 end
 
 function test_ADs(
-    k::MOKernel; ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=(in=3, out=2, obs=3)
+    k::MOKernel; ADs=[:Zygote, :ForwardDiff, :ReverseDiff, :EnzymeReverse, :EnzymeForward], dims=(in=3, out=2, obs=3)
 )
     test_fd = test_FiniteDiff(k, dims)
     if !test_fd.anynonpass
