@@ -26,6 +26,7 @@
         @test ibo[5] == (x[1], 2)
         @test ibo[7] == (x[3], 2)
         @test all([(x_, i) for i in 1:3 for x_ in x] .== ibo)
+        @inferred getindex(ibo, 1)
     end
 
     @testset "isotopicbyfeatures" begin
@@ -46,6 +47,7 @@
         @test ibf[5] == (x[2], 2)
         @test ibf[7] == (x[3], 1)
         @test all([(x_, i) for x_ in x for i in 1:3] .== ibf)
+        @inferred getindex(ibf, 1)
     end
 
     @testset "prepare_isotopic_multi_output_data" begin

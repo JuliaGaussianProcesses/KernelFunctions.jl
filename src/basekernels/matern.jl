@@ -17,6 +17,10 @@ By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 A Gaussian process with a Matérn kernel is ``\\lceil \\nu \\rceil - 1``-times
 differentiable in the mean-square sense.
 
+!!! note
+
+    Differentiation with respect to the order ν is not currently supported.
+
 See also: [`Matern12Kernel`](@ref), [`Matern32Kernel`](@ref), [`Matern52Kernel`](@ref)
 """
 struct MaternKernel{Tν<:Real,M} <: SimpleKernel
@@ -33,14 +37,16 @@ MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν,
 
 @functor MaternKernel
 
-@inline function kappa(κ::MaternKernel, d::Real)
-    result = _matern(only(κ.ν), d)
-    return ifelse(iszero(d), one(result), result)
-end
+@inline kappa(k::MaternKernel, d::Real) = _matern(only(k.ν), d)
 
 function _matern(ν::Real, d::Real)
-    y = sqrt(2ν) * d
-    return exp((one(d) - ν) * logtwo - loggamma(ν) + ν * log(y) + log(besselk(ν, y)))
+    if iszero(d)
+        return one(d)
+    else
+        y = sqrt(2ν) * d
+        b = log(besselk(ν, y))
+        return exp((one(d) - ν) * oftype(y, logtwo) - loggamma(ν) + ν * log(y) + b)
+    end
 end
 
 metric(k::MaternKernel) = k.metric

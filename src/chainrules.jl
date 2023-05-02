@@ -2,7 +2,10 @@
 
 # Note that this is type piracy as the derivative should be NaN for x == y.
 function ChainRulesCore.frule(
-    (_, Δx, Δy), d::Distances.Euclidean, x::AbstractVector, y::AbstractVector
+    (_, Δx, Δy)::Tuple{<:Any,<:Any,<:Any},
+    d::Distances.Euclidean,
+    x::AbstractVector,
+    y::AbstractVector,
 )
     Δ = x - y
     D = sqrt(sum(abs2, Δ))

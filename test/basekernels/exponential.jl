@@ -22,6 +22,7 @@
         # Standardised tests.
         TestUtils.test_interface(k)
         test_ADs(SEKernel)
+        test_interface_ad_perf(_ -> SEKernel(), nothing, StableRNG(123456))
     end
     @testset "ExponentialKernel" begin
         k = ExponentialKernel()
@@ -40,6 +41,7 @@
         # Standardised tests.
         TestUtils.test_interface(k)
         test_ADs(ExponentialKernel)
+        test_interface_ad_perf(_ -> ExponentialKernel(), nothing, StableRNG(123456))
     end
     @testset "GammaExponentialKernel" begin
         γ = 1.0

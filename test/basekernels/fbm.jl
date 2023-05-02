@@ -11,7 +11,7 @@
     ) / 2 atol = 1e-5
     @test repr(k) == "Fractional Brownian Motion Kernel (h = $(h))"
 
-    test_interface(k)
+    test_interface(k; rtol=1e-5)
     @test repr(k) == "Fractional Brownian Motion Kernel (h = $(h))"
     test_ADs(FBMKernel; ADs=[:ReverseDiff])
 
@@ -23,4 +23,6 @@
     )
 
     test_params(k, ([h],))
+
+    test_interface_ad_perf(h -> FBMKernel(; h=h), h, StableRNG(123456))
 end

@@ -12,6 +12,11 @@ Here, D is input dimension and A is the number of spectral components.
 
 `h` is the kernel, which defaults to [`SqExponentialKernel`](@ref) if not specified.
 
+!!! warning
+    If you want to make sure that the constructor is type-stable, you should
+    provide [`StaticArrays`](https://github.com/JuliaArrays/StaticArrays.jl) arguments:
+    `αs` as a `StaticVector`, `γs` and `ωs` as `StaticMatrix`.
+
 Generalised Spectral Mixture kernel function. This family of functions is  dense
 in the family of stationary real-valued kernels with respect to the pointwise convergence.[1]
 
@@ -42,11 +47,12 @@ function spectral_mixture_kernel(
         throw(DimensionMismatch("The dimensions of γs ans ωs do not match"))
     end
 
-    return sum(zip(αs, eachcol(γs), eachcol(ωs))) do (α, γ, ω)
+    kernels = map(zip(αs, eachcol(γs), eachcol(ωs))) do (α, γ, ω)
         a = TransformedKernel(h, LinearTransform(γ'))
         b = TransformedKernel(CosineKernel(), LinearTransform(ω'))
         return α * a * b
     end
+    return sum(kernels)
 end
 
 function spectral_mixture_kernel(

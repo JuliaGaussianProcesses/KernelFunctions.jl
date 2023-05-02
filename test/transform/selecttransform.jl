@@ -7,8 +7,9 @@
     x_vecs = [randn(rng, maximum(select)) for _ in 1:3]
     x_cols = ColVecs(randn(rng, maximum(select), 6))
     x_rows = RowVecs(randn(rng, 4, maximum(select)))
+    x_string = ColVecs([randstring(rng) for _ in 1:maximum(select), _ in 1:5])
 
-    Xs = [x_vecs, x_cols, x_rows]
+    Xs = [x_vecs, x_cols, x_rows, x_string]
 
     @testset "$(typeof(x))" for x in Xs
         x′ = map(t, x)
@@ -24,8 +25,9 @@
     a_vecs = map(x -> AxisArray(x; col=symbols), x_vecs)
     a_cols = ColVecs(AxisArray(x_cols.X; col=symbols, index=(1:6)))
     a_rows = RowVecs(AxisArray(x_rows.X; index=(1:4), col=symbols))
+    a_string = ColVecs(AxisArray(x_string.X; col=symbols, index=1:5))
 
-    As = [a_vecs, a_cols, a_rows]
+    As = [a_vecs, a_cols, a_rows, a_string]
 
     @testset "$(typeof(a))" for (a, x) in zip(As, Xs)
         a′ = map(ts, a)
@@ -45,6 +47,12 @@
     @test repr(ts) == "Select Transform (dims: $(select_symbols2))"
 
     test_ADs(() -> SEKernel() ∘ SelectTransform([1, 2]))
+    test_interface_ad_perf(
+        _ -> SEKernel(),
+        nothing,
+        StableRNG(123456),
+        [ColVecs{Float64,Matrix{Float64}}, RowVecs{Float64,Matrix{Float64}}],
+    )
 
     X = randn(rng, (4, 3))
     A = AxisArray(X; row=[:a, :b, :c, :d], col=[:x, :y, :z])
@@ -116,8 +124,9 @@
             ("Vector{<:Vector}", [randn(6) for _ in 1:3]),
             ("ColVecs", ColVecs(randn(5, 10))),
             ("RowVecs", RowVecs(randn(11, 4))),
+            ("ColVecs{String}", ColVecs([randstring() for _ in 1:6, _ in 1:5])),
         ]
-            @test KernelFunctions._map(t, x) isa AbstractVector{Float64}
+            @test KernelFunctions._map(t, x) isa AbstractVector
         end
     end
 end
