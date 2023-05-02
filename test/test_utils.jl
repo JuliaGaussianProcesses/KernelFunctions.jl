@@ -130,7 +130,9 @@ function check_zygote_type_stability(f, args...; ctx=Zygote.Context())
 end
 
 function test_ADs(
-    k::MOKernel; ADs=[:Zygote, :ForwardDiff, :ReverseDiff, :EnzymeReverse, :EnzymeForward], dims=(in=3, out=2, obs=3)
+    k::MOKernel;
+    ADs=[:Zygote, :ForwardDiff, :ReverseDiff, :EnzymeReverse, :EnzymeForward],
+    dims=(in=3, out=2, obs=3),
 )
     test_fd = test_FiniteDiff(k, dims)
     if !test_fd.anynonpass
