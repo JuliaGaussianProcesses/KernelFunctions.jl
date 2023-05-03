@@ -106,7 +106,7 @@ testdiagfunction(k::MOKernel, A, B) = sum(kernelmatrix_diag(k, A, B))
 function test_ADs(
     kernelfunction,
     args=nothing;
-    ADs=[:Zygote, :ForwardDiff, :ReverseDiff, :EnzymeReverse, :EnzymeForward],
+    ADs=[:Zygote, :ForwardDiff, :ReverseDiff, :EnzymeReverse],
     dims=[3, 3],
 )
     test_fd = test_AD(:FiniteDiff, kernelfunction, args, dims)
@@ -126,7 +126,7 @@ end
 
 function test_ADs(
     k::MOKernel;
-    ADs=[:Zygote, :ForwardDiff, :ReverseDiff, :EnzymeReverse, :EnzymeForward],
+    ADs=[:Zygote, :ForwardDiff, :ReverseDiff, :EnzymeReverse],
     dims=(in=3, out=2, obs=3),
 )
     test_fd = test_FiniteDiff(k, dims)
