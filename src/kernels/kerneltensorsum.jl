@@ -49,16 +49,21 @@ end
 Base.length(kernel::KernelTensorSum) = length(kernel.kernels)
 
 function (kernel::KernelTensorSum)(x, y)
-    if !(length(x) == length(y) == length(kernel))
-        throw(DimensionMismatch("number of kernels and number of features
-are not consistent"))
+    if !((nx = length(x)) == (ny = length(y)) == (nkernerls = length(k)))
+        throw(DimensionMismatch("number of kernels ($nkernels) and number of features 
+(x=$nx, y=$ny) are not consistent"))
     end
     return sum(k(xi, yi) for (k, xi, yi) in zip(kernel.kernels, x, y))
 end
 
+function validate_domain(k::KernelTensorSum, x::AbstractVector, y::AbstractVector)
+    return (dx = dim(x)) == (dy = dim(y)) == (nkernels = length(k)) || error(
+        "number of kernels ($nkernels) and group of features (x=$dx), y=$dy) are not consistent",
+    )
+end
+
 function validate_domain(k::KernelTensorSum, x::AbstractVector)
-    return dim(x) == length(k) ||
-           error("number of kernels and groups of features are not consistent")
+    return validate_domain(k, x, x)
 end
 
 function kernelmatrix(k::KernelTensorSum, x::AbstractVector)
@@ -67,7 +72,7 @@ function kernelmatrix(k::KernelTensorSum, x::AbstractVector)
 end
 
 function kernelmatrix(k::KernelTensorSum, x::AbstractVector, y::AbstractVector)
-    validate_domain(k, x)
+    validate_domain(k, x, y)
     return mapreduce(kernelmatrix, +, k.kernels, slices(x), slices(y))
 end
 
@@ -77,7 +82,7 @@ function kernelmatrix_diag(k::KernelTensorSum, x::AbstractVector)
 end
 
 function kernelmatrix_diag(k::KernelTensorSum, x::AbstractVector, y::AbstractVector)
-    validate_domain(k, x)
+    validate_domain(k, x, y)
     return mapreduce(kernelmatrix_diag, +, k.kernels, slices(x), slices(y))
 end
 
