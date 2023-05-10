@@ -50,8 +50,11 @@ Base.length(kernel::KernelTensorSum) = length(kernel.kernels)
 
 function (kernel::KernelTensorSum)(x, y)
     if !((nx = length(x)) == (ny = length(y)) == (nkernels = length(k)))
-        throw(DimensionMismatch("number of kernels ($nkernels) and number of features 
-(x=$nx, y=$ny) are not consistent"))
+        throw(
+            DimensionMismatch(
+                "number of kernels ($nkernels) and number of features (x=$nx, y=$ny) are not consistent",
+            ),
+        )
     end
     return sum(k(xi, yi) for (k, xi, yi) in zip(kernel.kernels, x, y))
 end
