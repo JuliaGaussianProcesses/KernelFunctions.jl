@@ -1,7 +1,10 @@
+function ⊕ end
+
 for (M, op, T) in (
     (:Base, :+, :KernelSum),
     (:Base, :*, :KernelProduct),
     (:TensorCore, :tensor, :KernelTensorProduct),
+    (:KernelFunctions, :⊕, :KernelTensorSum),
 )
     @eval begin
         $M.$op(k1::Kernel, k2::Kernel) = $T(k1, k2)
