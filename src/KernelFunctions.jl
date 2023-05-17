@@ -15,7 +15,7 @@ export LinearKernel, PolynomialKernel
 export RationalKernel, RationalQuadraticKernel, GammaRationalKernel
 export PiecewisePolynomialKernel
 export PeriodicKernel, NeuralNetworkKernel
-export KernelSum, KernelProduct, KernelTensorSum, KernelTensorProduct
+export KernelSum, KernelProduct, KernelIndependentSum, KernelTensorProduct
 export TransformedKernel, ScaledKernel, NormalizedKernel
 export GibbsKernel
 export ⊕
@@ -109,7 +109,7 @@ include("kernels/normalizedkernel.jl")
 include("matrix/kernelmatrix.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
-include("kernels/kerneltensorsum.jl")
+include("kernels/kernelindependentsum.jl")
 include("kernels/kerneltensorproduct.jl")
 include("kernels/overloads.jl")
 include("kernels/neuralkernelnetwork.jl")

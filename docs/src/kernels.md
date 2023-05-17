@@ -124,7 +124,7 @@ TransformedKernel
 ScaledKernel
 KernelSum
 KernelProduct
-KernelTensorSum
+KernelIndependentSum
 KernelTensorProduct
 NormalizedKernel
 ```
