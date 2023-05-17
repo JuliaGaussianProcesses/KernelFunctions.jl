@@ -83,22 +83,6 @@ not allowed for the `(::T)(x,y)` syntax. If we were to only implement
 then julia would not know whether to use
 `(::SpecialKernel)(x,y)` or `(::Kernel)(x::DiffPt, y::DiffPt)`
 ```
-To avoid this hack, no kernel type T should implement
-```julia
-	(::T)(x,y)
-```
-and instead implement
-```julia
-	_evaluate(k::T, x, y)
-```
-Then there should be only a single
-```julia
-	(k::Kernel)(x,y) = _evaluate(k, x, y)
-```
-which all the kernels would fall back to.
-
-This ensures that evaluate(k::T, x::DiffPt{Dim}, y::DiffPt{Dim}) is always
-more specialized and call beforehand.
 =#
 for T in [SimpleKernel, Kernel] #subtypes(Kernel)
 	(k::T)(x::DiffPt{Dim}, y::DiffPt{Dim}) where {Dim} = _evaluate(k, x, y)
