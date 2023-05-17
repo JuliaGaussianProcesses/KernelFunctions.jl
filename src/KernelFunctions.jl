@@ -125,6 +125,7 @@ include("chainrules.jl")
 include("zygoterules.jl")
 
 include("TestUtils.jl")
+include("diffKernel.jl")
 
 function __init__()
     @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin

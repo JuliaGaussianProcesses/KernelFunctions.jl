@@ -176,6 +176,7 @@ include("test_utils.jl")
         include("generic.jl")
         include("chainrules.jl")
         include("zygoterules.jl")
+        include("diffKernel.jl")
 
         @testset "doctests" begin
             DocMeta.setdocmeta!(
