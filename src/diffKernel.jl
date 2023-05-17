@@ -93,7 +93,7 @@ and instead implement
 ```
 Then there should be only a single
 ```julia
-	(k::Kernel)(x,y) = evaluate(k, x, y)
+	(k::Kernel)(x,y) = _evaluate(k, x, y)
 ```
 which all the kernels would fall back to.
 
@@ -101,8 +101,8 @@ This ensures that evaluate(k::T, x::DiffPt{Dim}, y::DiffPt{Dim}) is always
 more specialized and call beforehand.
 =#
 for T in [SimpleKernel, Kernel] #subtypes(Kernel)
-	(k::T)(x::DiffPt{Dim}, y::DiffPt{Dim}) where {Dim} = evaluate(k, x, y)
-	(k::T)(x::DiffPt{Dim}, y) where {Dim} = evaluate(k, x, DiffPt(y))
-	(k::T)(x, y::DiffPt{Dim}) where {Dim} = evaluate(k, DiffPt(x), y)
+	(k::T)(x::DiffPt{Dim}, y::DiffPt{Dim}) where {Dim} = _evaluate(k, x, y)
+	(k::T)(x::DiffPt{Dim}, y) where {Dim} = _evaluate(k, x, DiffPt(y))
+	(k::T)(x, y::DiffPt{Dim}) where {Dim} = _evaluate(k, DiffPt(x), y)
 end
 
