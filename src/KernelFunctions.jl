@@ -43,6 +43,8 @@ export MOInput, prepare_isotopic_multi_output_data, prepare_heterotopic_multi_ou
 export IndependentMOKernel,
     LatentFactorMOKernel, IntrinsicCoregionMOKernel, LinearMixingModelKernel
 
+export DiffPt
+
 # Reexports
 export tensor, ⊗, compose
 
