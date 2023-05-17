@@ -19,28 +19,26 @@ for higher order derivatives partial can be any iterable, i.e.
 ```
 """
 struct DiffPt{Dim}
-	pos # the actual position
-	partial
+    pos # the actual position
+    partial
 end
 
-DiffPt(x;partial=()) = DiffPt{length(x)}(x, partial) # convenience constructor
+DiffPt(x; partial=()) = DiffPt{length(x)}(x, partial) # convenience constructor
 
 """
 Take the partial derivative of a function `fun`  with input dimesion `dim`.
 If partials=(i,j), then (∂ᵢ∂ⱼ fun) is returned.
 """
 function partial(fun, dim, partials=())
-	if !isnothing(local next = iterate(partials))
-		idx, state = next
-		return partial(
-			x -> FD.derivative(0) do dx
-				fun(x .+ dx * OneHotVector(idx, dim))
-			end,
-			dim,
-			Base.rest(partials, state),
-		)
-	end
-	return fun 
+    if !isnothing(local next = iterate(partials))
+        idx, state = next
+        return partial(
+            x -> FD.derivative(0) do dx
+                fun(x .+ dx * OneHotVector(idx, dim))
+            end, dim, Base.rest(partials, state)
+        )
+    end
+    return fun
 end
 
 """
@@ -48,12 +46,9 @@ Take the partial derivative of a function with two dim-dimensional inputs,
 i.e. 2*dim dimensional input
 """
 function partial(k, dim; partials_x=(), partials_y=())
-	local f(x,y) = partial(t -> k(t,y), dim, partials_x)(x)
-	return (x,y) -> partial(t -> f(x,t), dim, partials_y)(y)
+    local f(x, y) = partial(t -> k(t, y), dim, partials_x)(x)
+    return (x, y) -> partial(t -> f(x, t), dim, partials_y)(y)
 end
-
-
-
 
 """
 	_evaluate(k::T, x::DiffPt{Dim}, y::DiffPt{Dim}) where {Dim, T<:Kernel}
@@ -65,14 +60,9 @@ redirection over `_evaluate` is necessary
 unboxes the partial instructions from DiffPt and applies them to k,
 evaluates them at the positions of DiffPt
 """
-function _evaluate(k::T, x::DiffPt{Dim}, y::DiffPt{Dim}) where {Dim, T<:Kernel}
-	return partial(
-		k, Dim,
-		partials_x=x.partial, partials_y=y.partial
-	)(x.pos, y.pos)
+function _evaluate(k::T, x::DiffPt{Dim}, y::DiffPt{Dim}) where {Dim,T<:Kernel}
+    return partial(k, Dim; partials_x=x.partial, partials_y=y.partial)(x.pos, y.pos)
 end
-
-
 
 #=
 This is a hack to work around the fact that the `where {T<:Kernel}` clause is
@@ -85,8 +75,7 @@ then julia would not know whether to use
 ```
 =#
 for T in [SimpleKernel, Kernel] #subtypes(Kernel)
-	(k::T)(x::DiffPt{Dim}, y::DiffPt{Dim}) where {Dim} = _evaluate(k, x, y)
-	(k::T)(x::DiffPt{Dim}, y) where {Dim} = _evaluate(k, x, DiffPt(y))
-	(k::T)(x, y::DiffPt{Dim}) where {Dim} = _evaluate(k, DiffPt(x), y)
+    (k::T)(x::DiffPt{Dim}, y::DiffPt{Dim}) where {Dim} = _evaluate(k, x, y)
+    (k::T)(x::DiffPt{Dim}, y) where {Dim} = _evaluate(k, x, DiffPt(y))
+    (k::T)(x, y::DiffPt{Dim}) where {Dim} = _evaluate(k, DiffPt(x), y)
 end
-
