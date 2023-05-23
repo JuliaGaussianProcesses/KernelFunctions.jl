@@ -38,7 +38,7 @@ returns the function (t ↦ x₀ + teᵢ) where eᵢ is the unit vector at index
 """
 function tangentCurve(x0::AbstractArray{N,T}, idx::IndexType) where {N,T}
     return t -> begin
-        x = similar(x0)
+        x = similar(x0, promote_type(eltype(x0), typeof(t)))
         copyto!(x, x0)
         x[idx] += t
         return x
