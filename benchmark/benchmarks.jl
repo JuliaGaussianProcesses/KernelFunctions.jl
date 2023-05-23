@@ -23,7 +23,7 @@ kernels = Dict(
 inputtypes = Dict("ColVecs" => (Xc, Yc), "RowVecs" => (Xr, Yr), "Vecs" => (Xv, Yv))
 
 functions = Dict(
-    "kernelmatrixX" => (kernel, X, Y) -> kernelmatrix(kernel, X),
+    "kernelmatrixX" => (kernel, X, Y) -> invoke(kernelmatrix, Tuple{kernel, Any}, kernel, X),
     "kernelmatrixXY" => (kernel, X, Y) -> kernelmatrix(kernel, X, Y),
     "kernelmatrix_diagX" => (kernel, X, Y) -> kernelmatrix_diag(kernel, X),
     "kernelmatrix_diagXY" => (kernel, X, Y) -> kernelmatrix_diag(kernel, X, Y),
@@ -41,6 +41,14 @@ end
 
 # Uncomment the following to run benchmark locally
 
-# tune!(SUITE)
+tune!(SUITE)
 
-# results = run(SUITE, verbose=true)
+results = run(SUITE, verbose=true)
+
+Xc = ColVecs(rand(2, 2000))
+k = SqExponentialKernel()
+
+@which kernelmatrix(k, Xc)
+@btime kernelmatrix($k, $Xc);
+@btime invoke(kernelmatrix, Tuple{KernelFunctions.SimpleKernel, $typeof(Xc)}, $k, $Xc);
+# @btime invoke(kernelmatrix, Tuple{Kernel, $typeof(Xc)}, $k, $Xc);
