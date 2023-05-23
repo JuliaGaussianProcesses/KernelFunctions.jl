@@ -26,10 +26,12 @@ struct DiffPt{Order,KeyT<:Union{Int,IndexType},T}
     partials::NTuple{Order,KeyT}
 end
 
-DiffPt(x::T) where {T <: AbstractArray} = DiffPt{0, keytype(T), T}(x, ()::NTuple{0,keytype(T)})
-DiffPt(x::T) where {T <: Number} = DiffPt{0,Int,T}(x, ()::NTuple{0,Int})
-DiffPt(x::T, partial::Int) where T = DiffPt{1,Int,T}(x, (partial,))
-DiffPt(x::T, partials::NTuple{Order,KeyT}) where {T,Order,KeyT} = DiffPt{Order,KeyT,T}(x, partials)
+DiffPt(x::T) where {T<:AbstractArray} = DiffPt{0,keytype(T),T}(x, ()::NTuple{0,keytype(T)})
+DiffPt(x::T) where {T<:Number} = DiffPt{0,Int,T}(x, ()::NTuple{0,Int})
+DiffPt(x::T, partial::Int) where {T} = DiffPt{1,Int,T}(x, (partial,))
+function DiffPt(x::T, partials::NTuple{Order,KeyT}) where {T,Order,KeyT}
+    return DiffPt{Order,KeyT,T}(x, partials)
+end
 
 partial(func) = func
 function partial(func, partials::Int...)
