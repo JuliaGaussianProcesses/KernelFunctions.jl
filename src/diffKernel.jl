@@ -21,19 +21,24 @@ for higher order derivatives partial can be any iterable, i.e.
 
 IndexType = Union{Int,Base.AbstractCartesianIndex}
 
-struct DiffPt{Order,KeyT<:Union{Int,IndexType},T}
+struct DiffPt{Order,KeyT<:IndexType,T}
     pos::T # the actual position
     partials::NTuple{Order,KeyT}
 end
 
 DiffPt(x::T) where {T<:AbstractArray} = DiffPt{0,keytype(T),T}(x, ()::NTuple{0,keytype(T)})
 DiffPt(x::T) where {T<:Number} = DiffPt{0,Int,T}(x, ()::NTuple{0,Int})
-DiffPt(x::T, partial::Int) where {T} = DiffPt{1,Int,T}(x, (partial,))
+DiffPt(x::T, partial::IndexType) where {T} = DiffPt{1,IndexType,T}(x, (partial,))
 function DiffPt(x::T, partials::NTuple{Order,KeyT}) where {T,Order,KeyT}
     return DiffPt{Order,KeyT,T}(x, partials)
 end
 
 partial(func) = func
+function partial(func, idx::Int)
+    return x -> FD.derivative(0) do dx
+        return func(x .+ dx * OneHotVector(idx, length(x)))
+    end
+end
 function partial(func, partials::Int...)
     idx, state = iterate(partials)
     return partial(
@@ -49,7 +54,7 @@ Take the partial derivative of a function with two dim-dimensional inputs,
 i.e. 2*dim dimensional input
 """
 function partial(
-    k::Fun, partials_x::NTuple{N,T}, partials_y::NTuple{M,T}
+    k, partials_x::NTuple{N,T}, partials_y::NTuple{M,T}
 ) where {N,M,T<:IndexType}
     local f(x, y) = partial(t -> k(t, y), partials_x...)(x)
     return (x, y) -> partial(t -> f(x, t), partials_y...)(y)
