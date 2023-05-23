@@ -36,11 +36,11 @@ end
     tangentCurve(x₀, i::IndexType)
 returns the function (t ↦ x₀ + teᵢ) where eᵢ is the unit vector at index i
 """
-function tangentCurve(x0::AbstractArray{N,T}, idx::IndexType) where {N, T}
+function tangentCurve(x0::AbstractArray{N,T}, idx::IndexType) where {N,T}
     return t -> begin
         x = similar(x0)
         copyto!(x, x0)
-        x[idx] +=t
+        x[idx] += t
         return x
     end
 end
@@ -55,8 +55,7 @@ end
 function partial(func, partials::IndexType...)
     idx, state = iterate(partials)
     return partial(
-        x -> FD.derivative(func ∘ tangentCurve(x, idx), 0),
-        Base.rest(partials, state)...,
+        x -> FD.derivative(func ∘ tangentCurve(x, idx), 0), Base.rest(partials, state)...
     )
 end
 
