@@ -36,7 +36,7 @@ end
     tangentCurve(x₀, i::IndexType)
 returns the function (t ↦ x₀ + teᵢ) where eᵢ is the unit vector at index i
 """
-function tangentCurve(x0::AbstractArray{N,T}, idx::IndexType) where {N,T}
+function tangentCurve(x0::AbstractArray, idx::IndexType)
     return t -> begin
         x = similar(x0, promote_type(eltype(x0), typeof(t)))
         copyto!(x, x0)
@@ -64,8 +64,8 @@ Take the partial derivative of a function with two dim-dimensional inputs,
 i.e. 2*dim dimensional input
 """
 function partial(
-    k, partials_x::NTuple{N,T}, partials_y::NTuple{M,T}
-) where {N,M,T<:IndexType}
+    k, partials_x::Tuple{Vararg{T}}, partials_y::Tuple{Vararg{T}}
+) where {T<:IndexType}
     local f(x, y) = partial(t -> k(t, y), partials_x...)(x)
     return (x, y) -> partial(t -> f(x, t), partials_y...)(y)
 end
