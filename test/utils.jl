@@ -101,6 +101,9 @@
 
         Y = randn(rng, D + 1, N)
         DY = RowVecs(Y)
+    
+        @test reduce(vcat, DY) == vcat(DY...)
+        @test reduce(hcat, DY) == hcat(DY...)
         @test KernelFunctions.pairwise(SqEuclidean(), DX) ≈
             pairwise(SqEuclidean(), X; dims=1)
         @test KernelFunctions.pairwise(SqEuclidean(), DX, DY) ≈

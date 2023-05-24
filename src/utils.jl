@@ -169,6 +169,8 @@ Base.setindex!(D::RowVecs, v::AbstractVector, i) = setindex!(D.X, v, i, :)
 
 Base.vcat(a::RowVecs, b::RowVecs) = RowVecs(vcat(a.X, b.X))
 Base.zero(x::RowVecs) = RowVecs(zero(x.X))
+Base.reduce(::typeof(hcat), a::RowVecs) = permutedims(a.X)
+Base.reduce(::typeof(vcat), a::RowVecs) = vec(permutedims(a.X))
 
 dim(x::RowVecs) = size(x.X, 2)
 
