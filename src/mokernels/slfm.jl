@@ -34,7 +34,8 @@ function (κ::LatentFactorMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,
 end
 
 function kernelmatrix(k::LatentFactorMOKernel, x::MOInput, y::MOInput)
-    x.outIndices == y.outIndices || error("`x` and `y` should have the same output dimension")
+    x.outIndices == y.outIndices ||
+        error("`x` and `y` should have the same output dimension")
     length(x.outIndices) == size(k.A, 1) ||
         error("Kernel not compatible with the given multi-output inputs")
 
