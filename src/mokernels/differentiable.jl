@@ -13,7 +13,7 @@ function compact_string_representation(p::Partial)
     lower_numbers = @. (n -> '₀' + n)(reverse(digits(tuple)))
     return join(["∂$(join(x))" for x in lower_numbers])
 end
-function Base.show(io::IO, p::Partial)
+function Base.show(io::IO, ::MIME"text/plain", p::Partial)
     if get(io, :compact, false)
         print(io, "Partial($(Tuple(p.indices)))")
     else
