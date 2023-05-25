@@ -25,16 +25,14 @@ The first `out_dim` elements represent all outputs for the first input, the seco
 See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
 struct MOInputIsotopicByFeatures{
-    S,T<:AbstractVector{S},IdxType,ToutIndices<:AbstractVector{IdxType}
+    S,T<:AbstractVector{S},IdxType,Tout_axis<:AbstractVector{IdxType}
 } <: AbstractVector{Tuple{S,IdxType}}
     x::T
-    outIndices::ToutIndices
+    out_axis::Tout_axis
 end
 
-function MOInputIsotopicByFeatures(
-    x::T, out_dim::Tout_dim
-) where {S,T<:AbstractVector{S},Tout_dim<:Integer}
-    return MOInputIsotopicByFeatures{S,T,Int,Base.OneTo{Tout_dim}}(x, Base.OneTo(out_dim))
+function MOInputIsotopicByFeatures(x::AbstractVector, out_dim::Integer)
+    return MOInputIsotopicByFeatures(x, Base.OneTo(out_dim))
 end
 
 """
@@ -61,17 +59,14 @@ As shown above, an `MOInputIsotopicByOutputs` represents a vector of tuples.
 The first `length(x)` elements represent the inputs for the first output, the second
 `length(x)` elements represent the inputs for the second output, etc.
 """
-struct MOInputIsotopicByOutputs{
-    S,T<:AbstractVector{S},IdxType,ToutIndices<:AbstractVector{IdxType}
-} <: AbstractVector{Tuple{S,IdxType}}
+struct MOInputIsotopicByOutputs{S,I,T<:AbstractVector{S},Tout_axis<:AbstractVector{I}} <:
+       AbstractVector{Tuple{S,I}}
     x::T
-    outIndices::ToutIndices
+    out_axis::Tout_axis
 end
 
-function MOInputIsotopicByOutputs(
-    x::T, out_dim::Tout_dim
-) where {S,T<:AbstractVector{S},Tout_dim<:Integer}
-    return MOInputIsotopicByOutputs{S,T,Int,Base.OneTo{Tout_dim}}(x, Base.OneTo(out_dim))
+function MOInputIsotopicByOutputs(x::AbstractVector, out_dim::Integer)
+    return MOInputIsotopicByOutputs(x, Base.OneTo(out_dim))
 end
 
 const IsotopicMOInputsUnion = Union{MOInputIsotopicByFeatures,MOInputIsotopicByOutputs}
@@ -80,26 +75,26 @@ function Base.getindex(inp::MOInputIsotopicByOutputs, ind::Integer)
     @boundscheck checkbounds(inp, ind)
     output_index, feature_index = fldmod1(ind, length(inp.x))
     feature = @inbounds inp.x[feature_index]
-    return feature, @inbounds inp.outIndices[output_index]
+    return feature, @inbounds inp.out_axis[output_index]
 end
 
 function Base.getindex(inp::MOInputIsotopicByFeatures, ind::Integer)
     @boundscheck checkbounds(inp, ind)
-    feature_index, output_index = fldmod1(ind, length(inp.outIndices))
+    feature_index, output_index = fldmod1(ind, length(inp.out_axis))
     feature = @inbounds inp.x[feature_index]
-    return feature, @inbounds inp.outIndices[output_index]
+    return feature, @inbounds inp.out_axis[output_index]
 end
 
-Base.size(inp::IsotopicMOInputsUnion) = (length(inp.outIndices) * length(inp.x),)
+Base.size(inp::IsotopicMOInputsUnion) = (length(inp.out_axis) * length(inp.x),)
 
 function Base.vcat(x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures)
-    x.outIndices == y.outIndices || throw(DimensionMismatch("outIndices mismatch"))
-    return MOInputIsotopicByFeatures(vcat(x.x, y.x), x.outIndices)
+    x.out_axis == y.out_axis || throw(DimensionMismatch("out_axis mismatch"))
+    return MOInputIsotopicByFeatures(vcat(x.x, y.x), x.out_axis)
 end
 
 function Base.vcat(x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs)
-    x.outIndices == y.outIndices || throw(DimensionMismatch("outIndices mismatch"))
-    return MOInputIsotopicByOutputs(vcat(x.x, y.x), x.outIndices)
+    x.out_axis == y.out_axis || throw(DimensionMismatch("out_axis mismatch"))
+    return MOInputIsotopicByOutputs(vcat(x.x, y.x), x.out_axis)
 end
 
 """
