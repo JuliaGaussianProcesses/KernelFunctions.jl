@@ -28,7 +28,7 @@ struct MOInputIsotopicByFeatures{
     S,T<:AbstractVector{S},IdxType,ToutIndices<:AbstractVector{IdxType}
 } <: AbstractVector{Tuple{S,IdxType}}
     x::T
-    out_dim::ToutIndices
+    outIndices::ToutIndices
 end
 
 function MOInputIsotopicByFeatures(
@@ -65,7 +65,7 @@ struct MOInputIsotopicByOutputs{
     S,T<:AbstractVector{S},IdxType,ToutIndices<:AbstractVector{IdxType}
 } <: AbstractVector{Tuple{S,IdxType}}
     x::T
-    out_dim::ToutIndices
+    outIndices::ToutIndices
 end
 
 function MOInputIsotopicByOutputs(
@@ -80,26 +80,26 @@ function Base.getindex(inp::MOInputIsotopicByOutputs, ind::Integer)
     @boundscheck checkbounds(inp, ind)
     output_index, feature_index = fldmod1(ind, length(inp.x))
     feature = @inbounds inp.x[feature_index]
-    return feature, @inbounds inp.out_dim[output_index]
+    return feature, @inbounds inp.outIndices[output_index]
 end
 
 function Base.getindex(inp::MOInputIsotopicByFeatures, ind::Integer)
     @boundscheck checkbounds(inp, ind)
-    feature_index, output_index = fldmod1(ind, length(inp.out_dim))
+    feature_index, output_index = fldmod1(ind, length(inp.outIndices))
     feature = @inbounds inp.x[feature_index]
-    return feature, @inbounds inp.out_dim[output_index]
+    return feature, @inbounds inp.outIndices[output_index]
 end
 
-Base.size(inp::IsotopicMOInputsUnion) = (length(inp.out_dim) * length(inp.x),)
+Base.size(inp::IsotopicMOInputsUnion) = (length(inp.outIndices) * length(inp.x),)
 
 function Base.vcat(x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures)
-    x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
-    return MOInputIsotopicByFeatures(vcat(x.x, y.x), x.out_dim)
+    x.outIndices == y.outIndices || throw(DimensionMismatch("outIndices mismatch"))
+    return MOInputIsotopicByFeatures(vcat(x.x, y.x), x.outIndices)
 end
 
 function Base.vcat(x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs)
-    x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
-    return MOInputIsotopicByOutputs(vcat(x.x, y.x), x.out_dim)
+    x.outIndices == y.outIndices || throw(DimensionMismatch("outIndices mismatch"))
+    return MOInputIsotopicByOutputs(vcat(x.x, y.x), x.outIndices)
 end
 
 """

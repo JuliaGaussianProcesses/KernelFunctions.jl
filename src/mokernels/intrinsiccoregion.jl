@@ -42,7 +42,7 @@ function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{
     return k.B[px, py] * k.kernel(x, y)
 end
 
-function _mo_output_covariance(k::IntrinsicCoregionMOKernel, out_dim)
+function _mo_output_covariance(k::IntrinsicCoregionMOKernel, out_dim::Integer)
     @assert size(k.B) == (out_dim, out_dim)
     return k.B
 end
@@ -50,10 +50,10 @@ end
 function kernelmatrix(
     k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
 ) where {MOI<:IsotopicMOInputsUnion}
-    x.out_dim == y.out_dim ||
-        throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
+    x.outIndices == y.outIndices ||
+        throw(DimensionMismatch("`x` and `y` must have the same `outIndices`"))
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-    Koutputs = _mo_output_covariance(k, x.out_dim)
+    Koutputs = _mo_output_covariance(k, length(x.outIndices))
     return _kernelmatrix_kron_helper(MOI, Kfeatures, Koutputs)
 end
 
@@ -61,10 +61,10 @@ if VERSION >= v"1.6"
     function kernelmatrix!(
         K::AbstractMatrix, k::IntrinsicCoregionMOKernel, x::MOI, y::MOI
     ) where {MOI<:IsotopicMOInputsUnion}
-        x.out_dim == y.out_dim ||
-            throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
+        x.outIndices == y.outIndices ||
+            throw(DimensionMismatch("`x` and `y` must have the same `outIndices`"))
         Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-        Koutputs = _mo_output_covariance(k, x.out_dim)
+        Koutputs = _mo_output_covariance(k, length(x.outIndices))
         return _kernelmatrix_kron_helper!(K, MOI, Kfeatures, Koutputs)
     end
 end
