@@ -24,9 +24,8 @@ The first `out_dim` elements represent all outputs for the first input, the seco
 
 See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
-struct MOInputIsotopicByFeatures{
-    S,T<:AbstractVector{S},IdxType,Tout_axis<:AbstractVector{IdxType}
-} <: AbstractVector{Tuple{S,IdxType}}
+struct MOInputIsotopicByFeatures{S,I,T<:AbstractVector{S},Tout_axis<:AbstractVector{I}} <:
+       AbstractVector{Tuple{S,IdxType}}
     x::T
     out_axis::Tout_axis
 end
@@ -75,7 +74,7 @@ function Base.getindex(inp::MOInputIsotopicByOutputs, ind::Integer)
     @boundscheck checkbounds(inp, ind)
     output_index, feature_index = fldmod1(ind, length(inp.x))
     feature = @inbounds inp.x[feature_index]
-    out_idx = axes(inp.out_axis,1)[output_index]
+    out_idx = axes(inp.out_axis, 1)[output_index]
     return feature, @inbounds inp.out_axis[out_idx]
 end
 
@@ -83,7 +82,7 @@ function Base.getindex(inp::MOInputIsotopicByFeatures, ind::Integer)
     @boundscheck checkbounds(inp, ind)
     feature_index, output_index = fldmod1(ind, length(inp.out_axis))
     feature = @inbounds inp.x[feature_index]
-    out_idx = axes(inp.out_axis,1)[output_index]
+    out_idx = axes(inp.out_axis, 1)[output_index]
     return feature, @inbounds inp.out_axis[out_idx]
 end
 
