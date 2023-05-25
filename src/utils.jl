@@ -94,8 +94,8 @@ Base.setindex!(D::ColVecs, v::AbstractVector, i) = setindex!(D.X, v, :, i)
 
 Base.vcat(a::ColVecs, b::ColVecs) = ColVecs(hcat(a.X, b.X))
 Base.zero(x::ColVecs) = ColVecs(zero(x.X))
-Base.reduce(::typeof(hcat), a::ColVecs) = a.X
-Base.reduce(::typeof(vcat), a::ColVecs) = vec(a.X)
+Base.reduce(::typeof(hcat), a::ColVecs) = copy(a.X)
+Base.reduce(::typeof(vcat), a::ColVecs) = copy(vec(a.X))
 
 dim(x::ColVecs) = size(x.X, 1)
 
