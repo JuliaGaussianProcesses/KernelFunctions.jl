@@ -25,7 +25,7 @@ The first `out_dim` elements represent all outputs for the first input, the seco
 See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
 struct MOInputIsotopicByFeatures{S,I,T<:AbstractVector{S},Tout_axis<:AbstractVector{I}} <:
-       AbstractVector{Tuple{S,IdxType}}
+       AbstractVector{Tuple{S,I}}
     x::T
     out_axis::Tout_axis
 end
