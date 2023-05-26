@@ -7,7 +7,7 @@
 julia> x = [1, 2, 3];
 
 julia> KernelFunctions.MOInputIsotopicByFeatures(x, 2)
-6-element KernelFunctions.MOInputIsotopicByFeatures{Int64, Vector{Int64}, Int64}:
+6-element KernelFunctions.MOInputIsotopicByFeatures{Int64, Int64, Vector{Int64}, Base.OneTo{Int64}}:
  (1, 1)
  (1, 2)
  (2, 1)
@@ -43,7 +43,7 @@ end
 julia> x = [1, 2, 3];
 
 julia> KernelFunctions.MOInputIsotopicByOutputs(x, 2)
-6-element KernelFunctions.MOInputIsotopicByOutputs{Int64, Vector{Int64}, Int64}:
+6-element KernelFunctions.MOInputIsotopicByOutputs{Int64, Int64, Vector{Int64}, Base.OneTo{Int64}}:
  (1, 1)
  (2, 1)
  (3, 1)
@@ -110,7 +110,7 @@ A data type to accommodate modelling multi-dimensional output data.
 julia> x = [1, 2, 3];
 
 julia> MOInput(x, 2)
-6-element KernelFunctions.MOInputIsotopicByOutputs{Int64, Vector{Int64}, Int64}:
+6-element KernelFunctions.MOInputIsotopicByOutputs{Int64, Int64, Vector{Int64}, Base.OneTo{Int64}}:
  (1, 1)
  (2, 1)
  (3, 1)
@@ -150,7 +150,7 @@ julia> Y = [1.1 2.1 3.1; 1.2 2.2 3.2]
 julia> inputs, outputs = prepare_isotopic_multi_output_data(x, ColVecs(Y));
 
 julia> inputs
-6-element KernelFunctions.MOInputIsotopicByFeatures{Float64, Vector{Float64}, Int64}:
+6-element KernelFunctions.MOInputIsotopicByFeatures{Float64, Int64, Vector{Float64}, Base.OneTo{Int64}}:
  (1.0, 1)
  (1.0, 2)
  (2.0, 1)
@@ -198,7 +198,7 @@ julia> Y = [1.1 1.2; 2.1 2.2; 3.1 3.2]
 julia> inputs, outputs = prepare_isotopic_multi_output_data(x, RowVecs(Y));
 
 julia> inputs
-6-element KernelFunctions.MOInputIsotopicByOutputs{Float64, Vector{Float64}, Int64}:
+6-element KernelFunctions.MOInputIsotopicByOutputs{Float64, Int64, Vector{Float64}, Base.OneTo{Int64}}:
  (1.0, 1)
  (2.0, 1)
  (3.0, 1)
