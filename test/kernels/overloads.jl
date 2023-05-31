@@ -5,13 +5,9 @@
     k2 = SqExponentialKernel()
     k3 = RationalQuadraticKernel()
 
-    for (op, T) in (
-        (+, KernelSum),
-        (*, KernelProduct),
-        (⊗, KernelTensorProduct),
-        (⊕, KernelIndependentSum),
-    )
-        if T === KernelTensorProduct || T === KernelIndependentSum
+    for (op, T) in
+        ((+, KernelSum), (*, KernelProduct), (⊗, KernelTensorProduct), (⊕, KernelTensorSum))
+        if T === KernelTensorProduct || T === KernelTensorSum
             v2_1 = rand(rng, 2)
             v2_2 = rand(rng, 2)
             v3_1 = rand(rng, 3)

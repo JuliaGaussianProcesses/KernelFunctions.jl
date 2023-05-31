@@ -1,4 +1,4 @@
-@testset "kernelindependentsum" begin
+@testset "kerneltensorsum" begin
     rng = MersenneTwister(123456)
     u1 = rand(rng, 10)
     u2 = rand(rng, 10)
@@ -8,14 +8,14 @@
     # kernels
     k1 = SqExponentialKernel()
     k2 = ExponentialKernel()
-    kernel1 = KernelIndependentSum(k1, k2)
-    kernel2 = KernelIndependentSum([k1, k2])
+    kernel1 = KernelTensorSum(k1, k2)
+    kernel2 = KernelTensorSum([k1, k2])
 
     @test kernel1 == kernel2
-    @test kernel1.kernels == (k1, k2) === KernelIndependentSum((k1, k2)).kernels
+    @test kernel1.kernels == (k1, k2) === KernelTensorSum((k1, k2)).kernels
     for (_k1, _k2) in Iterators.product(
-        (k1, KernelIndependentSum((k1,)), KernelIndependentSum([k1])),
-        (k2, KernelIndependentSum((k2,)), KernelIndependentSum([k2])),
+        (k1, KernelTensorSum((k1,)), KernelTensorSum([k1])),
+        (k2, KernelTensorSum((k2,)), KernelTensorSum([k2])),
     )
         @test kernel1 == _k1 ⊕ _k2
     end
@@ -39,21 +39,21 @@
     TestUtils.test_interface(kernel1, ColVecs{Float64})
     TestUtils.test_interface(kernel1, RowVecs{Float64})
     TestUtils.test_interface(
-        KernelIndependentSum(WhiteKernel(), ConstantKernel(; c=1.1)), ColVecs{String}
+        KernelTensorSum(WhiteKernel(), ConstantKernel(; c=1.1)), ColVecs{String}
     )
     test_ADs(
-        x -> KernelIndependentSum(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))),
+        x -> KernelTensorSum(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))),
         rand(1);
         dims=[2, 2],
     )
     types = [ColVecs{Float64,Matrix{Float64}}, RowVecs{Float64,Matrix{Float64}}]
     test_interface_ad_perf(2.1, StableRNG(123456), types) do c
-        KernelIndependentSum(SqExponentialKernel(), LinearKernel(; c=c))
+        KernelTensorSum(SqExponentialKernel(), LinearKernel(; c=c))
     end
-    test_params(KernelIndependentSum(k1, k2), (k1, k2))
+    test_params(KernelTensorSum(k1, k2), (k1, k2))
 
     @testset "single kernel" begin
-        kernel = KernelIndependentSum(k1)
+        kernel = KernelTensorSum(k1)
         @test length(kernel) == 1
 
         @testset "eval" begin

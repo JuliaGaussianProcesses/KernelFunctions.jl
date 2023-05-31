@@ -4,7 +4,7 @@ for (M, op, T) in (
     (:Base, :+, :KernelSum),
     (:Base, :*, :KernelProduct),
     (:TensorCore, :tensor, :KernelTensorProduct),
-    (:KernelFunctions, :⊕, :KernelIndependentSum),
+    (:KernelFunctions, :⊕, :KernelTensorSum),
 )
     @eval begin
         $M.$op(k1::Kernel, k2::Kernel) = $T(k1, k2)
