@@ -1,5 +1,5 @@
-function kernel_sum end
-const ⊕ = kernel_sum
+function tensor_sum end
+const ⊕ = tensor_sum
 
 for (M, op, T) in (
     (:Base, :+, :KernelSum),
