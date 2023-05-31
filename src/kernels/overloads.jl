@@ -1,4 +1,5 @@
-function ⊕ end
+function kernel_sum end
+const ⊕ = kernel_sum
 
 for (M, op, T) in (
     (:Base, :+, :KernelSum),
