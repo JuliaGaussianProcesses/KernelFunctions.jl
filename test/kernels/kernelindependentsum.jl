@@ -1,4 +1,4 @@
-@testset "kerneltensorsum" begin
+@testset "kernelindependentsum" begin
     rng = MersenneTwister(123456)
     u1 = rand(rng, 10)
     u2 = rand(rng, 10)
@@ -21,7 +21,7 @@
     end
     @test length(kernel1) == length(kernel2) == 2
     @test string(kernel1) == (
-        "Tensor sum of 2 kernels:\n" *
+        "Independent sum of 2 kernels:\n" *
         "\tSquared Exponential Kernel (metric = Euclidean(0.0))\n" *
         "\tExponential Kernel (metric = Euclidean(0.0))"
     )

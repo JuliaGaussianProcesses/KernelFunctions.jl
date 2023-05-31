@@ -99,7 +99,7 @@ end
 Base.show(io::IO, kernel::KernelIndependentSum) = printshifted(io, kernel, 0)
 
 function printshifted(io::IO, kernel::KernelIndependentSum, shift::Int)
-    print(io, "Tensor sum of ", length(kernel), " kernels:")
+    print(io, "Independent sum of ", length(kernel), " kernels:")
     for k in kernel.kernels
         print(io, "\n")
         for _ in 1:(shift + 1)
