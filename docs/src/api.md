@@ -6,12 +6,20 @@ CurrentModule = KernelFunctions
 
 ## Functions
 
-The KernelFunctions API comprises the following four functions.
+The KernelFunctions API comprises the following functions.
+
+The first set eagerly construct all or part of a kernel matrix
 ```@docs
 kernelmatrix
 kernelmatrix!
 kernelmatrix_diag
 kernelmatrix_diag!
+```
+
+It is also possible to lazily construct the same matrix
+```@docs
+lazykernelmatrix
+LazyKernelMatrix
 ```
 
 ## Input Types
