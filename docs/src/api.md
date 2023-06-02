@@ -16,7 +16,7 @@ kernelmatrix_diag
 kernelmatrix_diag!
 ```
 
-It is also possible to lazily construct the same matrix
+It is also possible to lazily construct the same matrix, which is recommended when the kernel matrix might be too large to store in memory
 ```@docs
 lazykernelmatrix
 LazyKernelMatrix
