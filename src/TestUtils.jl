@@ -8,7 +8,10 @@ function example_inputs end
 function __init__()
     # Better error message if users forget to load Test
     Base.Experimental.register_error_hint(MethodError) do io, exc, _, _
-        if exc.f === test_interface || exc.f === test_with_type || exc.f === test_type_stability || exc.f === example_inputs
+        if exc.f === test_interface ||
+            exc.f === test_with_type ||
+            exc.f === test_type_stability ||
+            exc.f === example_inputs
             print(io, "\\nDid you forget to load Test?")
         end
     end

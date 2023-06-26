@@ -43,12 +43,13 @@ function TestUtils.test_interface(
     @test size(kernelmatrix(k, x0, x2)) == (length(x0), length(x2))
 
     # Check that elementwise is consistent with pairwise.
-    @test kernelmatrix_diag(k, x0, x1) ≈ LinearAlgebra.diag(kernelmatrix(k, x0, x1)) atol = atol rtol =
-        rtol
+    @test kernelmatrix_diag(k, x0, x1) ≈ LinearAlgebra.diag(kernelmatrix(k, x0, x1)) atol =
+        atol rtol = rtol
 
     # Check additional binary elementwise properties for kernels.
     @test kernelmatrix_diag(k, x0, x1) ≈ kernelmatrix_diag(k, x1, x0)
-    @test kernelmatrix(k, x0, x2) ≈ permutedims(kernelmatrix(k, x2, x0)) atol = atol rtol = rtol
+    @test kernelmatrix(k, x0, x2) ≈ permutedims(kernelmatrix(k, x2, x0)) atol = atol rtol =
+        rtol
 
     # Check that unary elementwise basically works.
     @test kernelmatrix_diag(k, x0) isa AbstractVector
@@ -60,7 +61,8 @@ function TestUtils.test_interface(
     @test kernelmatrix(k, x0) ≈ permutedims(kernelmatrix(k, x0)) atol = atol rtol = rtol
 
     # Check that unary elementwise is consistent with unary pairwise.
-    @test kernelmatrix_diag(k, x0) ≈ LinearAlgebra.diag(kernelmatrix(k, x0)) atol = atol rtol = rtol
+    @test kernelmatrix_diag(k, x0) ≈ LinearAlgebra.diag(kernelmatrix(k, x0)) atol = atol rtol =
+        rtol
 
     # Check that unary pairwise produces a positive definite matrix (approximately).
     @test LinearAlgebra.eigmin(Matrix(kernelmatrix(k, x0))) > -atol
@@ -99,7 +101,9 @@ function TestUtils.test_interface(k::Kernel, T::Type=Float64; kwargs...)
     return TestUtils.test_interface(Random.default_rng(), k, T; kwargs...)
 end
 
-function TestUtils.test_interface(rng::Random.AbstractRNG, k::Kernel, T::Type=Float64; kwargs...)
+function TestUtils.test_interface(
+    rng::Random.AbstractRNG, k::Kernel, T::Type=Float64; kwargs...
+)
     return TestUtils.test_with_type(TestUtils.test_interface, rng, k, T; kwargs...)
 end
 
@@ -131,7 +135,9 @@ function TestUtils.test_type_stability(k::Kernel, ::Type{T}=Float64; kwargs...) 
     return TestUtils.test_type_stability(Random.default_rng(), k, T; kwargs...)
 end
 
-function TestUtils.test_type_stability(rng::Random.AbstractRNG, k::Kernel, ::Type{T}; kwargs...) where {T}
+function TestUtils.test_type_stability(
+    rng::Random.AbstractRNG, k::Kernel, ::Type{T}; kwargs...
+) where {T}
     return TestUtils.test_with_type(TestUtils.test_type_stability, rng, k, T; kwargs...)
 end
 
@@ -147,7 +153,9 @@ For other input types, please provide the data manually.
 The keyword arguments are forwarded to the invocations of `f` with the
 randomly generated inputs.
 """
-function TestUtils.test_with_type(f, rng::Random.AbstractRNG, k::Kernel, ::Type{T}; kwargs...) where {T}
+function TestUtils.test_with_type(
+    f, rng::Random.AbstractRNG, k::Kernel, ::Type{T}; kwargs...
+) where {T}
     @testset "Vector{$T}" begin
         TestUtils.test_with_type(f, rng, k, Vector{T}; kwargs...)
     end
@@ -169,7 +177,12 @@ function TestUtils.test_with_type(
 end
 
 function TestUtils.test_with_type(
-    f, rng::Random.AbstractRNG, k::MOKernel, ::Type{Vector{Tuple{T,Int}}}; dim_out=3, kwargs...
+    f,
+    rng::Random.AbstractRNG,
+    k::MOKernel,
+    ::Type{Vector{Tuple{T,Int}}};
+    dim_out=3,
+    kwargs...,
 ) where {T<:Real}
     return f(
         k,
@@ -216,7 +229,9 @@ function TestUtils.test_with_type(
     )
 end
 
-function TestUtils.test_with_type(f, rng::Random.AbstractRNG, k::Kernel, ::Type{Vector{String}}; kwargs...)
+function TestUtils.test_with_type(
+    f, rng::Random.AbstractRNG, k::Kernel, ::Type{Vector{String}}; kwargs...
+)
     return f(
         k,
         [Random.randstring(rng) for _ in 1:3],
