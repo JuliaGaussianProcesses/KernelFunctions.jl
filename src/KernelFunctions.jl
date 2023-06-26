@@ -53,6 +53,7 @@ using CompositionsBase
 using Distances
 using FillArrays
 using Functors
+using Random
 using LinearAlgebra
 using Requires
 using SpecialFunctions: loggamma, besselk, polygamma

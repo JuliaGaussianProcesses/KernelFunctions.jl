@@ -1,6 +1,6 @@
 name = "KernelFunctions"
 uuid = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
-version = "0.10.55"
+version = "0.10.56"
 
 [deps]
 ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
@@ -20,6 +20,12 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 TensorCore = "62fd8b95-f654-4bbd-a8a5-9c27f68ccd50"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 ZygoteRules = "700de1a5-db45-46bc-99cf-38207098b444"
+
+[weakdeps]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[extensions]
+KernelFunctionsTestExt = "Test"
 
 [compat]
 ChainRulesCore = "1"
