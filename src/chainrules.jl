@@ -150,8 +150,9 @@ function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
     function ColVecs_pullback(::AbstractVector{<:AbstractVector{<:Real}})
         return error(
             "Pullback on AbstractVector{<:AbstractVector}.\n" *
-            "This might happen if you try to use gradients on the generic `kernelmatrix` or `kernelmatrix_diag`.\n" *
-            "To solve this issue overload `kernelmatrix(_diag)` for your kernel for `ColVecs`",
+            "This might happen if you try to use gradients on the generic `kernelmatrix` or `kernelmatrix_diag`,\n" *
+            "or because some other external computation has acted on `ColVecs` to produce a vector of vectors." *
+            "If it is the former, to solve this issue overload `kernelmatrix(_diag)` for your kernel for `ColVecs`",
         )
     end
     return ColVecs(X), ColVecs_pullback
@@ -162,8 +163,9 @@ function ChainRulesCore.rrule(::Type{<:RowVecs}, X::AbstractMatrix)
     function RowVecs_pullback(::AbstractVector{<:AbstractVector{<:Real}})
         return error(
             "Pullback on AbstractVector{<:AbstractVector}.\n" *
-            "This might happen if you try to use gradients on the generic `kernelmatrix` or `kernelmatrix_diag`.\n" *
-            "To solve this issue overload `kernelmatrix(_diag)` for your kernel for `RowVecs`",
+            "This might happen if you try to use gradients on the generic `kernelmatrix` or `kernelmatrix_diag`,\n" *
+            "or because some other external computation has acted on `RowVecs` to produce a vector of vectors." *
+            "If it is the former, to solve this issue overload `kernelmatrix(_diag)` for your kernel for `RowVecs`",
         )
     end
     return RowVecs(X), RowVecs_pullback
