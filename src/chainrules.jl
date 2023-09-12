@@ -151,7 +151,7 @@ function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
         return error(
             "Pullback on AbstractVector{<:AbstractVector}.\n" *
             "This might happen if you try to use gradients on the generic `kernelmatrix` or `kernelmatrix_diag`,\n" *
-            "or because some other external computation has acted on `ColVecs` to produce a vector of vectors." *
+            "or because some external computation has acted on `ColVecs` to produce a vector of vectors." *
             "If it is the former, to solve this issue overload `kernelmatrix(_diag)` for your kernel for `ColVecs`",
         )
     end
@@ -164,7 +164,7 @@ function ChainRulesCore.rrule(::Type{<:RowVecs}, X::AbstractMatrix)
         return error(
             "Pullback on AbstractVector{<:AbstractVector}.\n" *
             "This might happen if you try to use gradients on the generic `kernelmatrix` or `kernelmatrix_diag`,\n" *
-            "or because some other external computation has acted on `RowVecs` to produce a vector of vectors." *
+            "or because some external computation has acted on `RowVecs` to produce a vector of vectors." *
             "If it is the former, to solve this issue overload `kernelmatrix(_diag)` for your kernel for `RowVecs`",
         )
     end
