@@ -152,7 +152,9 @@ function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
             "Pullback on AbstractVector{<:AbstractVector}.\n" *
             "This might happen if you try to use gradients on the generic `kernelmatrix` or `kernelmatrix_diag`,\n" *
             "or because some external computation has acted on `ColVecs` to produce a vector of vectors." *
-            "If it is the former, to solve this issue overload `kernelmatrix(_diag)` for your kernel for `ColVecs`",
+            "In the former case, to solve this issue overload `kernelmatrix(_diag)` for your kernel for `ColVecs`." *
+            "In the latter case, one needs to track down the `rrule` whose pullback returns a `Vector{Vector{T}}`," *
+            " rather than a `Tangent`, as the cotangent / gradient for `ColVecs` input, and circumvent it."
         )
     end
     return ColVecs(X), ColVecs_pullback
