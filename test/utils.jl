@@ -47,10 +47,10 @@
         @test vcat(DX, DY) isa ColVecs
         @test vcat(DX, DY).X == hcat(X, Y)
         K = zeros(N, N)
-        KernelFunctions.pairwise!(K, SqEuclidean(), DX)
+        KernelFunctions.pairwise!(SqEuclidean(), K, DX)
         @test K ≈ pairwise(SqEuclidean(), X; dims=2)
         K = zeros(N, N + 1)
-        KernelFunctions.pairwise!(K, SqEuclidean(), DX, DY)
+        KernelFunctions.pairwise!(SqEuclidean(), K, DX, DY)
         @test K ≈ pairwise(SqEuclidean(), X, Y; dims=2)
 
         let
@@ -105,10 +105,10 @@
         @test vcat(DX, DY) isa RowVecs
         @test vcat(DX, DY).X == vcat(X, Y)
         K = zeros(D, D)
-        KernelFunctions.pairwise!(K, SqEuclidean(), DX)
+        KernelFunctions.pairwise!(SqEuclidean(), K, DX)
         @test K ≈ pairwise(SqEuclidean(), X; dims=1)
         K = zeros(D, D + 1)
-        KernelFunctions.pairwise!(K, SqEuclidean(), DX, DY)
+        KernelFunctions.pairwise!(SqEuclidean(), K, DX, DY)
         @test K ≈ pairwise(SqEuclidean(), X, Y; dims=1)
 
         let
