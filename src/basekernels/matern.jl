@@ -41,7 +41,8 @@ MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν,
 
 function _matern(ν::Real, d::Real)
     if iszero(d)
-        return one(d)
+        c = -ν / (ν - 1)
+        return one(d) + c * d^2 / 2
     else
         y = sqrt(2ν) * d
         b = log(besselk(ν, y))
