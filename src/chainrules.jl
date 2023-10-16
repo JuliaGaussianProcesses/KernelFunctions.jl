@@ -192,7 +192,7 @@ function ChainRulesCore.rrule(
                 ȳ[:, j] -= ds
             end
         end
-        NoTangent(), (r=r̄,), @thunk(project_x(x̄)), @thunk(project_y(ȳ))
+        return NoTangent(), (r=r̄,), @thunk(project_x(x̄)), @thunk(project_y(ȳ))
     end
     return Distances.pairwise(d, x, y; dims), pairwise_pullback
 end
