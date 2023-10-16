@@ -122,10 +122,7 @@ function ChainRulesCore.rrule(s::Sinus, x::AbstractVector, y::AbstractVector)
 end
 
 function ChainRulesCore.rrule(
-    ::typeof(Distances.pairwise),
-    d::Sinus,
-    x::AbstractMatrix;
-    dims = 2
+    ::typeof(Distances.pairwise), d::Sinus, x::AbstractMatrix; dims=2
 )
     project_x = ProjectTo(x)
     function pairwise_pullback(z̄)
