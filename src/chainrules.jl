@@ -113,7 +113,7 @@ function ChainRulesCore.rrule(s::Sinus, x::AbstractVector, y::AbstractVector)
     d = x - y
     sind = sinpi.(d)
     abs2_sind_r = abs2.(sind) ./ s.r .^ 2
-    val = sum(abs2_sind_r)  
+    val = sum(abs2_sind_r)
     gradx = twoπ .* cospi.(d) .* sind ./ s.r .^ 2
     function evaluate_pullback(Δ::Any)
         return (r=-2Δ .* abs2_sind_r ./ s.r,), Δ * gradx, -Δ * gradx
