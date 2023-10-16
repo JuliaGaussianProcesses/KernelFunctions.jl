@@ -155,11 +155,7 @@ function ChainRulesCore.rrule(
 end
 
 function ChainRulesCore.rrule(
-    ::typeof(Distances.pairwise),
-    d::Sinus,
-    x::AbstractMatrix,
-    y::AbstractMatrix;
-    dims = 2
+    ::typeof(Distances.pairwise), d::Sinus, x::AbstractMatrix, y::AbstractMatrix; dims=2
 )
     project_x = ProjectTo(x)
     project_y = ProjectTo(y)
