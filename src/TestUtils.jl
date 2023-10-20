@@ -1,5 +1,7 @@
 module TestUtils
 
+using ..KernelFunctions: KernelFunctions
+
 function test_interface end
 function test_with_type end
 function test_type_stability end
@@ -14,7 +16,7 @@ if isdefined(Base, :get_extension) && isdefined(Base.Experimental, :register_err
                 exc.f === test_with_type ||
                 exc.f === test_type_stability ||
                 exc.f === example_inputs
-            ) && (Base.get_extension(Distributions, :DistributionsTestExt) === nothing)
+            ) && (Base.get_extension(KernelFunctions, :KernelFunctionsTestExt) === nothing)
                 print(io, "\nDid you forget to load Test?")
             end
         end
