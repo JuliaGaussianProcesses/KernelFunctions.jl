@@ -116,7 +116,9 @@ function ChainRulesCore.rrule(s::Sinus, x::AbstractVector, y::AbstractVector)
     val = sum(abs2_sind_r)
     gradx = twoπ .* cospi.(d) .* sind ./ s.r .^ 2
     function evaluate_pullback(Δ::Any)
-        return (r=-2Δ .* abs2_sind_r ./ s.r,), Δ * gradx, -Δ * gradx
+        r̄ = -2Δ .* abs2_sind_r ./ s.r
+        s̄ = ChainRulesCore.Tangent{typeof(s)}(; r=r̄)
+        return s̄, Δ * gradx, -Δ * gradx
     end
     return val, evaluate_pullback
 end
@@ -149,7 +151,8 @@ function ChainRulesCore.rrule(
                 x̄[:, j] -= ds
             end
         end
-        return NoTangent(), (r=r̄,), @thunk(project_x(x̄))
+        d̄ = ChainRulesCore.Tangent{typeof(d)}(; r=r̄)
+        return NoTangent(), d̄, @thunk(project_x(x̄))
     end
     return Distances.pairwise(d, x; dims), pairwise_pullback
 end
@@ -185,7 +188,8 @@ function ChainRulesCore.rrule(
                 ȳ[:, j] -= ds
             end
         end
-        return NoTangent(), (r=r̄,), @thunk(project_x(x̄)), @thunk(project_y(ȳ))
+        d̄ = ChainRulesCore.Tangent{typeof(d)}(; r=r̄)
+        return NoTangent(), d̄, @thunk(project_x(x̄)), @thunk(project_y(ȳ))
     end
     return Distances.pairwise(d, x, y; dims), pairwise_pullback
 end
@@ -209,7 +213,8 @@ function ChainRulesCore.rrule(
             x̄[:, i] += ds
             ȳ[:, i] -= ds
         end
-        return NoTangent(), (r=r̄,), @thunk(project_x(x̄)), @thunk(project_y(ȳ))
+        d̄ = ChainRulesCore.Tangent{typeof(d)}(; r=r̄)
+        return NoTangent(), d̄, @thunk(project_x(x̄)), @thunk(project_y(ȳ))
     end
     return Distances.colwise(d, x, y), colwise_pullback
 end
