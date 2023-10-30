@@ -31,9 +31,20 @@
 
     @testset "rrules for Sinus(r=$r)" for r in (rand(3),)
         dist = KernelFunctions.Sinus(r)
-        test_rrule(dist, rand(3), rand(3))
-        test_rrule(Distances.pairwise, dist, rand(3, 2); fkwargs=(dims=2,))
-        test_rrule(Distances.pairwise, dist, rand(3, 2), rand(3, 3); fkwargs=(dims=2,))
-        test_rrule(Distances.colwise, dist, rand(3, 2), rand(3, 2))
+        @testset "$type" for type in (Vector, SVector{3})
+            test_rrule(dist, type(rand(3)), type(rand(3)))
+        end
+        @testset "$type1, $type2" for type1 in (Matrix, SMatrix{3, 2}),
+            type2 in (Matrix, SMatrix{3, 4})
+            test_rrule(
+                Distances.pairwise, dist, type1(rand(3, 2));
+                fkwargs=(dims=2,)
+            )
+            test_rrule(
+                Distances.pairwise, dist, type1(rand(3, 2)), type2(rand(3, 4));
+                fkwargs=(dims=2,)
+            )
+            test_rrule(Distances.colwise, dist, type1(rand(3, 2)), type1(rand(3, 2)))
+        end
     end
 end

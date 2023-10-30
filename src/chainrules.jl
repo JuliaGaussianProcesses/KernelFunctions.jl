@@ -130,7 +130,7 @@ function ChainRulesCore.rrule(
     function pairwise_pullback(z̄)
         Δ = unthunk(z̄)
         n = size(x, dims)
-        x̄ = zero(x)
+        x̄ = collect(zero(x))
         r̄ = zero(d.r)
         if dims == 1
             for j in 1:n, i in 1:n
@@ -166,8 +166,8 @@ function ChainRulesCore.rrule(
         Δ = unthunk(z̄)
         n = size(x, dims)
         m = size(y, dims)
-        x̄ = zero(x)
-        ȳ = zero(y)
+        x̄ = collect(zero(x))
+        ȳ = collect(zero(y))
         r̄ = zero(d.r)
         if dims == 1
             for j in 1:m, i in 1:n
@@ -202,8 +202,8 @@ function ChainRulesCore.rrule(
     function colwise_pullback(z̄)
         Δ = unthunk(z̄)
         n = size(x, 2)
-        x̄ = zero(x)
-        ȳ = zero(y)
+        x̄ = collect(zero(x))
+        ȳ = collect(zero(y))
         r̄ = zero(d.r)
         for i in 1:n
             xi = view(x, :, i)
