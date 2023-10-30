@@ -31,9 +31,9 @@
 
     @testset "rrules for Sinus(r=$r)" for r in (rand(3),)
         dist = KernelFunctions.Sinus(r)
-        ddist = (r = ones(length(r)),)
         test_rrule(dist, rand(3), rand(3))
         test_rrule(Distances.pairwise, dist, rand(3, 2); fkwargs=(dims=2,))
         test_rrule(Distances.pairwise, dist, rand(3, 2), rand(3, 3); fkwargs=(dims=2,))
+        test_rrule(Distances.colwise, dist, rand(3, 2), rand(3, 2))
     end
 end
