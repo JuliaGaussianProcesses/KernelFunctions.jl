@@ -39,8 +39,11 @@
 
             test_rrule(Distances.pairwise, dist, type1(rand(3, 2)); fkwargs=(dims=2,))
             test_rrule(
-                Distances.pairwise, dist, type1(rand(3, 2)), type2(rand(3, 4));
-                fkwargs=(dims=2,)
+                Distances.pairwise,
+                dist,
+                type1(rand(3, 2)),
+                type2(rand(3, 4));
+                fkwargs=(dims=2,),
             )
             test_rrule(Distances.colwise, dist, type1(rand(3, 2)), type1(rand(3, 2)))
         end
