@@ -34,12 +34,10 @@
         @testset "$type" for type in (Vector, SVector{3})
             test_rrule(dist, type(rand(3)), type(rand(3)))
         end
-        @testset "$type1, $type2" for type1 in (Matrix, SMatrix{3, 2}),
-            type2 in (Matrix, SMatrix{3, 4})
-            test_rrule(
-                Distances.pairwise, dist, type1(rand(3, 2));
-                fkwargs=(dims=2,)
-            )
+        @testset "$type1, $type2" for type1 in (Matrix, SMatrix{3,2}),
+            type2 in (Matrix, SMatrix{3,4})
+
+            test_rrule(Distances.pairwise, dist, type1(rand(3, 2)); fkwargs=(dims=2,))
             test_rrule(
                 Distances.pairwise, dist, type1(rand(3, 2)), type2(rand(3, 4));
                 fkwargs=(dims=2,)
