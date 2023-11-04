@@ -53,6 +53,7 @@ using CompositionsBase
 using Distances
 using FillArrays
 using Functors
+using Random
 using LinearAlgebra
 using Requires
 using SpecialFunctions: loggamma, besselk, polygamma
@@ -125,6 +126,9 @@ include("chainrules.jl")
 include("zygoterules.jl")
 
 include("TestUtils.jl")
+if !isdefined(Base, :get_extension)
+    include("../ext/KernelFunctionsTestExt.jl")
+end
 
 function __init__()
     @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin

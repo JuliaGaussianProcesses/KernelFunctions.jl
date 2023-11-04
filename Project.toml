@@ -21,6 +21,12 @@ TensorCore = "62fd8b95-f654-4bbd-a8a5-9c27f68ccd50"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 ZygoteRules = "700de1a5-db45-46bc-99cf-38207098b444"
 
+[weakdeps]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[extensions]
+KernelFunctionsTestExt = "Test"
+
 [compat]
 ChainRulesCore = "1"
 Compat = "3.7, 4"
