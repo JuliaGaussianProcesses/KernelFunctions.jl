@@ -17,6 +17,10 @@ By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
 A Gaussian process with a Matérn kernel is ``\\lceil \\nu \\rceil - 1``-times
 differentiable in the mean-square sense.
 
+!!! note
+
+    Differentiation with respect to the order ν is not currently supported.
+
 See also: [`Matern12Kernel`](@ref), [`Matern32Kernel`](@ref), [`Matern52Kernel`](@ref)
 """
 struct MaternKernel{T<:Real,M} <: SimpleKernel
@@ -37,20 +41,23 @@ function ParameterHandling.flatten(::Type{T}, k::MaternKernel{S}) where {T<:Real
     return T[log(k.ν)], unflatten_to_maternkernel
 end
 
-@inline function kappa(κ::MaternKernel, d::Real)
-    result = _matern(first(κ.ν), d)
-    return ifelse(iszero(d), one(result), result)
-end
+@inline kappa(k::MaternKernel, d::Real) = _matern(only(k.ν), d)
 
 function _matern(ν::Real, d::Real)
-    y = sqrt(2ν) * d
-    return exp((one(d) - ν) * logtwo - loggamma(ν) + ν * log(y) + log(besselk(ν, y)))
+    if iszero(d)
+        c = -ν / (ν - 1)
+        return one(d) + c * d^2 / 2
+    else
+        y = sqrt(2ν) * d
+        b = log(besselk(ν, y))
+        return exp((one(d) - ν) * oftype(y, logtwo) - loggamma(ν) + ν * log(y) + b)
+    end
 end
 
 metric(k::MaternKernel) = k.metric
 
 function Base.show(io::IO, κ::MaternKernel)
-    return print(io, "Matern Kernel (ν = ", first(κ.ν), ", metric = ", κ.metric, ")")
+    return print(io, "Matern Kernel (ν = ", only(κ.ν), ", metric = ", κ.metric, ")")
 end
 
 ## Matern12Kernel = ExponentialKernel aliased in exponential.jl

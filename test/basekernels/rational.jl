@@ -29,6 +29,7 @@
         TestUtils.test_interface(k, Float64)
         test_ADs(x -> RationalKernel(; alpha=exp(x[1])), [α])
         test_params(k, ([log(α)],))
+        test_interface_ad_perf(α -> RationalKernel(; alpha=α), α, StableRNG(123456))
     end
 
     @testset "RationalQuadraticKernel" begin
@@ -54,8 +55,25 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
-        test_ADs(x -> RationalQuadraticKernel(; alpha=exp(x[1])), [α])
         test_params(k, ([log(α)],))
+        test_ADs(x -> RationalQuadraticKernel(; alpha=exp(x[1])), [α])
+        test_interface_ad_perf(α, StableRNG(123456)) do α
+            RationalQuadraticKernel(; alpha=α)
+        end
+
+        # Check correctness and performance with non-Euclidean metrics.
+        TestUtils.test_interface(
+            RationalQuadraticKernel(; alpha=α, metric=WeightedEuclidean([1.0, 2.0])),
+            ColVecs{Float64},
+        )
+        TestUtils.test_interface(
+            RationalQuadraticKernel(; alpha=α, metric=WeightedEuclidean([1.0, 2.0])),
+            RowVecs{Float64},
+        )
+        types = [ColVecs{Float64,Matrix{Float64}}, RowVecs{Float64,Matrix{Float64}}]
+        test_interface_ad_perf(α, StableRNG(123456)) do α
+            RationalQuadraticKernel(; alpha=α, metric=KernelFunctions.DotProduct())
+        end
     end
 
     @testset "GammaRationalKernel" begin
@@ -128,7 +146,10 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         a = 1.0 + rand()
-        test_ADs(x -> GammaRationalKernel(; α=x[1], γ=x[2]), [a, 1 + 0.5 * rand()])
         test_params(GammaRationalKernel(; α=a, γ=x), ([log(a), logit(x / 2)],))
+        test_ADs(x -> GammaRationalKernel(; α=x[1], γ=x[2]), [a, 1 + 0.5 * rand()])
+        test_interface_ad_perf((2.0, 1.5), StableRNG(123456)) do θ
+            GammaRationalKernel(; α=θ[1], γ=θ[2])
+        end
     end
 end

@@ -62,22 +62,27 @@ end
 
 Base.length(k::KernelProduct) = length(k.kernels)
 
-(κ::KernelProduct)(x, y) = prod(k(x, y) for k in κ.kernels)
+function _hadamard(f, ks::Tuple, args...)
+    return f(first(ks), args...) .* _hadamard(f, Base.tail(ks), args...)
+end
+_hadamard(f, ks::Tuple{Tx}, args...) where {Tx} = f(only(ks), args...)
+
+(κ::KernelProduct)(x, y) = _hadamard((k, x, y) -> k(x, y), κ.kernels, x, y)
 
 function kernelmatrix(κ::KernelProduct, x::AbstractVector)
-    return reduce(hadamard, kernelmatrix(k, x) for k in κ.kernels)
+    return _hadamard(kernelmatrix, κ.kernels, x)
 end
 
 function kernelmatrix(κ::KernelProduct, x::AbstractVector, y::AbstractVector)
-    return reduce(hadamard, kernelmatrix(k, x, y) for k in κ.kernels)
+    return _hadamard(kernelmatrix, κ.kernels, x, y)
 end
 
 function kernelmatrix_diag(κ::KernelProduct, x::AbstractVector)
-    return reduce(hadamard, kernelmatrix_diag(k, x) for k in κ.kernels)
+    return _hadamard(kernelmatrix_diag, κ.kernels, x)
 end
 
 function kernelmatrix_diag(κ::KernelProduct, x::AbstractVector, y::AbstractVector)
-    return reduce(hadamard, kernelmatrix_diag(k, x, y) for k in κ.kernels)
+    return _hadamard(kernelmatrix_diag, κ.kernels, x, y)
 end
 
 function Base.show(io::IO, κ::KernelProduct)

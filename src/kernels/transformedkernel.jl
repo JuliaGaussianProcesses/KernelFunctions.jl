@@ -43,10 +43,10 @@ function (k::TransformedKernel{<:SimpleKernel,<:ScaleTransform})(
 end
 
 function _scale(t::ScaleTransform, metric::Euclidean, x, y)
-    return first(t.s) * evaluate(metric, x, y)
+    return only(t.s) * evaluate(metric, x, y)
 end
 function _scale(t::ScaleTransform, metric::Union{SqEuclidean,DotProduct}, x, y)
-    return first(t.s)^2 * evaluate(metric, x, y)
+    return only(t.s)^2 * evaluate(metric, x, y)
 end
 _scale(t::ScaleTransform, metric, x, y) = evaluate(metric, t(x), t(y))
 

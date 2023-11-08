@@ -20,4 +20,20 @@
     @test repr(ScaleTransform(s2)) == "Scale Transform (s = $(s2))"
 
     test_ADs(x -> SEKernel() ∘ ScaleTransform(exp(x[1])), randn(rng, 1))
+    test_interface_ad_perf(0.3, StableRNG(123456)) do c
+        SEKernel() ∘ ScaleTransform(c)
+    end
+
+    @testset "median heuristic" begin
+        for x in (x, XV, XC, XR), dist in (Euclidean(), Cityblock())
+            n = length(x)
+            t = median_heuristic_transform(dist, x)
+            @test t isa ScaleTransform
+            @test first(t.s) ≈
+                inv(median(dist(x[i], x[j]) for i in 1:n, j in 1:n if i != j))
+
+            y = map(t, x)
+            @test median(dist(y[i], y[j]) for i in 1:n, j in 1:n if i != j) ≈ 1
+        end
+    end
 end

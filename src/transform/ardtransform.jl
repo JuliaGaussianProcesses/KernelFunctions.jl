@@ -35,12 +35,17 @@ end
 
 dim(t::ARDTransform) = length(t.v)
 
-(t::ARDTransform)(x::Real) = first(t.v) * x
+(t::ARDTransform)(x::Real) = only(t.v) * x
 (t::ARDTransform)(x) = t.v .* x
 
-_map(t::ARDTransform, x::AbstractVector{<:Real}) = t.v' .* x
-_map(t::ARDTransform, x::ColVecs) = ColVecs(t.v .* x.X)
-_map(t::ARDTransform, x::RowVecs) = RowVecs(t.v' .* x.X)
+# Quite specific implementations required to pass correctness and performance tests.
+_map(t::ARDTransform, x::AbstractVector{<:Real}) = x * only(t.v)
+function _map(t::ARDTransform, x::ColVecs)
+    return ColVecs((t.v * ones(eltype(t.v), 1, size(x.X, 2))) .* x.X)
+end
+function _map(t::ARDTransform, x::RowVecs)
+    return RowVecs(x.X .* (ones(eltype(t.v), size(x.X, 1)) * collect(t.v')))
+end
 
 Base.isequal(t::ARDTransform, t2::ARDTransform) = isequal(t.v, t2.v)
 

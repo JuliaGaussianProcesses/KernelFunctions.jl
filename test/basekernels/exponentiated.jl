@@ -15,4 +15,5 @@
     TestUtils.test_interface(k; atol=1e-3)
     test_params(k, (Float64[],))
     test_ADs(ExponentiatedKernel)
+    test_interface_ad_perf(_ -> ExponentiatedKernel(), nothing, StableRNG(123456))
 end

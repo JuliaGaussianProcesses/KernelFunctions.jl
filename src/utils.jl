@@ -21,12 +21,28 @@ macro check_args(K, param, cond, desc=string(cond))
     end
 end
 
-function vec_of_vecs(X::AbstractMatrix; obsdim::Int=2)
-    @assert obsdim ∈ (1, 2) "obsdim should be 1 or 2, see docs of kernelmatrix"
-    if obsdim == 1
-        RowVecs(X)
+function deprecated_obsdim(obsdim::Union{Int,Nothing})
+    _obsdim = if obsdim === nothing
+        Base.depwarn(
+            "implicit `obsdim=2` argument is deprecated and now has to be passed " *
+            "explicitly to specify that each column corresponds to one observation",
+            :vec_of_vecs,
+        )
+        2
     else
-        ColVecs(X)
+        obsdim
+    end
+    return _obsdim
+end
+
+function vec_of_vecs(X::AbstractMatrix; obsdim::Union{Int,Nothing}=nothing)
+    _obsdim = deprecated_obsdim(obsdim)
+    if _obsdim == 1
+        return RowVecs(X)
+    elseif _obsdim == 2
+        return ColVecs(X)
+    else
+        throw(ArgumentError("`obsdim` keyword argument should be 1 or 2"))
     end
 end
 
@@ -77,22 +93,25 @@ Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
 Base.setindex!(D::ColVecs, v::AbstractVector, i) = setindex!(D.X, v, :, i)
 
 Base.vcat(a::ColVecs, b::ColVecs) = ColVecs(hcat(a.X, b.X))
+Base.zero(x::ColVecs) = ColVecs(zero(x.X))
 
 dim(x::ColVecs) = size(x.X, 1)
 
+_to_colvecs(x::AbstractVector{<:Real}) = ColVecs(reshape(x, 1, :))
+
 pairwise(d::PreMetric, x::ColVecs) = Distances_pairwise(d, x.X; dims=2)
 pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances_pairwise(d, x.X, y.X; dims=2)
-function pairwise(d::PreMetric, x::AbstractVector, y::ColVecs)
+function pairwise(d::PreMetric, x::AbstractVector{<:AbstractVector{<:Real}}, y::ColVecs)
     return Distances_pairwise(d, reduce(hcat, x), y.X; dims=2)
 end
-function pairwise(d::PreMetric, x::ColVecs, y::AbstractVector)
+function pairwise(d::PreMetric, x::ColVecs, y::AbstractVector{<:AbstractVector{<:Real}})
     return Distances_pairwise(d, x.X, reduce(hcat, y); dims=2)
 end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs)
-    return Distances.pairwise!(out, d, x.X; dims=2)
+function pairwise!(d::PreMetric, out::AbstractMatrix, x::ColVecs)
+    return Distances.pairwise!(d, out, x.X; dims=2)
 end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs, y::ColVecs)
-    return Distances.pairwise!(out, d, x.X, y.X; dims=2)
+function pairwise!(d::PreMetric, out::AbstractMatrix, x::ColVecs, y::ColVecs)
+    return Distances.pairwise!(d, out, x.X, y.X; dims=2)
 end
 
 """
@@ -147,22 +166,23 @@ Base.getindex(D::RowVecs, i) = RowVecs(view(D.X, i, :))
 Base.setindex!(D::RowVecs, v::AbstractVector, i) = setindex!(D.X, v, i, :)
 
 Base.vcat(a::RowVecs, b::RowVecs) = RowVecs(vcat(a.X, b.X))
+Base.zero(x::RowVecs) = RowVecs(zero(x.X))
 
 dim(x::RowVecs) = size(x.X, 2)
 
 pairwise(d::PreMetric, x::RowVecs) = Distances_pairwise(d, x.X; dims=1)
 pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = Distances_pairwise(d, x.X, y.X; dims=1)
-function pairwise(d::PreMetric, x::AbstractVector, y::RowVecs)
+function pairwise(d::PreMetric, x::AbstractVector{<:AbstractVector{<:Real}}, y::RowVecs)
     return Distances_pairwise(d, permutedims(reduce(hcat, x)), y.X; dims=1)
 end
-function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector)
+function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector{<:AbstractVector{<:Real}})
     return Distances_pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
 end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs)
-    return Distances.pairwise!(out, d, x.X; dims=1)
+function pairwise!(d::PreMetric, out::AbstractMatrix, x::RowVecs)
+    return Distances.pairwise!(d, out, x.X; dims=1)
 end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs, y::RowVecs)
-    return Distances.pairwise!(out, d, x.X, y.X; dims=1)
+function pairwise!(d::PreMetric, out::AbstractMatrix, x::RowVecs, y::RowVecs)
+    return Distances.pairwise!(d, out, x.X, y.X; dims=1)
 end
 
 # Resolve ambiguity error for ColVecs vs RowVecs. #346
@@ -178,7 +198,7 @@ function validate_inputs(x, y)
     if dim(x) != dim(y) # Passes by default if `dim` is not defined
         throw(
             DimensionMismatch(
-                "Dimensionality of x ($(dim(x))) not equality to that of y ($(dim(y)))"
+                "dimensionality of x ($(dim(x))) is not equal to that of y ($(dim(y)))"
             ),
         )
     end

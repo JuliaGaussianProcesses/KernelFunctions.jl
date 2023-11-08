@@ -17,9 +17,43 @@ struct ZeroKernel <: SimpleKernel end
 
 @noparams ZeroKernel
 
-kappa(::ZeroKernel, d::Real) = zero(d)
+# SimpleKernel interface
+kappa(::ZeroKernel, ::Real) = false
 
 metric(::ZeroKernel) = Delta()
+
+# Optimizations
+(::ZeroKernel)(x, y) = false
+kernelmatrix(::ZeroKernel, x::AbstractVector) = Falses(length(x), length(x))
+function kernelmatrix(::ZeroKernel, x::AbstractVector, y::AbstractVector)
+    validate_inputs(x, y)
+    return Falses(length(x), length(y))
+end
+function kernelmatrix!(K::AbstractMatrix, ::ZeroKernel, x::AbstractVector)
+    validate_inplace_dims(K, x)
+    return fill!(K, zero(eltype(K)))
+end
+function kernelmatrix!(
+    K::AbstractMatrix, ::ZeroKernel, x::AbstractVector, y::AbstractVector
+)
+    validate_inplace_dims(K, x, y)
+    return fill!(K, zero(eltype(K)))
+end
+kernelmatrix_diag(::ZeroKernel, x::AbstractVector) = Falses(length(x))
+function kernelmatrix_diag(::ZeroKernel, x::AbstractVector, y::AbstractVector)
+    validate_inputs(x, y)
+    return Falses(length(x))
+end
+function kernelmatrix_diag!(K::AbstractVector, ::ZeroKernel, x::AbstractVector)
+    validate_inplace_dims(K, x)
+    return fill!(K, zero(eltype(K)))
+end
+function kernelmatrix_diag!(
+    K::AbstractVector, ::ZeroKernel, x::AbstractVector, y::AbstractVector
+)
+    validate_inplace_dims(K, x, y)
+    return fill!(K, zero(eltype(K)))
+end
 
 Base.show(io::IO, ::ZeroKernel) = print(io, "Zero Kernel")
 
@@ -84,8 +118,41 @@ function ParameterHandling.flatten(::Type{T}, k::ConstantKernel{S}) where {T<:Re
     return T[log(k.c)], unflatten_to_constantkernel
 end
 
-kappa(κ::ConstantKernel, x::Real) = κ.c * one(x)
-
+# SimpleKernel interface
+kappa(κ::ConstantKernel, ::Real) = κ.c
 metric(::ConstantKernel) = Delta()
+
+# Optimizations
+(k::ConstantKernel)(x, y) = k.c
+kernelmatrix(k::ConstantKernel, x::AbstractVector) = Fill(k.c, length(x), length(x))
+function kernelmatrix(k::ConstantKernel, x::AbstractVector, y::AbstractVector)
+    validate_inputs(x, y)
+    return Fill(k.c, length(x), length(y))
+end
+function kernelmatrix!(K::AbstractMatrix, k::ConstantKernel, x::AbstractVector)
+    validate_inplace_dims(K, x)
+    return fill!(K, k.c)
+end
+function kernelmatrix!(
+    K::AbstractMatrix, k::ConstantKernel, x::AbstractVector, y::AbstractVector
+)
+    validate_inplace_dims(K, x, y)
+    return fill!(K, k.c)
+end
+kernelmatrix_diag(k::ConstantKernel, x::AbstractVector) = Fill(k.c, length(x))
+function kernelmatrix_diag(k::ConstantKernel, x::AbstractVector, y::AbstractVector)
+    validate_inputs(x, y)
+    return Fill(k.c, length(x))
+end
+function kernelmatrix_diag!(K::AbstractVector, k::ConstantKernel, x::AbstractVector)
+    validate_inplace_dims(K, x)
+    return fill!(K, k.c)
+end
+function kernelmatrix_diag!(
+    K::AbstractVector, k::ConstantKernel, x::AbstractVector, y::AbstractVector
+)
+    validate_inplace_dims(K, x, y)
+    return fill!(K, k.c)
+end
 
 Base.show(io::IO, κ::ConstantKernel) = print(io, "Constant Kernel (c = ", κ.c, ")")

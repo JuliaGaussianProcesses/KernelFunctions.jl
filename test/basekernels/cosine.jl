@@ -21,4 +21,5 @@
     TestUtils.test_interface(k, Vector{Float64})
     test_params(k, (Float64[],))
     test_ADs(CosineKernel)
+    test_interface_ad_perf(_ -> CosineKernel(), nothing, StableRNG(123456))
 end

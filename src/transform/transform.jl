@@ -5,8 +5,24 @@ Abstract type defining a transformation of the input.
 """
 abstract type Transform end
 
-Base.map(t::Transform, x::AbstractVector) = _map(t, x)
-_map(t::Transform, x::AbstractVector) = t.(x)
+# We introduce our own _map for Transform so that we can work around
+# https://github.com/FluxML/Zygote.jl/issues/646 and define our own pullback
+# (see zygoterules.jl)
+Base.map(t::Transform, x::ColVecs) = _map(t, x)
+Base.map(t::Transform, x::RowVecs) = _map(t, x)
+
+# Fallback
+# No separate methods for `x::ColVecs` and `x::RowVecs` to avoid method ambiguities
+function _map(t::Transform, x::AbstractVector)
+    # Avoid stackoverflow
+    if x isa RowVecs
+        return map(t, eachrow(x.X))
+    elseif x isa ColVecs
+        return map(t, eachcol(x.X))
+    else
+        return map(t, x)
+    end
+end
 
 """
     IdentityTransform()
@@ -18,6 +34,9 @@ struct IdentityTransform <: Transform end
 @noparams IdentityTransform
 
 (t::IdentityTransform)(x) = x
+
+# More efficient implementation than `map(IdentityTransform(), x)`
+# Introduces, however, discrepancy between `map` and `_map`
 _map(::IdentityTransform, x::AbstractVector) = x
 
 ### TODO Maybe defining adjoints could help but so far it's not working

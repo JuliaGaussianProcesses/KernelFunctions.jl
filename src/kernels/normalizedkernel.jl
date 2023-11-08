@@ -26,15 +26,17 @@ end
 (κ::NormalizedKernel)(x, y) = κ.kernel(x, y) / sqrt(κ.kernel(x, x) * κ.kernel(y, y))
 
 function kernelmatrix(κ::NormalizedKernel, x::AbstractVector, y::AbstractVector)
-    return kernelmatrix(κ.kernel, x, y) ./
-           sqrt.(
-        kernelmatrix_diag(κ.kernel, x) .* permutedims(kernelmatrix_diag(κ.kernel, y))
-    )
+    x_diag = kernelmatrix_diag(κ.kernel, x)
+    x_diag_wide = x_diag * ones(eltype(x_diag), 1, length(y)) # ad perf hack. Is unit tested
+    y_diag = kernelmatrix_diag(κ.kernel, y)
+    y_diag_wide = y_diag * ones(eltype(y_diag), 1, length(x)) # ad perf hack. Is unit tested
+    return kernelmatrix(κ.kernel, x, y) ./ sqrt.(x_diag_wide .* y_diag_wide')
 end
 
 function kernelmatrix(κ::NormalizedKernel, x::AbstractVector)
     x_diag = kernelmatrix_diag(κ.kernel, x)
-    return kernelmatrix(κ.kernel, x) ./ sqrt.(x_diag .* permutedims(x_diag))
+    x_diag_wide = x_diag * ones(eltype(x_diag), 1, length(x)) # ad perf hack. Is unit tested
+    return kernelmatrix(κ.kernel, x) ./ sqrt.(x_diag_wide .* x_diag_wide')
 end
 
 function kernelmatrix_diag(κ::NormalizedKernel, x::AbstractVector)

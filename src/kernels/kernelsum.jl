@@ -63,22 +63,25 @@ end
 
 Base.length(k::KernelSum) = length(k.kernels)
 
-(κ::KernelSum)(x, y) = sum(k(x, y) for k in κ.kernels)
+_sum(f, ks::Tuple, args...) = f(first(ks), args...) + _sum(f, Base.tail(ks), args...)
+_sum(f, ks::Tuple{Tx}, args...) where {Tx} = f(only(ks), args...)
+
+(κ::KernelSum)(x, y) = _sum((k, x, y) -> k(x, y), κ.kernels, x, y)
 
 function kernelmatrix(κ::KernelSum, x::AbstractVector)
-    return sum(kernelmatrix(k, x) for k in κ.kernels)
+    return _sum(kernelmatrix, κ.kernels, x)
 end
 
 function kernelmatrix(κ::KernelSum, x::AbstractVector, y::AbstractVector)
-    return sum(kernelmatrix(k, x, y) for k in κ.kernels)
+    return _sum(kernelmatrix, κ.kernels, x, y)
 end
 
 function kernelmatrix_diag(κ::KernelSum, x::AbstractVector)
-    return sum(kernelmatrix_diag(k, x) for k in κ.kernels)
+    return _sum(kernelmatrix_diag, κ.kernels, x)
 end
 
 function kernelmatrix_diag(κ::KernelSum, x::AbstractVector, y::AbstractVector)
-    return sum(kernelmatrix_diag(k, x, y) for k in κ.kernels)
+    return _sum(kernelmatrix_diag, κ.kernels, x, y)
 end
 
 function Base.show(io::IO, κ::KernelSum)

@@ -41,19 +41,19 @@ end
 (k::ScaledKernel)(x, y) = k.σ² * k.kernel(x, y)
 
 function kernelmatrix(κ::ScaledKernel, x::AbstractVector, y::AbstractVector)
-    return κ.σ² .* kernelmatrix(κ.kernel, x, y)
+    return κ.σ² * kernelmatrix(κ.kernel, x, y)
 end
 
 function kernelmatrix(κ::ScaledKernel, x::AbstractVector)
-    return κ.σ² .* kernelmatrix(κ.kernel, x)
+    return κ.σ² * kernelmatrix(κ.kernel, x)
 end
 
 function kernelmatrix_diag(κ::ScaledKernel, x::AbstractVector)
-    return κ.σ² .* kernelmatrix_diag(κ.kernel, x)
+    return κ.σ² * kernelmatrix_diag(κ.kernel, x)
 end
 
 function kernelmatrix_diag(κ::ScaledKernel, x::AbstractVector, y::AbstractVector)
-    return κ.σ² .* kernelmatrix_diag(κ.kernel, x, y)
+    return κ.σ² * kernelmatrix_diag(κ.kernel, x, y)
 end
 
 function kernelmatrix!(

@@ -5,18 +5,19 @@
 In-place version of [`kernelmatrix`](@ref) where pre-allocated matrix `K` will be
 overwritten with the kernel matrix.
 
-    kernelmatrix!(K::AbstractMatrix, κ::Kernel, X::AbstractMatrix; obsdim::Integer=2)
+    kernelmatrix!(K::AbstractMatrix, κ::Kernel, X::AbstractMatrix; obsdim)
     kernelmatrix!(
         K::AbstractMatrix,
         κ::Kernel,
         X::AbstractMatrix,
         Y::AbstractMatrix;
-        obsdim::Integer=2,
+        obsdim,
     )
 
-Equivalent to `kernelmatrix!(K, κ, ColVecs(X))` and
-`kernelmatrix(K, κ, ColVecs(X), ColVecs(Y))` respectively.
-Set `obsdim=1` to get `RowVecs`.
+If `obsdim=1`, equivalent to `kernelmatrix!(K, κ, RowVecs(X))` and
+`kernelmatrix(K, κ, RowVecs(X), RowVecs(Y))`, respectively.
+If `obsdim=2`, equivalent to `kernelmatrix!(K, κ, ColVecs(X))` and
+`kernelmatrix(K, κ, ColVecs(X), ColVecs(Y))`, respectively.
 
 See also: [`ColVecs`](@ref), [`RowVecs`](@ref)
 """
@@ -35,12 +36,13 @@ Compute the kernel `κ` for each pair of inputs in `x` and `y`.
 Returns a matrix of size `(length(x), length(y))` satisfying
 `kernelmatrix(κ, x, y)[p, q] == κ(x[p], y[q])`.
 
-    kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int=2)
-    kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int=2)
+    kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim)
+    kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim)
 
-Equivalent to `kernelmatrix(κ, ColVecs(X))` and `kernelmatrix(κ, ColVecs(X), ColVecs(Y))`
-respectively.
-Set `obsdim=1` to get `RowVecs`.
+If `obsdim=1`, equivalent to `kernelmatrix(κ, RowVecs(X))` and
+`kernelmatrix(κ, RowVecs(X), RowVecs(Y))`, respectively.
+If `obsdim=2`, equivalent to `kernelmatrix(κ, ColVecs(X))` and
+`kernelmatrix(κ, ColVecs(X), ColVecs(Y))`, respectively.
 
 See also: [`ColVecs`](@ref), [`RowVecs`](@ref)
 """
@@ -52,18 +54,19 @@ kernelmatrix
 
 In place version of [`kernelmatrix_diag`](@ref).
 
-    kernelmatrix_diag!(K::AbstractVector, κ::Kernel, X::AbstractMatrix; obsdim::Int=2)
+    kernelmatrix_diag!(K::AbstractVector, κ::Kernel, X::AbstractMatrix; obsdim)
     kernelmatrix_diag!(
         K::AbstractVector,
         κ::Kernel,
         X::AbstractMatrix,
         Y::AbstractMatrix;
-        obsdim::Int=2,
+        obsdim
     )
 
-Equivalent to `kernelmatrix_diag!(K, κ, ColVecs(X))` and
-`kernelmatrix_diag!(K, κ, ColVecs(X), ColVecs(Y))` respectively.
-Set `obsdim=1` to get `RowVecs`.
+If `obsdim=1`, equivalent to `kernelmatrix_diag!(K, κ, RowVecs(X))` and
+`kernelmatrix_diag!(K, κ, RowVecs(X), RowVecs(Y))`, respectively.
+If `obsdim=2`, equivalent to `kernelmatrix_diag!(K, κ, ColVecs(X))` and
+`kernelmatrix_diag!(K, κ, ColVecs(X), ColVecs(Y))`, respectively.
 
 See also: [`ColVecs`](@ref), [`RowVecs`](@ref)
 """
@@ -79,11 +82,13 @@ Compute the diagonal of `kernelmatrix(κ, x)` efficiently.
 Compute the diagonal of `kernelmatrix(κ, x, y)` efficiently.
 Requires that `x` and `y` are the same length.
 
-    kernelmatrix_diag(κ::Kernel, X::AbstractMatrix; obsdim::Int=2)
-    kernelmatrix_diag(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int=2)
+    kernelmatrix_diag(κ::Kernel, X::AbstractMatrix; obsdim)
+    kernelmatrix_diag(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim)
 
-Equivalent to `kernelmatrix_diag(κ, ColVecs(X))` and
-`kernelmatrix_diag(κ, ColVecs(X), ColVecs(Y))` respectively.
+If `obsdim=1`, equivalent to `kernelmatrix_diag(κ, RowVecs(X))` and
+`kernelmatrix_diag(κ, RowVecs(X), RowVecs(Y))`, respectively.
+If `obsdim=2`, equivalent to `kernelmatrix_diag(κ, ColVecs(X))` and
+`kernelmatrix_diag(κ, ColVecs(X), ColVecs(Y))`, respectively.
 
 See also: [`ColVecs`](@ref), [`RowVecs`](@ref)
 """
@@ -129,7 +134,7 @@ kernelmatrix_diag(κ::Kernel, x::AbstractVector, y::AbstractVector) = map(κ, x,
 
 function kernelmatrix!(K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector)
     validate_inplace_dims(K, x)
-    pairwise!(K, metric(κ), x)
+    pairwise!(metric(κ), K, x)
     return map!(x -> kappa(κ, x), K, K)
 end
 
@@ -137,7 +142,7 @@ function kernelmatrix!(
     K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector, y::AbstractVector
 )
     validate_inplace_dims(K, x, y)
-    pairwise!(K, metric(κ), x, y)
+    pairwise!(metric(κ), K, x, y)
     return map!(x -> kappa(κ, x), K, K)
 end
 
@@ -162,10 +167,10 @@ end
 # Wrapper methods for AbstractMatrix inputs to maintain obsdim interface.
 #
 
-const defaultobs = 2
+const defaultobs = nothing
 
 function kernelmatrix!(
-    K::AbstractMatrix, κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs
+    K::AbstractMatrix, κ::Kernel, X::AbstractMatrix; obsdim::Union{Int,Nothing}=defaultobs
 )
     return kernelmatrix!(K, κ, vec_of_vecs(X; obsdim=obsdim))
 end
@@ -175,12 +180,12 @@ function kernelmatrix!(
     κ::Kernel,
     X::AbstractMatrix,
     Y::AbstractMatrix;
-    obsdim::Int=defaultobs,
+    obsdim::Union{Int,Nothing}=defaultobs,
 )
     return kernelmatrix!(K, κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim))
 end
 
-function kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs)
+function kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim::Union{Int,Nothing}=defaultobs)
     return kernelmatrix(κ, vec_of_vecs(X; obsdim=obsdim))
 end
 
@@ -189,7 +194,7 @@ function kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim=d
 end
 
 function kernelmatrix_diag!(
-    K::AbstractVector, κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs
+    K::AbstractVector, κ::Kernel, X::AbstractMatrix; obsdim::Union{Int,Nothing}=defaultobs
 )
     return kernelmatrix_diag!(K, κ, vec_of_vecs(X; obsdim=obsdim))
 end
@@ -199,19 +204,21 @@ function kernelmatrix_diag!(
     κ::Kernel,
     X::AbstractMatrix,
     Y::AbstractMatrix;
-    obsdim::Int=defaultobs,
+    obsdim::Union{Int,Nothing}=defaultobs,
 )
     return kernelmatrix_diag!(
         K, κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim)
     )
 end
 
-function kernelmatrix_diag(κ::Kernel, X::AbstractMatrix; obsdim::Int=defaultobs)
+function kernelmatrix_diag(
+    κ::Kernel, X::AbstractMatrix; obsdim::Union{Int,Nothing}=defaultobs
+)
     return kernelmatrix_diag(κ, vec_of_vecs(X; obsdim=obsdim))
 end
 
 function kernelmatrix_diag(
-    κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Int=defaultobs
+    κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim::Union{Int,Nothing}=defaultobs
 )
     return kernelmatrix_diag(
         κ, vec_of_vecs(X; obsdim=obsdim), vec_of_vecs(Y; obsdim=obsdim)

@@ -31,9 +31,27 @@ function ParameterHandling.flatten(::Type{T}, k::LinearKernel{S}) where {T<:Real
     return T[log(k.c)], unflatten_to_linearkernel
 end
 
-kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + κ.c
+__linear_kappa(c::Real, xᵀy::Real) = xᵀy + c
+
+kappa(κ::LinearKernel, xᵀy::Real) = __linear_kappa(κ.c, xᵀy)
 
 metric(::LinearKernel) = DotProduct()
+
+function kernelmatrix(k::LinearKernel, x::AbstractVector, y::AbstractVector)
+    return __linear_kappa.(k.c, pairwise(metric(k), x, y))
+end
+
+function kernelmatrix(k::LinearKernel, x::AbstractVector)
+    return __linear_kappa.(k.c, pairwise(metric(k), x))
+end
+
+function kernelmatrix_diag(k::LinearKernel, x::AbstractVector, y::AbstractVector)
+    return __linear_kappa.(k.c, colwise(metric(k), x, y))
+end
+
+function kernelmatrix_diag(k::LinearKernel, x::AbstractVector)
+    return __linear_kappa.(k.c, colwise(metric(k), x))
+end
 
 Base.show(io::IO, κ::LinearKernel) = print(io, "Linear Kernel (c = ", κ.c, ")")
 
@@ -75,9 +93,37 @@ function ParameterHandling.flatten(
     return T[log(k.c)], unflatten_to_polynomialkernel
 end
 
-kappa(κ::PolynomialKernel, xᵀy::Real) = (xᵀy + κ.c)^κ.degree
+# The degree of the polynomial kernel is a fixed discrete parameter
+function Functors.functor(::Type{<:PolynomialKernel}, x)
+    reconstruct_polynomialkernel(xs) = PolynomialKernel{typeof(xs.c)}(x.degree, xs.c)
+    return (c=x.c,), reconstruct_polynomialkernel
+end
+
+struct _PolynomialKappa
+    degree::Int
+end
+
+(κ::_PolynomialKappa)(c::Real, xᵀy::Real) = (xᵀy + c)^κ.degree
+
+kappa(κ::PolynomialKernel, xᵀy::Real) = _PolynomialKappa(κ.degree)(κ.c, xᵀy)
 
 metric(::PolynomialKernel) = DotProduct()
+
+function kernelmatrix(k::PolynomialKernel, x::AbstractVector, y::AbstractVector)
+    return _PolynomialKappa(k.degree).(k.c, pairwise(metric(k), x, y))
+end
+
+function kernelmatrix(k::PolynomialKernel, x::AbstractVector)
+    return _PolynomialKappa(k.degree).(k.c, pairwise(metric(k), x))
+end
+
+function kernelmatrix_diag(k::PolynomialKernel, x::AbstractVector, y::AbstractVector)
+    return _PolynomialKappa(k.degree).(k.c, colwise(metric(k), x, y))
+end
+
+function kernelmatrix_diag(k::PolynomialKernel, x::AbstractVector)
+    return _PolynomialKappa(k.degree).(k.c, colwise(metric(k), x))
+end
 
 function Base.show(io::IO, κ::PolynomialKernel)
     return print(io, "Polynomial Kernel (c = ", κ.c, ", degree = ", κ.degree, ")")

@@ -13,6 +13,12 @@
 
     @test kernel1 == kernel2
     @test kernel1.kernels === (k1, k2) === KernelTensorProduct((k1, k2)).kernels
+    for (_k1, _k2) in Iterators.product(
+        (k1, KernelTensorProduct((k1,)), KernelTensorProduct([k1])),
+        (k2, KernelTensorProduct((k2,)), KernelTensorProduct([k2])),
+    )
+        @test kernel1 == _k1 ⊗ _k2
+    end
     @test length(kernel1) == length(kernel2) == 2
     @test string(kernel1) == (
         "Tensor product of 2 kernels:\n" *
@@ -32,11 +38,18 @@
     # Standardised tests.
     TestUtils.test_interface(kernel1, ColVecs{Float64})
     TestUtils.test_interface(kernel1, RowVecs{Float64})
+    TestUtils.test_interface(
+        KernelTensorProduct(WhiteKernel(), ConstantKernel(; c=1.1)), ColVecs{String}
+    )
     test_ADs(
         x -> KernelTensorProduct(SqExponentialKernel(), LinearKernel(; c=exp(x[1]))),
         rand(1);
         dims=[2, 2],
     )
+    types = [ColVecs{Float64,Matrix{Float64}}, RowVecs{Float64,Matrix{Float64}}]
+    test_interface_ad_perf(2.1, StableRNG(123456), types) do c
+        KernelTensorProduct(SqExponentialKernel(), LinearKernel(; c=c))
+    end
     test_params(KernelTensorProduct(k1, k2), (k1, k2))
 
     @testset "single kernel" begin

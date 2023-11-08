@@ -1,7 +1,6 @@
 *.json
 *.cov
-/Manifest.toml
-/test/Manifest.toml
+Manifest.toml
 coverage/
 .DS_store
-benchmark/Manifest.toml
+dev

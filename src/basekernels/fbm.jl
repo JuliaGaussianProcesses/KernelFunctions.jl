@@ -35,16 +35,16 @@ function (κ::FBMKernel)(x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
     modX = sum(abs2, x)
     modY = sum(abs2, y)
     modXY = sqeuclidean(x, y)
-    h = first(κ.h)
+    h = only(κ.h)
     return (modX^h + modY^h - modXY^h) / 2
 end
 
 function (κ::FBMKernel)(x::Real, y::Real)
-    return (abs2(x)^first(κ.h) + abs2(y)^first(κ.h) - abs2(x - y)^first(κ.h)) / 2
+    return (abs2(x)^only(κ.h) + abs2(y)^only(κ.h) - abs2(x - y)^only(κ.h)) / 2
 end
 
 function Base.show(io::IO, κ::FBMKernel)
-    return print(io, "Fractional Brownian Motion Kernel (h = ", first(κ.h), ")")
+    return print(io, "Fractional Brownian Motion Kernel (h = ", only(κ.h), ")")
 end
 
 _fbm(modX, modY, modXY, h) = (modX^h + modY^h - modXY^h) / 2
@@ -57,26 +57,29 @@ _mod(x::RowVecs) = vec(sum(abs2, x.X; dims=2))
 
 function kernelmatrix(κ::FBMKernel, x::AbstractVector)
     modx = _mod(x)
+    modx_wide = modx * ones(eltype(modx), 1, length(modx)) # ad perf hack -- is unit tested
     modxx = pairwise(SqEuclidean(), x)
-    return _fbm.(modx, modx', modxx, κ.h)
+    return _fbm.(modx_wide, modx_wide', modxx, only(κ.h))
 end
 
 function kernelmatrix!(K::AbstractMatrix, κ::FBMKernel, x::AbstractVector)
     modx = _mod(x)
-    pairwise!(K, SqEuclidean(), x)
+    pairwise!(SqEuclidean(), K, x)
     K .= _fbm.(modx, modx', K, κ.h)
     return K
 end
 
 function kernelmatrix(κ::FBMKernel, x::AbstractVector, y::AbstractVector)
     modxy = pairwise(SqEuclidean(), x, y)
-    return _fbm.(_mod(x), _mod(y)', modxy, κ.h)
+    modx_wide = _mod(x) * ones(eltype(modxy), 1, length(y)) # ad perf hack -- is unit tested
+    mody_wide = _mod(y) * ones(eltype(modxy), 1, length(x)) # ad perf hack -- is unit tested
+    return _fbm.(modx_wide, mody_wide', modxy, only(κ.h))
 end
 
 function kernelmatrix!(
     K::AbstractMatrix, κ::FBMKernel, x::AbstractVector, y::AbstractVector
 )
-    pairwise!(K, SqEuclidean(), x, y)
+    pairwise!(SqEuclidean(), K, x, y)
     K .= _fbm.(_mod(x), _mod(y)', K, κ.h)
     return K
 end
@@ -84,10 +87,10 @@ end
 function kernelmatrix_diag(κ::FBMKernel, x::AbstractVector)
     modx = _mod(x)
     modxx = colwise(SqEuclidean(), x)
-    return _fbm.(modx, modx, modxx, κ.h)
+    return _fbm.(modx, modx, modxx, only(κ.h))
 end
 
 function kernelmatrix_diag(κ::FBMKernel, x::AbstractVector, y::AbstractVector)
     modxy = colwise(SqEuclidean(), x, y)
-    return _fbm.(_mod(x), _mod(y), modxy, κ.h)
+    return _fbm.(_mod(x), _mod(y), modxy, only(κ.h))
 end

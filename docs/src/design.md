@@ -34,7 +34,7 @@ inputs, they do _not_ immediately satisfy these properties as it is unclear whet
 of size `P x Q` represents a collection of `P` `Q`-dimensional inputs (each row is an
 input), or `Q` `P`-dimensional inputs (each column is an input).
 
-Moreover, they occassionally add some aesthetic inconvenience.
+Moreover, they occasionally add some aesthetic inconvenience.
 For example, a collection of `Real`-valued inputs, which might be straightforwardly
 represented as an `AbstractVector{<:Real}`, must be reshaped into a matrix.
 
@@ -67,7 +67,7 @@ dimension seems somewhat redundant.
 
 Another way to partly resolve these problems is to not commit to a convention, and instead
 to propagate some additional information through the codebase that specifies how the input
-data is to be interpretted.
+data is to be interpreted.
 For example, a kernel `k` that represents the sum of two other kernels might implement
 `kernelmatrix` as follows:
 ```julia
@@ -139,11 +139,9 @@ In short: many people like matrices, and are familiar with `obsdim`-style keywor
 arguments.
 
 All internals are implemented using `AbstractVector`s though, and the `obsdim` interface
-is just a thin layer of utility functionality which sits on top of this.
-
-
-
-
+is just a thin layer of utility functionality which sits on top of this. To avoid
+confusion and silent errors, we do not favour a specific convention (rows or columns)
+but instead it is necessary to specify the `obsdim` keyword argument explicitly.
 
 ## [Kernels for Multiple-Outputs](@id inputs_for_multiple_outputs)
 

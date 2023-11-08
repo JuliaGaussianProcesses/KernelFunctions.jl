@@ -37,12 +37,31 @@ function ParameterHandling.flatten(::Type{T}, k::RationalKernel{S}) where {T<:Re
     return T[log(k.α)], unflatten_to_rationalkernel
 end
 
-function kappa(κ::RationalKernel, d::Real)
-    α = κ.α
-    return (one(d) + d / α)^(-α)
-end
+__rational_kappa(α::Real, d::Real) = (one(d) + d / α)^(-α)
+
+kappa(κ::RationalKernel, d::Real) = __rational_kappa(κ.α, d)
 
 metric(k::RationalKernel) = k.metric
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix(k::RationalKernel, x::AbstractVector, y::AbstractVector)
+    return __rational_kappa.(k.α, pairwise(metric(k), x, y))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix(k::RationalKernel, x::AbstractVector)
+    return __rational_kappa.(k.α, pairwise(metric(k), x))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix_diag(k::RationalKernel, x::AbstractVector, y::AbstractVector)
+    return __rational_kappa.(k.α, colwise(metric(k), x, y))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix_diag(k::RationalKernel, x::AbstractVector)
+    return __rational_kappa.(k.α, colwise(metric(k), x))
+end
 
 function Base.show(io::IO, κ::RationalKernel)
     return print(io, "Rational Kernel (α = ", κ.α, ", metric = ", κ.metric, ")")
@@ -86,17 +105,58 @@ function ParameterHandling.flatten(
     return T[log(k.α)], unflatten_to_rationalquadratickernel
 end
 
-function kappa(κ::RationalQuadraticKernel, d::Real)
-    α = κ.α
-    return (one(d) + d^2 / (2 * α))^(-α)
-end
-function kappa(κ::RationalQuadraticKernel{<:Real,<:Euclidean}, d²::Real)
-    α = κ.α
-    return (one(d²) + d² / (2 * α))^(-α)
-end
+const _RQ_Euclidean = RationalQuadraticKernel{<:Real,<:Euclidean}
+
+@functor RationalQuadraticKernel
+
+__rq_kappa(α::Real, d::Real) = (one(d) + d^2 / (2 * α))^(-α)
+__rq_kappa_euclidean(α::Real, d²::Real) = (one(d²) + d² / (2 * α))^(-α)
+
+kappa(κ::RationalQuadraticKernel, d::Real) = __rq_kappa(κ.α, d)
+kappa(κ::_RQ_Euclidean, d²::Real) = __rq_kappa_euclidean(κ.α, d²)
 
 metric(k::RationalQuadraticKernel) = k.metric
 metric(::RationalQuadraticKernel{<:Real,<:Euclidean}) = SqEuclidean()
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix(k::RationalQuadraticKernel, x::AbstractVector, y::AbstractVector)
+    return __rq_kappa.(k.α, pairwise(metric(k), x, y))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix(k::RationalQuadraticKernel, x::AbstractVector)
+    return __rq_kappa.(k.α, pairwise(metric(k), x))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix_diag(k::RationalQuadraticKernel, x::AbstractVector, y::AbstractVector)
+    return __rq_kappa.(k.α, colwise(metric(k), x, y))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix_diag(k::RationalQuadraticKernel, x::AbstractVector)
+    return __rq_kappa.(k.α, colwise(metric(k), x))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix(k::_RQ_Euclidean, x::AbstractVector, y::AbstractVector)
+    return __rq_kappa_euclidean.(k.α, pairwise(SqEuclidean(), x, y))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix(k::_RQ_Euclidean, x::AbstractVector)
+    return __rq_kappa_euclidean.(k.α, pairwise(SqEuclidean(), x))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix_diag(k::_RQ_Euclidean, x::AbstractVector, y::AbstractVector)
+    return __rq_kappa_euclidean.(k.α, colwise(SqEuclidean(), x, y))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix_diag(k::_RQ_Euclidean, x::AbstractVector)
+    return __rq_kappa_euclidean.(k.α, colwise(SqEuclidean(), x))
+end
 
 function Base.show(io::IO, κ::RationalQuadraticKernel)
     return print(io, "Rational Quadratic Kernel (α = ", κ.α, ", metric = ", κ.metric, ")")
@@ -149,12 +209,31 @@ function ParameterHandling.flatten(
     return vec, unflatten_to_gammarationalkernel
 end
 
-function kappa(κ::GammaRationalKernel, d::Real)
-    α = κ.α
-    return (one(d) + d^κ.γ / α)^(-α)
-end
+__grk_kappa(α::Real, γ::Real, d::Real) = (one(d) + d^γ / α)^(-α)
+
+kappa(κ::GammaRationalKernel, d::Real) = __grk_kappa(κ.α, κ.γ, d)
 
 metric(k::GammaRationalKernel) = k.metric
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix(k::GammaRationalKernel, x::AbstractVector, y::AbstractVector)
+    return __grk_kappa.(k.α, k.γ, pairwise(metric(k), x, y))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix(k::GammaRationalKernel, x::AbstractVector)
+    return __grk_kappa.(k.α, k.γ, pairwise(metric(k), x))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix_diag(k::GammaRationalKernel, x::AbstractVector, y::AbstractVector)
+    return __grk_kappa.(k.α, k.γ, colwise(metric(k), x, y))
+end
+
+# AD-performance optimisation. Is unit tested.
+function kernelmatrix_diag(k::GammaRationalKernel, x::AbstractVector)
+    return __grk_kappa.(k.α, k.γ, colwise(metric(k), x))
+end
 
 function Base.show(io::IO, κ::GammaRationalKernel)
     return print(
