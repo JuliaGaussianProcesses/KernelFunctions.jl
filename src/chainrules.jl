@@ -121,28 +121,6 @@ function ChainRulesCore.rrule(s::Sinus, x::AbstractVector, y::AbstractVector)
     return val, evaluate_pullback
 end
 
-## Reverse Rules SqMahalanobis
-
-function ChainRulesCore.rrule(
-    dist::Distances.SqMahalanobis, a::AbstractVector, b::AbstractVector
-)
-    d = dist(a, b)
-    function SqMahalanobis_pullback(Δ::Real)
-        a_b = a - b
-        ∂qmat = InplaceableThunk(
-            X̄ -> mul!(X̄, a_b, a_b', true, Δ), @thunk((a_b * a_b') * Δ)
-        )
-        ∂a = InplaceableThunk(
-            X̄ -> mul!(X̄, dist.qmat, a_b, true, 2 * Δ), @thunk((2 * Δ) * dist.qmat * a_b)
-        )
-        ∂b = InplaceableThunk(
-            X̄ -> mul!(X̄, dist.qmat, a_b, true, -2 * Δ), @thunk((-2 * Δ) * dist.qmat * a_b)
-        )
-        return Tangent{typeof(dist)}(; qmat=∂qmat), ∂a, ∂b
-    end
-    return d, SqMahalanobis_pullback
-end
-
 ## Reverse Rules for matrix wrappers
 
 function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
