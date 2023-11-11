@@ -3,8 +3,6 @@
     x = rand(rng, 5)
     y = rand(rng, 5)
     r = rand(rng, 5)
-    Q = Matrix(Cholesky(rand(rng, 5, 5), 'U', 0))
-    @assert isposdef(Q)
 
     compare_gradient(:Zygote, [x, y]) do xy
         Euclidean()(xy[1], xy[2])
