@@ -43,6 +43,8 @@ export MOInput, prepare_isotopic_multi_output_data, prepare_heterotopic_multi_ou
 export IndependentMOKernel,
     LatentFactorMOKernel, IntrinsicCoregionMOKernel, LinearMixingModelKernel
 
+export DiffPt
+
 # Reexports
 export tensor, ⊗, compose
 
@@ -125,6 +127,7 @@ include("chainrules.jl")
 include("zygoterules.jl")
 
 include("TestUtils.jl")
+include("diffKernel.jl")
 
 function __init__()
     @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin
