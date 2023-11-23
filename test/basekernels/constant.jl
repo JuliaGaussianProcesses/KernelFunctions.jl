@@ -9,6 +9,7 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         TestUtils.test_interface(k, Vector{String})
+        test_params(k, (Float64[],))
         test_ADs(ZeroKernel)
         test_interface_ad_perf(_ -> k, nothing, StableRNG(123456))
     end
@@ -24,6 +25,7 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         TestUtils.test_interface(k, Vector{String})
+        test_params(k, (Float64[],))
         test_ADs(WhiteKernel)
         test_interface_ad_perf(_ -> k, nothing, StableRNG(123456))
     end
@@ -36,11 +38,11 @@
         @test metric(ConstantKernel()) == KernelFunctions.Delta()
         @test metric(ConstantKernel(; c=2.0)) == KernelFunctions.Delta()
         @test repr(k) == "Constant Kernel (c = $(c))"
-        test_params(k, ([c],))
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         TestUtils.test_interface(k, Vector{String})
+        test_params(k, ([log(c)],))
         test_ADs(c -> ConstantKernel(; c=only(c)), [c])
         test_interface_ad_perf(c -> ConstantKernel(; c=c), c, StableRNG(123456))
     end

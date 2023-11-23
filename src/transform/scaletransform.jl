@@ -13,26 +13,30 @@ true
 ```
 """
 struct ScaleTransform{T<:Real} <: Transform
-    s::Vector{T}
+    s::T
+
+    function ScaleTransform(s::Real)
+        @check_args(ScaleTransform, s, s > zero(s), "s > 0")
+        return new{typeof(s)}(s)
+    end
 end
 
-function ScaleTransform(s::T=1.0) where {T<:Real}
-    return ScaleTransform{T}([s])
+ScaleTransform() = ScaleTransform(1.0)
+
+function ParameterHandling.flatten(::Type{T}, t::ScaleTransform{S}) where {T<:Real,S<:Real}
+    unflatten_to_scaletransform(v::Vector{T}) = ScaleTransform(S(exp(only(v))))
+    return T[log(t.s)], unflatten_to_scaletransform
 end
 
-@functor ScaleTransform
+(t::ScaleTransform)(x) = t.s * x
 
-set!(t::ScaleTransform, ρ::Real) = t.s .= [ρ]
+_map(t::ScaleTransform, x::AbstractVector{<:Real}) = t.s .* x
+_map(t::ScaleTransform, x::ColVecs) = ColVecs(t.s .* x.X)
+_map(t::ScaleTransform, x::RowVecs) = RowVecs(t.s .* x.X)
 
-(t::ScaleTransform)(x) = only(t.s) * x
+Base.isequal(t::ScaleTransform, t2::ScaleTransform) = isequal(t.s, t2.s)
 
-_map(t::ScaleTransform, x::AbstractVector{<:Real}) = only(t.s) .* x
-_map(t::ScaleTransform, x::ColVecs) = ColVecs(only(t.s) .* x.X)
-_map(t::ScaleTransform, x::RowVecs) = RowVecs(only(t.s) .* x.X)
-
-Base.isequal(t::ScaleTransform, t2::ScaleTransform) = isequal(only(t.s), only(t2.s))
-
-Base.show(io::IO, t::ScaleTransform) = print(io, "Scale Transform (s = ", only(t.s), ")")
+Base.show(io::IO, t::ScaleTransform) = print(io, "Scale Transform (s = ", t.s, ")")
 
 # Helpers
 

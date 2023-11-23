@@ -25,6 +25,25 @@ end
 
 @functor ChainTransform
 
+function ParameterHandling.flatten(::Type{T}, t::ChainTransform) where {T<:Real}
+    vecs_and_backs = map(Base.Fix1(flatten, T), t.transforms)
+    vecs = map(first, vecs_and_backs)
+    length_vecs = map(length, vecs)
+    backs = map(last, vecs_and_backs)
+    flat_vecs = reduce(vcat, vecs)
+    function unflatten_to_chaintransform(v::Vector{T})
+        length(v) == length(flat_vecs) || error("incorrect number of parameters")
+        offset = Ref(0)
+        transforms = map(backs, length_vecs) do back, length_vec
+            oldoffset = offset[]
+            newoffset = offset[] = oldoffset + length_vec
+            return back(v[(oldoffset + 1):newoffset])
+        end
+        return ChainTransform(transforms)
+    end
+    return flat_vecs, unflatten_to_chaintransform
+end
+
 Base.length(t::ChainTransform) = length(t.transforms)
 
 # Constructor to create a chain transform with an array of parameters

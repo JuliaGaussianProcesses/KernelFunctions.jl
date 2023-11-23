@@ -7,7 +7,7 @@
         ν = 2.1
         k = MaternKernel(; ν=ν)
         matern(x, ν) = 2^(1 - ν) / gamma(ν) * (sqrt(2ν) * x)^ν * besselk(ν, sqrt(2ν) * x)
-        @test MaternKernel(; nu=ν).ν == [ν]
+        @test MaternKernel(; nu=ν).ν == ν
         @test kappa(k, x) ≈ matern(x, ν)
         @test kappa(k, 0.0) == 1.0
         @test metric(MaternKernel()) == Euclidean()
@@ -20,9 +20,8 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        test_params(k, ([log(ν)],))
         test_ADs(() -> MaternKernel(; nu=ν))
-
-        test_params(k, ([ν],))
 
         # The performance of this kernel varies quite a lot from method to method, so
         # requires us to specify whether performance tests pass or not.
@@ -59,6 +58,7 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        test_params(k, (Float64[],))
         test_ADs(Matern32Kernel)
         test_interface_ad_perf(_ -> Matern32Kernel(), nothing, StableRNG(123456))
     end
@@ -79,6 +79,7 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        test_params(k, (Float64[],))
         test_ADs(Matern52Kernel)
         test_interface_ad_perf(_ -> Matern52Kernel(), nothing, StableRNG(123456))
     end

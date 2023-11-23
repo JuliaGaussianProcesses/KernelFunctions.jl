@@ -22,7 +22,7 @@ function params(m...)
 end
 
 function test_params(kernel, reference)
-    params_kernel = params(kernel)
+    params_kernel = params(ParameterKernel(kernel))
     params_reference = params(reference)
 
     @test length(params_kernel) == length(params_reference)

@@ -13,8 +13,8 @@
             TransformedKernel{<:CosineKernel,<:ScaleTransform},
         },
     }
-    @test k.kernels[1].transform.s[1] == inv(ell)
-    @test k.kernels[2].transform.s[1] == inv(p)
+    @test k.kernels[1].transform.s == inv(ell)
+    @test k.kernels[2].transform.s == inv(p)
 
     k_manual = exp(-sqeuclidean(v1, v2) / (2 * ell^2)) * cospi(euclidean(v1, v2) / p)
     @test k_manual ≈ k(v1, v2) atol = 1e-5

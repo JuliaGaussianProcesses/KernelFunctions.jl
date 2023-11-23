@@ -31,9 +31,9 @@
     # Standardised tests.
     TestUtils.test_interface(k, ColVecs{Float64}; dim_in=2)
     TestUtils.test_interface(k, RowVecs{Float64}; dim_in=2)
+    test_params(k, (Float64[],))
     test_ADs(() -> PiecewisePolynomialKernel{degree}(; dim=D))
 
-    test_params(k, ())
     if VERSION >= v"1.8.0"
         test_interface_ad_perf(nothing, StableRNG(123456)) do _
             PiecewisePolynomialKernel{degree}(; dim=D)

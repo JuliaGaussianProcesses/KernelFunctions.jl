@@ -52,6 +52,8 @@ function WienerKernel(; i::Integer=0)
     return WienerKernel{i}()
 end
 
+@noparams WienerKernel
+
 function (::WienerKernel{0})(x, y)
     X = sqrt(sum(abs2, x))
     Y = sqrt(sum(abs2, y))

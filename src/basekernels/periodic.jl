@@ -21,16 +21,25 @@ struct PeriodicKernel{T} <: SimpleKernel
     end
 end
 
+"""
+    PeriodicKernel(dims::Int)
+
+Create a [`PeriodicKernel`](@ref) with parameter `r=ones(Float64, dims)`.
+"""
 PeriodicKernel(dims::Int) = PeriodicKernel(Float64, dims)
 
 """
-    PeriodicKernel([T=Float64, dims::Int=1])
+    PeriodicKernel(T, dims::Int=1)
 
 Create a [`PeriodicKernel`](@ref) with parameter `r=ones(T, dims)`.
 """
-PeriodicKernel(T::DataType, dims::Int=1) = PeriodicKernel(; r=ones(T, dims))
+PeriodicKernel(::Type{T}, dims::Int=1) where {T} = PeriodicKernel(; r=ones(T, dims))
 
-@functor PeriodicKernel
+function ParameterHandling.flatten(::Type{T}, k::PeriodicKernel{S}) where {T<:Real,S}
+    vec = T[log(ri) for ri in k.r]
+    unflatten_to_periodickernel(v::Vector{T}) = PeriodicKernel(; r=S[exp(vi) for vi in v])
+    return vec, unflatten_to_periodickernel
+end
 
 metric(κ::PeriodicKernel) = Sinus(κ.r)
 

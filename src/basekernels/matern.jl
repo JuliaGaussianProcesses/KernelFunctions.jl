@@ -23,19 +23,23 @@ differentiable in the mean-square sense.
 
 See also: [`Matern12Kernel`](@ref), [`Matern32Kernel`](@ref), [`Matern52Kernel`](@ref)
 """
-struct MaternKernel{Tν<:Real,M} <: SimpleKernel
-    ν::Vector{Tν}
+struct MaternKernel{T<:Real,M} <: SimpleKernel
+    ν::T
     metric::M
 
     function MaternKernel(ν::Real, metric)
         @check_args(MaternKernel, ν, ν > zero(ν), "ν > 0")
-        return new{typeof(ν),typeof(metric)}([ν], metric)
+        return new{typeof(ν),typeof(metric)}(ν, metric)
     end
 end
 
 MaternKernel(; nu::Real=1.5, ν::Real=nu, metric=Euclidean()) = MaternKernel(ν, metric)
 
-@functor MaternKernel
+function ParameterHandling.flatten(::Type{T}, k::MaternKernel{S}) where {T<:Real,S<:Real}
+    metric = k.metric
+    unflatten_to_maternkernel(v::Vector{T}) = MaternKernel(S(exp(first(v))), metric)
+    return T[log(k.ν)], unflatten_to_maternkernel
+end
 
 @inline kappa(k::MaternKernel, d::Real) = _matern(only(k.ν), d)
 
@@ -80,6 +84,8 @@ end
 
 Matern32Kernel(; metric=Euclidean()) = Matern32Kernel(metric)
 
+@noparams Matern32Kernel
+
 kappa(::Matern32Kernel, d::Real) = (1 + sqrt(3) * d) * exp(-sqrt(3) * d)
 
 metric(k::Matern32Kernel) = k.metric
@@ -110,6 +116,8 @@ struct Matern52Kernel{M} <: SimpleKernel
 end
 
 Matern52Kernel(; metric=Euclidean()) = Matern52Kernel(metric)
+
+@noparams Matern52Kernel
 
 kappa(::Matern52Kernel, d::Real) = (1 + sqrt(5) * d + 5 * d^2 / 3) * exp(-sqrt(5) * d)
 

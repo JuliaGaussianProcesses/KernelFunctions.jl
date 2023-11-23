@@ -31,6 +31,8 @@ Transformation that returns exactly the input.
 """
 struct IdentityTransform <: Transform end
 
+@noparams IdentityTransform
+
 (t::IdentityTransform)(x) = x
 
 # More efficient implementation than `map(IdentityTransform(), x)`

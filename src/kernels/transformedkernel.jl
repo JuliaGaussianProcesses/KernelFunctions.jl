@@ -16,6 +16,21 @@ end
 
 @functor TransformedKernel
 
+function ParameterHandling.flatten(::Type{T}, k::TransformedKernel) where {T<:Real}
+    kernel_vec, kernel_back = flatten(T, k.kernel)
+    transform_vec, transform_back = flatten(T, k.transform)
+    v = vcat(kernel_vec, transform_vec)
+    n = length(v)
+    nkernel = length(kernel_vec)
+    function unflatten_to_transformedkernel(v::Vector{T})
+        length(v) == n || error("incorrect number of parameters")
+        kernel = kernel_back(v[1:nkernel])
+        transform = transform_back(v[(nkernel + 1):end])
+        return TransformedKernel(kernel, transform)
+    end
+    return v, unflatten_to_transformedkernel
+end
+
 (k::TransformedKernel)(x, y) = k.kernel(k.transform(x), k.transform(y))
 
 # Optimizations for scale transforms of simple kernels to save allocations:

@@ -41,6 +41,26 @@ end
 
 @functor KernelSum
 
+function ParameterHandling.flatten(::Type{T}, k::KernelSum) where {T<:Real}
+    vecs_and_backs = map(Base.Fix1(flatten, T), k.kernels)
+    vecs = map(first, vecs_and_backs)
+    length_vecs = map(length, vecs)
+    backs = map(last, vecs_and_backs)
+    flat_vecs = reduce(vcat, vecs)
+    n = length(flat_vecs)
+    function unflatten_to_kernelsum(v::Vector{T})
+        length(v) == n || error("incorrect number of parameters")
+        offset = Ref(0)
+        kernels = map(backs, length_vecs) do back, length_vec
+            oldoffset = offset[]
+            newoffset = offset[] = oldoffset + length_vec
+            return back(v[(oldoffset + 1):newoffset])
+        end
+        return KernelSum(kernels)
+    end
+    return flat_vecs, unflatten_to_kernelsum
+end
+
 Base.length(k::KernelSum) = length(k.kernels)
 
 _sum(f, ks::Tuple, args...) = f(first(ks), args...) + _sum(f, Base.tail(ks), args...)

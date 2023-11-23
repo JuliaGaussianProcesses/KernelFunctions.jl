@@ -38,6 +38,22 @@ function IntrinsicCoregionMOKernel(kernel::Kernel, B::AbstractMatrix)
     return IntrinsicCoregionMOKernel{typeof(kernel),typeof(B)}(kernel, B)
 end
 
+@functor IntrinsicCoregionMOKernel (kernel,)
+
+function ParameterHandling.flatten(::Type{T}, k::IntrinsicCoregionMOKernel) where {T<:Real}
+    kernel_vec, unflatten_to_kernel = flatten(T, k.kernel)
+    B_vec, unflatten_to_B = value_flatten(T, positive_definite(k.B))
+    nkernel = length(kernel_vec)
+    ntotal = nkernel + length(B_vec)
+    function unflatten_to_intrinsiccoregionkernel(v::Vector{T})
+        length(v) == ntotal || error("incorrect number of parameters")
+        kernel = unflatten_to_kernel(v[1:nkernel])
+        B = unflatten_to_B(v[(nkernel + 1):end])
+        return IntrinsicCoregionMOKernel(kernel, B)
+    end
+    return vcat(kernel_vec, B_vec), unflatten_to_intrinsiccoregionkernel
+end
+
 function (k::IntrinsicCoregionMOKernel)((x, px)::Tuple{Any,Int}, (y, py)::Tuple{Any,Int})
     return k.B[px, py] * k.kernel(x, y)
 end

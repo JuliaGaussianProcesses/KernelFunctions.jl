@@ -18,8 +18,8 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        test_params(LinearKernel(; c=c), ([log(c)],))
         test_ADs(x -> LinearKernel(; c=x[1]), [c])
-        test_params(LinearKernel(; c=c), ([c],))
         test_interface_ad_perf(c -> LinearKernel(; c=c), c, StableRNG(123456))
     end
     @testset "PolynomialKernel" begin
@@ -41,8 +41,8 @@
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
+        test_params(PolynomialKernel(; c=c), ([log(c)],))
         test_ADs(x -> PolynomialKernel(; c=x[1]), [c])
-        test_params(PolynomialKernel(; c=c), ([c],))
         test_interface_ad_perf(
             c -> PolynomialKernel(; degree=2, c=c), 0.3, StableRNG(123456)
         )

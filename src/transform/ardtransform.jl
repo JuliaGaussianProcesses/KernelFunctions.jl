@@ -23,7 +23,10 @@ Create an [`ARDTransform`](@ref) with vector `fill(s, dims)`.
 """
 ARDTransform(s::Real, dims::Integer) = ARDTransform(fill(s, dims))
 
-@functor ARDTransform
+function ParameterHandling.flatten(::Type{T}, t::ARDTransform{S}) where {T<:Real,S}
+    unflatten_to_ardtransform(v::Vector{T}) = ARDTransform(convert(S, map(exp, v)))
+    return convert(Vector, map(T ∘ log, t.v)), unflatten_to_ardtransform
+end
 
 function set!(t::ARDTransform{<:AbstractVector{T}}, ρ::AbstractVector{T}) where {T<:Real}
     @assert length(ρ) == dim(t) "Trying to set a vector of size $(length(ρ)) to ARDTransform of dimension $(dim(t))"

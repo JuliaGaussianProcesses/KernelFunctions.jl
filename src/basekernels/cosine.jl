@@ -17,6 +17,8 @@ end
 
 CosineKernel(; metric=Euclidean()) = CosineKernel(metric)
 
+@noparams CosineKernel
+
 kappa(::CosineKernel, d::Real) = cospi(d)
 
 metric(k::CosineKernel) = k.metric

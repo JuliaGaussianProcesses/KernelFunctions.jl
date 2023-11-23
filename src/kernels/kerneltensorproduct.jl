@@ -47,6 +47,25 @@ end
 
 @functor KernelTensorProduct
 
+function ParameterHandling.flatten(::Type{T}, k::KernelTensorProduct) where {T<:Real}
+    vecs_and_backs = map(Base.Fix1(flatten, T), k.kernels)
+    vecs = map(first, vecs_and_backs)
+    length_vecs = map(length, vecs)
+    backs = map(last, vecs_and_backs)
+    flat_vecs = reduce(vcat, vecs)
+    function unflatten_to_kerneltensorproduct(v::Vector{T})
+        length(v) == length(flat_vecs) || error("incorrect number of parameters")
+        offset = Ref(0)
+        kernels = map(backs, length_vecs) do back, length_vec
+            oldoffset = offset[]
+            newoffset = offset[] = oldoffset + length_vec
+            return back(v[(oldoffset + 1):newoffset])
+        end
+        return KernelTensorProduct(kernels)
+    end
+    return flat_vecs, unflatten_to_kerneltensorproduct
+end
+
 Base.length(kernel::KernelTensorProduct) = length(kernel.kernels)
 
 function (kernel::KernelTensorProduct)(x, y)

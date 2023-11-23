@@ -22,7 +22,7 @@
         Zygote.gradient((x, y) -> sum(f.(x, y)), zeros(1), fill(0.9, 1))[1][1]
     )
 
-    test_params(k, ([h],))
+    test_params(k, ([logit(h)],))
 
     test_interface_ad_perf(h -> FBMKernel(; h=h), h, StableRNG(123456))
 end

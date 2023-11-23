@@ -46,6 +46,8 @@ function PiecewisePolynomialKernel(; degree::Int=0, kwargs...)
     return PiecewisePolynomialKernel{degree}(; kwargs...)
 end
 
+@noparams PiecewisePolynomialKernel
+
 piecewise_polynomial_coefficients(::Val{0}, ::Int) = (1,)
 piecewise_polynomial_coefficients(::Val{1}, j::Int) = (1, j + 1)
 piecewise_polynomial_coefficients(::Val{2}, j::Int) = (1, j + 2, (j^2 + 4 * j)//3 + 1)

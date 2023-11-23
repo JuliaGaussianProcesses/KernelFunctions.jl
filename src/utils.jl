@@ -241,3 +241,20 @@ end
 function validate_inplace_dims(K::AbstractVecOrMat, x::AbstractVector)
     return validate_inplace_dims(K, x, x)
 end
+
+# TODO: move to ParameterHandling?
+"""
+    @noparams T
+
+Define `ParameterHandling.flatten` for a type `T` without parameters.
+"""
+macro noparams(T)
+    return quote
+        Base.@__doc__ function ParameterHandling.flatten(
+            ::Type{S}, x::$(esc(T))
+        ) where {S<:Real}
+            unflatten(::Vector{S}) = x
+            return S[], unflatten
+        end
+    end
+end

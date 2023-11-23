@@ -12,6 +12,8 @@ k(x, x') = \\exp(x^\\top x').
 """
 struct ExponentiatedKernel <: SimpleKernel end
 
+@noparams ExponentiatedKernel
+
 kappa(::ExponentiatedKernel, xᵀy::Real) = exp(xᵀy)
 
 metric(::ExponentiatedKernel) = DotProduct()
