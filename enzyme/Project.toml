@@ -1,6 +1,8 @@
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Enzyme = "7da242da-08ed-463a-9acd-ee780be4f1d9"
+EnzymeCore = "f151be2c-9106-41f4-ab19-57ee4f262869"
 KernelFunctions = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
