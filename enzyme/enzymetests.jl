@@ -18,24 +18,13 @@ function test_and_benchmark(kernel, n = 1000)
     @info "Testing $kernel"
     x = rand(n)
     f(x) = sum(kernelmatrix(kernel, x))
-    val = try
-        f(x)
-    catch
-        @error "Error while evaluating function"
-        return nothing
-    end
-    EG = try
-        enzyme_gradient(f, x)
-    catch
-        @error "Error while evaluating gradient with Enzyme"
-        return nothing
-    end
-    ZG = try
-        zygote_gradient(f, x)
-    catch
-        @error "Error while evaluating gradient with Zygote"
-        return nothing
-    end
+    val = f(x)
+    EG = enzyme_gradient(f, x)
+    ZG = zygote_gradient(f, x)
+    ZG = isnothing(ZG) ? zero(x) : ZG
+    @test val isa Real
+    @test length(EG) == length(x)
+    @test length(ZG) == length(x)
     if isnothing(ZG)
         @test iszero(EG)
     else
