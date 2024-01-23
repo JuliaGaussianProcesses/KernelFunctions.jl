@@ -21,3 +21,7 @@ Distances.result_type(::Sinus{T}, Ta::Type, Tb::Type) where {T} = promote_type(T
     end
     return sum(abs2, sinpi.(a - b) ./ d.r)
 end
+
+# Optimizations for scalar inputs (avoiding allocations)
+pairwise(d::Sinus, x::AbstractVector{<:Real}) = pairwise(d, x, x)
+pairwise(d::Sinus, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}) = abs2.(sinpi.(x .- y') ./ only(d.r))
