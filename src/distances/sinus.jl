@@ -24,4 +24,6 @@ end
 
 # Optimizations for scalar inputs (avoiding allocations)
 pairwise(d::Sinus, x::AbstractVector{<:Real}) = pairwise(d, x, x)
-pairwise(d::Sinus, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}) = abs2.(sinpi.(x .- y') ./ only(d.r))
+function pairwise(d::Sinus, x::AbstractVector{<:Real}, y::AbstractVector{<:Real})
+    return abs2.(sinpi.(x .- y') ./ only(d.r))
+end
