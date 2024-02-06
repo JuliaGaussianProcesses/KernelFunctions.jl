@@ -44,5 +44,6 @@
     TestUtils.test_interface(k2, x0, x1, x2)
     TestUtils.test_interface(k3, x0, x1, x2)
     # test_ADs(()->WienerKernel(i=1))
-    @test_broken "No tests passing"
+    # No tests passing
+    @test_broken false
 end
