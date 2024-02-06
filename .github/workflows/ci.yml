@@ -51,6 +51,6 @@ jobs:
         if: matrix.version == '1' && matrix.os == 'ubuntu-latest'
       - name: Send coverage to CodeCov
         if: matrix.version == '1' && matrix.os == 'ubuntu-latest'
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v4
         with:
             file: lcov.info
