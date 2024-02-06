@@ -45,6 +45,7 @@ Base.length(k::KernelSum) = length(k.kernels)
 
 _sum(f, ks::Tuple, args...) = f(first(ks), args...) + _sum(f, Base.tail(ks), args...)
 _sum(f, ks::Tuple{Tx}, args...) where {Tx} = f(only(ks), args...)
+_sum(f, ks::AbstractVector, args...) = sum(k -> f(k, args...), ks)
 
 (κ::KernelSum)(x, y) = _sum((k, x, y) -> k(x, y), κ.kernels, x, y)
 
