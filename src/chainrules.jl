@@ -219,7 +219,6 @@ function ChainRulesCore.rrule(
     return Distances.colwise(d, x, y), colwise_pullback
 end
 
-
 ## Reverse Rules for matrix wrappers
 
 function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
