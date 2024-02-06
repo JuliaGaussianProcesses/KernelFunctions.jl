@@ -16,6 +16,7 @@
     TestUtils.test_interface(PeriodicKernel(; r=[0.8, 0.7]), RowVecs{Float64})
 
     # test_ADs(r->PeriodicKernel(r =exp.(r)), log.(r), ADs = [:ForwardDiff, :ReverseDiff])
-    @test_broken "Undefined adjoint for Sinus metric, and failing randomly for ForwardDiff and ReverseDiff"
+    # Undefined adjoint for Sinus metric, and failing randomly for ForwardDiff and ReverseDiff
+    @test_broken false
     test_params(k, (r,))
 end
