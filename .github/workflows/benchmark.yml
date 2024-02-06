@@ -17,10 +17,10 @@ jobs:
     steps:
       # setup
       - uses: actions/checkout@v2
-      - uses: julia-actions/setup-julia@latest
+      - uses: julia-actions/setup-julia@v1
         with:
           version: '1.7'
-      - uses: julia-actions/julia-buildpkg@latest
+      - uses: julia-actions/julia-buildpkg@v1
       - name: install dependencies
         run: julia -e 'using Pkg; pkg"add PkgBenchmark BenchmarkCI@0.1"'
       # run the benchmark suite
