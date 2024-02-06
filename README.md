@@ -1,6 +1,6 @@
 # KernelFunctions.jl
 
-![CI](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl/workflows/CI/badge.svg?branch=master)
+[![CI](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/JuliaGaussianProcesses/KernelFunctions.jl/branch/master/graph/badge.svg?token=rmDh3gb7hN)](https://codecov.io/gh/JuliaGaussianProcesses/KernelFunctions.jl)
 [![Documentation (stable)](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliagaussianprocesses.github.io/KernelFunctions.jl/stable)
 [![Documentation (latest)](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliagaussianprocesses.github.io/KernelFunctions.jl/dev)
