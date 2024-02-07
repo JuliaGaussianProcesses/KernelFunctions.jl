@@ -48,7 +48,7 @@ export tensor, ⊗, compose
 
 using Compat
 using ChainRulesCore: ChainRulesCore, Tangent, ZeroTangent, NoTangent
-using ChainRulesCore: @thunk, InplaceableThunk
+using ChainRulesCore: @thunk, InplaceableThunk, ProjectTo, unthunk
 using CompositionsBase
 using Distances
 using FillArrays
