@@ -135,7 +135,7 @@ function ChainRulesCore.rrule(
             for j in 1:n, i in 1:n
                 xi = view(x, i, :)
                 xj = view(x, j, :)
-                ds = π .* Δ[i, j] .* cospi.(2 .* (xi .- xj)) ./ d.r .^ 2
+                ds = π .* Δ[i, j] .* sinpi.(2 .* (xi .- xj)) ./ d.r .^ 2
                 r̄ .-= 2 .* Δ[i, j] .* sinpi.(xi .- xj) .^ 2 ./ d.r .^ 3
                 x̄[i, :] += ds
                 x̄[j, :] -= ds
