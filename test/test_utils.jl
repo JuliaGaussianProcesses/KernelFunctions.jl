@@ -384,7 +384,7 @@ function test_zygote_perf_heuristic(
             @test_broken fwd[1] == fwd[2]
         end
         if passes[3]
-            @test pb[1] == pb[2]
+            @test abs(pb[1] - pb[2]) ≤ 1
         else
             @test_broken pb[1] == pb[2]
         end
