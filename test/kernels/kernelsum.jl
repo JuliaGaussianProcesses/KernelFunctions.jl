@@ -15,7 +15,7 @@
         repr(kvec) ==
         "Sum of 2 kernels:\n" *
         "\tLinear Kernel (c = 0.0)\n" *
-        "\tSquared Exponential Kernel (metric = Distances.Euclidean(0.0))"
+        "\tSquared Exponential Kernel (metric = Euclidean(0.0))"
 
     # Standardised tests.
     test_interface(k, Float64)
