@@ -1,5 +1,7 @@
 using KernelFunctions
 using AxisArrays
+using ChainRulesCore
+using ChainRulesTestUtils
 using Distances
 using Documenter
 using Functors: functor
