@@ -57,5 +57,6 @@
     end
 
     # test_ADs(x->spectral_mixture_kernel(exp.(x[1:3]), reshape(x[4:18], 5, 3), reshape(x[19:end], 5, 3)), vcat(log.(αs₁), γs[:], ωs[:]), dims = [5,5])
-    @test_broken "No tests passing (BaseKernel)"
+    # No tests passing (BaseKernel)
+    @test_broken false
 end
