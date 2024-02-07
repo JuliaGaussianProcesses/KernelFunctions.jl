@@ -113,7 +113,7 @@ function ChainRulesCore.rrule(s::Sinus, x::AbstractVector, y::AbstractVector)
     d = x - y
     abs2_sind_r = (sinpi.(d) ./ s.r) .^ 2
     val = sum(abs2_sind_r)
-    gradx = π .* cospi.(2 .* d) ./ s.r .^ 2
+    gradx = π .* sinpi.(2 .* d) ./ s.r .^ 2
     function evaluate_pullback(Δ::Any)
         r̄ = -2Δ .* abs2_sind_r ./ s.r
         s̄ = ChainRulesCore.Tangent{typeof(s)}(; r=r̄)
