@@ -84,6 +84,10 @@ function test_interface(
     tmp_diag = Vector{Float64}(undef, length(x0))
     @test kernelmatrix_diag!(tmp_diag, k, x0) ≈ kernelmatrix_diag(k, x0)
     @test kernelmatrix_diag!(tmp_diag, k, x0, x1) ≈ kernelmatrix_diag(k, x0, x1)
+
+    # Check that `kernelmatrix_diag` works for unequal-length inputs
+    @test kernelmatrix_diag(k, x0, x2) ≈ diag(kernelmatrix(k, x0, x2))
+    @test kernelmatrix_diag(k, x2, x0) ≈ diag(kernelmatrix(k, x2, x0))
 end
 
 """
