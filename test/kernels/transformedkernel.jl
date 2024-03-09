@@ -25,7 +25,14 @@
     @test repr(kt) == repr(k) * "\n\t- " * repr(ScaleTransform(s))
 
     TestUtils.test_interface(k, Float64)
+    TestUtils.test_interface(
+        TransformedKernel(ConstantKernel(; c=1.5), FunctionTransform(x -> x * "hi")),
+        Vector{String},
+    )
     test_ADs(x -> SqExponentialKernel() ∘ ScaleTransform(x[1]), rand(1))
+    test_interface_ad_perf(0.35, StableRNG(123456)) do λ
+        SqExponentialKernel() ∘ ScaleTransform(λ)
+    end
 
     # Test implicit gradients
     @testset "Implicit gradients" begin

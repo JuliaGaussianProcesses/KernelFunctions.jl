@@ -30,6 +30,8 @@ export Transform,
     PeriodicTransform
 export with_lengthscale
 
+export median_heuristic_transform
+
 export NystromFact, nystrom
 
 export gaborkernel
@@ -46,7 +48,7 @@ export tensor, ⊗, compose
 
 using Compat
 using ChainRulesCore: ChainRulesCore, Tangent, ZeroTangent, NoTangent
-using ChainRulesCore: @thunk, InplaceableThunk
+using ChainRulesCore: @thunk, InplaceableThunk, ProjectTo, unthunk
 using CompositionsBase
 using Distances
 using FillArrays
@@ -62,6 +64,8 @@ using ZygoteRules: ZygoteRules, AContext, literal_getproperty, literal_getfield
 
 # Hack to work around Zygote type inference problems.
 const Distances_pairwise = Distances.pairwise
+
+using Statistics: median!
 
 abstract type Kernel end
 abstract type SimpleKernel <: Kernel end
@@ -120,7 +124,7 @@ include("mokernels/lmm.jl")
 include("chainrules.jl")
 include("zygoterules.jl")
 
-include("test_utils.jl")
+include("TestUtils.jl")
 
 function __init__()
     @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin

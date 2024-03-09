@@ -1,0 +1,2 @@
+
+New? Check CONTRIBUTING.md!

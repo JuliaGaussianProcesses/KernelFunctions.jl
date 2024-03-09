@@ -11,6 +11,8 @@
         k_eq_transform = SqExponentialKernel() ∘ PeriodicTransform(f)
 
         @test kernelmatrix(k_eq_periodic, x) ≈ kernelmatrix(k_eq_transform, x)
-        # TODO - add interface_tests once #159 is merged.
+    end
+    test_interface_ad_perf(0.95, StableRNG(123456), [Vector{Float64}]) do θ
+        SEKernel() ∘ PeriodicTransform(θ)
     end
 end

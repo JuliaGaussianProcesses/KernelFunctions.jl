@@ -18,5 +18,13 @@ for (M, op, T) in (
 
         $M.$op(ks::$T, k::Kernel) = $T(ks.kernels..., k)
         $M.$op(ks::$T{<:AbstractVector{<:Kernel}}, k::Kernel) = $T(vcat(ks.kernels, k))
+
+        # Fix method ambiguity issues
+        function $M.$op(ks1::$T, ks2::$T{<:AbstractVector{<:Kernel}})
+            return $T(vcat(collect(ks1.kernels), ks2.kernels))
+        end
+        function $M.$op(ks1::$T{<:AbstractVector{<:Kernel}}, ks2::$T)
+            return $T(vcat(ks1.kernels, collect(ks2.kernels)))
+        end
     end
 end

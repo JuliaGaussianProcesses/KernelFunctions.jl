@@ -93,22 +93,25 @@ Base.getindex(D::ColVecs, i) = ColVecs(view(D.X, :, i))
 Base.setindex!(D::ColVecs, v::AbstractVector, i) = setindex!(D.X, v, :, i)
 
 Base.vcat(a::ColVecs, b::ColVecs) = ColVecs(hcat(a.X, b.X))
+Base.zero(x::ColVecs) = ColVecs(zero(x.X))
 
 dim(x::ColVecs) = size(x.X, 1)
 
+_to_colvecs(x::AbstractVector{<:Real}) = ColVecs(reshape(x, 1, :))
+
 pairwise(d::PreMetric, x::ColVecs) = Distances_pairwise(d, x.X; dims=2)
 pairwise(d::PreMetric, x::ColVecs, y::ColVecs) = Distances_pairwise(d, x.X, y.X; dims=2)
-function pairwise(d::PreMetric, x::AbstractVector, y::ColVecs)
+function pairwise(d::PreMetric, x::AbstractVector{<:AbstractVector{<:Real}}, y::ColVecs)
     return Distances_pairwise(d, reduce(hcat, x), y.X; dims=2)
 end
-function pairwise(d::PreMetric, x::ColVecs, y::AbstractVector)
+function pairwise(d::PreMetric, x::ColVecs, y::AbstractVector{<:AbstractVector{<:Real}})
     return Distances_pairwise(d, x.X, reduce(hcat, y); dims=2)
 end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs)
-    return Distances.pairwise!(out, d, x.X; dims=2)
+function pairwise!(d::PreMetric, out::AbstractMatrix, x::ColVecs)
+    return Distances.pairwise!(d, out, x.X; dims=2)
 end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs, y::ColVecs)
-    return Distances.pairwise!(out, d, x.X, y.X; dims=2)
+function pairwise!(d::PreMetric, out::AbstractMatrix, x::ColVecs, y::ColVecs)
+    return Distances.pairwise!(d, out, x.X, y.X; dims=2)
 end
 
 """
@@ -163,22 +166,23 @@ Base.getindex(D::RowVecs, i) = RowVecs(view(D.X, i, :))
 Base.setindex!(D::RowVecs, v::AbstractVector, i) = setindex!(D.X, v, i, :)
 
 Base.vcat(a::RowVecs, b::RowVecs) = RowVecs(vcat(a.X, b.X))
+Base.zero(x::RowVecs) = RowVecs(zero(x.X))
 
 dim(x::RowVecs) = size(x.X, 2)
 
 pairwise(d::PreMetric, x::RowVecs) = Distances_pairwise(d, x.X; dims=1)
 pairwise(d::PreMetric, x::RowVecs, y::RowVecs) = Distances_pairwise(d, x.X, y.X; dims=1)
-function pairwise(d::PreMetric, x::AbstractVector, y::RowVecs)
+function pairwise(d::PreMetric, x::AbstractVector{<:AbstractVector{<:Real}}, y::RowVecs)
     return Distances_pairwise(d, permutedims(reduce(hcat, x)), y.X; dims=1)
 end
-function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector)
+function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector{<:AbstractVector{<:Real}})
     return Distances_pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
 end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs)
-    return Distances.pairwise!(out, d, x.X; dims=1)
+function pairwise!(d::PreMetric, out::AbstractMatrix, x::RowVecs)
+    return Distances.pairwise!(d, out, x.X; dims=1)
 end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs, y::RowVecs)
-    return Distances.pairwise!(out, d, x.X, y.X; dims=1)
+function pairwise!(d::PreMetric, out::AbstractMatrix, x::RowVecs, y::RowVecs)
+    return Distances.pairwise!(d, out, x.X, y.X; dims=1)
 end
 
 # Resolve ambiguity error for ColVecs vs RowVecs. #346

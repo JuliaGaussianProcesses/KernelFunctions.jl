@@ -1,6 +1,9 @@
 using KernelFunctions
-using AxisArrays
+
 using Aqua
+using AxisArrays
+using ChainRulesCore
+using ChainRulesTestUtils
 using Distances
 using Documenter
 using Functors: functor
@@ -10,6 +13,9 @@ using LogExpFunctions
 using PDMats
 using Random
 using SpecialFunctions
+using StableRNGs
+using StaticArrays
+using Statistics
 using Test
 using Zygote: Zygote
 using ForwardDiff: ForwardDiff
@@ -19,7 +25,7 @@ using Compat: only
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 
-using KernelFunctions.TestUtils: test_interface
+using KernelFunctions.TestUtils: test_interface, test_type_stability, example_inputs
 
 # The GROUP is used to run different sets of tests in parallel on the GitHub Actions CI.
 # If you want to introduce a new group, ensure you also add it to .github/workflows/ci.yml
@@ -155,6 +161,11 @@ include("test_utils.jl")
 
     if GROUP == "" || GROUP == "Others"
         include("utils.jl")
+
+        @testset "general" begin
+            @test isempty(detect_unbound_args(KernelFunctions))
+            @test isempty(detect_ambiguities(KernelFunctions))
+        end
 
         @testset "distances" begin
             include("distances/pairwise.jl")

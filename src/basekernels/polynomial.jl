@@ -26,9 +26,27 @@ LinearKernel(; c::Real=0.0) = LinearKernel(c)
 
 @functor LinearKernel
 
-kappa(κ::LinearKernel, xᵀy::Real) = xᵀy + only(κ.c)
+__linear_kappa(c::Real, xᵀy::Real) = xᵀy + c
+
+kappa(κ::LinearKernel, xᵀy::Real) = __linear_kappa(only(κ.c), xᵀy)
 
 metric(::LinearKernel) = DotProduct()
+
+function kernelmatrix(k::LinearKernel, x::AbstractVector, y::AbstractVector)
+    return __linear_kappa.(only(k.c), pairwise(metric(k), x, y))
+end
+
+function kernelmatrix(k::LinearKernel, x::AbstractVector)
+    return __linear_kappa.(only(k.c), pairwise(metric(k), x))
+end
+
+function kernelmatrix_diag(k::LinearKernel, x::AbstractVector, y::AbstractVector)
+    return __linear_kappa.(only(k.c), colwise(metric(k), x, y))
+end
+
+function kernelmatrix_diag(k::LinearKernel, x::AbstractVector)
+    return __linear_kappa.(only(k.c), colwise(metric(k), x))
+end
 
 Base.show(io::IO, κ::LinearKernel) = print(io, "Linear Kernel (c = ", only(κ.c), ")")
 
@@ -68,9 +86,31 @@ function Functors.functor(::Type{<:PolynomialKernel}, x)
     return (c=x.c,), reconstruct_polynomialkernel
 end
 
-kappa(κ::PolynomialKernel, xᵀy::Real) = (xᵀy + only(κ.c))^κ.degree
+struct _PolynomialKappa
+    degree::Int
+end
+
+(κ::_PolynomialKappa)(c::Real, xᵀy::Real) = (xᵀy + c)^κ.degree
+
+kappa(κ::PolynomialKernel, xᵀy::Real) = _PolynomialKappa(κ.degree)(only(κ.c), xᵀy)
 
 metric(::PolynomialKernel) = DotProduct()
+
+function kernelmatrix(k::PolynomialKernel, x::AbstractVector, y::AbstractVector)
+    return _PolynomialKappa(k.degree).(only(k.c), pairwise(metric(k), x, y))
+end
+
+function kernelmatrix(k::PolynomialKernel, x::AbstractVector)
+    return _PolynomialKappa(k.degree).(only(k.c), pairwise(metric(k), x))
+end
+
+function kernelmatrix_diag(k::PolynomialKernel, x::AbstractVector, y::AbstractVector)
+    return _PolynomialKappa(k.degree).(only(k.c), colwise(metric(k), x, y))
+end
+
+function kernelmatrix_diag(k::PolynomialKernel, x::AbstractVector)
+    return _PolynomialKappa(k.degree).(only(k.c), colwise(metric(k), x))
+end
 
 function Base.show(io::IO, κ::PolynomialKernel)
     return print(io, "Polynomial Kernel (c = ", only(κ.c), ", degree = ", κ.degree, ")")
