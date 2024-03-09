@@ -24,7 +24,7 @@ jobs:
       ${{ github.event.workflow_run.event == 'pull_request' &&
           github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       # restore records from the artifacts
       - uses: dawidd6/action-download-artifact@v2
         with:
@@ -41,7 +41,7 @@ jobs:
           echo ::set-output name=body::$(cat ./pull-request-number.artifact)
       # check if the previous comment exists
       - name: find comment
-        uses: peter-evans/find-comment@v1
+        uses: peter-evans/find-comment@v3
         id: fc
         with:
           issue-number: ${{ steps.output-pull-request-number.outputs.body }}
