@@ -16,11 +16,11 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'performance critical')
     steps:
       # setup
-      - uses: actions/checkout@v2
-      - uses: julia-actions/setup-julia@latest
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v1
         with:
           version: '1.7'
-      - uses: julia-actions/julia-buildpkg@latest
+      - uses: julia-actions/julia-buildpkg@v1
       - name: install dependencies
         run: julia -e 'using Pkg; pkg"add PkgBenchmark BenchmarkCI@0.1"'
       # run the benchmark suite
@@ -47,7 +47,7 @@ jobs:
       - name: record pull request number
         run: echo ${{ github.event.pull_request.number }} > ./pull-request-number.artifact
       # save as artifacts (performance tracking (comment) workflow will use it)
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: Benchmarking
           path: ./*.artifact

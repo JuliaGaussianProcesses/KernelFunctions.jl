@@ -134,7 +134,7 @@ kernelmatrix_diag(κ::Kernel, x::AbstractVector, y::AbstractVector) = map(κ, x,
 
 function kernelmatrix!(K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector)
     validate_inplace_dims(K, x)
-    pairwise!(K, metric(κ), x)
+    pairwise!(metric(κ), K, x)
     return map!(x -> kappa(κ, x), K, K)
 end
 
@@ -142,7 +142,7 @@ function kernelmatrix!(
     K::AbstractMatrix, κ::SimpleKernel, x::AbstractVector, y::AbstractVector
 )
     validate_inplace_dims(K, x, y)
-    pairwise!(K, metric(κ), x, y)
+    pairwise!(metric(κ), K, x, y)
     return map!(x -> kappa(κ, x), K, K)
 end
 

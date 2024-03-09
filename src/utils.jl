@@ -107,11 +107,11 @@ end
 function pairwise(d::PreMetric, x::ColVecs, y::AbstractVector{<:AbstractVector{<:Real}})
     return Distances_pairwise(d, x.X, reduce(hcat, y); dims=2)
 end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs)
-    return Distances.pairwise!(out, d, x.X; dims=2)
+function pairwise!(d::PreMetric, out::AbstractMatrix, x::ColVecs)
+    return Distances.pairwise!(d, out, x.X; dims=2)
 end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::ColVecs, y::ColVecs)
-    return Distances.pairwise!(out, d, x.X, y.X; dims=2)
+function pairwise!(d::PreMetric, out::AbstractMatrix, x::ColVecs, y::ColVecs)
+    return Distances.pairwise!(d, out, x.X, y.X; dims=2)
 end
 
 """
@@ -178,11 +178,11 @@ end
 function pairwise(d::PreMetric, x::RowVecs, y::AbstractVector{<:AbstractVector{<:Real}})
     return Distances_pairwise(d, x.X, permutedims(reduce(hcat, y)); dims=1)
 end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs)
-    return Distances.pairwise!(out, d, x.X; dims=1)
+function pairwise!(d::PreMetric, out::AbstractMatrix, x::RowVecs)
+    return Distances.pairwise!(d, out, x.X; dims=1)
 end
-function pairwise!(out::AbstractMatrix, d::PreMetric, x::RowVecs, y::RowVecs)
-    return Distances.pairwise!(out, d, x.X, y.X; dims=1)
+function pairwise!(d::PreMetric, out::AbstractMatrix, x::RowVecs, y::RowVecs)
+    return Distances.pairwise!(d, out, x.X, y.X; dims=1)
 end
 
 # Resolve ambiguity error for ColVecs vs RowVecs. #346
