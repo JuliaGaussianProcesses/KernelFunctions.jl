@@ -372,7 +372,7 @@ function test_zygote_perf_heuristic(
     f, name::String, args1, args2, passes, Δ1=nothing, Δ2=nothing
 )
     @testset "$name" begin
-        primal, fwd, pb = ad_constant_allocs_heuristic(f, args1, args2; Δ1, Δ2)
+        primal, fwd, pb = ad_constant_allocs_heuristic(f, args1, args2; Δ1=Δ1, Δ2=Δ2)
         if passes[1]
             @test primal[1] == primal[2]
         else
