@@ -7,7 +7,7 @@
 julia> x = [1, 2, 3];
 
 julia> KernelFunctions.MOInputIsotopicByFeatures(x, 2)
-6-element KernelFunctions.MOInputIsotopicByFeatures{Int64, Vector{Int64}, Int64}:
+6-element KernelFunctions.MOInputIsotopicByFeatures{Int64, Int64, Vector{Int64}, Base.OneTo{Int64}}:
  (1, 1)
  (1, 2)
  (2, 1)
@@ -24,10 +24,14 @@ The first `out_dim` elements represent all outputs for the first input, the seco
 
 See [Inputs for Multiple Outputs](@ref) in the docs for more info.
 """
-struct MOInputIsotopicByFeatures{S,T<:AbstractVector{S},Tout_dim<:Integer} <:
-       AbstractVector{Tuple{S,Int}}
+struct MOInputIsotopicByFeatures{S,I,T<:AbstractVector{S},Tout_axis<:AbstractVector{I}} <:
+       AbstractVector{Tuple{S,I}}
     x::T
-    out_dim::Tout_dim
+    out_axis::Tout_axis
+end
+
+function MOInputIsotopicByFeatures(x::AbstractVector, out_dim::Integer)
+    return MOInputIsotopicByFeatures(x, Base.OneTo(out_dim))
 end
 
 """
@@ -39,7 +43,7 @@ end
 julia> x = [1, 2, 3];
 
 julia> KernelFunctions.MOInputIsotopicByOutputs(x, 2)
-6-element KernelFunctions.MOInputIsotopicByOutputs{Int64, Vector{Int64}, Int64}:
+6-element KernelFunctions.MOInputIsotopicByOutputs{Int64, Int64, Vector{Int64}, Base.OneTo{Int64}}:
  (1, 1)
  (2, 1)
  (3, 1)
@@ -54,10 +58,14 @@ As shown above, an `MOInputIsotopicByOutputs` represents a vector of tuples.
 The first `length(x)` elements represent the inputs for the first output, the second
 `length(x)` elements represent the inputs for the second output, etc.
 """
-struct MOInputIsotopicByOutputs{S,T<:AbstractVector{S},Tout_dim<:Integer} <:
-       AbstractVector{Tuple{S,Int}}
+struct MOInputIsotopicByOutputs{S,I,T<:AbstractVector{S},Tout_axis<:AbstractVector{I}} <:
+       AbstractVector{Tuple{S,I}}
     x::T
-    out_dim::Tout_dim
+    out_axis::Tout_axis
+end
+
+function MOInputIsotopicByOutputs(x::AbstractVector, out_dim::Integer)
+    return MOInputIsotopicByOutputs(x, Base.OneTo(out_dim))
 end
 
 const IsotopicMOInputsUnion = Union{MOInputIsotopicByFeatures,MOInputIsotopicByOutputs}
@@ -66,26 +74,30 @@ function Base.getindex(inp::MOInputIsotopicByOutputs, ind::Integer)
     @boundscheck checkbounds(inp, ind)
     output_index, feature_index = fldmod1(ind, length(inp.x))
     feature = @inbounds inp.x[feature_index]
-    return feature, output_index
+    out_indices = axes(inp.out_axis, 1)
+    out_idx = out_indices[begin + output_index - 1]
+    return feature, @inbounds inp.out_axis[out_idx]
 end
 
 function Base.getindex(inp::MOInputIsotopicByFeatures, ind::Integer)
     @boundscheck checkbounds(inp, ind)
-    feature_index, output_index = fldmod1(ind, inp.out_dim)
+    feature_index, output_index = fldmod1(ind, length(inp.out_axis))
     feature = @inbounds inp.x[feature_index]
-    return feature, output_index
+    out_indices = axes(inp.out_axis, 1)
+    out_idx = out_indices[begin + output_index - 1]
+    return feature, @inbounds inp.out_axis[out_idx]
 end
 
-Base.size(inp::IsotopicMOInputsUnion) = (inp.out_dim * length(inp.x),)
+Base.size(inp::IsotopicMOInputsUnion) = (length(inp.out_axis) * length(inp.x),)
 
 function Base.vcat(x::MOInputIsotopicByFeatures, y::MOInputIsotopicByFeatures)
-    x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
-    return MOInputIsotopicByFeatures(vcat(x.x, y.x), x.out_dim)
+    x.out_axis == y.out_axis || throw(DimensionMismatch("out_axis mismatch"))
+    return MOInputIsotopicByFeatures(vcat(x.x, y.x), x.out_axis)
 end
 
 function Base.vcat(x::MOInputIsotopicByOutputs, y::MOInputIsotopicByOutputs)
-    x.out_dim == y.out_dim || throw(DimensionMismatch("out_dim mismatch"))
-    return MOInputIsotopicByOutputs(vcat(x.x, y.x), x.out_dim)
+    x.out_axis == y.out_axis || throw(DimensionMismatch("out_axis mismatch"))
+    return MOInputIsotopicByOutputs(vcat(x.x, y.x), x.out_axis)
 end
 
 """
@@ -98,7 +110,7 @@ A data type to accommodate modelling multi-dimensional output data.
 julia> x = [1, 2, 3];
 
 julia> MOInput(x, 2)
-6-element KernelFunctions.MOInputIsotopicByOutputs{Int64, Vector{Int64}, Int64}:
+6-element KernelFunctions.MOInputIsotopicByOutputs{Int64, Int64, Vector{Int64}, Base.OneTo{Int64}}:
  (1, 1)
  (2, 1)
  (3, 1)
@@ -138,7 +150,7 @@ julia> Y = [1.1 2.1 3.1; 1.2 2.2 3.2]
 julia> inputs, outputs = prepare_isotopic_multi_output_data(x, ColVecs(Y));
 
 julia> inputs
-6-element KernelFunctions.MOInputIsotopicByFeatures{Float64, Vector{Float64}, Int64}:
+6-element KernelFunctions.MOInputIsotopicByFeatures{Float64, Int64, Vector{Float64}, Base.OneTo{Int64}}:
  (1.0, 1)
  (1.0, 2)
  (2.0, 1)
@@ -186,7 +198,7 @@ julia> Y = [1.1 1.2; 2.1 2.2; 3.1 3.2]
 julia> inputs, outputs = prepare_isotopic_multi_output_data(x, RowVecs(Y));
 
 julia> inputs
-6-element KernelFunctions.MOInputIsotopicByOutputs{Float64, Vector{Float64}, Int64}:
+6-element KernelFunctions.MOInputIsotopicByOutputs{Float64, Int64, Vector{Float64}, Base.OneTo{Int64}}:
  (1.0, 1)
  (2.0, 1)
  (3.0, 1)

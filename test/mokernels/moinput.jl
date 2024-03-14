@@ -4,6 +4,8 @@
     type_2 = AbstractVector{Tuple{AbstractVector{Vector{Float64}},Int}}
 
     @testset "isotopicbyoutputs" begin
+        @test KernelFunctions.MOInputIsotopicByOutputs(x, []) == []
+
         ibo = KernelFunctions.MOInputIsotopicByOutputs(x, 3)
         ibo2 = KernelFunctions.MOInputIsotopicByOutputs(x, 2)
 
@@ -27,9 +29,20 @@
         @test ibo[7] == (x[3], 2)
         @test all([(x_, i) for i in 1:3 for x_ in x] .== ibo)
         @inferred getindex(ibo, 1)
+
+        # test non-standard array
+        ibo3 = KernelFunctions.MOInputIsotopicByOutputs(x, OA.Origin(0)([:a, :b, :c]))
+        ibo4 = KernelFunctions.MOInputIsotopicByOutputs(x, [:a, :b, :c])
+        @test ibo3 == ibo4
+        @test length(ibo3) == 12
+        @test lastindex(ibo3) == 12
+        @test firstindex(ibo3) == 1
+        @test_throws BoundsError ibo3[0]
+        @test_throws BoundsError ibo3[13]
     end
 
     @testset "isotopicbyfeatures" begin
+        @test KernelFunctions.MOInputIsotopicByFeatures([], [1.0, 2.0]) == []
         ibf = KernelFunctions.MOInputIsotopicByFeatures(x, 3)
 
         @test isa(ibf, type_1) == true
@@ -48,6 +61,15 @@
         @test ibf[7] == (x[3], 1)
         @test all([(x_, i) for x_ in x for i in 1:3] .== ibf)
         @inferred getindex(ibf, 1)
+
+        # test non-standard array
+        ibf2 = KernelFunctions.MOInputIsotopicByFeatures(x, OA.Origin(0)(["a", "b", "c"]))
+        ibf3 = KernelFunctions.MOInputIsotopicByFeatures(x, ["a", "b", "c"])
+        @test ibf2 == ibf3
+        @test lastindex(ibf2) == 12
+        @test firstindex(ibf2) == 1
+        @test_throws BoundsError ibf2[0]
+        @test_throws BoundsError ibf2[13]
     end
 
     @testset "prepare_isotopic_multi_output_data" begin
