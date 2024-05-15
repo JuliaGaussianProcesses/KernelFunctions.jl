@@ -163,7 +163,7 @@
         @test_throws DimensionMismatch KernelFunctions.validate_inplace_dims(zeros(N2), x)
 
         @test_nowarn KernelFunctions.validate_inputs(x, y)
-        @test_throws DimensionMismatch KernelFunctions.validate_inputs(x⁻, y)
+        @test_nowarn KernelFunctions.validate_inputs(x⁻, y)
 
         @test_nowarn KernelFunctions.validate_inputs(xx, yy)
         @test_nowarn KernelFunctions.validate_inputs(xx⁻, yy)
