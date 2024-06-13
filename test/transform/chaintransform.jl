@@ -25,8 +25,7 @@
     @test repr(tp ∘ tf) == "Chain of 2 transforms:\n\t - $(tf) |> $(tp)"
     test_ADs(
         x -> SEKernel() ∘ (ScaleTransform(exp(x[1])) ∘ ARDTransform(exp.(x[2:4]))),
-        randn(rng, 4);
-        ADs=[:ForwardDiff, :ReverseDiff],  # explicitly pass ADs to exclude :Zygote
+        randn(rng, 4),
     )
     test_interface_ad_perf((1.0, 2.0), StableRNG(123456), [Vector{Float64}]) do θ
         SEKernel() ∘ (ScaleTransform(θ[1]) ∘ PeriodicTransform(θ[2]))
