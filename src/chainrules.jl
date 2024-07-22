@@ -153,7 +153,7 @@ function ChainRulesCore.rrule(
         d̄ = ChainRulesCore.Tangent{typeof(d)}(; r=r̄)
         return NoTangent(), d̄, @thunk(project_x(x̄))
     end
-    return Distances.pairwise(d, x; dims), pairwise_pullback
+    return Distances.pairwise(d, x; dims=dims), pairwise_pullback
 end
 
 function ChainRulesCore.rrule(
@@ -190,7 +190,7 @@ function ChainRulesCore.rrule(
         d̄ = ChainRulesCore.Tangent{typeof(d)}(; r=r̄)
         return NoTangent(), d̄, @thunk(project_x(x̄)), @thunk(project_y(ȳ))
     end
-    return Distances.pairwise(d, x, y; dims), pairwise_pullback
+    return Distances.pairwise(d, x, y; dims=dims), pairwise_pullback
 end
 
 function ChainRulesCore.rrule(
@@ -229,7 +229,7 @@ function ChainRulesCore.rrule(::Type{<:ColVecs}, X::AbstractMatrix)
             "or because some external computation has acted on `ColVecs` to produce a vector of vectors." *
             "In the former case, to solve this issue overload `kernelmatrix(_diag)` for your kernel for `ColVecs`." *
             "In the latter case, one needs to track down the `rrule` whose pullback returns a `Vector{Vector{T}}`," *
-            " rather than a `Tangent`, as the cotangent / gradient for `ColVecs` input, and circumvent it."
+            " rather than a `Tangent`, as the cotangent / gradient for `ColVecs` input, and circumvent it.",
         )
     end
     return ColVecs(X), ColVecs_pullback
