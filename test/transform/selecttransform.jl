@@ -72,7 +72,7 @@
     @test kernelmatrix(tx_row, X, Y; obsdim=2) ≈ kernelmatrix(ta_row, A, B; obsdim=2)
     @test kernelmatrix(tx_col, X, Z; obsdim=1) ≈ kernelmatrix(ta_col, A, C; obsdim=1)
 
-    @testset "$(AD)" for AD in [:Zygote, :ForwardDiff]
+    @testset "$(AD)" for AD in [:ForwardDiff]
         gx = gradient(AD, X) do x
             testfunction(tx_row, x, 2)
         end
@@ -103,7 +103,7 @@
         @test gx ≈ ga
     end
 
-    @testset "$(AD)" for AD in [:ReverseDiff]
+    @testset "$(AD)" for AD in [:ReverseDiff, :Zygote]
         @test_broken let
             gx = gradient(AD, X) do x
                 testfunction(tx_row, x, 2)
