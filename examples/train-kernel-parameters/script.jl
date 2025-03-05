@@ -1,9 +1,9 @@
 # # Train Kernel Parameters
 
-# Here we show a few ways to train (optimize) the kernel (hyper)parameters at the example of kernel-based regression using KernelFunctions.jl. 
-# All options are functionally identical, but differ a little in readability, dependencies, and computational cost. 
+# Here we show a few ways to train (optimize) the kernel (hyper)parameters at the example of kernel-based regression using KernelFunctions.jl.
+# All options are functionally identical, but differ a little in readability, dependencies, and computational cost.
 
-# We load KernelFunctions and some other packages. Note that while we use `Zygote` for automatic differentiation and `Flux.optimise` for optimization, you should be able to replace them with your favourite autodiff framework or optimizer. 
+# We load KernelFunctions and some other packages. Note that while we use `Zygote` for automatic differentiation and `Flux.optimise` for optimization, you should be able to replace them with your favourite autodiff framework or optimizer.
 
 using KernelFunctions
 using LinearAlgebra
@@ -33,14 +33,14 @@ scatter(x_train, y_train; label="data")
 plot!(x_test, sinc; label="true function")
 
 # ## Manual Approach
-# The first option is to rebuild the parametrized kernel from a vector of parameters 
-# in each evaluation of the cost function. This is similar to the approach taken in 
+# The first option is to rebuild the parametrized kernel from a vector of parameters
+# in each evaluation of the cost function. This is similar to the approach taken in
 # [Stheno.jl](https://github.com/JuliaGaussianProcesses/Stheno.jl).
 
 # To train the kernel parameters via [Zygote.jl](https://github.com/FluxML/Zygote.jl),
 # we need to create a function creating a kernel from an array.
 # A simple way to ensure that the kernel parameters are positive
-# is to optimize over the logarithm of the parameters. 
+# is to optimize over the logarithm of the parameters.
 
 function kernel_creator(θ)
     return (exp(θ[1]) * SqExponentialKernel() + exp(θ[2]) * Matern32Kernel()) ∘
@@ -59,7 +59,7 @@ end
 nothing #hide
 
 # Let's look at our prediction.
-# With starting parameters `p0` (picked so we get the right local 
+# With starting parameters `p0` (picked so we get the right local
 # minimum for demonstration) we get:
 
 p0 = [1.1, 0.1, 0.01, 0.001]
@@ -85,16 +85,16 @@ loss(θ)
 
 @benchmark let
     θ = log.(p0)
-    opt = Optimise.ADAGrad(0.5)
+    opt = Optimise.AdaGrad(0.5)
     grads = only((Zygote.gradient(loss, θ)))
     Optimise.update!(opt, θ, grads)
 end
 
 # ### Training the model
 
-# Setting an initial value and initializing the optimizer: 
+# Setting an initial value and initializing the optimizer:
 θ = log.(p0) # Initial vector
-opt = Optimise.ADAGrad(0.5)
+opt = Optimise.AdaGrad(0.5)
 nothing #hide
 
 # Optimize
@@ -119,10 +119,10 @@ nothing; #hide
 loss(θ)
 
 # ## Using ParameterHandling.jl
-# Alternatively, we can use the [ParameterHandling.jl](https://github.com/invenia/ParameterHandling.jl) package 
-# to handle the requirement that all kernel parameters should be positive. 
-# The package also allows arbitrarily nesting named tuples that make the parameters 
-# more human readable, without having to remember their position in a flat vector. 
+# Alternatively, we can use the [ParameterHandling.jl](https://github.com/invenia/ParameterHandling.jl) package
+# to handle the requirement that all kernel parameters should be positive.
+# The package also allows arbitrarily nesting named tuples that make the parameters
+# more human readable, without having to remember their position in a flat vector.
 
 using ParameterHandling
 
@@ -133,7 +133,7 @@ raw_initial_θ = (
 flat_θ, unflatten = ParameterHandling.value_flatten(raw_initial_θ)
 flat_θ #hide
 
-# We define a few relevant functions and note that compared to the previous `kernel_creator` function, we do not need explicit `exp`s. 
+# We define a few relevant functions and note that compared to the previous `kernel_creator` function, we do not need explicit `exp`s.
 
 function kernel_creator(θ)
     return (θ.k1 * SqExponentialKernel() + θ.k2 * Matern32Kernel()) ∘ ScaleTransform(θ.k3)
@@ -164,7 +164,7 @@ nothing #hide
 
 @benchmark let
     θ = flat_θ[:]
-    opt = Optimise.ADAGrad(0.5)
+    opt = Optimise.AdaGrad(0.5)
     grads = (Zygote.gradient(loss ∘ unflatten, θ))[1]
     Optimise.update!(opt, θ, grads)
 end
@@ -173,7 +173,7 @@ end
 
 # Optimize
 
-opt = Optimise.ADAGrad(0.5)
+opt = Optimise.AdaGrad(0.5)
 for i in 1:15
     grads = (Zygote.gradient(loss ∘ unflatten, flat_θ))[1]
     Optimise.update!(opt, flat_θ, grads)
@@ -185,11 +185,11 @@ nothing #hide
 (loss ∘ unflatten)(flat_θ)
 
 # ## Flux.destructure
-# If we don't want to write an explicit function to construct the kernel, we can alternatively use the `Flux.destructure` function. 
-# Again, we need to ensure that the parameters are positive. Note that the `exp` function is now part of the loss function, instead of part of the kernel construction. 
+# If we don't want to write an explicit function to construct the kernel, we can alternatively use the `Flux.destructure` function.
+# Again, we need to ensure that the parameters are positive. Note that the `exp` function is now part of the loss function, instead of part of the kernel construction.
 
-# We could also use ParameterHandling.jl here. 
-# To do so, one would remove the `exp`s from the loss function below and call `loss ∘ unflatten` as above. 
+# We could also use ParameterHandling.jl here.
+# To do so, one would remove the `exp`s from the loss function below and call `loss ∘ unflatten` as above.
 
 θ = [1.1, 0.1, 0.01, 0.001]
 
@@ -217,7 +217,7 @@ nothing #hide
 
 # Cost for one step
 
-@benchmark let θt = θ[:], optt = Optimise.ADAGrad(0.5)
+@benchmark let θt = θ[:], optt = Optimise.AdaGrad(0.5)
     grads = only((Zygote.gradient(loss, θt)))
     Optimise.update!(optt, θt, grads)
 end
@@ -228,9 +228,9 @@ end
 θ = log.([1.1, 0.1, 0.01, 0.001]) # Initial vector
 loss(θ)
 
-# Initialize optimizer 
+# Initialize optimizer
 
-opt = Optimise.ADAGrad(0.5)
+opt = Optimise.AdaGrad(0.5)
 nothing #hide
 
 # Optimize

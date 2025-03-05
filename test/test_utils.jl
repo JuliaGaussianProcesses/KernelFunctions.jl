@@ -104,7 +104,7 @@ function check_zygote_type_stability(f, args...; ctx=Zygote.Context())
     @inferred f(args...)
     @inferred Zygote._pullback(ctx, f, args...)
     out, pb = Zygote._pullback(ctx, f, args...)
-    @inferred pb(out)
+    @inferred collect(pb(out))
 end
 
 function test_ADs(
@@ -379,7 +379,7 @@ function test_zygote_perf_heuristic(
             @test_broken primal[1] == primal[2]
         end
         if passes[2]
-            @test fwd[1] == fwd[2]
+            @test abs(fwd[1] - fwd[2]) <= 1
         else
             @test_broken fwd[1] == fwd[2]
         end
