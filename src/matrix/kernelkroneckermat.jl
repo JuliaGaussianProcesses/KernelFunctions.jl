@@ -82,10 +82,10 @@ efficiently inverted or decomposed. See also [`kernelmatrix`](@ref).
 function kronecker_kernelmatrix(
     k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI, y::MOI
 ) where {MOI<:IsotopicMOInputsUnion}
-    x.out_dim == y.out_dim ||
-        throw(DimensionMismatch("`x` and `y` must have the same `out_dim`"))
+    x.out_axis == y.out_axis ||
+        throw(DimensionMismatch("`x` and `y` must have the same `out_axis`"))
     Kfeatures = kernelmatrix(k.kernel, x.x, y.x)
-    Koutputs = _mo_output_covariance(k, x.out_dim)
+    Koutputs = _mo_output_covariance(k, length(x.out_axis))
     return _kernelmatrix_kroneckerjl_helper(MOI, Kfeatures, Koutputs)
 end
 
@@ -93,7 +93,7 @@ function kronecker_kernelmatrix(
     k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI
 ) where {MOI<:IsotopicMOInputsUnion}
     Kfeatures = kernelmatrix(k.kernel, x.x)
-    Koutputs = _mo_output_covariance(k, x.out_dim)
+    Koutputs = _mo_output_covariance(k, length(x.out_axis))
     return _kernelmatrix_kroneckerjl_helper(MOI, Kfeatures, Koutputs)
 end
 
