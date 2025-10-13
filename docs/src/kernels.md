@@ -61,6 +61,7 @@ MaternKernel
 Matern12Kernel
 Matern32Kernel
 Matern52Kernel
+Matern72Kernel
 ```
 
 ### Neural Network Kernel

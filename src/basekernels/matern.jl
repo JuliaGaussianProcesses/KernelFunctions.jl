@@ -21,7 +21,7 @@ differentiable in the mean-square sense.
 
     Differentiation with respect to the order ν is not currently supported.
 
-See also: [`Matern12Kernel`](@ref), [`Matern32Kernel`](@ref), [`Matern52Kernel`](@ref)
+See also: [`Matern12Kernel`](@ref), [`Matern32Kernel`](@ref), [`Matern52Kernel`](@ref), [`Matern72Kernel`](@ref)
 """
 struct MaternKernel{Tν<:Real,M} <: SimpleKernel
     ν::Vector{Tν}
@@ -117,4 +117,37 @@ metric(k::Matern52Kernel) = k.metric
 
 function Base.show(io::IO, k::Matern52Kernel)
     return print(io, "Matern 5/2 Kernel (metric = ", k.metric, ")")
+end
+
+"""
+    Matern72Kernel(; metric=Euclidean())
+
+Matérn kernel of order ``7/2`` with respect to the `metric`.
+
+# Definition
+
+For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the Matérn kernel of order ``7/2`` is
+given by
+```math
+k(x, x') = \\bigg(1 + \\sqrt{7} d(x, x') + \\frac{14}{5} d(x, x')^2 + 
+           \\frac{7\\sqrt{7}}{15} d(x, x')^3\\bigg)\\exp\\big(- \\sqrt{7} d(x, x') \\big).
+```
+By default, ``d`` is the Euclidean metric ``d(x, x') = \\|x - x'\\|_2``.
+
+See also: [`MaternKernel`](@ref)
+"""
+struct Matern72Kernel{M} <: SimpleKernel
+    metric::M
+end
+
+Matern72Kernel(; metric=Euclidean()) = Matern72Kernel(metric)
+
+function kappa(::Matern72Kernel, d::Real)
+    return (1 + sqrt(7) * d + 14 / 5 * d^2 + 7 * sqrt(7) / 15 * d^3) * exp(-sqrt(7) * d)
+end
+
+metric(k::Matern72Kernel) = k.metric
+
+function Base.show(io::IO, k::Matern72Kernel)
+    return print(io, "Matern 7/2 Kernel (metric = ", k.metric, ")")
 end
