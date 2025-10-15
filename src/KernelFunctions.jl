@@ -10,7 +10,7 @@ export SqExponentialKernel, RBFKernel, GaussianKernel, SEKernel
 export LaplacianKernel, ExponentialKernel, GammaExponentialKernel
 export ExponentiatedKernel
 export FBMKernel
-export MaternKernel, Matern12Kernel, Matern32Kernel, Matern52Kernel
+export MaternKernel, Matern12Kernel, Matern32Kernel, Matern52Kernel, Matern72Kernel
 export LinearKernel, PolynomialKernel
 export RationalKernel, RationalQuadraticKernel, GammaRationalKernel
 export PiecewisePolynomialKernel

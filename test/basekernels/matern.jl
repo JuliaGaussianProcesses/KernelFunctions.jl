@@ -82,9 +82,34 @@
         test_ADs(Matern52Kernel)
         test_interface_ad_perf(_ -> Matern52Kernel(), nothing, StableRNG(123456))
     end
+    @testset "Matern72Kernel" begin
+        k = Matern72Kernel()
+        @test kappa(k, x) ≈
+            (1 + sqrt(7) * x + 14 / 5 * x^2 + 7 * sqrt(7) / 15 * x^3) * exp(-sqrt(7) * x)
+        @test k(v1, v2) ≈
+            (
+            1 +
+            sqrt(7) * norm(v1 - v2) +
+            14 / 5 * norm(v1 - v2)^2 +
+            7 * sqrt(7) / 15 * norm(v1 - v2)^3
+        ) * exp(-sqrt(7) * norm(v1 - v2))
+        @test kappa(Matern72Kernel(), x) == kappa(k, x)
+        @test metric(Matern72Kernel()) == Euclidean()
+        @test repr(k) == "Matern 7/2 Kernel (metric = Euclidean(0.0))"
+
+        k2 = Matern72Kernel(; metric=WeightedEuclidean(ones(3)))
+        @test metric(k2) isa WeightedEuclidean
+        @test k2(v1, v2) ≈ k(v1, v2)
+
+        # Standardised tests.
+        TestUtils.test_interface(k, Float64)
+        test_ADs(Matern72Kernel)
+        test_interface_ad_perf(_ -> Matern72Kernel(), nothing, StableRNG(123456))
+    end
     @testset "Coherence Materns" begin
         @test kappa(MaternKernel(; ν=0.5), x) ≈ kappa(ExponentialKernel(), x)
         @test kappa(MaternKernel(; ν=1.5), x) ≈ kappa(Matern32Kernel(), x)
         @test kappa(MaternKernel(; ν=2.5), x) ≈ kappa(Matern52Kernel(), x)
+        @test kappa(MaternKernel(; ν=3.5), x) ≈ kappa(Matern72Kernel(), x)
     end
 end
