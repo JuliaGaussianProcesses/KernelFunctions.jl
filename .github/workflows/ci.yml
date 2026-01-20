@@ -28,6 +28,7 @@ jobs:
         arch:
           - x64
         group:
+          - 'Aqua'
           - 'Transform'
           - 'BaseKernels'
           - 'Kernels'
