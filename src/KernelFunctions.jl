@@ -1,6 +1,7 @@
 module KernelFunctions
 
 export kernelmatrix, kernelmatrix!, kernelmatrix_diag, kernelmatrix_diag!
+export LazyKernelMatrix, lazykernelmatrix
 export duplicate, set! # Helpers
 
 export Kernel, MOKernel
@@ -106,6 +107,7 @@ include("kernels/gibbskernel.jl")
 include("kernels/scaledkernel.jl")
 include("kernels/normalizedkernel.jl")
 include("matrix/kernelmatrix.jl")
+include("matrix/lazykernelmatrix.jl")
 include("kernels/kernelsum.jl")
 include("kernels/kernelproduct.jl")
 include("kernels/kerneltensorproduct.jl")
