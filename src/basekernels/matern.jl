@@ -8,7 +8,7 @@ Matérn kernel of order `ν` with respect to the `metric`.
 For inputs ``x, x'`` and metric ``d(\\cdot, \\cdot)``, the Matérn kernel of order
 ``\\nu > 0`` is defined as
 ```math
-k(x,x';\\nu) = \\frac{2^{1-\\nu}}{\\Gamma(\\nu)}\\big(\\sqrt{2\\nu} d(x, x')\\big) K_\\nu\\big(\\sqrt{2\\nu} d(x, x')\\big),
+k(x,x';\\nu) = \\frac{2^{1-\\nu}}{\\Gamma(\\nu)}\\big(\\sqrt{2\\nu} d(x, x')\\big)^{\\nu} K_\\nu\\big(\\sqrt{2\\nu} d(x, x')\\big),
 ```
 where ``\\Gamma`` is the Gamma function and ``K_{\\nu}`` is the modified Bessel function of
 the second kind of order ``\\nu``.
