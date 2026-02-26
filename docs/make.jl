@@ -37,7 +37,6 @@ makedocs(;
         "Design" => "design.md",
         "Examples" => JuliaGPsDocs.find_generated_examples(KernelFunctions),
     ],
-    strict=true,
     checkdocs=:exports,
     doctestfilters=JuliaGPsDocs.DOCTEST_FILTERS,
 )
