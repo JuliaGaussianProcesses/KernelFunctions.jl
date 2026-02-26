@@ -1,4 +1,6 @@
 using KernelFunctions
+
+using Aqua
 using AxisArrays
 using ChainRulesCore
 using ChainRulesTestUtils
@@ -64,6 +66,13 @@ const GROUP = get(ENV, "GROUP", "")
 include("test_utils.jl")
 
 @testset "KernelFunctions" begin
+    if GROUP == "" || GROUP == "Aqua"
+        @testset "Aqua" begin
+            Aqua.test_all(KernelFunctions; ambiguities=false)
+            # Ref https://github.com/JuliaTesting/Aqua.jl/issues/77
+            Aqua.test_ambiguities(KernelFunctions; recursive=false)
+        end
+    end
     if GROUP == "" || GROUP == "Transform"
         @testset "transform" begin
             include("transform/transform.jl")
