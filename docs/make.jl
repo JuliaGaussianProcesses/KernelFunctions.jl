@@ -24,7 +24,7 @@ DocMeta.setdocmeta!(
 
 makedocs(;
     sitename="KernelFunctions.jl",
-    format=Documenter.HTML(),
+    format=Documenter.HTML(; size_threshold=10^6, size_threshold_warn=10^6),
     modules=[KernelFunctions],
     pages=[
         "Home" => "index.md",
@@ -37,7 +37,6 @@ makedocs(;
         "Design" => "design.md",
         "Examples" => JuliaGPsDocs.find_generated_examples(KernelFunctions),
     ],
-    strict=true,
     checkdocs=:exports,
     doctestfilters=JuliaGPsDocs.DOCTEST_FILTERS,
 )
