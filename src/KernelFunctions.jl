@@ -50,8 +50,6 @@ export IndependentMOKernel,
 export tensor, ⊗, compose
 
 using Compat
-using ChainRulesCore: ChainRulesCore, Tangent, ZeroTangent, NoTangent
-using ChainRulesCore: @thunk, InplaceableThunk, ProjectTo, unthunk
 using CompositionsBase
 using Distances
 using FillArrays
@@ -62,7 +60,6 @@ using IrrationalConstants: logtwo, twoπ, invsqrt2
 using LogExpFunctions: softplus
 using StatsBase
 using TensorCore
-using ZygoteRules: ZygoteRules, AContext, literal_getproperty, literal_getfield
 
 # Hack to work around Zygote type inference problems.
 const Distances_pairwise = Distances.pairwise
@@ -122,9 +119,6 @@ include("mokernels/independent.jl")
 include("mokernels/slfm.jl")
 include("mokernels/intrinsiccoregion.jl")
 include("mokernels/lmm.jl")
-
-include("chainrules.jl")
-include("zygoterules.jl")
 
 include("TestUtils.jl")
 

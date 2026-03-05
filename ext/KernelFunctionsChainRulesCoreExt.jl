@@ -1,9 +1,19 @@
+module KernelFunctionsChainRulesCoreExt
+
+using ChainRulesCore:
+    ChainRulesCore, Tangent, ZeroTangent, NoTangent, @thunk, ProjectTo, unthunk
+using Distances: Distances, Euclidean, SqEuclidean
+using IrrationalConstants: twoπ
+using KernelFunctions:
+    KernelFunctions, Delta, DotProduct, Sinus, ColVecs, RowVecs
+using LinearAlgebra: dot
+
 ## Forward Rules
 
 # Note that this is type piracy as the derivative should be NaN for x == y.
 function ChainRulesCore.frule(
     (_, Δx, Δy)::Tuple{<:Any,<:Any,<:Any},
-    d::Distances.Euclidean,
+    d::Euclidean,
     x::AbstractVector,
     y::AbstractVector,
 )
@@ -116,7 +126,7 @@ function ChainRulesCore.rrule(s::Sinus, x::AbstractVector, y::AbstractVector)
     gradx = π .* sinpi.(2 .* d) ./ s.r .^ 2
     function evaluate_pullback(Δ::Any)
         r̄ = -2Δ .* abs2_sind_r ./ s.r
-        s̄ = ChainRulesCore.Tangent{typeof(s)}(; r=r̄)
+        s̄ = Tangent{typeof(s)}(; r=r̄)
         return s̄, Δ * gradx, -Δ * gradx
     end
     return val, evaluate_pullback
@@ -150,7 +160,7 @@ function ChainRulesCore.rrule(
                 x̄[:, j] .-= ds
             end
         end
-        d̄ = ChainRulesCore.Tangent{typeof(d)}(; r=r̄)
+        d̄ = Tangent{typeof(d)}(; r=r̄)
         return NoTangent(), d̄, @thunk(project_x(x̄))
     end
     return Distances.pairwise(d, x; dims), pairwise_pullback
@@ -166,7 +176,7 @@ function ChainRulesCore.rrule(
         n = size(x, dims)
         m = size(y, dims)
         x̄ = collect(zero(x))
-        ȳ = collect(zero(y))
+        ȳ = collect(zero(y))
         r̄ = zero(d.r)
         if dims == 1
             for j in 1:m, i in 1:n
@@ -175,7 +185,7 @@ function ChainRulesCore.rrule(
                 ds = π .* Δ[i, j] .* sinpi.(2 .* (xi .- yj)) ./ d.r .^ 2
                 r̄ .-= 2 .* Δ[i, j] .* sinpi.(xi .- yj) .^ 2 ./ d.r .^ 3
                 x̄[i, :] .+= ds
-                ȳ[j, :] .-= ds
+                ȳ[j, :] .-= ds
             end
         elseif dims == 2
             for j in 1:m, i in 1:n
@@ -184,11 +194,11 @@ function ChainRulesCore.rrule(
                 ds = π .* Δ[i, j] .* sinpi.(2 .* (xi .- yj)) ./ d.r .^ 2
                 r̄ .-= 2 .* Δ[i, j] .* sinpi.(xi .- yj) .^ 2 ./ d.r .^ 3
                 x̄[:, i] .+= ds
-                ȳ[:, j] .-= ds
+                ȳ[:, j] .-= ds
             end
         end
-        d̄ = ChainRulesCore.Tangent{typeof(d)}(; r=r̄)
-        return NoTangent(), d̄, @thunk(project_x(x̄)), @thunk(project_y(ȳ))
+        d̄ = Tangent{typeof(d)}(; r=r̄)
+        return NoTangent(), d̄, @thunk(project_x(x̄)), @thunk(project_y(ȳ))
     end
     return Distances.pairwise(d, x, y; dims), pairwise_pullback
 end
@@ -202,7 +212,7 @@ function ChainRulesCore.rrule(
         Δ = unthunk(z̄)
         n = size(x, 2)
         x̄ = collect(zero(x))
-        ȳ = collect(zero(y))
+        ȳ = collect(zero(y))
         r̄ = zero(d.r)
         for i in 1:n
             xi = view(x, :, i)
@@ -210,10 +220,10 @@ function ChainRulesCore.rrule(
             ds = π .* Δ[i] .* sinpi.(2 .* (xi .- yi)) ./ d.r .^ 2
             r̄ .-= 2 .* Δ[i] .* sinpi.(xi .- yi) .^ 2 ./ d.r .^ 3
             x̄[:, i] .+= ds
-            ȳ[:, i] .-= ds
+            ȳ[:, i] .-= ds
         end
-        d̄ = ChainRulesCore.Tangent{typeof(d)}(; r=r̄)
-        return NoTangent(), d̄, @thunk(project_x(x̄)), @thunk(project_y(ȳ))
+        d̄ = Tangent{typeof(d)}(; r=r̄)
+        return NoTangent(), d̄, @thunk(project_x(x̄)), @thunk(project_y(ȳ))
     end
     return Distances.colwise(d, x, y), colwise_pullback
 end
@@ -246,4 +256,6 @@ function ChainRulesCore.rrule(::Type{<:RowVecs}, X::AbstractMatrix)
         )
     end
     return RowVecs(X), RowVecs_pullback
+end
+
 end
