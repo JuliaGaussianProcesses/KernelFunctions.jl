@@ -24,7 +24,7 @@ DocMeta.setdocmeta!(
 
 makedocs(;
     sitename="KernelFunctions.jl",
-    format=Documenter.HTML(size_threshold=10^6, size_threshold_warn=10^6),
+    format=Documenter.HTML(; size_threshold=10^6, size_threshold_warn=10^6),
     modules=[KernelFunctions],
     pages=[
         "Home" => "index.md",
