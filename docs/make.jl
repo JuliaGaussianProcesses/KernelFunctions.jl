@@ -22,10 +22,13 @@ DocMeta.setdocmeta!(
     recursive=true,
 )
 
+const KroneckerExt = Base.get_extension(KernelFunctions, :KernelFunctionsKroneckerExt)
+const PDMatsExt = Base.get_extension(KernelFunctions, :KernelFunctionsPDMatsExt)
+
 makedocs(;
     sitename="KernelFunctions.jl",
     format=Documenter.HTML(; size_threshold=10^6, size_threshold_warn=10^6),
-    modules=[KernelFunctions],
+    modules=[KernelFunctions, KroneckerExt, PDMatsExt],
     pages=[
         "Home" => "index.md",
         "userguide.md",
@@ -44,3 +47,6 @@ makedocs(;
 deploydocs(;
     repo="github.com/JuliaGaussianProcesses/KernelFunctions.jl.git", push_preview=true
 )
+
+# Remove JuliaGPsDocs (when running locally, we don't want to accidentally commit it)
+Pkg.rm("JuliaGPsDocs")

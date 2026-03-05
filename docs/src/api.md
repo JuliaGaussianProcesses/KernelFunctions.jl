@@ -96,6 +96,7 @@ packages with `using`.
 ### Kronecker.jl
 [*https://github.com/MichielStock/Kronecker.jl*](https://github.com/MichielStock/Kronecker.jl)
 ```@docs
+iskroncompatible
 kronecker_kernelmatrix
 kernelkronmat
 ```
