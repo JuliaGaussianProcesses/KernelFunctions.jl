@@ -34,6 +34,9 @@ export median_heuristic_transform
 
 export NystromFact, nystrom
 
+export kernelkronmat, kronecker_kernelmatrix, iskroncompatible
+export kernelpdmat
+
 export gaborkernel
 export spectral_mixture_kernel, spectral_mixture_product_kernel
 
@@ -54,7 +57,6 @@ using Distances
 using FillArrays
 using Functors
 using LinearAlgebra
-using Requires
 using SpecialFunctions: loggamma, besselk, polygamma
 using IrrationalConstants: logtwo, twoπ, invsqrt2
 using LogExpFunctions: softplus
@@ -126,13 +128,31 @@ include("zygoterules.jl")
 
 include("TestUtils.jl")
 
-function __init__()
-    @require Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e" begin
-        include("matrix/kernelkroneckermat.jl")
-    end
-    @require PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150" begin
-        include("matrix/kernelpdmat.jl")
-    end
+# Kronecker extension stubs
+@doc raw"""
+    iskroncompatible(k::Kernel)
+
+Determine whether kernel `k` is compatible with Kronecker constructions such as [`kernelkronmat`](@ref)
+
+The function returns `false` by default. If `k` is compatible it must satisfy for all ``x, x' \in \mathbb{R}^D`:
+```math
+k(x, x') = \prod_{i=1}^D k(x_i, x'_i).
+```
+"""
+@inline iskroncompatible(κ::Kernel) = false
+
+function checkkroncompatible(κ::Kernel)
+    return iskroncompatible(κ) || throw(
+        ArgumentError(
+            "The chosen kernel is not compatible for Kronecker matrices (see [`iskroncompatible`](@ref))",
+        ),
+    )
 end
+
+function kernelkronmat end
+function kronecker_kernelmatrix end
+
+# PDMats extension stub
+function kernelpdmat end
 
 end
