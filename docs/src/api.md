@@ -89,7 +89,9 @@ NystromFact
 ```
 
 ## Conditional Utilities
-To keep the dependencies of KernelFunctions lean, some functionality is only available if specific other packages are explicitly loaded (`using`).
+To keep the dependencies of KernelFunctions lean, it uses [package extensions](https://pkgdocs.julialang.org/v1/creating-packages/#Conditional-loading-of-code-in-packages-(Extensions)) to
+conditionally load some code. In order to enable the following functions, load the required
+packages with `using`.
 
 ### Kronecker.jl
 [*https://github.com/MichielStock/Kronecker.jl*](https://github.com/MichielStock/Kronecker.jl)
