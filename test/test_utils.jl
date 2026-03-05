@@ -44,8 +44,8 @@ Zygote.accum_param(::NoContext, x, Δ) = Δ
 
 const FDM = FiniteDifferences.central_fdm(5, 1)
 
-const _DEFAULT_ADS = _TEST_ZYGOTE ? [:Zygote, :ForwardDiff, :ReverseDiff] :
-                     [:ForwardDiff, :ReverseDiff]
+const _DEFAULT_ADS =
+    _TEST_ZYGOTE ? [:Zygote, :ForwardDiff, :ReverseDiff] : [:ForwardDiff, :ReverseDiff]
 
 gradient(f, s::Symbol, args) = gradient(f, Val(s), args)
 
@@ -108,7 +108,7 @@ end
 function check_zygote_type_stability(f, args...; ctx=Zygote.Context())
     if !_TEST_ZYGOTE
         @test_broken false
-        return
+        return nothing
     end
     @inferred f(args...)
     @inferred Zygote._pullback(ctx, f, args...)
@@ -383,7 +383,7 @@ function test_zygote_perf_heuristic(
     @testset "$name" begin
         if !_TEST_ZYGOTE
             @test_broken false
-            return
+            return nothing
         end
         primal, fwd, pb = ad_constant_allocs_heuristic(f, args1, args2; Δ1, Δ2)
         if passes[1]
