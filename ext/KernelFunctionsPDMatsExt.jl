@@ -1,6 +1,9 @@
-using .PDMats: PDMat
+module KernelFunctionsPDMatsExt
 
-export kernelpdmat
+using KernelFunctions:
+    KernelFunctions, Kernel, ColVecs, RowVecs, kernelmatrix, vec_of_vecs, defaultobs
+using LinearAlgebra: I, isposdef
+using PDMats: PDMat
 
 """
     kernelpdmat(k::Kernel, X::AbstractVector)
@@ -10,7 +13,7 @@ with the Cholesky decomposition precomputed.
 The algorithm adds a diagonal "nugget" term to the kernel matrix which is increased until positive
 definiteness is achieved. The algorithm gives up with an error if the nugget becomes larger than 1% of the largest value in the kernel matrix.
 """
-function kernelpdmat(κ::Kernel, X::AbstractVector)
+function KernelFunctions.kernelpdmat(κ::Kernel, X::AbstractVector)
     K = kernelmatrix(κ, X)
     Kmax = maximum(K)
     α = eps(eltype(K))
@@ -35,6 +38,10 @@ If `obsdim=2`, equivalent to `kernelpdmat(k, ColVecs(X))`.
 
 See also: [`ColVecs`](@ref), [`RowVecs`](@ref)
 """
-function kernelpdmat(κ::Kernel, X::AbstractMatrix; obsdim::Union{Int,Nothing}=defaultobs)
-    return kernelpdmat(κ, vec_of_vecs(X; obsdim=obsdim))
+function KernelFunctions.kernelpdmat(
+    κ::Kernel, X::AbstractMatrix; obsdim::Union{Int,Nothing}=defaultobs
+)
+    return KernelFunctions.kernelpdmat(κ, vec_of_vecs(X; obsdim=obsdim))
+end
+
 end

@@ -1,10 +1,21 @@
+module KernelFunctionsKroneckerExt
+
+using KernelFunctions:
+    KernelFunctions,
+    Kernel,
+    MOKernel,
+    IndependentMOKernel,
+    IntrinsicCoregionMOKernel,
+    IsotopicMOInputsUnion,
+    MOInputIsotopicByFeatures,
+    MOInputIsotopicByOutputs,
+    kernelmatrix,
+    _mo_output_covariance
+using Kronecker: Kronecker
+
 # Since Kronecker does not implement `TensorCore.:⊗` but instead exports its own function
 # `Kronecker.:⊗`, only the module is imported and Kronecker.:⊗ and Kronecker.kronecker are
 # called explicitly.
-using .Kronecker: Kronecker
-
-export kernelkronmat
-export kronecker_kernelmatrix
 
 @doc raw"""
     kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int) -> KroneckerPower
@@ -16,8 +27,8 @@ where `D` is given by `dims`.
 
     Requires `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
 """
-function kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int)
-    checkkroncompatible(κ)
+function KernelFunctions.kernelkronmat(κ::Kernel, X::AbstractVector{<:Real}, dims::Int)
+    KernelFunctions.checkkroncompatible(κ)
     K = kernelmatrix(κ, X)
     return Kronecker.kronecker(K, dims)
 end
@@ -32,30 +43,10 @@ Returns a `KroneckerProduct` matrix on the grid built with the collection of vec
 
     Requires `Kronecker.jl` and for `iskroncompatible(κ)` to return `true`.
 """
-function kernelkronmat(κ::Kernel, X::AbstractVector{<:AbstractVector})
-    checkkroncompatible(κ)
+function KernelFunctions.kernelkronmat(κ::Kernel, X::AbstractVector{<:AbstractVector})
+    KernelFunctions.checkkroncompatible(κ)
     Ks = kernelmatrix.(κ, X)
     return reduce(Kronecker.:⊗, Ks)
-end
-
-@doc raw"""
-    iskroncompatible(k::Kernel)
-
-Determine whether kernel `k` is compatible with Kronecker constructions such as [`kernelkronmat`](@ref)
-
-The function returns `false` by default. If `k` is compatible it must satisfy for all ``x, x' \in \mathbb{R}^D`:
-```math
-k(x, x') = \prod_{i=1}^D k(x_i, x'_i).
-```
-"""
-@inline iskroncompatible(κ::Kernel) = false # Default return for kernels
-
-function checkkroncompatible(κ::Kernel)
-    return iskroncompatible(κ) || throw(
-        ArgumentError(
-            "The chosen kernel is not compatible for Kronecker matrices (see [`iskroncompatible`](@ref))",
-        ),
-    )
 end
 
 function _kernelmatrix_kroneckerjl_helper(
@@ -79,7 +70,7 @@ Requires Kronecker.jl: Computes the `kernelmatrix` for the `IndependentMOKernel`
 `IntrinsicCoregionMOKernel`, but returns a lazy kronecker product. This object can be very
 efficiently inverted or decomposed. See also [`kernelmatrix`](@ref).
 """
-function kronecker_kernelmatrix(
+function KernelFunctions.kronecker_kernelmatrix(
     k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI, y::MOI
 ) where {MOI<:IsotopicMOInputsUnion}
     x.out_dim == y.out_dim ||
@@ -89,7 +80,7 @@ function kronecker_kernelmatrix(
     return _kernelmatrix_kroneckerjl_helper(MOI, Kfeatures, Koutputs)
 end
 
-function kronecker_kernelmatrix(
+function KernelFunctions.kronecker_kernelmatrix(
     k::Union{IndependentMOKernel,IntrinsicCoregionMOKernel}, x::MOI
 ) where {MOI<:IsotopicMOInputsUnion}
     Kfeatures = kernelmatrix(k.kernel, x.x)
@@ -97,7 +88,7 @@ function kronecker_kernelmatrix(
     return _kernelmatrix_kroneckerjl_helper(MOI, Kfeatures, Koutputs)
 end
 
-function kronecker_kernelmatrix(
+function KernelFunctions.kronecker_kernelmatrix(
     k::MOKernel, x::IsotopicMOInputsUnion, y::IsotopicMOInputsUnion
 )
     return throw(
@@ -105,6 +96,8 @@ function kronecker_kernelmatrix(
     )
 end
 
-function kronecker_kernelmatrix(k::MOKernel, x::IsotopicMOInputsUnion)
-    return kronecker_kernelmatrix(k, x, x)
+function KernelFunctions.kronecker_kernelmatrix(k::MOKernel, x::IsotopicMOInputsUnion)
+    return KernelFunctions.kronecker_kernelmatrix(k, x, x)
+end
+
 end
