@@ -44,9 +44,5 @@ makedocs(;
     doctestfilters=JuliaGPsDocs.DOCTEST_FILTERS,
 )
 
-deploydocs(;
-    repo="github.com/JuliaGaussianProcesses/KernelFunctions.jl.git", push_preview=true
-)
-
 # Remove JuliaGPsDocs (when running locally, we don't want to accidentally commit it)
 Pkg.rm("JuliaGPsDocs")
