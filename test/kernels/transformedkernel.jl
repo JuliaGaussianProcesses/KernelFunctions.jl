@@ -36,26 +36,30 @@
 
     # Test implicit gradients
     @testset "Implicit gradients" begin
-        k = SqExponentialKernel() ∘ ScaleTransform(2.0)
-        ps = params(k)
-        X = rand(10, 1)
-        x = vec(X)
-        A = rand(10, 10)
-        # Implicit
-        g1 = Zygote.gradient(ps) do
-            tr(kernelmatrix(k, X; obsdim=1) * A)
-        end
-        # Explicit
-        g2 = Zygote.gradient(k) do k
-            tr(kernelmatrix(k, X; obsdim=1) * A)
-        end
+        if _TEST_ZYGOTE
+            k = SqExponentialKernel() ∘ ScaleTransform(2.0)
+            ps = params(k)
+            X = rand(10, 1)
+            x = vec(X)
+            A = rand(10, 10)
+            # Implicit
+            g1 = Zygote.gradient(ps) do
+                tr(kernelmatrix(k, X; obsdim=1) * A)
+            end
+            # Explicit
+            g2 = Zygote.gradient(k) do k
+                tr(kernelmatrix(k, X; obsdim=1) * A)
+            end
 
-        # Implicit for a vector
-        g3 = Zygote.gradient(ps) do
-            tr(kernelmatrix(k, x) * A)
+            # Implicit for a vector
+            g3 = Zygote.gradient(ps) do
+                tr(kernelmatrix(k, x) * A)
+            end
+            @test g1[first(ps)] ≈ first(g2).transform.s
+            @test g1[first(ps)] ≈ g3[first(ps)]
+        else
+            @test_broken false  # Zygote not supported on Julia >= 1.12
         end
-        @test g1[first(ps)] ≈ first(g2).transform.s
-        @test g1[first(ps)] ≈ g3[first(ps)]
     end
 
     @testset "Parameters" begin

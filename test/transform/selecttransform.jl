@@ -103,7 +103,7 @@
         @test gx ≈ ga
     end
 
-    @testset "$(AD)" for AD in [:ReverseDiff, :Zygote]
+    @testset "$(AD)" for AD in (_TEST_ZYGOTE ? [:ReverseDiff, :Zygote] : [:ReverseDiff])
         @test_broken let
             gx = gradient(AD, X) do x
                 testfunction(tx_row, x, 2)
