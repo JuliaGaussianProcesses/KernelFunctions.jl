@@ -4,20 +4,24 @@
     y = rand(rng, 5)
     r = rand(rng, 5)
 
-    compare_gradient(:Zygote, [x, y]) do xy
-        Euclidean()(xy[1], xy[2])
-    end
-    compare_gradient(:Zygote, [x, y]) do xy
-        SqEuclidean()(xy[1], xy[2])
-    end
-    compare_gradient(:Zygote, [x, y]) do xy
-        KernelFunctions.DotProduct()(xy[1], xy[2])
-    end
-    compare_gradient(:Zygote, [x, y]) do xy
-        KernelFunctions.Delta()(xy[1], xy[2])
-    end
-    compare_gradient(:Zygote, [x, y]) do xy
-        KernelFunctions.Sinus(r)(xy[1], xy[2])
+    if _TEST_ZYGOTE
+        compare_gradient(:Zygote, [x, y]) do xy
+            Euclidean()(xy[1], xy[2])
+        end
+        compare_gradient(:Zygote, [x, y]) do xy
+            SqEuclidean()(xy[1], xy[2])
+        end
+        compare_gradient(:Zygote, [x, y]) do xy
+            KernelFunctions.DotProduct()(xy[1], xy[2])
+        end
+        compare_gradient(:Zygote, [x, y]) do xy
+            KernelFunctions.Delta()(xy[1], xy[2])
+        end
+        compare_gradient(:Zygote, [x, y]) do xy
+            KernelFunctions.Sinus(r)(xy[1], xy[2])
+        end
+    else
+        @test_broken false  # Zygote not supported on Julia >= 1.12
     end
     @testset "rrules for Sinus(r=$r)" for r in (rand(3),)
         dist = KernelFunctions.Sinus(r)

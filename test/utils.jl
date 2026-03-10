@@ -53,17 +53,17 @@
         KernelFunctions.pairwise!(SqEuclidean(), K, DX, DY)
         @test K ≈ pairwise(SqEuclidean(), X, Y; dims=2)
 
-        let
-            @test Zygote.pullback(ColVecs, X)[1] == DX
-            DX, back = Zygote.pullback(ColVecs, X)
-            @test back((X=ones(size(X)),))[1] == ones(size(X))
+        if _TEST_ZYGOTE
+            let
+                @test Zygote.pullback(ColVecs, X)[1] == DX
+                DX, back = Zygote.pullback(ColVecs, X)
+                @test back((X=ones(size(X)),))[1] == ones(size(X))
 
-            @test Zygote.pullback(DX -> DX.X, DX)[1] == X
-            X_, back = Zygote.pullback(DX -> DX.X, DX)
-            @test back(ones(size(X)))[1].X == ones(size(X))
-        end
+                @test Zygote.pullback(DX -> DX.X, DX)[1] == X
+                X_, back = Zygote.pullback(DX -> DX.X, DX)
+                @test back(ones(size(X)))[1].X == ones(size(X))
+            end
 
-        if VERSION >= v"1.7"
             @testset "Zygote type-inference" begin
                 ctx = NoContext()
                 x = ColVecs(randn(2, 4))
@@ -77,6 +77,8 @@
                     (x, y) -> KernelFunctions.pairwise(SqEuclidean(), x, y), x, y; ctx=ctx
                 )
             end
+        else
+            @test_broken false  # Zygote not supported on Julia >= 1.12
         end
     end
     @testset "RowVecs" begin
@@ -111,14 +113,18 @@
         KernelFunctions.pairwise!(SqEuclidean(), K, DX, DY)
         @test K ≈ pairwise(SqEuclidean(), X, Y; dims=1)
 
-        let
-            @test Zygote.pullback(RowVecs, X)[1] == DX
-            DX, back = Zygote.pullback(RowVecs, X)
-            @test back((X=ones(size(X)),))[1] == ones(size(X))
+        if _TEST_ZYGOTE
+            let
+                @test Zygote.pullback(RowVecs, X)[1] == DX
+                DX, back = Zygote.pullback(RowVecs, X)
+                @test back((X=ones(size(X)),))[1] == ones(size(X))
 
-            @test Zygote.pullback(DX -> DX.X, DX)[1] == X
-            X_, back = Zygote.pullback(DX -> DX.X, DX)
-            @test back(ones(size(X)))[1].X == ones(size(X))
+                @test Zygote.pullback(DX -> DX.X, DX)[1] == X
+                X_, back = Zygote.pullback(DX -> DX.X, DX)
+                @test back(ones(size(X)))[1].X == ones(size(X))
+            end
+        else
+            @test_broken false  # Zygote not supported on Julia >= 1.12
         end
     end
     @testset "ColVecs + RowVecs" begin

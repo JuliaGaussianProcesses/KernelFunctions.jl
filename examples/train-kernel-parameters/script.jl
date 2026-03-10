@@ -5,6 +5,10 @@
 
 # We load KernelFunctions and some other packages. Note that while we use `Zygote` for automatic differentiation and `Flux.optimise` for optimization, you should be able to replace them with your favourite autodiff framework or optimizer.
 
+# !!! note
+#     Zygote is not expected to work on Julia ≥ 1.12. Use a different AD package for
+#     Julia ≥ 1.12, or use Julia 1.11 to run this example.
+
 using KernelFunctions
 using LinearAlgebra
 using Distributions
