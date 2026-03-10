@@ -1,8 +1,7 @@
 module KernelFunctionsZygoteRulesExt
 
 using KernelFunctions: KernelFunctions, Transform, ColVecs, RowVecs, _map
-using ZygoteRules:
-    ZygoteRules, AContext, literal_getproperty, literal_getfield
+using ZygoteRules: ZygoteRules, AContext, literal_getproperty, literal_getfield
 
 ZygoteRules.@adjoint function Base.map(t::Transform, X::ColVecs)
     return ZygoteRules.pullback(_map, t, X)

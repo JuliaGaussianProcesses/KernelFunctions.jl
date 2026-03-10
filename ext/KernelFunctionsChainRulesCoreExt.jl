@@ -4,8 +4,7 @@ using ChainRulesCore:
     ChainRulesCore, Tangent, ZeroTangent, NoTangent, @thunk, ProjectTo, unthunk
 using Distances: Distances, Euclidean, SqEuclidean
 using IrrationalConstants: twoπ
-using KernelFunctions:
-    KernelFunctions, Delta, DotProduct, Sinus, ColVecs, RowVecs
+using KernelFunctions: KernelFunctions, Delta, DotProduct, Sinus, ColVecs, RowVecs
 using LinearAlgebra: dot
 
 ## Forward Rules
