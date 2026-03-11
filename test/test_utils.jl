@@ -31,6 +31,8 @@ end
 
 # AD utilities
 
+const _TEST_ZYGOTE = VERSION < v"1.12"
+
 # Type to work around some performance issues that can happen on the reverse-pass of Zygote.
 # This context doesn't allow any globals. Don't use this if you use globals in your
 # programme.
@@ -41,6 +43,9 @@ Base.haskey(cx::NoContext, x) = false
 Zygote.accum_param(::NoContext, x, Δ) = Δ
 
 const FDM = FiniteDifferences.central_fdm(5, 1)
+
+const _DEFAULT_ADS =
+    _TEST_ZYGOTE ? [:Zygote, :ForwardDiff, :ReverseDiff] : [:ForwardDiff, :ReverseDiff]
 
 gradient(f, s::Symbol, args) = gradient(f, Val(s), args)
 
@@ -90,7 +95,7 @@ testdiagfunction(k::MOKernel, A) = sum(kernelmatrix_diag(k, A))
 testdiagfunction(k::MOKernel, A, B) = sum(kernelmatrix_diag(k, A, B))
 
 function test_ADs(
-    kernelfunction, args=nothing; ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=[3, 3]
+    kernelfunction, args=nothing; ADs=_DEFAULT_ADS, dims=[3, 3]
 )
     test_fd = test_AD(:FiniteDiff, kernelfunction, args, dims)
     if !test_fd.anynonpass
@@ -101,6 +106,10 @@ function test_ADs(
 end
 
 function check_zygote_type_stability(f, args...; ctx=Zygote.Context())
+    if !_TEST_ZYGOTE
+        @test_broken false
+        return nothing
+    end
     @inferred f(args...)
     @inferred Zygote._pullback(ctx, f, args...)
     out, pb = Zygote._pullback(ctx, f, args...)
@@ -108,7 +117,7 @@ function check_zygote_type_stability(f, args...; ctx=Zygote.Context())
 end
 
 function test_ADs(
-    k::MOKernel; ADs=[:Zygote, :ForwardDiff, :ReverseDiff], dims=(in=3, out=2, obs=3)
+    k::MOKernel; ADs=_DEFAULT_ADS, dims=(in=3, out=2, obs=3)
 )
     test_fd = test_FiniteDiff(k, dims)
     if !test_fd.anynonpass
@@ -372,6 +381,10 @@ function test_zygote_perf_heuristic(
     f, name::String, args1, args2, passes, Δ1=nothing, Δ2=nothing
 )
     @testset "$name" begin
+        if !_TEST_ZYGOTE
+            @test_broken false
+            return nothing
+        end
         primal, fwd, pb = ad_constant_allocs_heuristic(f, args1, args2; Δ1, Δ2)
         if passes[1]
             @test primal[1] == primal[2]
