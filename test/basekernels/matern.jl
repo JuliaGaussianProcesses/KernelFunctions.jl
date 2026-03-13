@@ -21,6 +21,7 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(() -> MaternKernel(; nu=ν))
+        test_ADs_DIT(() -> MaternKernel(; nu=ν))
 
         test_params(k, ([ν],))
 
@@ -60,6 +61,7 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(Matern32Kernel)
+        test_ADs_DIT(Matern32Kernel)
         test_interface_ad_perf(_ -> Matern32Kernel(), nothing, StableRNG(123456))
     end
     @testset "Matern52Kernel" begin
