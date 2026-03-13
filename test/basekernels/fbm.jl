@@ -14,6 +14,7 @@
     test_interface(k; rtol=1e-5)
     @test repr(k) == "Fractional Brownian Motion Kernel (h = $(h))"
     test_ADs(FBMKernel; ADs=[:ReverseDiff])
+    test_ADs_DIT(FBMKernel; ADs=[:ReverseDiff])
 
     # Tests failing for ForwardDiff and Zygote@0.6.
     # Related to: https://github.com/FluxML/Zygote.jl/issues/1036

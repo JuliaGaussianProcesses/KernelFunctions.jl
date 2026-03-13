@@ -20,6 +20,9 @@ using ForwardDiff: ForwardDiff
 using ReverseDiff: ReverseDiff
 using FiniteDifferences: FiniteDifferences
 using Compat: only
+using ADTypes: AutoForwardDiff, AutoReverseDiff, AutoZygote, AutoFiniteDifferences
+using DifferentiationInterface: DifferentiationInterface as DI
+using DifferentiationInterfaceTest: Scenario, test_differentiation
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 

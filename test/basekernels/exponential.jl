@@ -22,6 +22,7 @@
         # Standardised tests.
         TestUtils.test_interface(k)
         test_ADs(SEKernel)
+        test_ADs_DIT(SEKernel)
         test_interface_ad_perf(_ -> SEKernel(), nothing, StableRNG(123456))
     end
     @testset "ExponentialKernel" begin
@@ -41,6 +42,7 @@
         # Standardised tests.
         TestUtils.test_interface(k)
         test_ADs(ExponentialKernel)
+        test_ADs_DIT(ExponentialKernel)
         test_interface_ad_perf(_ -> ExponentialKernel(), nothing, StableRNG(123456))
     end
     @testset "GammaExponentialKernel" begin
@@ -59,6 +61,7 @@
         @test k2(v1, v2) ≈ k(v1, v2)
 
         test_ADs(γ -> GammaExponentialKernel(; gamma=only(γ)), [1 + 0.5 * rand()])
+        test_ADs_DIT(γ -> GammaExponentialKernel(; gamma=only(γ)), [1 + 0.5 * rand()])
         test_params(k, ([γ],))
         TestUtils.test_interface(GammaExponentialKernel(; γ=1.36))
 
