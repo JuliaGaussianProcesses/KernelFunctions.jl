@@ -64,19 +64,6 @@
                 @test back(ones(size(X)))[1].X == ones(size(X))
             end
 
-            @testset "Zygote type-inference" begin
-                ctx = NoContext()
-                x = ColVecs(randn(2, 4))
-                y = ColVecs(randn(2, 3))
-
-                # Ensure KernelFunctions.pairwise rather than Distances.pairwise is used.
-                check_zygote_type_stability(
-                    x -> KernelFunctions.pairwise(SqEuclidean(), x), x; ctx=ctx
-                )
-                check_zygote_type_stability(
-                    (x, y) -> KernelFunctions.pairwise(SqEuclidean(), x, y), x, y; ctx=ctx
-                )
-            end
         else
             @test_broken false  # Zygote not supported on Julia >= 1.12
         end

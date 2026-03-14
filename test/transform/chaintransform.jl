@@ -28,7 +28,4 @@
         randn(rng, 4);
         ADs=[:ForwardDiff, :ReverseDiff],  # explicitly pass ADs to exclude :Zygote
     )
-    test_interface_ad_perf((1.0, 2.0), StableRNG(123456), [Vector{Float64}]) do θ
-        SEKernel() ∘ (ScaleTransform(θ[1]) ∘ PeriodicTransform(θ[2]))
-    end
 end

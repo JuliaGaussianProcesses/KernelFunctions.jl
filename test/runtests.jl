@@ -4,14 +4,12 @@ using ChainRulesCore
 using ChainRulesTestUtils
 using Distances
 using Documenter
-using Functors: functor
 using Kronecker: Kronecker
 using LinearAlgebra
 using LogExpFunctions
 using PDMats
 using Random
 using SpecialFunctions
-using StableRNGs
 using StaticArrays
 using Statistics
 using Test
@@ -26,7 +24,7 @@ using DifferentiationInterfaceTest: Scenario, test_differentiation
 
 using KernelFunctions: SimpleKernel, metric, kappa, ColVecs, RowVecs, TestUtils
 
-using KernelFunctions.TestUtils: test_interface, test_type_stability, example_inputs
+using KernelFunctions.TestUtils: test_interface, test_type_stability
 
 # The GROUP is used to run different sets of tests in parallel on the GitHub Actions CI.
 # If you want to introduce a new group, ensure you also add it to .github/workflows/ci.yml

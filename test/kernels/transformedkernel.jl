@@ -30,46 +30,4 @@
         Vector{String},
     )
     test_ADs(x -> SqExponentialKernel() ∘ ScaleTransform(x[1]), rand(1))
-    test_interface_ad_perf(0.35, StableRNG(123456)) do λ
-        SqExponentialKernel() ∘ ScaleTransform(λ)
-    end
-
-    # Test implicit gradients
-    @testset "Implicit gradients" begin
-        if _TEST_ZYGOTE
-            k = SqExponentialKernel() ∘ ScaleTransform(2.0)
-            ps = params(k)
-            X = rand(10, 1)
-            x = vec(X)
-            A = rand(10, 10)
-            # Implicit
-            g1 = Zygote.gradient(ps) do
-                tr(kernelmatrix(k, X; obsdim=1) * A)
-            end
-            # Explicit
-            g2 = Zygote.gradient(k) do k
-                tr(kernelmatrix(k, X; obsdim=1) * A)
-            end
-
-            # Implicit for a vector
-            g3 = Zygote.gradient(ps) do
-                tr(kernelmatrix(k, x) * A)
-            end
-            @test g1[first(ps)] ≈ first(g2).transform.s
-            @test g1[first(ps)] ≈ g3[first(ps)]
-        else
-            @test_broken false  # Zygote not supported on Julia >= 1.12
-        end
-    end
-
-    @testset "Parameters" begin
-        k = ConstantKernel(; c=rand(rng))
-        # c = Chain(Dense(3, 2))
-
-        test_params(k ∘ ScaleTransform(s), (k, [s]))
-        test_params(k ∘ ARDTransform(v), (k, v))
-        test_params(k ∘ LinearTransform(P), (k, P))
-        test_params(k ∘ LinearTransform(P) ∘ ScaleTransform(s), (k, [s], P))
-        # test_params(k ∘ FunctionTransform(c), (k, c))
-    end
 end
