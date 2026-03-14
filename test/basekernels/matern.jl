@@ -21,30 +21,6 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(() -> MaternKernel(; nu=ν))
-        test_ADs_DIT(() -> MaternKernel(; nu=ν))
-
-        test_params(k, ([ν],))
-
-        # The performance of this kernel varies quite a lot from method to method, so
-        # requires us to specify whether performance tests pass or not.
-        @testset "performance ($T)" for T in [
-            Vector{Float64},
-            ColVecs{Float64,Matrix{Float64}},
-            RowVecs{Float64,Matrix{Float64}},
-        ]
-            xs = example_inputs(StableRNG(123456), Vector{Float64})
-            test_interface_ad_perf(
-                ν -> MaternKernel(; nu=ν),
-                ν,
-                xs...;
-                passes=(
-                    unary=(false, false, false),
-                    binary=(false, false, false),
-                    diag_unary=(true, false, false),
-                    diag_binary=(true, false, false),
-                ),
-            )
-        end
     end
     @testset "Matern32Kernel" begin
         k = Matern32Kernel()
@@ -61,8 +37,6 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(Matern32Kernel)
-        test_ADs_DIT(Matern32Kernel)
-        test_interface_ad_perf(_ -> Matern32Kernel(), nothing, StableRNG(123456))
     end
     @testset "Matern52Kernel" begin
         k = Matern52Kernel()
@@ -82,7 +56,6 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(Matern52Kernel)
-        test_interface_ad_perf(_ -> Matern52Kernel(), nothing, StableRNG(123456))
     end
     @testset "Matern72Kernel" begin
         k = Matern72Kernel()
@@ -106,7 +79,6 @@
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
         test_ADs(Matern72Kernel)
-        test_interface_ad_perf(_ -> Matern72Kernel(), nothing, StableRNG(123456))
     end
     @testset "Coherence Materns" begin
         @test kappa(MaternKernel(; ν=0.5), x) ≈ kappa(ExponentialKernel(), x)

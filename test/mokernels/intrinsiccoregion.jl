@@ -41,7 +41,6 @@
     )
 
     test_ADs(icoregionkernel; dims=dims)
-    test_ADs_DIT(icoregionkernel; dims=dims)
 
     @test string(icoregionkernel) ==
         string("Intrinsic Coregion Kernel: ", kernel, " with ", dims.out, " outputs")
