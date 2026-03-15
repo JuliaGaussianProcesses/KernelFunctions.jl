@@ -39,8 +39,8 @@ const _BACKEND_MAP = Dict{Symbol,Any}(
 
 # Custom isapprox that handles Zygote returning `nothing` for zero gradients
 function _isapprox_nothing(a, b; kwargs...)
-    a_val = isnothing(a) ? zero(b) : a
-    b_val = isnothing(b) ? zero(a) : b
+    a_val = isnothing(a) ? zero.(b) : a
+    b_val = isnothing(b) ? zero.(a) : b
     return Base.isapprox(a_val, b_val; kwargs...)
 end
 
