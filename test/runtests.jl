@@ -18,7 +18,8 @@ using ForwardDiff: ForwardDiff
 using ReverseDiff: ReverseDiff
 using FiniteDifferences: FiniteDifferences
 using Compat: only
-using ADTypes: AutoForwardDiff, AutoReverseDiff, AutoZygote, AutoFiniteDifferences
+using Mooncake: Mooncake
+using ADTypes: AutoForwardDiff, AutoReverseDiff, AutoZygote, AutoFiniteDifferences, AutoMooncake, AutoEnzyme
 using DifferentiationInterface: DifferentiationInterface as DI
 using DifferentiationInterfaceTest: Scenario, test_differentiation
 
