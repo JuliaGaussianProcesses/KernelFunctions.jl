@@ -370,14 +370,14 @@ end</code></pre><p>The loss with our starting point:</p><pre><code class="langua
     opt = Optimise.AdaGrad(0.5)
     grads = only((Zygote.gradient(loss, θ)))
     Optimise.update!(opt, θ, grads)
-end</code></pre><pre><code class="nohighlight hljs">BenchmarkTools.Trial: 3693 samples with 1 evaluation per sample.
- Range (min … max):  764.158 μs … 333.351 ms  ┊ GC (min … max):  0.00% … 99.62%
- Time  (median):     859.716 μs               ┊ GC (median):     0.00%
- Time  (mean ± σ):     1.353 ms ±   9.364 ms  ┊ GC (mean ± σ):  28.55% ± 13.73%
+end</code></pre><pre><code class="nohighlight hljs">BenchmarkTools.Trial: 3872 samples with 1 evaluation per sample.
+ Range (min … max):  755.577 μs … 318.918 ms  ┊ GC (min … max):  0.00% … 99.60%
+ Time  (median):     844.883 μs               ┊ GC (median):     0.00%
+ Time  (mean ± σ):     1.291 ms ±   8.835 ms  ┊ GC (mean ± σ):  27.62% ± 13.54%
 
-  ▁▅█▇▅▃▁                              ▁▃▄▁                     ▁
-  ████████▇▆▆▄▅▅▁▃▁▁▃▁▁▁▁▁▁▁▁▁▃▁▁▁▁▁▁▃▅████▇▅▄▃▅▅▇██▇▇█▇▆▅▁▄▅▃▄ █
-  764 μs        Histogram: log(frequency) by time       2.63 ms &lt;
+  ▃▆██▆▃▁                                 ▁▃▃▃                  ▁
+  ███████▇▆▆▄▆▁▃▄▁▁▃▃▁▃▁▁▃▁▃▁▁▃▁▁▁▁▁▁▁▁▁▃▅██████▇▇▆▆▇█▇▇▆▅▆▅▃▃▅ █
+  756 μs        Histogram: log(frequency) by time       2.44 ms &lt;
 
  Memory estimate: 2.98 MiB, allocs estimate: 1807.</code></pre><h3 id="Training-the-model"><a class="docs-heading-anchor" href="#Training-the-model">Training the model</a><a id="Training-the-model-1"></a><a class="docs-heading-anchor-permalink" href="#Training-the-model" title="Permalink"></a></h3><p>Setting an initial value and initializing the optimizer:</p><pre><code class="language-julia hljs">θ = log.(p0) # Initial vector
 opt = Optimise.AdaGrad(0.5)</code></pre><p>Optimize</p><pre><code class="language-julia hljs">anim = Animation()
@@ -421,14 +421,14 @@ initial_θ = ParameterHandling.value(raw_initial_θ)</code></pre><p>The loss at 
     opt = Optimise.AdaGrad(0.5)
     grads = (Zygote.gradient(loss ∘ unflatten, θ))[1]
     Optimise.update!(opt, θ, grads)
-end</code></pre><pre><code class="nohighlight hljs">BenchmarkTools.Trial: 3191 samples with 1 evaluation per sample.
- Range (min … max):  929.948 μs … 352.090 ms  ┊ GC (min … max):  0.00% … 99.59%
- Time  (median):       1.010 ms               ┊ GC (median):     0.00%
- Time  (mean ± σ):     1.567 ms ±  10.769 ms  ┊ GC (mean ± σ):  30.03% ± 14.06%
+end</code></pre><pre><code class="nohighlight hljs">BenchmarkTools.Trial: 3318 samples with 1 evaluation per sample.
+ Range (min … max):  903.732 μs … 326.022 ms  ┊ GC (min … max):  0.00% … 99.59%
+ Time  (median):     996.615 μs               ┊ GC (median):     0.00%
+ Time  (mean ± σ):     1.506 ms ±   9.768 ms  ┊ GC (mean ± σ):  28.25% ± 13.99%
 
-  ▃█▇▆▄▂                           ▁▃▂                          ▁
-  ███████▅▆▄▅▄▁▄▃▃▁▁▁▁▁▁▄▁▁▃▁▁▁▁▃▁▇███▇▆▃▃▁▁▁▁▁▁▃▆▇▇████▆▇▆▇▄▄▃ █
-  930 μs        Histogram: log(frequency) by time       3.05 ms &lt;
+  ▁▅█▇▅▂                                ▃▃                      ▁
+  ██████▇▇▄▅▆▆▁▁▅▁▅▃▁▁▁▄▁▃▁▁▁▁▁▁▁▁▁▁▁▁▅███▇▅▅▅▅▇▆▆▆▇▇▇▇▇▇▆▆▆▅▃▅ █
+  904 μs        Histogram: log(frequency) by time       2.77 ms &lt;
 
  Memory estimate: 3.07 MiB, allocs estimate: 2507.</code></pre><h3 id="Training-the-model-2"><a class="docs-heading-anchor" href="#Training-the-model-2">Training the model</a><a class="docs-heading-anchor-permalink" href="#Training-the-model-2" title="Permalink"></a></h3><p>Optimize</p><pre><code class="language-julia hljs">opt = Optimise.AdaGrad(0.5)
 for i in 1:15
@@ -454,14 +454,14 @@ function loss(θ)
 end</code></pre><p>Cost for one step</p><pre><code class="language-julia hljs">@benchmark let θt = θ[:], optt = Optimise.AdaGrad(0.5)
     grads = only((Zygote.gradient(loss, θt)))
     Optimise.update!(optt, θt, grads)
-end</code></pre><pre><code class="nohighlight hljs">BenchmarkTools.Trial: 3838 samples with 1 evaluation per sample.
- Range (min … max):  770.242 μs … 361.302 ms  ┊ GC (min … max):  0.00% … 99.68%
- Time  (median):     845.425 μs               ┊ GC (median):     0.00%
- Time  (mean ± σ):     1.302 ms ±  10.140 ms  ┊ GC (mean ± σ):  31.11% ± 14.29%
+end</code></pre><pre><code class="nohighlight hljs">BenchmarkTools.Trial: 3780 samples with 1 evaluation per sample.
+ Range (min … max):  745.608 μs … 340.067 ms  ┊ GC (min … max):  0.00% … 99.65%
+ Time  (median):     843.755 μs               ┊ GC (median):     0.00%
+ Time  (mean ± σ):     1.322 ms ±   9.534 ms  ┊ GC (mean ± σ):  30.14% ± 14.73%
 
-  ▃██▆▄▁                               ▂▁                       ▁
-  ██████▆▆▅▅▄▃▃▃▁▁▁▃▁▁▁▁▁▁▁▁▁▁▃▁▃▁▁▁▁▄▇██▇▃▄▁▁▁▁▁▁▁▁▆▆█████▇▅▇▅ █
-  770 μs        Histogram: log(frequency) by time       2.68 ms &lt;
+  ▂▄██▅▃▁                             ▁▃▂                       ▁
+  ███████▇▅▅▅▄▃▁▃▄▁▄▁▃▄▁▃▁▃▃▁▁▁▁▁▁▁▁▃▆████▆▅▃▁▁▄▄▅▆▇████▇▇▇▇▆▅▆ █
+  746 μs        Histogram: log(frequency) by time       2.66 ms &lt;
 
  Memory estimate: 2.98 MiB, allocs estimate: 1806.</code></pre><h3 id="Training-the-model-3"><a class="docs-heading-anchor" href="#Training-the-model-3">Training the model</a><a class="docs-heading-anchor-permalink" href="#Training-the-model-3" title="Permalink"></a></h3><p>The loss at our initial parameter values:</p><pre><code class="language-julia hljs">θ = log.([1.1, 0.1, 0.01, 0.001]) # Initial vector
 loss(θ)</code></pre><pre><code class="nohighlight hljs">2.613933959118708</code></pre><p>Initialize optimizer</p><pre><code class="language-julia hljs">opt = Optimise.AdaGrad(0.5)</code></pre><p>Optimize</p><pre><code class="language-julia hljs">for i in 1:15
@@ -506,4 +506,4 @@ Threads: 1 default, 1 interactive, 1 GC &#40;on 4 virtual cores&#41;
 Environment:
   JULIA_LOAD_PATH &#61; :/home/runner/.julia/packages/JuliaGPsDocs/7M86H/src
 </pre>
-</details><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../support-vector-machine/">« Support Vector Machine</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Thursday 2 July 2026 09:31">Thursday 2 July 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</details><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../support-vector-machine/">« Support Vector Machine</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Thursday 2 July 2026 09:37">Thursday 2 July 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

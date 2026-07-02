@@ -447,7 +447,7 @@ version = "1.12.0"
 
 [[deps.KernelFunctions]]
 deps = ["Compat", "CompositionsBase", "Distances", "FillArrays", "Functors", "IrrationalConstants", "LinearAlgebra", "LogExpFunctions", "Random", "SpecialFunctions", "Statistics", "StatsBase", "TensorCore", "Test"]
-git-tree-sha1 = "0f756f186bd0182d6179a327f928e8e2937ff2cf"
+git-tree-sha1 = "5aabcad2c3fc3c707264a88c125bb93e702319eb"
 repo-rev = "master"
 repo-url = "/home/runner/work/KernelFunctions.jl/KernelFunctions.jl"
 uuid = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
