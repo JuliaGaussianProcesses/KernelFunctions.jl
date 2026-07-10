@@ -25,7 +25,6 @@
     @test repr(tp ∘ tf) == "Chain of 2 transforms:\n\t - $(tf) |> $(tp)"
     test_ADs(
         x -> SEKernel() ∘ (ScaleTransform(exp(x[1])) ∘ ARDTransform(exp.(x[2:4]))),
-        randn(rng, 4);
-        ADs=[:ForwardDiff, :ReverseDiff],  # explicitly pass ADs to exclude :Zygote
+        randn(rng, 4),
     )
 end
