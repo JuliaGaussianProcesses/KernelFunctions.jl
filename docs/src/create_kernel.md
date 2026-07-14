@@ -38,7 +38,7 @@ Finally there are additional functions you can define to bring in more features:
  - `KernelFunctions.iskroncompatible(k::MyKernel)`: if your kernel factorizes in dimensions, you can declare your kernel as `iskroncompatible(k) = true` to use Kronecker methods.
  - `KernelFunctions.dim(x::MyDataType)`: by default the dimension of the inputs will only be checked for vectors of type `AbstractVector{<:Real}`. If you want to check the dimensionality of your inputs, dispatch the `dim` function on your datatype. Note that `0` is the default.
  - `dim` is called within `KernelFunctions.validate_inputs(x::MyDataType, y::MyDataType)`, which can instead be directly overloaded if you want to run special checks for your input types.
- - `kernelmatrix(k::MyKernel, ...)`: you can redefine the diverse `kernelmatrix` functions to eventually optimize the computations.
+ - `kernelmatrix(k::MyKernel, ...)`: you can redefine the diverse `kernelmatrix` and `lazykernelmatrix` functions to eventually optimize the computations.
  - `Base.print(io::IO, k::MyKernel)`: if you want to specialize the printing of your kernel.
 
 KernelFunctions uses [Functors.jl](https://github.com/FluxML/Functors.jl) for specifying trainable kernel parameters

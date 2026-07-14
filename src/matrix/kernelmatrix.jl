@@ -30,11 +30,15 @@ Compute the kernel `κ` for each pair of inputs in `x`.
 Returns a matrix of size `(length(x), length(x))` satisfying
 `kernelmatrix(κ, x)[p, q] == κ(x[p], x[q])`.
 
+If `x` is large, consider using [`lazykernelmatrix`](@ref) instead.
+
     kernelmatrix(κ::Kernel, x::AbstractVector, y::AbstractVector)
 
 Compute the kernel `κ` for each pair of inputs in `x` and `y`.
 Returns a matrix of size `(length(x), length(y))` satisfying
 `kernelmatrix(κ, x, y)[p, q] == κ(x[p], y[q])`.
+
+If `x` and `y` are large, consider using [`lazykernelmatrix`](@ref) instead.
 
     kernelmatrix(κ::Kernel, X::AbstractMatrix; obsdim)
     kernelmatrix(κ::Kernel, X::AbstractMatrix, Y::AbstractMatrix; obsdim)

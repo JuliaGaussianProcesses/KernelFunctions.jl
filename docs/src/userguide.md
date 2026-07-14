@@ -61,7 +61,7 @@ k(x1, x2)
 
 ## Creating a Kernel Matrix
 
-Kernel matrices can be created via the `kernelmatrix` function or `kernelmatrix_diag` for only the diagonal.
+Kernel matrices can be eagerly created via the `kernelmatrix` function or `kernelmatrix_diag` for only the diagonal.
 For example, for a collection of 10 `Real`-valued inputs:
 ```julia
 k = SqExponentialKernel()
@@ -89,6 +89,13 @@ kernelmatrix(k, X; obsdim=1) # same as RowVecs(X)
 kernelmatrix(k, X; obsdim=2) # same as ColVecs(X)
 ```
 This is similar to the convention used in [Distances.jl](https://github.com/JuliaStats/Distances.jl).
+
+When data is large, it may not be possible to store the kernel matrix in memory.
+Then it is recommended to use `lazykernelmatrix`:
+```julia
+lazykernelmatrix(k, RowVecs(X))
+lazykernelmatrix(k, ColVecs(X))
+```
 
 ### So what type should I use to represent a collection of inputs?
 The central assumption made by KernelFunctions.jl is that all collections of `N` inputs are represented by `AbstractVector`s of length `N`.
