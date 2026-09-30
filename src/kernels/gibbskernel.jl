@@ -36,11 +36,11 @@ end
 
 GibbsKernel(; lengthscale) = GibbsKernel(lengthscale)
 
-function (k::GibbsKernel)(x, y)
+function (k::GibbsKernel)(x, y, base_kernel::Kernel=SqExponentialKernel)
     lengthscale = k.lengthscale
     lx = lengthscale(x)
     ly = lengthscale(y)
     l = invsqrt2 * hypot(lx, ly)
-    kernel = (sqrt(lx * ly) / l) * with_lengthscale(SqExponentialKernel(), l)
+    kernel = (sqrt(lx * ly) / l) * with_lengthscale(base_kernel(), l)
     return kernel(x, y)
 end
