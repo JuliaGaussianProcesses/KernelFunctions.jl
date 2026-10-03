@@ -5,32 +5,33 @@
     v2 = rand(rng, 3)
     @testset "MaternKernel" begin
         ν = 2.1
-        k = MaternKernel(; ν=ν)
+        k = MaternKernel(; ν = ν)
         matern(x, ν) = 2^(1 - ν) / gamma(ν) * (sqrt(2ν) * x)^ν * besselk(ν, sqrt(2ν) * x)
-        @test MaternKernel(; nu=ν).ν == [ν]
+        @test MaternKernel(; nu = ν).ν == [ν]
         @test kappa(k, x) ≈ matern(x, ν)
         @test kappa(k, 0.0) == 1.0
         @test metric(MaternKernel()) == Euclidean()
-        @test metric(MaternKernel(; ν=2.0)) == Euclidean()
+        @test metric(MaternKernel(; ν = 2.0)) == Euclidean()
         @test repr(k) == "Matern Kernel (ν = $(ν), metric = Euclidean(0.0))"
 
-        k2 = MaternKernel(; ν=ν, metric=WeightedEuclidean(ones(3)))
+        k2 = MaternKernel(; ν = ν, metric = WeightedEuclidean(ones(3)))
         @test metric(k2) isa WeightedEuclidean
         @test k2(v1, v2) ≈ k(v1, v2)
 
         # Standardised tests.
         TestUtils.test_interface(k, Float64)
-        test_ADs(() -> MaternKernel(; nu=ν))
+        test_ADs(() -> MaternKernel(; nu = ν))
     end
     @testset "Matern32Kernel" begin
         k = Matern32Kernel()
         @test kappa(k, x) ≈ (1 + sqrt(3) * x)exp(-sqrt(3) * x)
         @test k(v1, v2) ≈ (1 + sqrt(3) * norm(v1 - v2))exp(-sqrt(3) * norm(v1 - v2))
         @test kappa(Matern32Kernel(), x) == kappa(k, x)
+        @test kappa(k, 0.5f0) isa Float32
         @test metric(Matern32Kernel()) == Euclidean()
         @test repr(k) == "Matern 3/2 Kernel (metric = Euclidean(0.0))"
 
-        k2 = Matern32Kernel(; metric=WeightedEuclidean(ones(3)))
+        k2 = Matern32Kernel(; metric = WeightedEuclidean(ones(3)))
         @test metric(k2) isa WeightedEuclidean
         @test k2(v1, v2) ≈ k(v1, v2)
 
@@ -42,14 +43,15 @@
         k = Matern52Kernel()
         @test kappa(k, x) ≈ (1 + sqrt(5) * x + 5 / 3 * x^2)exp(-sqrt(5) * x)
         @test k(v1, v2) ≈
-            (
-            1 + sqrt(5) * norm(v1 - v2) + 5 / 3 * norm(v1 - v2)^2
-        )exp(-sqrt(5) * norm(v1 - v2))
+            (1 + sqrt(5) * norm(v1 - v2) + 5 / 3 * norm(v1 - v2)^2)exp(
+                -sqrt(5) * norm(v1 - v2),
+            )
         @test kappa(Matern52Kernel(), x) == kappa(k, x)
+        @test kappa(k, 0.5f0) isa Float32
         @test metric(Matern52Kernel()) == Euclidean()
         @test repr(k) == "Matern 5/2 Kernel (metric = Euclidean(0.0))"
 
-        k2 = Matern52Kernel(; metric=WeightedEuclidean(ones(3)))
+        k2 = Matern52Kernel(; metric = WeightedEuclidean(ones(3)))
         @test metric(k2) isa WeightedEuclidean
         @test k2(v1, v2) ≈ k(v1, v2)
 
@@ -63,16 +65,17 @@
             (1 + sqrt(7) * x + 14 / 5 * x^2 + 7 * sqrt(7) / 15 * x^3) * exp(-sqrt(7) * x)
         @test k(v1, v2) ≈
             (
-            1 +
-            sqrt(7) * norm(v1 - v2) +
-            14 / 5 * norm(v1 - v2)^2 +
-            7 * sqrt(7) / 15 * norm(v1 - v2)^3
-        ) * exp(-sqrt(7) * norm(v1 - v2))
+                1 +
+                    sqrt(7) * norm(v1 - v2) +
+                    14 / 5 * norm(v1 - v2)^2 +
+                    7 * sqrt(7) / 15 * norm(v1 - v2)^3
+            ) *
+                exp(-sqrt(7) * norm(v1 - v2))
         @test kappa(Matern72Kernel(), x) == kappa(k, x)
         @test metric(Matern72Kernel()) == Euclidean()
         @test repr(k) == "Matern 7/2 Kernel (metric = Euclidean(0.0))"
 
-        k2 = Matern72Kernel(; metric=WeightedEuclidean(ones(3)))
+        k2 = Matern72Kernel(; metric = WeightedEuclidean(ones(3)))
         @test metric(k2) isa WeightedEuclidean
         @test k2(v1, v2) ≈ k(v1, v2)
 
@@ -81,9 +84,9 @@
         test_ADs(Matern72Kernel)
     end
     @testset "Coherence Materns" begin
-        @test kappa(MaternKernel(; ν=0.5), x) ≈ kappa(ExponentialKernel(), x)
-        @test kappa(MaternKernel(; ν=1.5), x) ≈ kappa(Matern32Kernel(), x)
-        @test kappa(MaternKernel(; ν=2.5), x) ≈ kappa(Matern52Kernel(), x)
-        @test kappa(MaternKernel(; ν=3.5), x) ≈ kappa(Matern72Kernel(), x)
+        @test kappa(MaternKernel(; ν = 0.5), x) ≈ kappa(ExponentialKernel(), x)
+        @test kappa(MaternKernel(; ν = 1.5), x) ≈ kappa(Matern32Kernel(), x)
+        @test kappa(MaternKernel(; ν = 2.5), x) ≈ kappa(Matern52Kernel(), x)
+        @test kappa(MaternKernel(; ν = 3.5), x) ≈ kappa(Matern72Kernel(), x)
     end
 end
