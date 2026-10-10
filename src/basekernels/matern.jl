@@ -80,7 +80,10 @@ end
 
 Matern32Kernel(; metric = Euclidean()) = Matern32Kernel(metric)
 
-kappa(::Matern32Kernel, d::Real) = (s = sqrt(3 * one(d)); (1 + s * d) * exp(-s * d))
+function kappa(::Matern32Kernel, d::Real)
+    s = sqrt(3 * one(d))
+    return (1 + s * d) * exp(-s * d)
+end
 
 metric(k::Matern32Kernel) = k.metric
 
@@ -111,10 +114,10 @@ end
 
 Matern52Kernel(; metric = Euclidean()) = Matern52Kernel(metric)
 
-kappa(::Matern52Kernel, d::Real) = (
-    s = sqrt(5 * one(d));
-    (1 + s * d + 5 * d^2 / 3) * exp(-s * d)
-)
+function kappa(::Matern52Kernel, d::Real)
+    s = sqrt(5 * one(d))
+    return (1 + s * d + 5 * d^2 / 3) * exp(-s * d)
+end
 
 metric(k::Matern52Kernel) = k.metric
 
@@ -146,7 +149,8 @@ end
 Matern72Kernel(; metric = Euclidean()) = Matern72Kernel(metric)
 
 function kappa(::Matern72Kernel, d::Real)
-    return (1 + sqrt(7) * d + 14 / 5 * d^2 + 7 * sqrt(7) / 15 * d^3) * exp(-sqrt(7) * d)
+    s = sqrt(7 * one(d))
+    return (1 + s * d + 14 * d^2 / 5 + 7 * s * d^3 / 15) * exp(-s * d)
 end
 
 metric(k::Matern72Kernel) = k.metric

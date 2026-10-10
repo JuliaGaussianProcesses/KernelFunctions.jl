@@ -72,6 +72,7 @@
             ) *
                 exp(-sqrt(7) * norm(v1 - v2))
         @test kappa(Matern72Kernel(), x) == kappa(k, x)
+        @test kappa(k, 0.5f0) isa Float32
         @test metric(Matern72Kernel()) == Euclidean()
         @test repr(k) == "Matern 7/2 Kernel (metric = Euclidean(0.0))"
 
