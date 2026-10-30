@@ -25,7 +25,7 @@ testdiagfunction(k::MOKernel, A, B) = sum(kernelmatrix_diag(k, A, B))
 const FD_BACKEND = AutoFiniteDifferences(; fdm=FDM)
 
 const _DEFAULT_BACKENDS = let
-    backends = [AutoForwardDiff(), AutoReverseDiff()]
+    backends = [AutoForwardDiff(), AutoReverseDiff(), AutoMooncake()]
     _TEST_ZYGOTE && pushfirst!(backends, AutoZygote())
     backends
 end
@@ -34,6 +34,7 @@ const _BACKEND_MAP = Dict{Symbol,Any}(
     :ForwardDiff => AutoForwardDiff(),
     :ReverseDiff => AutoReverseDiff(),
     :Zygote => AutoZygote(),
+    :Mooncake => AutoMooncake(),
     :FiniteDiff => FD_BACKEND,
 )
 
