@@ -14,6 +14,21 @@ julia> f = rand(); t = PeriodicTransform(f); x = rand();
 julia> t(x) == [sinpi(2 * f * x), cospi(2 * f * x)]
 true
 ```
+
+For 1 dimensional inputs it is possible to create a kernel equivalent
+to the `PeriodicKernel` using `PeriodicTransform` and a
+`SqExponentialKernel`.
+
+```jldoctest
+julia> wiggle_scale = 0.5; period = π/2; x = rand(); y = rand();
+
+julia> k1 = with_lengthscale(PeriodicKernel(; r=[wiggle_scale / 2]), period);
+
+julia> k2 = with_lengthscale(SqExponentialKernel(), wiggle_scale) ∘ PeriodicTransform(1/period)
+
+julia> k1(x,y) ≈ k2(x,y)
+true
+```
 """
 struct PeriodicTransform{Tf<:AbstractVector{<:Real}} <: Transform
     f::Tf
